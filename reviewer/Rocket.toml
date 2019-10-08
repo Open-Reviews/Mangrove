@@ -1,0 +1,2 @@
+[global.databases]
+pg_reviews = { url = "postgres://postgres:postgres@localhost:5432/reviews" }

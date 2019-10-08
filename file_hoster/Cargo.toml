@@ -1,0 +1,14 @@
+[package]
+name = "file_hoster"
+version = "0.1.0"
+authors = ["keorn <git@i.keorn.org>"]
+edition = "2018"
+
+[dependencies]
+log = "0.4"
+hex = "0.4.0"
+sha2 = "0.8.0"
+rocket = "0.4.2"
+rocket_contrib = { version = "0.4.2", default-features = false, features = ["json"] }
+rocket_cors = "0.5.0"
+rocket-multipart-form-data = "0.7.2"

@@ -1,0 +1,25 @@
+[package]
+name = "review_server"
+version = "0.1.0"
+authors = ["keorn <git@i.keorn.org>"]
+edition = "2018"
+
+[dependencies]
+log = "0.4"
+rand = "0.6"
+hex = "0.4.0"
+url = "2.1.0"
+untrusted = "0.6.2"
+ring = "0.13.5"
+diesel = { version = "1.0.0", features = ["postgres"] }
+xmltree = "0.8.0"
+reqwest = "0.9.12"
+serde = { version = "1.0.90", features = ["derive"] }
+serde_cbor = "0.10.1"
+serde_json = "1.0"
+dotenv = "0.9.0"
+rocket = "0.4.2"
+
+[dependencies.rocket_contrib]
+default-features = false
+features = ["diesel_postgres_pool", "diesel_sqlite_pool", "json"]

@@ -1,0 +1,8 @@
+reviewer/target
+reviewer/client/node_modules
+reviewer/client/src/node_modules
+reviewer/client/src/dist
+reviewer/old_client
+file_hoster/target
+file_hoster/files
+test
