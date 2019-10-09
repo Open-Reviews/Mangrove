@@ -49,7 +49,7 @@ enum Error {
 
 #[get("/submit?<review..>")]
 fn submit_review(conn: DbConn, review: Form<Review>) -> Result<String, Error> {
-    info!("Review submitted: {:?}", review);
+    info!("Review received: {:?}", review);
     review.verify().map_err(Error::Verification)?;
     diesel::insert_into(schema::reviews::table)
         .values(review.into_inner())
