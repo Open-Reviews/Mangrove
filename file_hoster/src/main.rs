@@ -66,6 +66,11 @@ fn index() -> NamedFile {
     NamedFile::open("src/index.html").expect("Index file is always present.")
 }
 
+#[get("/exists/<file..>")]
+fn exists(file: PathBuf) -> String {
+    NamedFile::open(Path::new(FILES).join(file)).is_ok().to_string()
+}
+
 #[get("/<file..>", rank = 6)]
 fn files(file: PathBuf) -> Option<NamedFile> {
     NamedFile::open(Path::new(FILES).join(file)).ok()
@@ -83,7 +88,7 @@ fn main() {
     .to_cors().expect("CORS configuration correct.");
 
     rocket::ignite()
-        .mount("/", routes![index, upload, files])
+        .mount("/", routes![index, upload, exists, files])
         .attach(cors)
         .launch();
 }
