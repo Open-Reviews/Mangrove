@@ -28,9 +28,7 @@ The standard can be used with original Mangrove servers as well as separate data
 
 ## Mangrove Creation and Verification
 
-### JavaScript
-
-### Rust
+JavaScript and Rust sample implementations are work in progress and coming soon.
 
 ## Mangrove Review Format (MaReFo)
 
