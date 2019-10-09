@@ -24,7 +24,7 @@ use diesel::sql_types::Bool;
 use rocket::request::Form;
 use rocket::response::NamedFile;
 use rocket_contrib::json::Json;
-use self::review::{Review, verify_id};
+use self::review::Review;
 
 #[database("pg_reviews")]
 struct DbConn(diesel::PgConnection);
@@ -50,7 +50,7 @@ enum Error {
 #[get("/submit?<review..>")]
 fn submit_review(conn: DbConn, review: Form<Review>) -> Result<String, Error> {
     info!("Review submitted: {:?}", review);
-    review.verify().map_err(|e| Error::Verification(e))?;
+    review.verify().map_err(Error::Verification)?;
     diesel::insert_into(schema::reviews::table)
         .values(review.into_inner())
         .execute(&conn.0)
@@ -72,7 +72,6 @@ struct Query {
     pub opinion: Option<String>,
 }
 
-// TODO: clean up with macro
 #[get("/request?<query..>")]
 fn request_reviews(conn: DbConn, query: Form<Query>) -> Result<Json<Vec<Review>>, Error> {
   use schema::reviews::dsl::*;
@@ -85,14 +84,12 @@ fn request_reviews(conn: DbConn, query: Form<Query>) -> Result<Json<Vec<Review>>
     if let Some(s) = &query.publickey { f = Box::new(f.and(publickey.eq(s))) }
     if let Some(s) = &query.timestamp { f = Box::new(f.and(timestamp.eq(s))) }
     if let Some(s) = &query.id {
-        let t = query
+        query
             .idtype
             .as_ref()
-            .ok_or(Error::Verification("Id request requires idtype.".into()))?;
-      verify_id(t, s).map_err(|e| Error::Verification(e.into()))?;
-      f = Box::new(f.and(id.eq(s)));
-    }
-    if let Some(s) = &query.idtype { f = Box::new(f.and(idtype.eq(s))) }
+            .ok_or_else(|| Error::Verification("Id request requires idtype.".into()))?;
+        f = Box::new(f.and(id.eq(s)));
+    } else if let Some(s) = &query.idtype { f = Box::new(f.and(idtype.eq(s))) }
     if let Some(s) = &query.rating { f = Box::new(f.and(rating.eq(s))) }
     if let Some(s) = &query.opinion { f = Box::new(f.and(opinion.eq(s))) }
     let out = reviews.filter(f).load::<Review>(&conn.0).map_err(|e| Error::Database(e.to_string()))?;

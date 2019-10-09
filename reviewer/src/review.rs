@@ -59,7 +59,7 @@ fn verify_rating(rating: Rating) -> Result<(), String> {
     }
 }
 
-fn verify_opinion(opinion: &String) -> Result<(), String> {
+fn verify_opinion(opinion: &str) -> Result<(), String> {
     if opinion.len() <= MAX_REVIEW_LENGTH {
         Ok(())
     } else {
@@ -95,7 +95,6 @@ enum SignatureError {
     Hex(hex::FromHexError),
     Cbor(serde_cbor::error::Error),
     Ring(ring::error::Unspecified),
-    Json(serde_json::Error),
 }
 
 impl From<SignatureError> for String {
@@ -122,34 +121,10 @@ impl From<ring::error::Unspecified> for SignatureError {
     }
 }
 
-impl From<serde_json::Error> for SignatureError {
-    fn from(error: serde_json::Error) -> Self {
-        SignatureError::Json(error) 
-    }
-}
-
-fn verify_signature(review: &Review) -> Result<(), SignatureError> {
-    let pubkey_bytes = hex::decode(&review.publickey)?;
-    let sig_bytes = hex::decode(&review.signature)?;
-    let extra = match review.extradata {
-        Some(ref s) => serde_json::from_str(s)?,
-        None => None,
-    };
-    let meta = match review.metadata {
-        Some(ref s) => serde_json::from_str(s)?,
-        None => None,
-    };
-    let msg_bytes = serde_cbor::to_vec(&UnsignedReview {
-        version: review.version,
-        publickey: &review.publickey,
-        timestamp: review.timestamp,
-        idtype: &review.idtype,
-        id: &review.id,
-        rating: review.rating,
-        opinion: review.opinion.as_ref(),
-        extradata: extra,
-        metadata: meta,
-    })?;
+fn verify_signature(msg: &UnsignedReview, sig: &str) -> Result<(), SignatureError> {
+    let pubkey_bytes = hex::decode(&msg.publickey)?;
+    let sig_bytes = hex::decode(&sig)?;
+    let msg_bytes = serde_cbor::to_vec(&msg)?;
     let pubkey = untrusted::Input::from(&pubkey_bytes);
     let msg = untrusted::Input::from(&msg_bytes);
     let sig = untrusted::Input::from(&sig_bytes);
@@ -213,10 +188,10 @@ fn verify_location(id: &str) -> Result<(), LocationError> {
     if Element::parse(response.as_bytes())?
         .children
         .first()
-        .ok_or(LocationError::NoNode("No XML child.".into()))?
+        .ok_or_else(|| LocationError::NoNode("No XML child.".into()))?
         .attributes
         .get("visible")
-        .ok_or(LocationError::NoNode("Node has no \"visible\" attribute.".into()))?
+        .ok_or_else(|| LocationError::NoNode("Node has no \"visible\" attribute.".into()))?
         == "true" {
         Ok(())
     } else {
@@ -234,8 +209,8 @@ fn verify_maresi(id: &str) -> Result<(), IdError> {
     Ok(())
 }
 
-pub fn verify_id(idtype: &str, id: &str) -> Result<(), IdError> {
-    match idtype.as_ref() {
+fn verify_id(idtype: &str, id: &str) -> Result<(), IdError> {
+    match idtype {
         "OLC+place" => verify_location(id).map_err(Into::into),
         "URL" => verify_url(id).map_err(Into::into),
         "MaReSi" => verify_maresi(id),
@@ -244,30 +219,71 @@ pub fn verify_id(idtype: &str, id: &str) -> Result<(), IdError> {
 
 }
 
+fn verify_extrahash(hash: &str) -> Result<(), String> {
+    if false {
+        Err(format!("No file with such hash has been uploaded: {:?}", hash))
+    } else {
+        Ok(())
+    }
+}
+
+fn verify_metadata(key: &str, value: &str) -> Result<(), String> {
+    match key {
+        "originURI" => Ok(()), // MUST be a correct URI corresponding to the resource the review originates from: website or app.
+        "accountName" => Ok(()), // MUST be a name of account used for this review.
+        "displayName" => Ok(()), // MUST be a user specified name to be displayed.
+        "age" => Ok(()), // MUST be of Major type 0 (an unsigned integer) which SHOULD be the age of the reviewer of at most 200.
+        "birthday" => Ok(()), // SHOULD be the date of birth of the reviewer.
+        "lastName" => Ok(()), // SHOULD be the last name of the reviewer.
+        "firstName" => Ok(()), // SHOULD be the first name of the reviewer.
+        "gender" => Ok(()), // SHOULD be the gender of the reviewer.
+        "openid" => Ok(()), // SHOULD be the openid associated with the reviewer.
+        _ => Err("Key is not one of Mangrove Core Metadata Keys.".into()),
+    }
+}
+
 // TODO: verify metadata and extradata
 impl Review {
     pub fn verify(&self) -> Result<bool, String> {
+        let extradata = match self.extradata {
+            Some(ref s) => serde_json::from_str(s).map_err(|e| e.to_string())?,
+            None => None,
+        };
+        let metadata = match self.metadata {
+            Some(ref s) => serde_json::from_str(s).map_err(|e| e.to_string())?,
+            None => None,
+        };
+        let msg = UnsignedReview {
+            version: self.version,
+            publickey: &self.publickey,
+            timestamp: self.timestamp,
+            idtype: &self.idtype,
+            id: &self.id,
+            rating: self.rating,
+            opinion: self.opinion.as_ref(),
+            extradata,
+            metadata,
+        };
         verify_version(self.version)?;
         verify_timestamp(Duration::from_secs(self.timestamp as u64))?;
         if self.rating.is_none() && self.opinion.is_none() {
             return Err("Review must contain either a rating or a review.".into());
         }
         self.rating.map_or(Ok(()), verify_rating)?;
-        self.opinion.as_ref().map_or(Ok(()), verify_opinion)?;
-        verify_signature(self)?;
+        self.opinion.as_ref().map_or(Ok(()), |s| verify_opinion(&s))?;
+        msg.metadata.as_ref().map_or(
+            Ok(()),
+            |m| m.0
+                .iter()
+                .map(|(k, v)| verify_metadata(k, v))
+                .collect()
+        )?;
+        verify_signature(&msg, &self.signature)?;
+        msg.extradata.map_or(
+            Ok(()),
+            |e| e.0.iter().map(|h| verify_extrahash(&h)).collect()
+        )?;
         verify_id(&self.idtype, &self.id)?;
         Ok(true)
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_encode() {
-        let none: Option<u8> = None;
-        let empty: Vec<u8> = Vec::new();
-        assert_eq!(serde_cbor::to_vec(&none).unwrap(), empty);
     }
 }
