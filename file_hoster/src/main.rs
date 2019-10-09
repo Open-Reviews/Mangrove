@@ -21,8 +21,8 @@ use rocket_multipart_form_data::{
     FileField,
 };
 
+const TEMP: &str = "files/temp/";
 const FILES: &str = "files/";
-const LIMIT: u64 = 100;
 const FORM_FILE: &str = "files";
 
 fn save_file(data: &SingleFileField) -> Result<String, io::Error> {
@@ -30,7 +30,7 @@ fn save_file(data: &SingleFileField) -> Result<String, io::Error> {
     let mut file = File::open(&data.path)?;
     io::copy(&mut file, &mut hasher)?;
     let hash = hex::encode(&hasher.result()[..]);
-    rename(&data.path, Path::new(FILES).join(hash.clone()))?;
+    rename(&data.path, Path::new(TEMP).join(hash.clone()))?;
     Ok(hash)
 }
 
@@ -68,12 +68,27 @@ fn index() -> NamedFile {
 
 #[get("/exists/<file..>")]
 fn exists(file: PathBuf) -> String {
-    NamedFile::open(Path::new(FILES).join(file)).is_ok().to_string()
+    if Path::new(FILES).join(&file).exists() {
+        true
+    } else if Path::new(TEMP).join(&file).exists() {
+        if let Err(e) = rename(
+            &Path::new(TEMP).join(&file),
+            Path::new(FILES).join(&file)
+        ) {
+            warn!("Unable to make the file permanent: {}", e);
+            false
+        } else {
+            true
+        }
+    } else {
+        false
+    }.to_string()
 }
 
 #[get("/<file..>", rank = 6)]
 fn files(file: PathBuf) -> Option<NamedFile> {
-    NamedFile::open(Path::new(FILES).join(file)).ok()
+    NamedFile::open(Path::new(FILES).join(&file))
+        .or_else(|_| NamedFile::open(Path::new(TEMP).join(file))).ok()
 }
 
 fn main() {

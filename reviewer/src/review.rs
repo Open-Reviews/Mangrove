@@ -125,6 +125,7 @@ fn verify_signature(msg: &UnsignedReview, sig: &str) -> Result<(), SignatureErro
     let pubkey_bytes = hex::decode(&msg.publickey)?;
     let sig_bytes = hex::decode(&sig)?;
     let msg_bytes = serde_cbor::to_vec(&msg)?;
+    info!("msg: {:?}", msg_bytes);
     let pubkey = untrusted::Input::from(&pubkey_bytes);
     let msg = untrusted::Input::from(&msg_bytes);
     let sig = untrusted::Input::from(&sig_bytes);
@@ -220,10 +221,16 @@ fn verify_id(idtype: &str, id: &str) -> Result<(), IdError> {
 }
 
 fn verify_extrahash(hash: &str) -> Result<(), String> {
-    if false {
-        Err(format!("No file with such hash has been uploaded: {:?}", hash))
-    } else {
+    let exists = reqwest::get(&format!("http://localhost:8001/exists/{}", hash))
+        .map_err(|e| e.to_string())?
+        .text()
+        .map_err(|e| e.to_string())?
+        .parse()
+        .map_err(|e: std::str::ParseBoolError| e.to_string())?;
+    if exists {
         Ok(())
+    } else {
+        Err(format!("No file with such hash has been uploaded: {:?}", hash))
     }
 }
 
@@ -264,6 +271,7 @@ impl Review {
             extradata,
             metadata,
         };
+        info!("Unsigned review: {:?}", serde_json::to_string(&msg));
         verify_version(self.version)?;
         verify_timestamp(Duration::from_secs(self.timestamp as u64))?;
         if self.rating.is_none() && self.opinion.is_none() {
