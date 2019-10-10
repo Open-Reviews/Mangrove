@@ -238,17 +238,27 @@ fn verify_extrahash(hash: &str) -> Result<(), String> {
     }
 }
 
-fn verify_metadata(key: &str, _value: &str) -> Result<(), String> {
+fn verify_short_string(key: &str, value: &str) -> Result<(), String> {
+    if value.len() > 20 { Err(format!("Field {} is too long.", key)) } else { Ok(()) }
+}
+
+fn verify_metadata(key: &str, value: &str) -> Result<(), String> {
     match key {
-        "originURI" => Ok(()), // MUST be a correct URI corresponding to the resource the review originates from: website or app.
-        "accountName" => Ok(()), // MUST be a name of account used for this review.
-        "displayName" => Ok(()), // MUST be a user specified name to be displayed.
-        "age" => Ok(()), // MUST be of Major type 0 (an unsigned integer) which SHOULD be the age of the reviewer of at most 200.
-        "birthday" => Ok(()), // SHOULD be the date of birth of the reviewer.
-        "lastName" => Ok(()), // SHOULD be the last name of the reviewer.
-        "firstName" => Ok(()), // SHOULD be the first name of the reviewer.
-        "gender" => Ok(()), // SHOULD be the gender of the reviewer.
-        "openid" => Ok(()), // SHOULD be the openid associated with the reviewer.
+        "originURI" => match Url::parse(value) {
+            Ok(_) => Ok(()),
+            Err(e) => Err(format!("Unable to parse originURI: {}", e))
+        },
+        "accountName" => verify_short_string(key, value),
+        "displayName" => verify_short_string(key, value),
+        "age" => match value.parse::<u8>() {
+            Ok(n) if n <= 200 => Ok(()),
+            _ => Err("Provided age is incorrect.".into()),
+        },
+        "birthday" => verify_short_string(key, value),
+        "lastName" => verify_short_string(key, value),
+        "firstName" => verify_short_string(key, value),
+        "gender" => verify_short_string(key, value),
+        "openid" => verify_short_string(key, value),
         _ => Err("Key is not one of Mangrove Core Metadata Keys.".into()),
     }
 }

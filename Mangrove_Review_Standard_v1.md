@@ -105,14 +105,14 @@ These fields are meant to represent additional data about the reviewer, circumst
 
 The key `metadata` contains a map of key/value pairs, where each key SHOULD be equal to one following keys and have value as described:
 - `originURI` MUST be a correct URI corresponding to the resource the review originates from: website or app.
-- `accountName` MUST be a name of account used for this review.
-- `displayName` MUST be a user specified name to be displayed.
+- `accountName` MUST be a name of account used for this review of length less than 20.
+- `displayName` MUST be a user specified name to be displayed of length less than 20.
 - `age` MUST be of Major type 0 (an unsigned integer) which SHOULD be the age of the reviewer of at most 200.
 - `birthday` SHOULD be the date of birth of the reviewer.
-- `lastName` SHOULD be the last name of the reviewer.
-- `firstName` SHOULD be the first name of the reviewer.
-- `gender` SHOULD be the gender of the reviewer.
-- `openid` SHOULD be the openid associated with the reviewer.
+- `lastName` SHOULD be the last name of the reviewer of length less than 20.
+- `firstName` SHOULD be the first name of the reviewer of length less than 20.
+- `gender` SHOULD be the gender of the reviewer of length less than 20.
+- `openid` SHOULD be the openid associated with the reviewer of length less than 20.
 
 ## Principles of the data format specification
 
