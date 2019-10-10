@@ -13,8 +13,26 @@ Both servers need to be up for the UI to work.
 
 Hash always refers to SHA256.
 
+`npm` and Rust compiler is needed:
+```
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+Nightly compiler version is used:
+```
+rustup default nightly
+```
+
 ### Mangrove Review Server
 
+Build the frontend:
+```
+cd reviewer/client
+npm run build
+cd ../..
+```
+
+Build and run the server.
 ```
 cd reviewer
 cargo run
