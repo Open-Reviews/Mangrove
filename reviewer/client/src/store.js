@@ -47,8 +47,8 @@ const mutations = {
   showextra(state, bool) {
     state.showExtra = bool;
   },
-  extraData(state, files) {
-    state.extraData = files;
+  extraHashes(state, files) {
+    state.extraHashes = files;
   },
   showmeta(state, bool) {
     state.showMeta = bool;

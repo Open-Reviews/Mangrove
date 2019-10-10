@@ -47,8 +47,8 @@ enum Error {
     Database(String),
 }
 
-#[get("/submit?<review..>")]
-fn submit_review(conn: DbConn, review: Form<Review>) -> Result<String, Error> {
+#[put("/submit", format = "application/json", data = "<review>")]
+fn submit_review(conn: DbConn, review: Json<Review>) -> Result<String, Error> {
     info!("Review received: {:?}", review);
     review.verify().map_err(Error::Verification)?;
     diesel::insert_into(schema::reviews::table)

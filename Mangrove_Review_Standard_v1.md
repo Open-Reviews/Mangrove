@@ -39,9 +39,9 @@ In particular for a Mangrove Review to be compatible with original servers all "
 ---
 
 Mangrove Review (Review) MUST consist of key/value pairs. Review fields MAY be shared in a number of different ways with the most common being:
-- HTTP method query fields
 - JSON
 - CBOR
+- HTTP method query fields
 
 Each Review MUST be representable as [Canonical CBOR](https://tools.ietf.org/html/rfc7049), and in particular Major type 5 (a map of pairs of data items). This means that each key and value MUST one of major CBOR types. Review keys MUST be of Major type 3 (a text string).
 

@@ -10,4 +10,4 @@ CREATE TABLE reviews (
   opinion text,
   extradata text,
   metadata text
-)
+);

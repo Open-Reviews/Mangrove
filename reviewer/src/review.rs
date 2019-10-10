@@ -15,8 +15,17 @@ const V1: Version = 1;
 const MAX_RATING: Rating = 100;
 const MAX_REVIEW_LENGTH: usize = 500;
 
-#[derive(Debug, FromForm, Serialize, Insertable, Queryable)]
-#[table_name="reviews"]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+struct ExtraHashes(
+    Vec<String>
+);
+
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+struct Metadata(
+    HashMap<String, String>
+);
+
+#[derive(Debug, PartialEq, Serialize, Deserialize, Identifiable, Insertable, Queryable)]
 pub struct Review {
     pub signature: String,
     pub version: Version,
@@ -26,10 +35,10 @@ pub struct Review {
     pub id: String,
     pub rating: Option<Rating>,
     pub opinion: Option<String>,
-    // JSON vector of hashes.
-    pub extradata: Option<String>,
-    // JSON dictionary.
-    pub metadata: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub extradata: Option<serde_json::Value>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<serde_json::Value>,
 }
 
 fn verify_version(version: Version) -> Result<(), String> {
@@ -67,11 +76,6 @@ fn verify_opinion(opinion: &str) -> Result<(), String> {
     }
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
-struct ExtraData(Vec<String>);
-
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
-struct MetaData(HashMap<String, String>);
 
 #[derive(Serialize, PartialEq, Debug)]
 struct UnsignedReview<'a> {
@@ -85,9 +89,9 @@ struct UnsignedReview<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     opinion: Option<&'a String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    extradata: Option<ExtraData>,
+    extradata: Option<ExtraHashes>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<MetaData>,
+    metadata: Option<Metadata>,
 }
 
 #[derive(Debug)]
@@ -253,11 +257,11 @@ fn verify_metadata(key: &str, _value: &str) -> Result<(), String> {
 impl Review {
     pub fn verify(&self) -> Result<bool, String> {
         let extradata = match self.extradata {
-            Some(ref s) => serde_json::from_str(s).map_err(|e| e.to_string())?,
+            Some(ref v) => serde_json::from_value(v.clone()).map_err(|e| e.to_string())?,
             None => None,
         };
         let metadata = match self.metadata {
-            Some(ref s) => serde_json::from_str(s).map_err(|e| e.to_string())?,
+            Some(ref v) => serde_json::from_value(v.clone()).map_err(|e| e.to_string())?,
             None => None,
         };
         let msg = UnsignedReview {

@@ -24,7 +24,7 @@
     </form>
     <!--SUCCESS-->
     <div v-if="isSuccess">
-      <h2>Uploaded {{ extraData.length }} file(s) successfully.</h2>
+      <h2>Uploaded {{ extraHashes.length }} file(s) successfully.</h2>
       <p>
         <a href="javascript:void(0)" @click="reset()">Upload again</a>
       </p>
@@ -74,14 +74,14 @@ export default {
       return this.currentStatus === STATUS_FAILED;
     },
     uploadedLinks() {
-      return this.extraData.map(hash => `${BASE_URL}/${hash}`);
+      return this.extraHashes.map(hash => `${BASE_URL}/${hash}`);
     },
-    extraData: {
+    extraHashes: {
       get() {
-        return this.$store.state.extraData;
+        return this.$store.state.extraHashes;
       },
       set(value) {
-        this.$store.commit("extraData", value);
+        this.$store.commit("extraHashes", value);
       }
     }
   },
@@ -89,7 +89,7 @@ export default {
     reset() {
       // reset form to initial state
       this.currentStatus = STATUS_INITIAL;
-      this.extraData = [];
+      this.extraHashes = [];
       this.uploadError = null;
     },
     hashFiles(files) {
@@ -105,7 +105,7 @@ export default {
       const url = `${BASE_URL}/upload`;
       return (
         this.axios
-          .post(url, formData)
+          .put(url, formData)
           // add url field
           .then(response => response.data)
       );
@@ -126,7 +126,7 @@ export default {
               throw "Server return unexpected hashes.";
             }
           }
-          this.extraData = [].concat(hashes);
+          this.extraHashes = [].concat(hashes);
           this.currentStatus = STATUS_SUCCESS;
         })
         .catch(err => {

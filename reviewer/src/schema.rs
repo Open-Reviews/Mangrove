@@ -8,7 +8,7 @@ table! {
         id -> Text,
         rating -> Nullable<Int2>,
         opinion -> Nullable<Text>,
-        extradata -> Nullable<Text>,
-        metadata -> Nullable<Text>,
+        extradata -> Nullable<Jsonb>,
+        metadata -> Nullable<Jsonb>,
     }
 }

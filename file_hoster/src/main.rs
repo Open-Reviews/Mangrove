@@ -30,11 +30,16 @@ fn save_file(data: &SingleFileField) -> Result<String, io::Error> {
     let mut file = File::open(&data.path)?;
     io::copy(&mut file, &mut hasher)?;
     let hash = hex::encode(&hasher.result()[..]);
-    rename(&data.path, Path::new(TEMP).join(hash.clone()))?;
+    if !Path::new(FILES).join(&hash).exists() {
+        let temp_path = Path::new(TEMP).join(&hash);
+        if !temp_path.exists() {
+            rename(&data.path, temp_path)?;
+        }
+    }
     Ok(hash)
 }
 
-#[post("/upload", data = "<data>")]
+#[put("/upload", data = "<data>")]
 fn upload(content_type: &ContentType, data: Data) -> Result<Json<Vec<String>>, String> {
     let mut options = MultipartFormDataOptions::new();
     // Allow for up to 5 pictures to be uploaded.
@@ -95,7 +100,7 @@ fn main() {
     let allowed_origins = AllowedOrigins::some_regex(&["^http://localhost(.*)"]);
     let cors = rocket_cors::CorsOptions {
         allowed_origins,
-        allowed_methods: vec![Method::Post].into_iter().map(From::from).collect(),
+        allowed_methods: vec![Method::Put].into_iter().map(From::from).collect(),
         allowed_headers: AllowedHeaders::some(&["Authorization", "Accept"]),
         allow_credentials: true,
         ..Default::default()
