@@ -13,6 +13,7 @@
     "core-js": "^2.6.9",
     "idb-keyval": "^3.2.0",
     "leaflet": "^1.5.1",
+    "leaflet-control-geocoder": "^1.10.0",
     "vue": "^2.6.10",
     "vue-axios": "^2.1.4",
     "vue-star-rating": "^1.6.1",

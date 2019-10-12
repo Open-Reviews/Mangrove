@@ -1,14 +1,12 @@
 <template>
   <div style="height: 100%; width: 100%">
     <div class="info" style="height: 15%">
-      Location: <input @keyup.enter="$parent.request" />
-      <br />
       <span>Center: {{ center }}</span>
       <span>Zoom: {{ zoom }}</span>
       <span>Bounds: {{ bounds }}</span>
     </div>
     <l-map
-      style="height: 80%; width: 100%"
+      style="height: 300px; width: 100%"
       :zoom="zoom"
       :center="center"
       @update:zoom="zoomUpdated"
@@ -17,7 +15,6 @@
     >
       <l-tile-layer :url="url"></l-tile-layer>
     </l-map>
-    <br />
   </div>
 </template>
 
