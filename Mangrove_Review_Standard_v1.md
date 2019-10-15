@@ -132,6 +132,7 @@ Reviewers should be able to reveal as little information about themselves as the
 
 Where possible and practical, existing standards should be leveraged. Mangrove leverages CBOR, FOAF vocabulary and public key cryptography standard based on FIDO2. 
 For the overall claim framework [Decentralized Identifiers (DIDs)](https://w3c-ccg.github.io/did-spec/) were considered; however, that emerging standard significantly differs in original goals and specifies a number of components not necessary in Mangrove.
+For message encoding saltpack.org was considered, however [lack of activity around specification](https://github.com/keybase/saltpack/issues) does not inspire confidence. 
 
 ### Usefulness
 
@@ -160,3 +161,7 @@ To make determination of review sentiment easier, a rating field is used. This f
 #### Flexible additional information
 
 It should be possible for the reviewer or for the service they use to submit a review to leave additional data with the review. This can include references to pictures, audio or metadata which may be useful to the readers or processing algorithms.
+
+## Change or ask
+
+Please suggest changes or engage in discussion on issues in [the Mangrove repo](https://gitlab.com/plantingspace/mangrove).
