@@ -46,7 +46,8 @@
 </template>
 
 <script>
-const BASE_URL = "http://localhost:8001";
+const FILE_URL = "https://mangrove-files.s3.eu-central-1.amazonaws.com/";
+const BASE_URL = "https://iqawh4oxge.execute-api.eu-central-1.amazonaws.com/Prod/";
 const STATUS_INITIAL = 0,
   STATUS_SAVING = 1,
   STATUS_SUCCESS = 2,
@@ -74,7 +75,7 @@ export default {
       return this.currentStatus === STATUS_FAILED;
     },
     uploadedLinks() {
-      return this.extraHashes.map(hash => `${BASE_URL}/${hash}`);
+      return this.extraHashes.map(hash => `${FILE_URL}/${hash}`);
     },
     extraHashes: {
       get() {
