@@ -87,14 +87,18 @@ Review MUST include a `signature` key with value that:
 ## Mangrove core identifier standards (MaCoIds)
 
 Value corresponding to the `idType` key MUST be one of Core Identifier Types. Each Type implies a standard the the value corresponding to the `id` key:
-- `URL` for this Type `id`
+- `URL` for this Type the `id`:
     - Refers to a Website that is to be reviewed.
     - MUST be of Major type 3 (a text string) that complies with [URL specification](https://url.spec.whatwg.org/) and is no longer than 100 letters.
-- `OLC+place` for this Type `id`
+- `OLC+place` for this Type the `id`:
     - Refers to a business location or physical point of interest being reviewed.
     - MUST be of Major type 3 (a text string) which is a concatenation of a valid Open Location Code and a commonly used name of the selected place.
     - Valid Open Location Code MUST comply with [OLC specification](https://github.com/google/open-location-code/blob/master/docs/specification.md).
-- `MaReSi` for this Type `id`
+- `LEI` for this Type the `id`:
+    -  Has to be equal to one of registered legal entity identifiers in [GLEIF database](https://www.gleif.org/en/).
+    -  MUST be of Major type 3 (a text string) representing a valid LEI according to [ISO 17442](https://www.gleif.org/en/about-lei/iso-17442-the-lei-code-structure).
+    -  GLEIF data is open and accessible for [download](https://www.gleif.org/en/lei-data/gleif-golden-copy/download-the-golden-copy#/) or access via [API](https://documenter.getpostman.com/view/7679680/SVYrrxuU?version=latest).
+- `MaReSi` for this Type the `id`:
     - Refers to another Mangrove Review that is to be reviewed, indicating its helpfulness or accuracy.
     - MUST be of Major type 3 (a text string) representing Mangrove Review Signature.
     - SHOULD be equal to `signature` field of one of Mangrove Reviews in the current database.
