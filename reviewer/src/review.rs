@@ -41,38 +41,50 @@ pub struct Review {
     pub metadata: Option<serde_json::Value>,
 }
 
-fn verify_version(version: Version) -> Result<(), String> {
+#[derive(Debug, Responder)]
+pub enum Error {
+    // Issue with the submitted review.
+    #[response(status = 400)]
+    Verification(String),
+    // Internal issue when verifying a review.
+    #[response(status = 500)]
+    Internal(String),
+}
+
+fn verify_version(version: Version) -> Result<(), Error> {
     if version == V1 {
         Ok(())
     } else {
-        Err("Only version 1 of Mangrove Data Format is supported.".into())
+        Err(Error::Verification(
+            "Only version 1 of Mangrove Data Format is supported.".into()
+        ))
     }
 }
 
-fn verify_timestamp(timestamp: Duration) -> Result<(), String> {
+fn verify_timestamp(timestamp: Duration) -> Result<(), Error> {
     let unix_time = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .expect("SystemTime is not before UNIX EPOCH.");
     if unix_time < timestamp {
-        Err("Claim from the future.".into())
+        Err(Error::Verification("Claim from the future.".into()))
     } else {
         Ok(())
     }
 }
 
-fn verify_rating(rating: Rating) -> Result<(), String> {
+fn verify_rating(rating: Rating) -> Result<(), Error> {
     if rating == 0 || rating > MAX_RATING {
-        Err("Rating out of range.".into())
+        Err(Error::Verification("Rating out of range.".into()))
     } else {
         Ok(())
     }
 }
 
-fn verify_opinion(opinion: &str) -> Result<(), String> {
+fn verify_opinion(opinion: &str) -> Result<(), Error> {
     if opinion.len() <= MAX_REVIEW_LENGTH {
         Ok(())
     } else {
-        Err("Opinion too long.".into())
+        Err(Error::Verification("Opinion too long.".into()))
     }
 }
 
@@ -94,38 +106,25 @@ struct UnsignedReview<'a> {
     metadata: Option<Metadata>,
 }
 
-#[derive(Debug)]
-enum SignatureError {
-    Hex(hex::FromHexError),
-    Cbor(serde_cbor::error::Error),
-    Ring(ring::error::Unspecified),
-}
-
-impl From<SignatureError> for String {
-    fn from(error: SignatureError) -> Self {
-        format!("{:?}", error)
-    }
-}
-
-impl From<hex::FromHexError> for SignatureError {
+impl From<hex::FromHexError> for Error {
     fn from(error: hex::FromHexError) -> Self {
-        SignatureError::Hex(error)
+        Error::Verification(error.to_string())
     }
 }
 
-impl From<serde_cbor::error::Error> for SignatureError {
+impl From<serde_cbor::error::Error> for Error {
     fn from(error: serde_cbor::error::Error) -> Self {
-        SignatureError::Cbor(error) 
+        Error::Verification(error.to_string()) 
     }
 }
 
-impl From<ring::error::Unspecified> for SignatureError {
+impl From<ring::error::Unspecified> for Error {
     fn from(error: ring::error::Unspecified) -> Self {
-        SignatureError::Ring(error) 
+        Error::Verification(error.to_string()) 
     }
 }
 
-fn verify_signature(msg: &UnsignedReview, sig: &str) -> Result<(), SignatureError> {
+fn verify_signature(msg: &UnsignedReview, sig: &str) -> Result<(), Error> {
     info!("Unsigned review: {:?}", serde_json::to_string(msg));
     let pubkey_bytes = hex::decode(&msg.publickey)?;
     let sig_bytes = hex::decode(&sig)?;
@@ -136,71 +135,45 @@ fn verify_signature(msg: &UnsignedReview, sig: &str) -> Result<(), SignatureErro
     signature::verify(&signature::ECDSA_P256_SHA256_FIXED, pubkey, msg, sig).map_err(Into::into)
 }
 
-#[derive(Debug)]
-pub enum LocationError {
-    Request(reqwest::Error),
-    Parse(xmltree::ParseError),
-    NoNode(String),
-}
-
-impl From<LocationError> for String {
-    fn from(error: LocationError) -> Self {
-        format!("{:?}", error)
-    }
-}
-
-impl From<reqwest::Error> for LocationError {
+// TODO: Differentiate errors.
+impl From<reqwest::Error> for Error {
     fn from(error: reqwest::Error) -> Self {
-        LocationError::Request(error)
+        Error::Verification(error.to_string())
     }
 }
 
-impl From<xmltree::ParseError> for LocationError {
+impl From<xmltree::ParseError> for Error {
     fn from(error: xmltree::ParseError) -> Self {
-        LocationError::Parse(error)
+        Error::Internal(error.to_string())
     }
 }
 
-#[derive(Debug)]
-pub enum IdError {
-    Location(LocationError),
-    URL(url::ParseError),
-    UnknownMaReSi,
-    UnknownType,
-}
-
-impl From<IdError> for String {
-    fn from(error: IdError) -> Self {
-        format!("{:?}", error)
-    }
-}
-
-impl From<LocationError> for IdError {
-    fn from(error: LocationError) -> Self {
-        IdError::Location(error)
-    }
-}
-
-impl From<url::ParseError> for IdError {
+impl From<url::ParseError> for Error {
     fn from(error: url::ParseError) -> Self {
-        IdError::URL(error)
+        Error::Verification(error.to_string())
     }
 }
 
-fn verify_location(id: &str) -> Result<(), LocationError> {
+fn verify_location(id: &str) -> Result<(), Error> {
     let response = reqwest::get(&format!("https://www.openstreetmap.org/api/0.6/node/{}", id))?
         .text()?;
     if Element::parse(response.as_bytes())?
         .children
         .first()
-        .ok_or_else(|| LocationError::NoNode("No XML child.".into()))?
+        .ok_or_else(|| Error::Internal("No XML child.".into()))?
         .attributes
         .get("visible")
-        .ok_or_else(|| LocationError::NoNode("Node has no \"visible\" attribute.".into()))?
+        .ok_or_else(|| Error::Verification("Node has no \"visible\" attribute.".into()))?
         == "true" {
         Ok(())
     } else {
-        Err(LocationError::NoNode("Node is not visible".into()))
+        Err(Error::Verification("Node is not visible".into()))
+    }
+}
+
+impl From<serde_json::Error> for Error {
+    fn from(error: serde_json::Error) -> Self {
+        Error::Verification(error.to_string())
     }
 }
 
@@ -208,70 +181,94 @@ fn verify_url(id: &str) -> Result<(), url::ParseError> {
     Url::parse(id).map(|_| ())
 }
 
-// TODO: check in the database
-// Verify Mangrove Review Signature, which is a unique id of a review.
-fn verify_maresi(_id: &str) -> Result<(), IdError> {
+fn verify_lei(id: &str) -> Result<(), Error> {
+    let response: String = reqwest::get(
+        &format!("https://api.gleif.org/api/v1/lei-records/{}", id)
+    )?
+    .text()?;
+    serde_json::from_str(&response)?;
     Ok(())
 }
 
-fn verify_id(idtype: &str, id: &str) -> Result<(), IdError> {
+
+// TODO: check in the database
+// Verify Mangrove Review Signature, which is a unique id of a review.
+fn verify_maresi(_id: &str) -> Result<(), Error> {
+    Ok(())
+}
+
+fn verify_id(idtype: &str, id: &str) -> Result<(), Error> {
     match idtype {
         "OLC+place" => verify_location(id).map_err(Into::into),
         "URL" => verify_url(id).map_err(Into::into),
+        "LEI" => verify_lei(id),
         "MaReSi" => verify_maresi(id),
-        _ => Err(IdError::UnknownType),
+        _ => Err(Error::Verification(format!("Unknown idType: {}", idtype))),
     }
 
 }
 
-fn verify_extrahash(hash: &str) -> Result<(), String> {
-    let exists = reqwest::get(&format!("http://localhost:8001/exists/{}", hash))
-        .map_err(|e| e.to_string())?
-        .text()
-        .map_err(|e| e.to_string())?
-        .parse()
-        .map_err(|e: std::str::ParseBoolError| e.to_string())?;
+impl From<std::str::ParseBoolError> for Error {
+    fn from(error: std::str::ParseBoolError) -> Self {
+        Error::Internal(error.to_string())
+    }
+}
+
+fn verify_extrahash(hash: &str) -> Result<(), Error> {
+    let exists = reqwest::get(&format!("http://localhost:8001/exists/{}", hash))?
+        .text()?
+        .parse()?;
     if exists {
         Ok(())
     } else {
-        Err(format!("No file with such hash has been uploaded: {:?}", hash))
+        Err(Error::Verification(
+            format!("No file with such hash has been uploaded: {:?}", hash)
+        ))
     }
 }
 
-fn verify_short_string(key: &str, value: &str) -> Result<(), String> {
-    if value.len() > 20 { Err(format!("Field {} is too long.", key)) } else { Ok(()) }
+fn verify_short_string(key: &str, value: &str) -> Result<(), Error> {
+    if value.len() > 20 {
+        Err(Error::Verification(format!("Field {} is too long.", key)))
+    } else {
+        Ok(())
+    }
 }
 
-fn verify_metadata(key: &str, value: &str) -> Result<(), String> {
+fn verify_metadata(key: &str, value: &str) -> Result<(), Error> {
     match key {
         "originURI" => match Url::parse(value) {
             Ok(_) => Ok(()),
-            Err(e) => Err(format!("Unable to parse originURI: {}", e))
+            Err(e) => Err(
+                Error::Verification(format!("Unable to parse originURI: {}", e))
+            ),
         },
         "accountName" => verify_short_string(key, value),
         "displayName" => verify_short_string(key, value),
         "age" => match value.parse::<u8>() {
             Ok(n) if n <= 200 => Ok(()),
-            _ => Err("Provided age is incorrect.".into()),
+            _ => Err(Error::Verification("Provided age is incorrect.".into())),
         },
         "birthday" => verify_short_string(key, value),
         "lastName" => verify_short_string(key, value),
         "firstName" => verify_short_string(key, value),
         "gender" => verify_short_string(key, value),
         "openid" => verify_short_string(key, value),
-        _ => Err("Key is not one of Mangrove Core Metadata Keys.".into()),
+        _ => Err(Error::Verification(
+            "Key is not one of Mangrove Core Metadata Keys.".into()
+        )),
     }
 }
 
 // TODO: verify metadata and extradata
 impl Review {
-    pub fn verify(&self) -> Result<bool, String> {
+    pub fn verify(&self) -> Result<bool, Error> {
         let extradata = match self.extradata {
-            Some(ref v) => serde_json::from_value(v.clone()).map_err(|e| e.to_string())?,
+            Some(ref v) => serde_json::from_value(v.clone())?,
             None => None,
         };
         let metadata = match self.metadata {
-            Some(ref v) => serde_json::from_value(v.clone()).map_err(|e| e.to_string())?,
+            Some(ref v) => serde_json::from_value(v.clone())?,
             None => None,
         };
         let msg = UnsignedReview {
@@ -288,7 +285,9 @@ impl Review {
         verify_version(self.version)?;
         verify_timestamp(Duration::from_secs(self.timestamp as u64))?;
         if self.rating.is_none() && self.opinion.is_none() {
-            return Err("Review must contain either a rating or a review.".into());
+            return Err(Error::Verification(
+                "Review must contain either a rating or a review.".into()
+            ));
         }
         self.rating.map_or(Ok(()), verify_rating)?;
         self.opinion.as_ref().map_or(Ok(()), |s| verify_opinion(&s))?;

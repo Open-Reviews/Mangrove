@@ -4,6 +4,7 @@
     <select v-model="idType">
       <option value="URL">Website</option>
       <option value="OLC+place">Business location or point of interest</option>
+      <option value="LEI">Legal entity</option>
       <option value="MaReSi">Existing Mangrove review</option>
     </select>
     <br /><br />
@@ -13,6 +14,9 @@
     <div v-else-if="idType === 'OLC+place'">
       <LocationSelector />
     </div>
+    <div v-else-if="idType === 'LEI'">
+      <LeiSelector />
+    </div>
     <div v-else-if="idType === 'MaReSi'">
       <ReviewSelector />
     </div>
@@ -21,15 +25,17 @@
 </template>
 
 <script>
-import UrlSelector from "./UrlSelector.vue";
-import LocationSelector from "./LocationSelector.vue";
-import ReviewSelector from "./ReviewSelector.vue";
+import UrlSelector from "./id-selectors/UrlSelector.vue";
+import LocationSelector from "./id-selectors/LocationSelector.vue";
+import ReviewSelector from "./id-selectors/ReviewSelector.vue";
+import LeiSelector from "./id-selectors/LeiSelector.vue";
 
 export default {
   components: {
     UrlSelector,
     LocationSelector,
-    ReviewSelector
+    ReviewSelector,
+    LeiSelector
   },
   computed: {
     idType: {
@@ -50,7 +56,7 @@ export default {
     }
   },
   methods: {
-    request: function() {
+    request() {
       this.axios
         .get("http://localhost:8000/request", {
           params: { idtype: this.idType, id: this.$store.state.id }

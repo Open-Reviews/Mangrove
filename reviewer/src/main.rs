@@ -24,7 +24,7 @@ use diesel::sql_types::Bool;
 use rocket::request::Form;
 use rocket::response::NamedFile;
 use rocket_contrib::json::Json;
-use self::review::Review;
+use self::review::{Review, Error};
 
 #[database("pg_reviews")]
 struct DbConn(diesel::PgConnection);
@@ -39,22 +39,19 @@ fn files(file: PathBuf) -> Option<NamedFile> {
     NamedFile::open(Path::new("client/dist/").join(file)).ok()
 }
 
-#[derive(Debug, Responder)]
-enum Error {
-    #[response(status = 400)]
-    Verification(String),
-    #[response(status = 500)]
-    Database(String),
+impl From<diesel::result::Error> for Error {
+    fn from(error: diesel::result::Error) -> Self {
+        Error::Internal(error.to_string())
+    }
 }
 
 #[put("/submit", format = "application/json", data = "<review>")]
 fn submit_review(conn: DbConn, review: Json<Review>) -> Result<String, Error> {
     info!("Review received: {:?}", review);
-    review.verify().map_err(Error::Verification)?;
+    review.verify()?;
     diesel::insert_into(schema::reviews::table)
         .values(review.into_inner())
-        .execute(&conn.0)
-        .map_err(|e| Error::Database(e.to_string()))?;
+        .execute(&conn.0)?;
     info!("Review checked and inserted.");
     Ok("true".into())
 }
@@ -92,7 +89,7 @@ fn request_reviews(conn: DbConn, query: Form<Query>) -> Result<Json<Vec<Review>>
     } else if let Some(s) = &query.idtype { f = Box::new(f.and(idtype.eq(s))) }
     if let Some(s) = &query.rating { f = Box::new(f.and(rating.eq(s))) }
     if let Some(s) = &query.opinion { f = Box::new(f.and(opinion.eq(s))) }
-    let out = reviews.filter(f).load::<Review>(&conn.0).map_err(|e| Error::Database(e.to_string()))?;
+    let out = reviews.filter(f).load::<Review>(&conn.0).map_err(|e| Error::Internal(e.to_string()))?;
     info!("Returning {:?}", out);
     Ok(Json(out))
 }
