@@ -46,9 +46,9 @@
 </template>
 
 <script>
-const FILE_URL = "https://mangrove-files.s3.eu-central-1.amazonaws.com/";
+const FILE_URL = "https://mangrove-files.s3.eu-central-1.amazonaws.com";
 const BASE_URL =
-  "https://iqawh4oxge.execute-api.eu-central-1.amazonaws.com/Prod/";
+  "https://iqawh4oxge.execute-api.eu-central-1.amazonaws.com/Prod";
 const STATUS_INITIAL = 0,
   STATUS_SAVING = 1,
   STATUS_SUCCESS = 2,

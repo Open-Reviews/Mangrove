@@ -25,6 +25,11 @@ rustup default nightly
 
 ### Mangrove Review Server
 
+Server relies on a Postgres database running ans set up with Diesel (TODO: explain):
+```
+cargo install diesel_cli --features "postgres" --no-default-features
+```
+
 Build the frontend:
 ```
 cd reviewer/client
