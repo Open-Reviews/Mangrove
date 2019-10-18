@@ -1,4 +1,5 @@
 packaged.yaml
+reviewer/.env
 reviewer/target
 reviewer/client/node_modules
 reviewer/client/src/node_modules

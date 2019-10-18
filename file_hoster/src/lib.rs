@@ -1,22 +1,23 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
-#[macro_use] extern crate log;
-#[macro_use] extern crate lazy_static;
-#[macro_use] extern crate rocket;
+#[macro_use]
+extern crate log;
+#[macro_use]
+extern crate lazy_static;
+#[macro_use]
+extern crate rocket;
 
-use std::io::{self, Read};
-use std::fs::{self, File};
-use std::path::{Path, PathBuf};
-use sha2::{Digest, Sha256};
-use rusoto_s3::{S3Client, S3, PutObjectRequest, DeleteObjectTaggingRequest};
-use rocket::{Rocket, Data};
-use rocket::http::{Method, ContentType};
+use rocket::http::{ContentType, Method};
+use rocket::{Data, Rocket};
 use rocket_contrib::json::Json;
 use rocket_multipart_form_data::{
-    MultipartFormData, SingleFileField, MultipartFormDataField,
-    MultipartFormDataOptions,
-    FileField,
+    FileField, MultipartFormData, MultipartFormDataField, MultipartFormDataOptions, SingleFileField,
 };
+use rusoto_s3::{DeleteObjectTaggingRequest, PutObjectRequest, S3Client, S3};
+use sha2::{Digest, Sha256};
+use std::fs::{self, File};
+use std::io::{self, Read};
+use std::path::{Path, PathBuf};
 
 const FILES: &str = "files";
 const BUCKET: &str = "files.mangrove.network";
@@ -65,10 +66,7 @@ impl HashingStore for &Path {
         if files.join(&file).exists() {
             true
         } else if self.join(&file).exists() {
-            if let Err(e) = fs::rename(
-                &self.join(&file),
-                files.join(&file)
-            ) {
+            if let Err(e) = fs::rename(&self.join(&file), files.join(&file)) {
                 warn!("Unable to make the file permanent: {}", e);
                 false
             } else {
@@ -94,7 +92,9 @@ impl HashingStore for S3Client {
             tagging: Some("tmp=true".into()),
             content_type: data.content_type.as_ref().map(|t| t.to_string()),
             ..Default::default()
-        }).sync().map_err(|e| format!("Error uploading to S3: {}", e))?;
+        })
+        .sync()
+        .map_err(|e| format!("Error uploading to S3: {}", e))?;
         Ok(hash)
     }
 
@@ -102,8 +102,10 @@ impl HashingStore for S3Client {
         self.delete_object_tagging(DeleteObjectTaggingRequest {
             bucket: BUCKET.into(),
             key: file.to_string_lossy().into(),
-            version_id: None
-        }).sync().is_ok()
+            version_id: None,
+        })
+        .sync()
+        .is_ok()
     }
 }
 
@@ -111,11 +113,21 @@ impl HashingStore for S3Client {
 fn upload(content_type: &ContentType, data: Data) -> Result<Json<Vec<String>>, String> {
     let mut options = MultipartFormDataOptions::new();
     // Allow for up to 5 pictures to be uploaded.
-    options.allowed_fields.push(MultipartFormDataField::file(FILES));
-    options.allowed_fields.push(MultipartFormDataField::file(FILES));
-    options.allowed_fields.push(MultipartFormDataField::file(FILES));
-    options.allowed_fields.push(MultipartFormDataField::file(FILES));
-    options.allowed_fields.push(MultipartFormDataField::file(FILES));
+    options
+        .allowed_fields
+        .push(MultipartFormDataField::file(FILES));
+    options
+        .allowed_fields
+        .push(MultipartFormDataField::file(FILES));
+    options
+        .allowed_fields
+        .push(MultipartFormDataField::file(FILES));
+    options
+        .allowed_fields
+        .push(MultipartFormDataField::file(FILES));
+    options
+        .allowed_fields
+        .push(MultipartFormDataField::file(FILES));
     let multipart_data = MultipartFormData::parse(content_type, data, options)
         .map_err(|e| format!("Data parse error: {:?}", e))?;
     info!("Request data: {:?}", multipart_data.files);
@@ -146,10 +158,14 @@ fn exists(file: PathBuf) -> String {
 
 pub fn rocket() -> Rocket {
     let cors = rocket_cors::CorsOptions {
-        allowed_methods: vec![Method::Put, Method::Get].into_iter().map(From::from).collect(),
+        allowed_methods: vec![Method::Put, Method::Get]
+            .into_iter()
+            .map(From::from)
+            .collect(),
         ..Default::default()
     }
-    .to_cors().expect("CORS configuration correct.");
+    .to_cors()
+    .expect("CORS configuration correct.");
 
     rocket::ignite()
         .mount("/", routes![index, upload, exists])
