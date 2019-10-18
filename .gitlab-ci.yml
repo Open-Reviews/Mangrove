@@ -1,0 +1,18 @@
+variables:
+  S3_BUCKET: "mangrove.network"
+
+deploy:
+  image: mesosphere/aws-cli
+
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+    - node_modules/
+
+  before_script:
+  - npm install
+
+  script:
+  - npm run build
+  - aws s3 rm s3://$S3_BUCKET --recursive
+  - aws s3 cp --recursive ./reviewer/client/dist s3://$S3_BUCKET
