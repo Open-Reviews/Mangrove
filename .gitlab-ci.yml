@@ -13,6 +13,7 @@ deploy:
   - npm install
 
   script:
+  - cd reviewer/client
   - npm run build
   - aws s3 rm s3://$S3_BUCKET --recursive
-  - aws s3 cp --recursive ./reviewer/client/dist s3://$S3_BUCKET
+  - aws s3 cp --recursive ./dist s3://$S3_BUCKET
