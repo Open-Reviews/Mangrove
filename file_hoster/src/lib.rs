@@ -10,7 +10,6 @@ use std::path::{Path, PathBuf};
 use sha2::{Digest, Sha256};
 use rusoto_s3::{S3Client, S3, PutObjectRequest, DeleteObjectTaggingRequest};
 use rocket::{Rocket, Data};
-use rocket::response::NamedFile;
 use rocket::http::{Method, ContentType};
 use rocket_contrib::json::Json;
 use rocket_multipart_form_data::{
@@ -20,7 +19,7 @@ use rocket_multipart_form_data::{
 };
 
 const FILES: &str = "files";
-const BUCKET: &str = "mangrove-files";
+const BUCKET: &str = "files.mangrove.network";
 
 lazy_static! {
     /*
@@ -47,9 +46,6 @@ trait HashingStore {
     // Return true if file is known, otherwise false.
     // Move file to permanent storage if currently in temporary.
     fn persist(&self, file: &PathBuf) -> bool;
-
-    // Get file by hash or None.
-    fn get(&self, file: &PathBuf) -> Option<NamedFile>;
 }
 
 impl HashingStore for &Path {
@@ -82,11 +78,6 @@ impl HashingStore for &Path {
             false
         }
     }
-
-    fn get(&self, file: &PathBuf) -> Option<NamedFile> {
-        NamedFile::open(self.join(FILES).join(&file))
-            .or_else(|_| NamedFile::open(self.join(file))).ok()
-    }
 }
 
 impl HashingStore for S3Client {
@@ -114,11 +105,9 @@ impl HashingStore for S3Client {
             version_id: None
         }).sync().is_ok()
     }
-
-    fn get(&self, _file: &PathBuf) -> Option<NamedFile> { None }
 }
 
-#[put("/upload", data = "<data>")]
+#[put("/", data = "<data>")]
 fn upload(content_type: &ContentType, data: Data) -> Result<Json<Vec<String>>, String> {
     let mut options = MultipartFormDataOptions::new();
     // Allow for up to 5 pictures to be uploaded.
@@ -147,17 +136,12 @@ fn upload(content_type: &ContentType, data: Data) -> Result<Json<Vec<String>>, S
 
 #[get("/")]
 fn index() -> &'static str {
-    "Check out for project information: https://planting.space/mangrove"
+    "Check out for project information: https://planting.space/mangrove.html"
 }
 
 #[get("/exists/<file..>")]
 fn exists(file: PathBuf) -> String {
     STORE.persist(&file).to_string()
-}
-
-#[get("/files/<file..>")]
-fn files(file: PathBuf) -> Option<NamedFile> {
-    STORE.get(&file)
 }
 
 pub fn rocket() -> Rocket {
@@ -168,6 +152,6 @@ pub fn rocket() -> Rocket {
     .to_cors().expect("CORS configuration correct.");
 
     rocket::ignite()
-        .mount("/", routes![index, upload, exists, files])
+        .mount("/", routes![index, upload, exists])
         .attach(cors)
 }

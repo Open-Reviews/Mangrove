@@ -4,7 +4,9 @@ use ring::signature;
 use xmltree::Element;
 use serde::{Serialize, Deserialize};
 use url::Url;
+use super::error::Error;
 use super::schema::reviews;
+use super::database::DbConn;
 
 pub type Version = i16;
 pub type Rating = i16;
@@ -39,16 +41,6 @@ pub struct Review {
     pub extradata: Option<serde_json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<serde_json::Value>,
-}
-
-#[derive(Debug, Responder)]
-pub enum Error {
-    // Issue with the submitted review.
-    #[response(status = 400)]
-    Verification(String),
-    // Internal issue when verifying a review.
-    #[response(status = 500)]
-    Internal(String),
 }
 
 fn verify_version(version: Version) -> Result<(), Error> {
@@ -88,7 +80,6 @@ fn verify_opinion(opinion: &str) -> Result<(), Error> {
     }
 }
 
-
 #[derive(Serialize, PartialEq, Debug)]
 struct UnsignedReview<'a> {
     version: Version,
@@ -106,24 +97,6 @@ struct UnsignedReview<'a> {
     metadata: Option<Metadata>,
 }
 
-impl From<hex::FromHexError> for Error {
-    fn from(error: hex::FromHexError) -> Self {
-        Error::Verification(error.to_string())
-    }
-}
-
-impl From<serde_cbor::error::Error> for Error {
-    fn from(error: serde_cbor::error::Error) -> Self {
-        Error::Verification(error.to_string()) 
-    }
-}
-
-impl From<ring::error::Unspecified> for Error {
-    fn from(error: ring::error::Unspecified) -> Self {
-        Error::Verification(error.to_string()) 
-    }
-}
-
 fn verify_signature(msg: &UnsignedReview, sig: &str) -> Result<(), Error> {
     info!("Unsigned review: {:?}", serde_json::to_string(msg));
     let pubkey_bytes = hex::decode(&msg.publickey)?;
@@ -133,25 +106,6 @@ fn verify_signature(msg: &UnsignedReview, sig: &str) -> Result<(), Error> {
     let msg = untrusted::Input::from(&msg_bytes);
     let sig = untrusted::Input::from(&sig_bytes);
     signature::verify(&signature::ECDSA_P256_SHA256_FIXED, pubkey, msg, sig).map_err(Into::into)
-}
-
-// TODO: Differentiate errors.
-impl From<reqwest::Error> for Error {
-    fn from(error: reqwest::Error) -> Self {
-        Error::Verification(error.to_string())
-    }
-}
-
-impl From<xmltree::ParseError> for Error {
-    fn from(error: xmltree::ParseError) -> Self {
-        Error::Internal(error.to_string())
-    }
-}
-
-impl From<url::ParseError> for Error {
-    fn from(error: url::ParseError) -> Self {
-        Error::Verification(error.to_string())
-    }
 }
 
 fn verify_location(id: &str) -> Result<(), Error> {
@@ -171,11 +125,6 @@ fn verify_location(id: &str) -> Result<(), Error> {
     }
 }
 
-impl From<serde_json::Error> for Error {
-    fn from(error: serde_json::Error) -> Self {
-        Error::Verification(error.to_string())
-    }
-}
 
 fn verify_url(id: &str) -> Result<(), url::ParseError> {
     Url::parse(id).map(|_| ())
@@ -190,28 +139,21 @@ fn verify_lei(id: &str) -> Result<(), Error> {
     Ok(())
 }
 
-
 // TODO: check in the database
 // Verify Mangrove Review Signature, which is a unique id of a review.
-fn verify_maresi(_id: &str) -> Result<(), Error> {
-    Ok(())
+fn verify_maresi(conn: &DbConn, id: &str) -> Result<(), Error> {
+    conn.select(id).map(|_| ())
 }
 
-fn verify_id(idtype: &str, id: &str) -> Result<(), Error> {
+fn verify_id(conn: &DbConn, idtype: &str, id: &str) -> Result<(), Error> {
     match idtype {
         "OLC+place" => verify_location(id).map_err(Into::into),
         "URL" => verify_url(id).map_err(Into::into),
         "LEI" => verify_lei(id),
-        "MaReSi" => verify_maresi(id),
+        "MaReSi" => verify_maresi(conn, id),
         _ => Err(Error::Verification(format!("Unknown idType: {}", idtype))),
     }
 
-}
-
-impl From<std::str::ParseBoolError> for Error {
-    fn from(error: std::str::ParseBoolError) -> Self {
-        Error::Internal(error.to_string())
-    }
 }
 
 fn verify_extrahash(hash: &str) -> Result<(), Error> {
@@ -262,7 +204,7 @@ fn verify_metadata(key: &str, value: &str) -> Result<(), Error> {
 
 // TODO: verify metadata and extradata
 impl Review {
-    pub fn verify(&self) -> Result<bool, Error> {
+    pub fn verify(&self, conn: &DbConn) -> Result<bool, Error> {
         let extradata = match self.extradata {
             Some(ref v) => serde_json::from_value(v.clone())?,
             None => None,
@@ -303,7 +245,7 @@ impl Review {
             Ok(()),
             |e| e.0.iter().map(|h| verify_extrahash(&h)).collect()
         )?;
-        verify_id(&self.idtype, &self.id)?;
+        verify_id(conn, &self.idtype, &self.id)?;
         Ok(true)
     }
 }

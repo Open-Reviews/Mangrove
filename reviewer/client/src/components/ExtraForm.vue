@@ -46,9 +46,8 @@
 </template>
 
 <script>
-const FILE_URL = "https://mangrove-files.s3.eu-central-1.amazonaws.com";
-const BASE_URL =
-  "https://iqawh4oxge.execute-api.eu-central-1.amazonaws.com/Prod";
+const FILE_URL = "https://files.mangrove.network";
+const UPLOAD_URL = "https://upload.mangrove.network";
 const STATUS_INITIAL = 0,
   STATUS_SAVING = 1,
   STATUS_SUCCESS = 2,
@@ -104,10 +103,9 @@ export default {
       );
     },
     upload(formData) {
-      const url = `${BASE_URL}/upload`;
       return (
         this.axios
-          .put(url, formData)
+          .put(UPLOAD_URL, formData)
           // add url field
           .then(response => response.data)
       );
