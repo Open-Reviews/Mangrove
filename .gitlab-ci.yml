@@ -2,7 +2,7 @@ variables:
   S3_BUCKET: "mangrove.network"
 
 deploy:
-  image: python:latest
+  image: wilson208/circleci-awscli:node
 
   cache:
     key: ${CI_COMMIT_REF_SLUG}
@@ -14,6 +14,5 @@ deploy:
 
   script:
   - npm run build
-  - pip install awscli
   - aws s3 rm s3://$S3_BUCKET --recursive
   - aws s3 cp --recursive ./reviewer/client/dist s3://$S3_BUCKET
