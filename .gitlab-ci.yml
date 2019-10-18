@@ -4,11 +4,6 @@ variables:
 deploy:
   image: mesosphere/aws-cli
 
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-    - node_modules/
-
   before_script:
   - npm install
 
