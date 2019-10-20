@@ -1,32 +1,36 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
-pub mod schema;
-pub mod error;
 pub mod database;
+pub mod error;
 pub mod review;
+pub mod schema;
 
-#[macro_use] extern crate log;
+#[macro_use]
+extern crate log;
+extern crate dotenv;
+extern crate hex;
 extern crate rand;
+extern crate reqwest;
+extern crate ring;
 extern crate serde;
 extern crate serde_json;
-extern crate hex;
 extern crate untrusted;
-extern crate ring;
-extern crate xmltree;
-extern crate reqwest;
-extern crate dotenv;
 extern crate url;
-#[macro_use] extern crate diesel;
-#[macro_use] extern crate rocket;
-#[macro_use] extern crate rocket_contrib;
+extern crate xmltree;
+#[macro_use]
+extern crate diesel;
+#[macro_use]
+extern crate rocket;
+#[macro_use]
+extern crate rocket_contrib;
 
-use std::path::{Path, PathBuf};
+use self::database::{DbConn, Query};
+use self::error::Error;
+use self::review::Review;
 use rocket::request::Form;
 use rocket::response::NamedFile;
 use rocket_contrib::json::Json;
-use self::error::Error;
-use self::database::{DbConn, Query};
-use self::review::Review;
+use std::path::{Path, PathBuf};
 
 #[get("/")]
 fn index() -> NamedFile {

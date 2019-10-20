@@ -16,13 +16,13 @@ impl From<hex::FromHexError> for Error {
 
 impl From<serde_cbor::error::Error> for Error {
     fn from(error: serde_cbor::error::Error) -> Self {
-        Error::Incorrect(error.to_string()) 
+        Error::Incorrect(error.to_string())
     }
 }
 
 impl From<ring::error::Unspecified> for Error {
     fn from(error: ring::error::Unspecified) -> Self {
-        Error::Incorrect(error.to_string()) 
+        Error::Incorrect(error.to_string())
     }
 }
 
@@ -58,9 +58,9 @@ impl From<serde_json::Error> for Error {
 }
 
 impl From<std::num::ParseFloatError> for Error {
-  fn from(error: std::num::ParseFloatError) -> Self {
-    Error::Incorrect(error.to_string())
-  }
+    fn from(error: std::num::ParseFloatError) -> Self {
+        Error::Incorrect(error.to_string())
+    }
 }
 
 // Called when calling the Mangrove File Server.
