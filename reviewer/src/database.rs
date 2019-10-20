@@ -14,8 +14,7 @@ pub struct Query {
     pub version: Option<i16>,
     pub publickey: Option<String>,
     pub timestamp: Option<i64>,
-    pub idtype: Option<String>,
-    pub id: Option<String>,
+    pub uri: Option<String>,
     pub rating: Option<i16>,
     pub opinion: Option<String>,
 }
@@ -38,13 +37,8 @@ impl DbConn {
     if let Some(s) = &query.version { f = Box::new(f.and(version.eq(s))) }
     if let Some(s) = &query.publickey { f = Box::new(f.and(publickey.eq(s))) }
     if let Some(s) = &query.timestamp { f = Box::new(f.and(timestamp.eq(s))) }
-    if let Some(s) = &query.id {
-        query
-            .idtype
-            .as_ref()
-            .ok_or_else(|| Error::Verification("Id request requires idtype.".into()))?;
-        f = Box::new(f.and(id.eq(s)));
-    } else if let Some(s) = &query.idtype { f = Box::new(f.and(idtype.eq(s))) }
+    // Allow prefix match.
+    if let Some(s) = &query.uri { f = Box::new(f.and(uri.eq(s))) }
     if let Some(s) = &query.rating { f = Box::new(f.and(rating.eq(s))) }
     if let Some(s) = &query.opinion { f = Box::new(f.and(opinion.eq(s))) }
     Ok(reviews.filter(f).load::<Review>(&self.0)?)
@@ -56,7 +50,7 @@ impl DbConn {
       .into_iter()
       .next()
       .ok_or_else(
-        || Error::Verification(format!("No review found with MaReSi: {}", sig))
+        || Error::Incorrect(format!("No review found with MaReSi: {}", sig))
       )
   }
 }

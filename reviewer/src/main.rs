@@ -41,7 +41,7 @@ fn files(file: PathBuf) -> Option<NamedFile> {
 #[put("/submit", format = "application/json", data = "<review>")]
 fn submit_review(conn: DbConn, review: Json<Review>) -> Result<String, Error> {
     info!("Review received: {:?}", review);
-    review.verify(&conn)?;
+    review.check(&conn)?;
     conn.insert(review.into_inner())?;
     info!("Review checked and inserted.");
     Ok("true".into())
