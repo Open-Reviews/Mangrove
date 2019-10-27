@@ -67,4 +67,8 @@ impl DbConn {
             .next()
             .ok_or_else(|| Error::Incorrect(format!("No review found with MaReSi: {}", sig)))
     }
+
+    pub fn search(&self, search: String) -> Result<Vec<Review>, Error> {
+        Ok(vec![])
+    }
 }

@@ -1,14 +1,18 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import { get, set } from "idb-keyval";
+import * as t from "./mutation-types";
+import { toHexString } from "./utils";
 
 Vue.use(Vuex);
 
 const state = {
+  query: null,
   keyPair: null,
   publicKey: null,
-  idType: "URL",
-  id: null,
+  // Array of objects { uri: ..., scheme: ..., description: ... }
+  uris: [],
+  selectedUri: null,
   reviews: [],
   rating: null,
   opinion: null,
@@ -16,27 +20,31 @@ const state = {
   extraHashes: [],
   showMeta: false,
   meta: {},
-  errors: { request: null, submit: null }
+  errors: { search: null, request: null, submit: null }
 };
 
 const mutations = {
-  review(state, newreview) {
-    state.reviews.push(newreview);
+  [t.SET_PK](state, key) {
+    state.publicKey = key;
+  },
+  [t.QUERY](state, newquery) {
+    state.query = newquery;
+  },
+  [t.ADD_URIS](state, newuris) {
+    state.uris.push(...newuris);
+  },
+  [t.EMPTY_URIS](state) {
+    console.log("Clearing reviews.");
+    state.uris = [];
+  },
+  [t.SELECT_URI](state, uri) {
+    state.selectedUri = uri;
+  },
+  [t.SET_REVIEWS](state, newreviews) {
+    state.reviews = newreviews;
   },
   keypair(state, keypair) {
     state.keyPair = keypair;
-  },
-  publickey(state, key) {
-    state.publicKey = key;
-  },
-  idtype(state, type) {
-    state.idType = type;
-  },
-  id(state, currentid) {
-    state.id = currentid;
-  },
-  reviews(state, list) {
-    state.reviews = list;
   },
   rating(state, stars) {
     state.rating = stars;
@@ -56,7 +64,10 @@ const mutations = {
   meta(state, [key, value]) {
     state.meta[key] = value;
   },
-  requesterror(state, error) {
+  [t.SEARCH_ERROR](state, error) {
+    state.errors.search = error;
+  },
+  [t.REQUEST_ERROR](state, error) {
     state.errors.request = error;
   },
   submiterror(state, error) {
@@ -95,7 +106,31 @@ const actions = {
       "raw",
       state.keyPair.publicKey
     );
-    commit("publickey", new Uint8Array(exported));
+    commit(t.SET_PK, toHexString(new Uint8Array(exported)));
+  },
+  requestReviews({ commit }, params) {
+    commit(t.SELECT_URI, params.uri);
+    // Get reviews and put them in the reviews field.
+    Vue.prototype.axios
+      .get("http://localhost:8000/request", { params })
+      .then(response => {
+        console.log(response);
+        commit(t.SET_REVIEWS, response["data"]);
+        commit(t.REQUEST_ERROR, null);
+      })
+      .catch(error => {
+        if (error.response) {
+          console.log(error.response.status);
+          console.log(error.response.headers);
+          commit(t.REQUEST_ERROR, error.response.data);
+        } else if (error.request) {
+          console.log(error.request);
+          commit(t.REQUEST_ERROR, "Server not reachable.");
+        } else {
+          console.log("Client request processing error: ", error.message);
+          commit(t.REQUEST_ERROR, "Internal client error, please report.");
+        }
+      });
   }
 };
 

@@ -3,8 +3,8 @@ import App from "./App.vue";
 import store from "./store";
 import axios from "axios";
 import VueAxios from "vue-axios";
-import { Icon }  from "leaflet"
-import "leaflet/dist/leaflet.css"
+import { Icon } from "leaflet";
+import "leaflet/dist/leaflet.css";
 
 Vue.config.productionTip = false;
 
@@ -14,9 +14,9 @@ Vue.use(VueAxios, axios);
 delete Icon.Default.prototype._getIconUrl;
 
 Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  iconUrl: require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png')
+  iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
+  iconUrl: require("leaflet/dist/images/marker-icon.png"),
+  shadowUrl: require("leaflet/dist/images/marker-shadow.png")
 });
 
 var filter = function(text, length, clamp) {

@@ -12,6 +12,7 @@ url = "2.1.0"
 untrusted = "0.6.2"
 ring = "0.13.5"
 diesel = { version = "1.0.0", features = ["postgres", "serde_json"] }
+diesel_full_text_search = "1.0.1"
 xmltree = "0.8.0"
 reqwest = "0.9.12"
 serde = { version = "1.0.90", features = ["derive"] }

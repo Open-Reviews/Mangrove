@@ -58,9 +58,19 @@ fn request_reviews(conn: DbConn, query: Form<Query>) -> Result<Json<Vec<Review>>
     Ok(Json(out))
 }
 
+#[get("/search?<search>")]
+fn search_reviews(conn: DbConn, search: String) -> Result<Json<Vec<Review>>, Error> {
+    let out = conn.search(search)?;
+    info!("Returning {:?}", out);
+    Ok(Json(out))
+}
+
 fn main() {
     rocket::ignite()
         .attach(DbConn::fairing())
-        .mount("/", routes![index, files, submit_review, request_reviews])
+        .mount(
+            "/",
+            routes![index, files, submit_review, request_reviews, search_reviews],
+        )
         .launch();
 }

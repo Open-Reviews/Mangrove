@@ -1,9 +1,5 @@
 <template>
   <div>
-    <span v-if="publicKey">
-      Public key: {{ publicKey }} <br />
-      <br />
-    </span>
     Your review:
     <star-rating v-model="rating"></star-rating>
     <span v-if="!rating"> No rating, pick number of stars. </span>
@@ -38,6 +34,8 @@ import StarRating from "vue-star-rating";
 var cbor = require("cbor");
 import ExtraForm from "./ExtraForm.vue";
 import MetaForm from "./MetaForm.vue";
+import { SET_REVIEWS } from "../mutation-types";
+import { toHexString } from "../utils";
 
 export default {
   components: {
@@ -46,14 +44,6 @@ export default {
     MetaForm
   },
   computed: {
-    publicKey: function() {
-      var pk = this.$store.state.publicKey;
-      if (pk) {
-        return this.toHexString(pk);
-      } else {
-        return pk;
-      }
-    },
     rating: {
       get() {
         return this.$store.state.rating;
@@ -80,12 +70,6 @@ export default {
     }
   },
   methods: {
-    toHexString: function(byteArray) {
-      return byteArray.reduce(
-        (output, elem) => output + ("0" + elem.toString(16)).slice(-2),
-        ""
-      );
-    },
     showExtra: function() {
       this.$store.commit("showextra", true);
     },
@@ -94,12 +78,11 @@ export default {
     },
     submitReview: async function() {
       // Add mandatory fields.
-      var claim = {
+      let claim = {
         version: 1,
-        publickey: this.publicKey,
+        publickey: this.$store.state.publicKey,
         timestamp: Math.floor(Date.now() / 1000),
-        idtype: this.$store.state.idType,
-        id: this.$store.state.id
+        uri: this.$store.state.selectedUri
       };
       // Add field only if it is not empty.
       if (this.rating) claim.rating = this.rating * 25 - 25;
@@ -109,10 +92,9 @@ export default {
       const meta = this.$store.state.meta;
       if (Object.entries(meta).length !== 0) claim.metadata = meta;
       console.log("claim: ", claim);
-      var encoded = cbor.encode(claim);
-      console.log("pk: ", this.$store.state.publicKey);
+      const encoded = cbor.encode(claim);
       console.log("msg: ", encoded);
-      var signed = await window.crypto.subtle.sign(
+      const signed = await window.crypto.subtle.sign(
         {
           name: "ECDSA",
           hash: { name: "SHA-256" }
@@ -124,7 +106,7 @@ export default {
       console.log("sig: ", new Uint8Array(signed));
       const review = {
         ...claim,
-        signature: this.toHexString(new Uint8Array(signed))
+        signature: toHexString(new Uint8Array(signed))
       };
 
       console.log("Mangrove review: ", review);
@@ -138,7 +120,9 @@ export default {
           this.$store.commit("showextra", false);
           this.$store.commit("showmeta", false);
           this.submitError = null;
-          this.$store.commit("review", review);
+          // Add review so that its immediately visible.
+          const nr = this.$store.state.reviews.concat([review]);
+          this.$store.commit(SET_REVIEWS, nr);
         })
         .catch(error => {
           if (error.response) {

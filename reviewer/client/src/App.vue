@@ -1,6 +1,10 @@
 <template>
   <div id="app">
-    <IdSelector />
+    <Profile />
+    <br />
+    <UriSearch />
+    <br />
+    <UriBrowser />
     <br />
     <ReviewBrowser />
     <br />
@@ -9,7 +13,9 @@
 </template>
 
 <script>
-import IdSelector from "./components/IdSelector.vue";
+import Profile from "./components/Profile.vue";
+import UriSearch from "./components/UriSearch.vue";
+import UriBrowser from "./components/UriBrowser.vue";
 import ReviewBrowser from "./components/ReviewBrowser.vue";
 import ReviewForm from "./components/ReviewForm.vue";
 
@@ -19,7 +25,9 @@ export default {
     this.$store.dispatch("generateKeypair");
   },
   components: {
-    IdSelector,
+    Profile,
+    UriSearch,
+    UriBrowser,
     ReviewBrowser,
     ReviewForm
   }

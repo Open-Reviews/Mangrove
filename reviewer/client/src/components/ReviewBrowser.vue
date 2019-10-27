@@ -1,6 +1,6 @@
 <template>
-  <span v-if="$store.state.reviews[0]">
-    Reviews of {{ $store.state.id }}
+  <span v-if="reviews[0]">
+    Showing reviews of {{ $store.state.selectedUri }}
     <table>
       <thead>
         <tr>
@@ -8,7 +8,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="entry in $store.state.reviews" :key="entry[reviewKeys[0]]">
+        <tr v-for="entry in reviews" :key="entry[reviewKeys[0]]">
           <td v-for="key in reviewKeys" :key="key">
             {{ entry[key] | truncate(20) }}
           </td>
@@ -22,8 +22,11 @@
 <script>
 export default {
   computed: {
+    reviews: function() {
+      return this.$store.state.reviews;
+    },
     reviewKeys: function() {
-      return Object.keys(this.$store.state.reviews[0]);
+      return Object.keys(this.reviews[0]);
     }
   }
 };

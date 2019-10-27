@@ -142,10 +142,16 @@ fn check_url(id: &str) -> Result<(), url::ParseError> {
 }
 
 fn check_lei(id: &str) -> Result<(), Error> {
-    let response: String =
-        reqwest::get(&format!("https://api.gleif.org/api/v1/lei-records/{}", id))?.text()?;
-    serde_json::from_str(&response)?;
-    Ok(())
+    if reqwest::get(&format!("https://api.gleif.org/api/v1/lei-records/{}", id))?
+        .status()
+        .is_success()
+    {
+        Ok(())
+    } else {
+        Err(Error::Incorrect(
+            "LEI not found in the GLEIF database.".into(),
+        ))
+    }
 }
 
 // TODO: check in the database
@@ -159,6 +165,7 @@ fn check_uri(conn: &DbConn, uri: &str) -> Result<(), Error> {
     match parsed.scheme() {
         "urn" => {
             let sub = Url::parse(parsed.path())?;
+            // Parsing lower cases the scheme.
             match sub.scheme() {
                 "lei" => check_lei(sub.path()),
                 "maresi" => check_maresi(conn, sub.path()),

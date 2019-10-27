@@ -46,6 +46,8 @@
 </template>
 
 <script>
+import { toHexString } from "../utils";
+
 const FILE_URL = "https://files.mangrove.network";
 const UPLOAD_URL = "https://upload.mangrove.network";
 const STATUS_INITIAL = 0,
@@ -117,7 +119,7 @@ export default {
         .then(([hashes, expectedBuffers]) => {
           // Make sure all returned file hashes are as expected.
           for (var i = 0; i < hashes.length; i++) {
-            let expected = this.$parent.toHexString(
+            let expected = toHexString(
               new Uint8Array(expectedBuffers[i])
             );
             console.log("response: ", hashes[i]);
