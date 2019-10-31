@@ -8,6 +8,7 @@ The standard can be used with original Mangrove servers as well as separate data
 
 - using compressed ECDSA public keys
 - using DateTime as described in ISO 8601 instead of Unix time
+- using [JWT](https://jwt.io/) format for signed reviews
 
 ## Mangrove Review Example
 
@@ -16,8 +17,7 @@ The standard can be used with original Mangrove servers as well as separate data
     "version": 1,
     "publicKey": "04fd42cf1c5058cd50c1e4339dd5d7c0010984167194584a1e728ad2517825cc21cf01d74c7d0f4778192fd274c79ce9cc09d9fbe2586b79db29268a22bc7b707e",
     "timestamp": 1570562109,
-    "idType": "URL",
-    "id": "https://google.com",
+    "uri": "https://google.com",
     "rating": 75,
     "opinion": "Great for finding new sites.",
     "metadata": {
@@ -56,12 +56,9 @@ Review MUST include the following keys and corresponding values:
 - `timestamp`
     - Unix time at the moment the review was left.
     - MUST be of Major type 0 (an unsigned integer) and MUST NOT be greater than current Unix time.
-- `idType`
-    - Type of reviewed object identifier.
-    - MUST be a Major type 3 (a text string). It SHOULD be equal to one of Core Identifier Types: `URL`, `OLC+place`, `MaReSi` (see Mangrove Core Identifier Standards).
-- `id`
-    - Unique reviewed object identifier of a given `idType`.
-    - MUST comply with standard defined for the given `idType` (see Mangrove core identifier standards).
+- `uri`
+    - Unique reviewed object identifier in the form of URI.
+    - MUST be a Major type 3 (a text string) representing a [valid URI](https://tools.ietf.org/html/rfc3986). SHOULD comply with one of supported URI schemes (see Mangrove core URI schemes).
 
 Review MUST include either `rating` or `opinion` key, which means it MAY omit one of them. These keys when included MUST have values as follows:
 - `rating`
@@ -84,24 +81,23 @@ Review MUST include a `signature` key with value that:
 - MUST be a valid ES256 (ECDSA on P-256 with SHA-256 digest) signature of Unsigned Mangrove Review, corresponding to its `publicKey` value.
 - MUST be Major type 3 (a text string) of signature represented in hexadecimal notation.
 
-## Mangrove core identifier standards (MaCoIds)
+## Mangrove Core URI Schemes
 
-Value corresponding to the `idType` key MUST be one of Core Identifier Types. Each Type implies a standard the the value corresponding to the `id` key:
-- `URL` for this Type the `id`:
+Value corresponding to the `uri` key MUST be of Major type 3 (a text string) and comply with one of Core URI Schemes:
+- `http`/`https` for this scheme the `uri`:
     - Refers to a Website that is to be reviewed.
-    - MUST be of Major type 3 (a text string) that complies with [URL specification](https://url.spec.whatwg.org/) and is no longer than 100 letters.
-- `OLC+place` for this Type the `id`:
+    - MUST comply with [URL specification](https://url.spec.whatwg.org/) and is no longer than 100 letters.
+- `geo` for this scheme the `uri`:
     - Refers to a business location or physical point of interest being reviewed.
-    - MUST be of Major type 3 (a text string) which is a concatenation of a valid Open Location Code and a commonly used name of the selected place.
-    - Valid Open Location Code MUST comply with [OLC specification](https://github.com/google/open-location-code/blob/master/docs/specification.md).
-- `LEI` for this Type the `id`:
+    - MUST comply with [URI for Geographic Locations specification](https://tools.ietf.org/html/rfc5870) with addition of a URI fragment.
+    - Fragment for this URI (content following `#`) MUST be a commonly used name of the selected place.
+- `urn:LEI` for this scheme the `uri`:
     -  Has to be equal to one of registered legal entity identifiers in [GLEIF database](https://www.gleif.org/en/).
-    -  MUST be of Major type 3 (a text string) representing a valid LEI according to [ISO 17442](https://www.gleif.org/en/about-lei/iso-17442-the-lei-code-structure).
+    -  Scheme MUST be followed by a valid LEI according to [ISO 17442](https://www.gleif.org/en/about-lei/iso-17442-the-lei-code-structure).
     -  GLEIF data is open and accessible for [download](https://www.gleif.org/en/lei-data/gleif-golden-copy/download-the-golden-copy#/) or access via [API](https://documenter.getpostman.com/view/7679680/SVYrrxuU?version=latest).
-- `MaReSi` for this Type the `id`:
+- `urn:MaReSi` for this scheme the `uri`:
     - Refers to another Mangrove Review that is to be reviewed, indicating its helpfulness or accuracy.
-    - MUST be of Major type 3 (a text string) representing Mangrove Review Signature.
-    - SHOULD be equal to `signature` field of one of Mangrove Reviews in the current database.
+    - Scheme SHOULD be followed by `signature` field of one of Mangrove Reviews in the current database.
 
 ## Mangrove Core Metadata Field Standards (MaCoMes) - to be finalized
 
@@ -134,7 +130,7 @@ Reviewers should be able to reveal as little information about themselves as the
 
 ### Standards reuse
 
-Where possible and practical, existing standards should be leveraged. Mangrove leverages CBOR, FOAF vocabulary and public key cryptography standard based on FIDO2. 
+Where possible and practical, existing standards should be leveraged. Mangrove leverages CBOR, URI, 'geo' URI, URL, URN, LEI, FOAF vocabulary and public key cryptography standard based on FIDO2 and WebCrypto.
 For the overall claim framework [Decentralized Identifiers (DIDs)](https://w3c-ccg.github.io/did-spec/) were considered; however, that emerging standard significantly differs in original goals and specifies a number of components not necessary in Mangrove.
 For message encoding saltpack.org was considered, however [lack of activity around specification](https://github.com/keybase/saltpack/issues) does not inspire confidence. 
 
