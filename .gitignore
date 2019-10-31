@@ -8,3 +8,4 @@ reviewer/old_client
 file_hoster/target
 file_hoster/files
 test
+*.local
