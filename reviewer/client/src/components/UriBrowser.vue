@@ -13,8 +13,6 @@
 </template>
 
 <script>
-import { SELECT_URI, SET_REVIEWS, REQUEST_ERROR } from "../mutation-types";
-
 export default {
   computed: {
     uris: function() {
@@ -23,7 +21,7 @@ export default {
   },
   methods: {
     request(uri) {
-      this.$store.dispatch("requestReviews", { uri })
+      this.$store.dispatch("requestReviews", { uri });
     }
   }
 };

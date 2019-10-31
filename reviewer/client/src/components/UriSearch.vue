@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { QUERY, SEARCH_ERROR, ADD_URIS, EMPTY_URIS, SELECT_URI } from "../mutation-types";
+import { QUERY, SEARCH_ERROR, ADD_URIS, EMPTY_URIS } from "../mutation-types";
 
 export default {
   computed: {
@@ -35,14 +35,14 @@ export default {
       Promise.all([
         this.$store.commit(EMPTY_URIS),
         this.$store.commit(ADD_URIS, this.searchUrl(this.query)),
-        this.$store.commit(ADD_URIS, this.searchGeo(this.query)),
+        //this.$store.commit(ADD_URIS, this.searchGeo(this.query)),
         this.searchLei(this.query).then(uris =>
           this.$store.commit(ADD_URIS, uris)
         )
       ]).then(() => {
         // Try to select the first URI from the list.
         const first = this.$store.state.uris[0];
-        if (first) this.$store.dispatch("requestReviews", { uri: first.uri })
+        if (first) this.$store.dispatch("requestReviews", { uri: first.uri });
       });
     },
     searchUrl(input) {
@@ -58,7 +58,7 @@ export default {
         ? [{ uri: `${url.protocol}//${url.hostname}`, scheme: url.protocol }]
         : [];
     },
-    searchGeo(input) {
+    searchGeo() {
       // Do Nominatim and Mangrove server uncertain viscinity/fragment text search.
       return [];
     },
@@ -74,31 +74,33 @@ export default {
         .then(response => {
           this.error = null;
           return Promise.all(
-            response.data.data.map(completion =>
-              completion.relationships
-                ? this.entityLookup(
-                    completion.relationships["lei-records"].data.id
-                  )
-                    .then(entity => entity.attributes)
-                    .then(attrs => {
-                      return {
-                        uri: `urn:LEI:${attrs.lei}`,
-                        scheme: "urn:LEI",
-                        description: [
-                          attrs.entity.legalName.name,
-                          attrs.entity.legalAddress.addressLines,
-                          attrs.entity.legalAddress.city,
-                          attrs.entity.legalAddress.country
-                        ]
-                      };
-                    })
-                : null // When no related entity return null.
+            response.data.data.map(
+              completion =>
+                completion.relationships
+                  ? this.entityLookup(
+                      completion.relationships["lei-records"].data.id
+                    )
+                      .then(entity => entity.attributes)
+                      .then(attrs => {
+                        return {
+                          uri: `urn:LEI:${attrs.lei}`,
+                          scheme: "urn:LEI",
+                          description: [
+                            attrs.entity.legalName.name,
+                            attrs.entity.legalAddress.addressLines,
+                            attrs.entity.legalAddress.city,
+                            attrs.entity.legalAddress.country
+                          ]
+                        };
+                      })
+                  : null // When no related entity return null.
             )
           ).then(entities => {
             // Filter out duplicates and entities without relationship.
             return Array.from(new Set(entities)).filter(
               (entity, index, self) =>
-                entity && self.findIndex(e => e && e.uri === entity.uri) === index
+                entity &&
+                self.findIndex(e => e && e.uri === entity.uri) === index
             );
           });
         })

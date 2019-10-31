@@ -1,8 +1,8 @@
+use diesel::prelude::*;
+use diesel::sql_types::Bool;
 use super::error::Error;
 use super::review::Review;
 use super::schema;
-use diesel::prelude::*;
-use diesel::sql_types::Bool;
 
 #[database("pg_reviews")]
 pub struct DbConn(diesel::PgConnection);

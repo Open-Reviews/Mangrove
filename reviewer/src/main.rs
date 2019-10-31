@@ -24,13 +24,13 @@ extern crate rocket;
 #[macro_use]
 extern crate rocket_contrib;
 
-use self::database::{DbConn, Query};
-use self::error::Error;
-use self::review::Review;
 use rocket::request::Form;
 use rocket::response::NamedFile;
 use rocket_contrib::json::Json;
 use std::path::{Path, PathBuf};
+use self::database::{DbConn, Query};
+use self::error::Error;
+use self::review::Review;
 
 #[get("/")]
 fn index() -> NamedFile {

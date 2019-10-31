@@ -56,7 +56,7 @@ const STATUS_INITIAL = 0,
   STATUS_FAILED = 3;
 
 export default {
-  data() {
+  data: function() {
     return {
       uploadError: null,
       currentStatus: null,
@@ -119,9 +119,7 @@ export default {
         .then(([hashes, expectedBuffers]) => {
           // Make sure all returned file hashes are as expected.
           for (var i = 0; i < hashes.length; i++) {
-            let expected = toHexString(
-              new Uint8Array(expectedBuffers[i])
-            );
+            let expected = toHexString(new Uint8Array(expectedBuffers[i]));
             console.log("response: ", hashes[i]);
             console.log("expected: ", expected);
             if (hashes[i] !== expected) {

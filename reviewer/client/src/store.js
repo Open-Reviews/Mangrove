@@ -13,17 +13,21 @@ const state = {
   // Array of objects { uri: ..., scheme: ..., description: ... }
   uris: [],
   selectedUri: null,
-  reviews: [],
+  // Object from MaReSi to reviews, ensuring only unique ones are stored.
+  reviews: {},
   rating: null,
   opinion: null,
   showExtra: false,
   extraHashes: [],
   showMeta: false,
   meta: {},
-  errors: { search: null, request: null, submit: null }
+  errors: { import: null, search: null, request: null, submit: null }
 };
 
 const mutations = {
+  [t.SET_KEYPAIR](state, keypair) {
+    state.keyPair = keypair;
+  },
   [t.SET_PK](state, key) {
     state.publicKey = key;
   },
@@ -34,17 +38,14 @@ const mutations = {
     state.uris.push(...newuris);
   },
   [t.EMPTY_URIS](state) {
-    console.log("Clearing reviews.");
     state.uris = [];
   },
   [t.SELECT_URI](state, uri) {
     state.selectedUri = uri;
   },
-  [t.SET_REVIEWS](state, newreviews) {
-    state.reviews = newreviews;
-  },
-  keypair(state, keypair) {
-    state.keyPair = keypair;
+  [t.ADD_REVIEWS](state, newreviews) {
+    newreviews.map(r => Vue.set(state.reviews, r.signature, r));
+    console.log("ADD_REVIEWS: ", state.reviews);
   },
   rating(state, stars) {
     state.rating = stars;
@@ -64,6 +65,9 @@ const mutations = {
   meta(state, [key, value]) {
     state.meta[key] = value;
   },
+  [t.IMPORT_ERROR](state, error) {
+    state.errors.import = error;
+  },
   [t.SEARCH_ERROR](state, error) {
     state.errors.search = error;
   },
@@ -76,8 +80,17 @@ const mutations = {
 };
 
 const actions = {
-  async generateKeypair({ commit, state }) {
-    var keypair;
+  setKeypair({ commit }, keypair) {
+    commit(t.SET_KEYPAIR, keypair);
+    window.crypto.subtle.exportKey(
+      "raw",
+      keypair.publicKey
+    ).then(exported =>
+      commit(t.SET_PK, toHexString(new Uint8Array(exported)))
+    );
+  },
+  async generateKeypair({ dispatch }) {
+    let keypair;
     await get("keyPair")
       .then(async kp => {
         if (kp) {
@@ -101,12 +114,7 @@ const actions = {
         }
       })
       .catch(error => console.log("Accessing IndexDB failed: ", error));
-    commit("keypair", keypair);
-    const exported = await window.crypto.subtle.exportKey(
-      "raw",
-      state.keyPair.publicKey
-    );
-    commit(t.SET_PK, toHexString(new Uint8Array(exported)));
+      dispatch("setKeypair", keypair);
   },
   requestReviews({ commit }, params) {
     commit(t.SELECT_URI, params.uri);
@@ -115,7 +123,7 @@ const actions = {
       .get("http://localhost:8000/request", { params })
       .then(response => {
         console.log(response);
-        commit(t.SET_REVIEWS, response["data"]);
+        commit(t.ADD_REVIEWS, response["data"]);
         commit(t.REQUEST_ERROR, null);
       })
       .catch(error => {

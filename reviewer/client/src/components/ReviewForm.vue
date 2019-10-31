@@ -34,7 +34,7 @@ import StarRating from "vue-star-rating";
 var cbor = require("cbor");
 import ExtraForm from "./ExtraForm.vue";
 import MetaForm from "./MetaForm.vue";
-import { SET_REVIEWS } from "../mutation-types";
+import { ADD_REVIEWS } from "../mutation-types";
 import { toHexString } from "../utils";
 
 export default {
@@ -121,8 +121,7 @@ export default {
           this.$store.commit("showmeta", false);
           this.submitError = null;
           // Add review so that its immediately visible.
-          const nr = this.$store.state.reviews.concat([review]);
-          this.$store.commit(SET_REVIEWS, nr);
+          this.$store.commit(ADD_REVIEWS, [review]);
         })
         .catch(error => {
           if (error.response) {
