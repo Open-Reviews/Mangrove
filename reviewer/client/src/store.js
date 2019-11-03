@@ -82,12 +82,11 @@ const mutations = {
 const actions = {
   setKeypair({ commit }, keypair) {
     commit(t.SET_KEYPAIR, keypair);
-    window.crypto.subtle.exportKey(
-      "raw",
-      keypair.publicKey
-    ).then(exported =>
-      commit(t.SET_PK, toHexString(new Uint8Array(exported)))
-    );
+    window.crypto.subtle
+      .exportKey("raw", keypair.publicKey)
+      .then(exported =>
+        commit(t.SET_PK, toHexString(new Uint8Array(exported)))
+      );
   },
   async generateKeypair({ dispatch }) {
     let keypair;
@@ -114,13 +113,16 @@ const actions = {
         }
       })
       .catch(error => console.log("Accessing IndexDB failed: ", error));
-      dispatch("setKeypair", keypair);
+    dispatch("setKeypair", keypair);
   },
   requestReviews({ commit }, params) {
     commit(t.SELECT_URI, params.uri);
     // Get reviews and put them in the reviews field.
     Vue.prototype.axios
-      .get("http://localhost:8000/request", { params })
+      .get(
+        "https://dte8eiky4g.execute-api.eu-central-1.amazonaws.com/Prod/request",
+        { params }
+      )
       .then(response => {
         console.log(response);
         commit(t.ADD_REVIEWS, response["data"]);

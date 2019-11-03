@@ -111,11 +111,15 @@ export default {
 
       console.log("Mangrove review: ", review);
       this.axios
-        .put("http://localhost:8000/submit", review, {
-          headers: {
-            "Content-Type": "application/json"
+        .put(
+          "https://dte8eiky4g.execute-api.eu-central-1.amazonaws.com/Prod/submit",
+          review,
+          {
+            headers: {
+              "Content-Type": "application/json"
+            }
           }
-        })
+        )
         .then(() => {
           this.$store.commit("showextra", false);
           this.$store.commit("showmeta", false);

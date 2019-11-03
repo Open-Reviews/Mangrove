@@ -4,14 +4,24 @@
       Your public key: {{ $store.state.publicKey }} <br />
       <form v-on:submit.prevent>
         <span v-if="showSecret">
-          <input required v-model="secret" :type="secretFieldType" autocomplete="current-password" />
+          <input
+            required
+            v-model="secret"
+            :type="secretFieldType"
+            autocomplete="current-password"
+          />
         </span>
         <span v-else>
           <input v-model="secret" />
           <button v-on:click="importSecret">Import existing secret.</button>
         </span>
-        <hr/>
-        <input type="checkbox" id="mine" v-model="showSecret" v-on:change="exportSecret"/>
+        <hr />
+        <input
+          type="checkbox"
+          id="mine"
+          v-model="showSecret"
+          v-on:change="exportSecret"
+        />
         <label for="mine">Show my secret key to save it.</label>
       </form>
       <br />
@@ -33,34 +43,51 @@ export default {
     };
   },
   computed: {
-    secretFieldType: function() { return this.showSecret ? "text" : "password"; }
+    secretFieldType: function() {
+      return this.showSecret ? "text" : "password";
+    }
   },
   methods: {
     exportSecret() {
-      crypto.subtle.exportKey("jwk", this.$store.state.keyPair.privateKey)
+      crypto.subtle
+        .exportKey("jwk", this.$store.state.keyPair.privateKey)
         .then(s => {
-          s.metadata = "Your Mangrove secret key."
+          s.metadata = "Your Mangrove secret key.";
           this.secret = JSON.stringify(s);
         });
     },
     async importSecret() {
       let jwk = JSON.parse(this.secret);
-      const sk = await crypto.subtle.importKey("jwk", jwk, {
-                name: "ECDSA",
-                namedCurve: "P-256"
-              }, true, ["sign"])
-              .catch(error => this.$store.commit(IMPORT_ERROR, error));
+      const sk = await crypto.subtle
+        .importKey(
+          "jwk",
+          jwk,
+          {
+            name: "ECDSA",
+            namedCurve: "P-256"
+          },
+          true,
+          ["sign"]
+        )
+        .catch(error => this.$store.commit(IMPORT_ERROR, error));
       delete jwk.d;
       delete jwk.dp;
       delete jwk.dq;
       delete jwk.q;
       delete jwk.qi;
       jwk.key_ops = ["verify"];
-      const pk = await crypto.subtle.importKey("jwk", jwk, {
-                name: "ECDSA",
-                namedCurve: "P-256"
-              }, true, ["verify"])
-              .catch(error => this.$store.commit(IMPORT_ERROR, error));
+      const pk = await crypto.subtle
+        .importKey(
+          "jwk",
+          jwk,
+          {
+            name: "ECDSA",
+            namedCurve: "P-256"
+          },
+          true,
+          ["verify"]
+        )
+        .catch(error => this.$store.commit(IMPORT_ERROR, error));
       this.$store.dispatch("setKeypair", { privateKey: sk, publicKey: pk });
     },
     getMyReviews() {
