@@ -48,8 +48,6 @@
 <script>
 import { toHexString } from "../utils";
 
-const FILE_URL = "https://files.mangrove.network";
-const UPLOAD_URL = "https://upload.mangrove.network";
 const STATUS_INITIAL = 0,
   STATUS_SAVING = 1,
   STATUS_SUCCESS = 2,
@@ -77,7 +75,7 @@ export default {
       return this.currentStatus === STATUS_FAILED;
     },
     uploadedLinks() {
-      return this.extraHashes.map(hash => `${FILE_URL}/${hash}`);
+      return this.extraHashes.map(hash => `${process.env.VUE_APP_FILES_URL}/${hash}`);
     },
     extraHashes: {
       get() {
@@ -107,7 +105,7 @@ export default {
     upload(formData) {
       return (
         this.axios
-          .put(UPLOAD_URL, formData)
+          .put(process.env.VUE_APP_UPLOAD_URL, formData)
           // add url field
           .then(response => response.data)
       );

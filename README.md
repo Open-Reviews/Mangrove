@@ -43,6 +43,32 @@ cd reviewer
 cargo run
 ```
 
+Deploying the server to as AWS Lambda requires a Lambda Layer containing `libpq`, follow instructions based on: https://github.com/DrLuke/postgres-libpq-aws-lambda-layer
+```
+git clone git@github.com:DrLuke/postgres-libpq-aws-lambda-layer.git
+cd postgres-libpq-aws-lambda-layer
+# Updating the submodule does not work after cloning, so just add it.
+git submodule add git://git.postgresql.org/git/postgresql.git postgresql
+cd postgresql
+# Use the same version as one running on AWS RDS.
+git checkout tags/REL_11_5
+# Install missing requirements.
+sudo apt install bison flex
+./configure --without-readline
+make
+make check
+cd ..
+./build_layer.sh
+
+```
+Then deploy with
+```
+aws lambda publish-layer-version \
+  --layer-name postgres-libpq \
+  --zip-file fileb://aws-libpg-layer.zip \
+  --compatible-runtimes provided
+```
+
 - `PUT` a Mangrove Review as JSON to store it on the server.
 - `GET` a list of Mangrove Reviews that have fields equal to query params.
 

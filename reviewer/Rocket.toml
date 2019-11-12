@@ -1,2 +1,2 @@
 [global.databases]
-pg_reviews = { url = "postgres://postgres:postgres@localhost:5432/reviews" }
+pg_reviews = { url = "postgres://postgres:QqSiFKhjnQBbhqj3coD2ovBN5ErfR@mangrove-database.cwdbskkhfrl9.eu-central-1.rds.amazonaws.com:5432/reviews" }

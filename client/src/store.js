@@ -120,7 +120,7 @@ const actions = {
     // Get reviews and put them in the reviews field.
     Vue.prototype.axios
       .get(
-        "https://dte8eiky4g.execute-api.eu-central-1.amazonaws.com/Prod/request",
+        `${process.env.VUE_APP_API_URL}/request`,
         { params }
       )
       .then(response => {

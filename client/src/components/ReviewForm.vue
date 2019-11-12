@@ -112,7 +112,7 @@ export default {
       console.log("Mangrove review: ", review);
       this.axios
         .put(
-          "https://dte8eiky4g.execute-api.eu-central-1.amazonaws.com/Prod/submit",
+          `${process.env.VUE_APP_API_URL}/submit`,
           review,
           {
             headers: {

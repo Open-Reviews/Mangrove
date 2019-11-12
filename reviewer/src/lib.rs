@@ -24,22 +24,17 @@ extern crate rocket;
 #[macro_use]
 extern crate rocket_contrib;
 
+use rocket::Rocket;
+use rocket::http::Method;
 use rocket::request::Form;
-use rocket::response::NamedFile;
 use rocket_contrib::json::Json;
-use std::path::{Path, PathBuf};
 use self::database::{DbConn, Query};
 use self::error::Error;
 use self::review::Review;
 
 #[get("/")]
-fn index() -> NamedFile {
-    NamedFile::open("client/dist/index.html").expect("Index file is always present.")
-}
-
-#[get("/<file..>", rank = 6)]
-fn files(file: PathBuf) -> Option<NamedFile> {
-    NamedFile::open(Path::new("client/dist/").join(file)).ok()
+fn index() -> &'static str {
+    "Check out for project information: https://planting.space/mangrove.html"
 }
 
 #[put("/submit", format = "application/json", data = "<review>")]
@@ -65,12 +60,22 @@ fn search_reviews(conn: DbConn, search: String) -> Result<Json<Vec<Review>>, Err
     Ok(Json(out))
 }
 
-fn main() {
+pub fn rocket() -> Rocket {
+    let cors = rocket_cors::CorsOptions {
+        allowed_methods: vec![Method::Put, Method::Get]
+            .into_iter()
+            .map(From::from)
+            .collect(),
+        ..Default::default()
+    }
+    .to_cors()
+    .expect("CORS configuration correct.");
+
     rocket::ignite()
         .attach(DbConn::fairing())
         .mount(
             "/",
-            routes![index, files, submit_review, request_reviews, search_reviews],
+            routes![index, submit_review, request_reviews, search_reviews],
         )
-        .launch();
+        .attach(cors)
 }

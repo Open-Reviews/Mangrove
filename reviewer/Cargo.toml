@@ -1,8 +1,9 @@
 [package]
-name = "review_server"
+name = "reviewer"
 version = "0.1.0"
 authors = ["keorn <git@i.keorn.org>"]
 edition = "2018"
+default-run = "main"
 
 [dependencies]
 log = "0.4"
@@ -20,6 +21,8 @@ serde_cbor = "0.10.1"
 serde_json = "1.0"
 dotenv = "0.9.0"
 rocket = "0.4.2"
+rocket_cors = "0.5.0"
+rocket_lamb = "0.6.0"
 
 [dependencies.rocket_contrib]
 default-features = false

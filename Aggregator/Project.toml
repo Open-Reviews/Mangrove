@@ -1,0 +1,7 @@
+name = "Aggregator"
+uuid = "4a3d2a9a-0013-11ea-2af0-ed3f69e46738"
+authors = ["keorn <git@i.keorn.org>"]
+version = "0.1.0"
+
+[deps]
+Gen = "ea4f424c-a589-11e8-07c0-fd5c91b9da4a"
