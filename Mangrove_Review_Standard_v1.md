@@ -6,6 +6,8 @@ The mission of the Mangrove initiative is to create a public space on the Intern
 
 We want this open dataset to be as useful as possible, to as many people and organisations as possible. Interoperability of data is an important element to reach this goal. To enable interoperability, we need agreed-upon technical standards. Therefore, the Mangrove initiative proposes the **Mangrove Review Standard** as a way for people to represent insights in the form of reviews. We invite the Open and Privacy communities to contribute to this standard.
 
+The standard was developed based on a set of principles.
+
 # Mangrove Review Standard (MaReSt) v1
 
 ### Definitions
@@ -20,7 +22,7 @@ We want this open dataset to be as useful as possible, to as many people and org
 
 **Aggregation algorithm**: an algorithm that aggregates individual reviews to one rating for an object.
 
-**Authentication of reviewers**: a Reviewer is authenticated using public key cryptography: each Reviewer is assigned a pair of keys, a public key and a private key. The Reviewer uses the private key to sign a review.
+**Identity of reviewers**: to ensure high reliability of reviews in a system that works without a central authority holding user names and passwords of reviewers, Mangrove uses public key cryptography to create persistent, yet privacy-preserving identifiers for Reviewers. Reviewers are assigned a pair of keys, a public and a private key, whereby they use the private key to sign a review. Reviewers can create as many pairs of keys as they wish, although higher reliability is assigned to a reviewer with a longer track-record of high-quality reviews linked to the same public key.
 
 **ECDSA**: Elliptic Curve Digital Signature Algorithm, used in public key cryptography to create a digital signature.
 
@@ -144,15 +146,17 @@ Additional fields to be added, including items such as proof-of-purchase, identi
 
 ### Upgradeability
 
-It should be possible to upgrade the formats, thus each review includes a version number.
+It should be possible to upgrade the formats, thus each Review includes a version number.
 
 ### Decentralisation
 
-It should be possible to issue reviews and establish identity without a central authority. The core specification allows anyone to create a review by generating a private key. Object identifier type specifications also favor any IDs which can be determined without a central authority.
+It should be possible to issue reviews and establish identity without a central authority. The core specification allows anyone to create a review by generating a key pair and signing the review with the private key. Object identifier type specifications also favor any IDs which can be determined without a central authority.
 
 ### Privacy
 
-Reviewers should be able to reveal as little information about themselves as they like. This is why the format does not require inclusion of any personally identifiable data.
+Reviewers should be able to reveal as little information about themselves as they wish. This is why the format does not require inclusion of any personally identifiable data.
+
+The only identifiers being used are the public keys which help to establish reliability of a reviewer. These can be easily generated and used on a one-off basis or in a persistent manner. 
 
 ### Standards reuse
 
@@ -162,13 +166,15 @@ For message encoding saltpack.org was considered, however [lack of activity arou
 
 ### Usefulness
 
-Reviews should be as useful to readers as possible. They should also contain enough data to be meaningfully processed by filtering and recommendation algorithms.
+Reviews should be as useful to Users as possible. They should also contain enough data to be meaningfully processed by filtering and recommendation algorithms. 
+
+Reliability is a key element of usefulness, and requires a notion of a persistent identity in order to establish a track record for a reviewer. This necessitates a special approach in an environment aiming to work without a central authority holding user names and passswords to identify the users personally. Mangrove uses public key cryptography to allow the persistent association of reviewers with public keys.
 
 #### Track record
 
-To establish reliability of reviews it is useful to maintain a track record of a reviewer. To be able to do that and to preserve privacy, reviews contain a public key which can be used multiple times by the same reviewer.
+To establish reliability of reviews it is useful to maintain a track record of a reviewer. To be able to do that in a privacy-preserving manner, reviews contain a public key which can be used multiple times by the same reviewer. The longer the track record of high-quality reviews of a reviewer, the higher the associated reliability.
 
-A separate format could be also used to link additional public keys to the same identity.
+An additional format will be established to link additional public keys to the same identity (e.g., public keys generated with different devices).
 
 #### Time relevance
 
