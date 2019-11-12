@@ -20,7 +20,7 @@ The standard was developed based on a set of [principles](#principles-of-the-dat
 
 **Mangrove user** ("User"): a person or organisation that makes use of individual reviews and/or aggregated ratings, by reading them on the Mangrove or a third-party website, or by integrating the Mangrove dataset into a third-party service.
 
-**Aggregation algorithm**: an algorithm that aggregates individual reviews to one rating for an object.
+**Aggregation algorithm**: an algorithm that aggregates individual reviews into a single rating for an object and highlights the most useful ones.
 
 **Identity of reviewers**: to ensure high reliability of reviews in a system that works without a central authority holding user names and passwords of reviewers, Mangrove uses public key cryptography to create persistent, yet privacy-preserving identifiers for Reviewers. Reviewers are assigned a pair of keys, a public and a private key, whereby they use the private key to sign a review. Reviewers can create as many pairs of keys as they wish, although higher reliability is assigned to a reviewer with a longer track-record of high-quality reviews linked to the same public key.
 
