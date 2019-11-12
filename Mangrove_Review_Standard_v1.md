@@ -6,7 +6,7 @@ The mission of the Mangrove initiative is to create a public space on the Intern
 
 We want this open dataset to be as useful as possible, to as many people and organisations as possible. Interoperability of data is an important element to reach this goal. To enable interoperability, we need agreed-upon technical standards. Therefore, the Mangrove initiative proposes the **Mangrove Review Standard** as a way for people to represent insights in the form of reviews. We invite the Open and Privacy communities to contribute to this standard.
 
-The standard was developed based on a set of principles.
+The standard was developed based on a set of [principles](#principles-of-the-data-format-specification).
 
 # Mangrove Review Standard (MaReSt) v1
 
