@@ -1,18 +1,32 @@
 The mission of the Mangrove initiative is to create a public space on the Internet where people can freely share insights with each other and make better decisions based on open data. Mangrove contributes to the Open and Privacy movements by proposing an alternative architecture that is characterized by a **separation of data and products**, and that **respects the right to privacy**:
 
 * The **data**, representing the insights, knowledge and wisdom of the public, is open and freely available to all. As such, it provides a valuable foundation for many usecases, including research, social or commercial purposes.
-* **Products** (i.e., applications and services) built upon this dataset compete based on innovation and technological merit, and not on access to proprietary data. This helps remove barriers to entry and avoids information silos.
+* **Products** (i.e., applications and services) built upon crowd-sourced or publicly funded data should make profit based on innovation and technological merit, and not on keeping the data proprietary. An architecture that separates data from products helps remove barriers to entry and avoids information silos.
 * The **privacy** of contributors cannot be compromised in Mangrove, as no personally identifyable information and no metadata is collected on the 'data level'. If service providers need to collect user data to enable their services, they may do so in their user interfaces on the 'product level', affecting only those users who trust their particular services.
 
 We want this open dataset to be as useful as possible, to as many people and organisations as possible. Interoperability of data is an important element to reach this goal. To enable interoperability, we need agreed-upon technical standards. Therefore, the Mangrove initiative proposes the **Mangrove Review Standard** as a way for people to represent insights in the form of reviews. We invite the Open and Privacy communities to contribute to this standard.
 
 # Mangrove Review Standard (MaReSt) v1
 
-Mangrove review is a statement by a reviewer about an object. Each review is signed by the private key of the reviewer. This review can be then read by readers or processed by algorithms before being read.
+### Definitions
 
-The standard can be used with original Mangrove servers as well as separate databases.
+**Mangrove review** ("review"): a statement by a reviewer about an object, whereby the review is provided according to the MaReSt. 
 
-### Changes being considered
+**Object**: something that is being reviewed in Mangrove. This can be: a place on a map (e.g., restaurant, hotel, touristic site), a website, or a company.
+
+**Mangrove contributor** ("contributor"): a person or organisation who contributes to the Mangrove open dataset by writing a review. A contributor can write a review directly on the Mangrove website or indirectly through the website or application of services that integrate with Mangrove.
+
+**Mangrove user** ("user"): a person or organisation that makes use of individual reviews and/or aggregated ratings, by reading them on the Mangrove or a third-party website, or by integrating the Mangrove dataset into a third-party service.
+
+**Aggregation algorithm**: an algorithm that aggregates individual reviews to one final rating for an object.
+
+**Authentication of reviewers**: a reviewer is authenticated using public key cryptography: each reviewer is assigned a pair of keys, a public key and a private key. The reviewer uses the private key to sign a review.
+
+**ECDSA**: Elliptic Curve Digital Signature Algorithm, used in public key cryptography to create a digital signature.
+
+**Usability of MaReSt**: the standard can be used with original Mangrove servers as well as separate databases.
+
+### Changes currently being considered
 
 - using compressed ECDSA public keys
 - using DateTime as described in ISO 8601 instead of Unix time
@@ -36,29 +50,29 @@ The standard can be used with original Mangrove servers as well as separate data
 
 ## Mangrove Creation and Verification
 
-JavaScript and Rust sample implementations are work in progress and coming soon.
+JavaScript and Rust sample implementations are work in progress and will be published soon.
 
 ## Mangrove Review Format (MaReFo)
 
 > The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED",  "MAY", and "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
-In particular for a Mangrove Review to be compatible with original servers all "RECOMMENDED" items should be observed.
+In particular, for a Mangrove Review to be compatible with original servers all "RECOMMENDED" items should be observed.
 
 ---
 
-Mangrove Review (Review) MUST consist of key/value pairs. Review fields MAY be shared in a number of different ways with the most common being:
+Mangrove Review (Review) MUST consist of key/value pairs. Review fields MAY be shared in a number of different ways, with the most common being:
 - JSON
 - CBOR
 - HTTP method query fields
 
-Each Review MUST be representable as [Canonical CBOR](https://tools.ietf.org/html/rfc7049), and in particular Major type 5 (a map of pairs of data items). This means that each key and value MUST one of major CBOR types. Review keys MUST be of Major type 3 (a text string).
+Each Review MUST be representable as [Canonical CBOR](https://tools.ietf.org/html/rfc7049), and in particular Major type 5 (a map of pairs of data items). This means that each key and value MUST be one of the major CBOR types. Review keys MUST be of Major type 3 (a text string).
 
 Review MUST include the following keys and corresponding values:
 - `version`
     - This Mangrove Review Format version.
     - MUST be a Major type 0 (an unsigned integer) equal to `1`.
 - `publicKey`
-    - Public key corresponding to the secret key of the reviewer.
+    - The public key corresponding to the private key of the reviewer.
     - MUST be a Major type 3 (a text string) of length `130`.
     - MUST correspond to an ECDSA public key in hexadecimal notation.
 - `timestamp`
@@ -130,7 +144,7 @@ It should be possible to upgrade the formats, thus each review includes a versio
 
 ### Decentralisation
 
-It should be possible to issue reviews and establish identity without a central authority. The core specification allows anyone to create a review by generating a secret key. Object identifier type specifications also favor any IDs which can be determined without a central authority.
+It should be possible to issue reviews and establish identity without a central authority. The core specification allows anyone to create a review by generating a private key. Object identifier type specifications also favor any IDs which can be determined without a central authority.
 
 ### Privacy
 
