@@ -10,21 +10,23 @@ We want this open dataset to be as useful as possible, to as many people and org
 
 ### Definitions
 
-**Mangrove review** ("review"): a statement by a reviewer about an object, whereby the review is provided according to the MaReSt. 
+**Mangrove review** ("Review"): a statement by a reviewer about an object, whereby the review is provided according to the MaReSt, and contains, among other things, either a rating (a number between 1 and 100) for the object, or an opinion (a piece of text describing the experience) about the object, or both.
 
 **Object**: something that is being reviewed in Mangrove. This can be: a place on a map (e.g., restaurant, hotel, touristic site), a website, or a company.
 
-**Mangrove contributor** ("contributor"): a person or organisation who contributes to the Mangrove open dataset by writing a review. A contributor can write a review directly on the Mangrove website or indirectly through the website or application of services that integrate with Mangrove.
+**Mangrove reviewer** ("Reviewer"): a person or organisation who contributes to the Mangrove open dataset by writing a review. A contributor can write a review directly on the Mangrove website, or indirectly through the websites of third-party services or applications that integrate with Mangrove.
 
-**Mangrove user** ("user"): a person or organisation that makes use of individual reviews and/or aggregated ratings, by reading them on the Mangrove or a third-party website, or by integrating the Mangrove dataset into a third-party service.
+**Mangrove user** ("User"): a person or organisation that makes use of individual reviews and/or aggregated ratings, by reading them on the Mangrove or a third-party website, or by integrating the Mangrove dataset into a third-party service.
 
-**Aggregation algorithm**: an algorithm that aggregates individual reviews to one final rating for an object.
+**Aggregation algorithm**: an algorithm that aggregates individual reviews to one rating for an object.
 
-**Authentication of reviewers**: a reviewer is authenticated using public key cryptography: each reviewer is assigned a pair of keys, a public key and a private key. The reviewer uses the private key to sign a review.
+**Authentication of reviewers**: a Reviewer is authenticated using public key cryptography: each Reviewer is assigned a pair of keys, a public key and a private key. The Reviewer uses the private key to sign a review.
 
 **ECDSA**: Elliptic Curve Digital Signature Algorithm, used in public key cryptography to create a digital signature.
 
 **Usability of MaReSt**: the standard can be used with original Mangrove servers as well as separate databases.
+
+**Mangrove servers**: the servers that host the Mangrove open dataset, maintained by the Mangrove initiative.
 
 ### Changes currently being considered
 
@@ -82,7 +84,7 @@ Review MUST include the following keys and corresponding values:
     - Unique reviewed object identifier in the form of URI.
     - MUST be a Major type 3 (a text string) representing a [valid URI](https://tools.ietf.org/html/rfc3986). SHOULD comply with one of supported URI schemes (see Mangrove core URI schemes).
 
-Review MUST include either `rating` or `opinion` key, which means it MAY omit one of them. These keys when included MUST have values as follows:
+Review MUST include either `rating` or `opinion` key, which means it MAY omit one of them. These keys, when included, MUST have values as follows:
 - `rating`
     - Number indicating how likely the reviewer is to recommend the object.
     - MUST be a Major type 0 (an unsigned integer) in the range from `1` to `100`.
@@ -97,7 +99,7 @@ Review MAY include any of the following keys and values:
     - Each item MUST be a SHA256 represented as hexadecimal string, of a file stored on a publicly accessible server or decentralized network.
 - `metadata` MUST be of Major type 5 (a map of pairs of data items) with keys being Major type 3 (a text string). Each key SHOULD be equal to one of Core Metadata Keys (see Mangrove Core Metadata Field Standards). Each value corresponding to a Core Metadata Key MUST comply with the corresponding Core Metadata Field Standard.
 
-Unsigned Mangrove Review is a Canonical CBOR encoded map with all key/value pairs besides the `signature` field described next.
+Unsigned Mangrove Review is a Canonical CBOR encoded map with all key/value pairs besides the `signature` field, which is described next.
 
 Review MUST include a `signature` key with value that:
 - MUST be a valid ES256 (ECDSA on P-256 with SHA-256 digest) signature of Unsigned Mangrove Review, corresponding to its `publicKey` value.
@@ -106,26 +108,26 @@ Review MUST include a `signature` key with value that:
 ## Mangrove Core URI Schemes
 
 Value corresponding to the `uri` key MUST be of Major type 3 (a text string) and comply with one of Core URI Schemes:
-- `http`/`https` for this scheme the `uri`:
+- `http`/`https`: for this scheme, the `uri`:
     - Refers to a Website that is to be reviewed.
     - MUST comply with [URL specification](https://url.spec.whatwg.org/) and is no longer than 100 letters.
-- `geo` for this scheme the `uri`:
+- `geo`: for this scheme, the `uri`:
     - Refers to a business location or physical point of interest being reviewed.
     - MUST comply with [URI for Geographic Locations specification](https://tools.ietf.org/html/rfc5870) with addition of a URI fragment.
     - Fragment for this URI (content following `#`) MUST be a commonly used name of the selected place.
-- `urn:LEI` for this scheme the `uri`:
+- `urn:LEI`: for this scheme, the `uri`:
     -  Has to be equal to one of registered legal entity identifiers in [GLEIF database](https://www.gleif.org/en/).
     -  Scheme MUST be followed by a valid LEI according to [ISO 17442](https://www.gleif.org/en/about-lei/iso-17442-the-lei-code-structure).
     -  GLEIF data is open and accessible for [download](https://www.gleif.org/en/lei-data/gleif-golden-copy/download-the-golden-copy#/) or access via [API](https://documenter.getpostman.com/view/7679680/SVYrrxuU?version=latest).
-- `urn:MaReSi` for this scheme the `uri`:
+- `urn:MaReSi`: for this scheme, the `uri`:
     - Refers to another Mangrove Review that is to be reviewed, indicating its helpfulness or accuracy.
-    - Scheme SHOULD be followed by `signature` field of one of Mangrove Reviews in the current database.
+    - Scheme SHOULD be followed by `signature` field of the Review that is to be reviewed (one of Mangrove Reviews in the current database).
 
-## Mangrove Core Metadata Field Standards (MaCoMes) - to be finalized
+## Mangrove Core Metadata Field Standards (MaCoMes)
 
-These fields are meant to represent additional data about the reviewer, circumstances of leaving the review or any other data which may be useful for review readers and analysis algorithms.
+These fields are meant to represent additional data about the reviewer, circumstances of leaving the review or any other data which may be useful for review Users and analysis algorithms. Mangrove Review MAY include any of the fields.
 
-The key `metadata` contains a map of key/value pairs, where each key SHOULD be equal to one following keys and have value as described:
+The key `metadata` contains a map of key/value pairs, where each key SHOULD be equal to one of following keys and have value as described:
 - `originURI` MUST be a correct URI corresponding to the resource the review originates from: website or app.
 - `accountName` MUST be a name of account used for this review of length less than 20.
 - `displayName` MUST be a user specified name to be displayed of length less than 20.
@@ -135,6 +137,8 @@ The key `metadata` contains a map of key/value pairs, where each key SHOULD be e
 - `firstName` SHOULD be the first name of the reviewer of length less than 20.
 - `gender` SHOULD be the gender of the reviewer of length less than 20.
 - `openid` SHOULD be the openid associated with the reviewer of length less than 20.
+
+Additional fields to be added, including items such as proof-of-purchase, identity token, useful information about the object, circumstances of the experience.
 
 ## Principles of the data format specification
 
