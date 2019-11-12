@@ -7,16 +7,6 @@ pub mod schema;
 
 #[macro_use]
 extern crate log;
-extern crate dotenv;
-extern crate hex;
-extern crate rand;
-extern crate reqwest;
-extern crate ring;
-extern crate serde;
-extern crate serde_json;
-extern crate untrusted;
-extern crate url;
-extern crate xmltree;
 #[macro_use]
 extern crate diesel;
 #[macro_use]

@@ -1,10 +1,10 @@
 packaged.yaml
 reviewer/.env
 reviewer/target
+reviewer/.env
 file_hoster/target
 file_hoster/files
 client/node_modules
 client/src/node_modules
 client/src/dist
 test
-*.local
