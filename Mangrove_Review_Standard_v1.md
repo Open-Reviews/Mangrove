@@ -1,3 +1,11 @@
+The mission of the Mangrove initiative is to create a public space on the Internet where people can freely share insights with each other and make better decisions based on open data. Mangrove contributes to the Open and Privacy movements by proposing an alternative architecture that is characterized by a **separation of data and products**, and that **respects the right to privacy**:
+
+* The **data**, representing the insights, knowledge and wisdom of the public, is open and freely available to all. As such, it provides a valuable foundation for many usecases, including research, social or commercial purposes.
+* **Products** (i.e., applications and services) built upon this dataset compete based on innovation and technological merit, and not on access to proprietary data. This helps remove barriers to entry and avoids information silos.
+* The **privacy** of contributors cannot be compromised in Mangrove, as no personally identifyable information and no metadata is collected on the 'data level'. If service providers need to collect user data to enable their services, they may do so in their user interfaces on the 'product level', affecting only those users who trust their particular services.
+
+We want this open dataset to be as useful as possible, to as many people and organisations as possible. Interoperability of data is an important element to reach this goal. To enable interoperability, we need agreed-upon technical standards. Therefore, the Mangrove initiative proposes the **Mangrove Review Standard** as a way for people to represent insights in the form of reviews. We invite the Open and Privacy communities to contribute to this standard.
+
 # Mangrove Review Standard (MaReSt) v1
 
 Mangrove review is a statement by a reviewer about an object. Each review is signed by the private key of the reviewer. This review can be then read by readers or processed by algorithms before being read.
