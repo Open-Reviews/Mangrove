@@ -143,12 +143,10 @@ Additional fields to be added, including items such as proof-of-purchase, identi
 
 For the dataset to be useful for as many people and organisations as possible, we believe it needs to ensure a few key requirements, each explained in more detail further below.
 
-- Be reliable: there should be [a set of mechanisms](#reliability) to allow aggregation algorithms to generate a reliable single rating, including the possibility to identify reviews that violate the terms of service, while at the same time upholding high transparency standards towards users.  
+- Be [reliable](#reliability): there should be a set of mechanisms to allow aggregation algorithms to generate a reliable single rating, including the possibility to identify reviews that violate the terms of service, while at the same time upholding high transparency standards towards users.  
 - Enable decision-making: the review format should ensure that the data is well-structured so that reviews can be  aggregated to a single rating; it should allow for [meaningful content](#meaningful-content) that can be processed by different filtering and recommendation algorithms to generate useful insights for different parties; and the data format should be extensible to fit changing decision-making needs.
 - Be unambiguous: each review should contain an [unambiguous](#clear-object-identification) reference to the Object that is reviewed.
 - Be easy to use and develop on: we try to make use of [existing standards](#standards-reuse) as much as possible
-
-### Decentralisation
 
 #### Reliability
 
