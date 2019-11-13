@@ -2,6 +2,9 @@ variables:
   S3_BUCKET: "mangrove.network"
 
 deploy:
+  only:
+    - master
+
   image: wilson208/circleci-awscli:node
 
   cache:
