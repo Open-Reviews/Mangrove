@@ -1,14 +1,14 @@
 # Terms of Use
 
-Welcome to Mangrove! **Mangrove** is a nonprofit initiative whose goal is to provide a public space on the Web where people can freely share valuable insights with each other to help improve the decision-making of all. It is envisioned as a new commons that functions without a central authority that could control or take ownership of the content provided by contributors. 
+Welcome to Mangrove! **Mangrove** ("we", "us") is a non-profit initiative to create a public space on the Internet where people can freely share insights with each other and make better decisions based on open data. It is envisioned as a new commons that functions without a central authority, that preserves the privacy of all users, and that ultimately aims to be a fertile ground on which value can be created based on innovation and technological merit, without barriers to entry posed by proprietary data.
 
-Mangrove provides the essential infrastructure and software for the creation, growth and accessibility of an open data set for reviews (the “**Services**”). We strive to make and keep reviews for everything that matters to people available on the internet free of charge, in perpetuity.
+Mangrove provides the essential infrastructure and software for the creation, growth and accessibility of an open data set for reviews (the “**Services**”). We strive to make and keep reviews for everything that matters to people available on the Internet free of charge, in perpetuity.
 
 Mangrove is managed as an **Open Collective** that can receive financial and other voluntary contributions. This enables the community to collect money to cover costs, and share our finance in full transparency. The collective is hosted by PlantingSpace GmbH, a limited liability company registered in Zug, Switzerland.
 
 We welcome you (“you”, or the “**User**”, “they”, “them” for gender-neutral addressing) as a reader, writer, aggregator, or commercial user of the Mangrove open data set, and we encourage you to join the Mangrove community. **Before you participate, however, we ask that you please read and agree to the following Terms of Use (“Terms of Use”), including the Privacy Policy.**
 
-These **Terms of Use** **tell you about** the services that the Mangrove initiative provides, our relationship to you as a User, and **the rights and responsibilities that guide us both**. We want you to know that we host an increasingly growing quantity of informational content, all of which is contributed and made possible by users like yourself. Generally we do not monitor, or delete content (with the rare exception of flagged-up content that violates the Terms). This means that control is in the hands of you and your fellow users who create and manage the content. We merely host this content. We have some rules about what you cannot post, most of which is either for your own protection or for the protection of other users like yourself. Please keep in mind that the content we host is for general informational purposes only.
+These **Terms of Use** **tell you about** the services that the Mangrove initiative provides, our relationship to you as a User, and **the rights and responsibilities that guide us both**. We want you to know that we host an increasingly growing quantity of informational content, all of which is contributed and made possible by users like yourself. Generally we do not monitor, or delete content (with the rare exception of content that violates the Terms, and is handled in a highly transparent manner). This means that control is in the hands of you and your fellow users who create and manage the content. We merely host this content. We have some rules about what you cannot post, most of which is either for your own protection or for the protection of other users like yourself. Please keep in mind that the content we host is for general informational purposes only.
 
 We also include other important notices and disclaimers, so please read these Terms of Use in their entirety.
 
@@ -19,37 +19,29 @@ Disclaimer: This summary is not a part of the Terms of Use and is not a legal do
 
 **Part of our mission is to:**
 
-
-
-*   Create a public space on the Web where people can freely share valuable insights with each other without a central authority that controls or takes ownership of their content.
+*   Create a public space on the Internet where people can freely share insights with each other and make better decisions based on open data.
 *   Engage people and organisations around the world to add their insights to this open data set to help others in their decision-making.
-*   Enable easy and free access to the data set to allow as many people as possible to benefit from it, and to foster the creation of new nonprofit or commercial services as well as research projects.
+*   Enable easy and free access to the data set to allow as many people as possible to benefit from it, and to foster the creation of new services as well as research projects.
 
 **You are free to:**
 
-
-
-*   Write reviews and rate companies, websites, locations, and more; add media files to your reviews.
+*   Write reviews and rate companies, websites, places, and more; add media files to your reviews.
 *   Read reviews, and comment or answer to reviews.
-*   Share and re-use the review data set under a free and open license, for any purpose, even commercially. 
+*   Share and re-use the review dataset under a free and open license, for any purpose, even commercially. 
 
 **Under the following conditions:**
-
-
 
 *   You take full responsibility for your reviews (since we only host your content).
 *   You do not violate copyright or other laws.
 *   You support a civil environment and do not harass or damage others.
 *   You do not harm our technology infrastructure.
-*   You adhere to the below Terms of Use, and to the applicable guidelines when you visit the website or use the data set or APIs.
+*   You adhere to the below Terms of Use, and to the applicable guidelines when you visit the website or use the dataset or APIs.
 
 **With the understanding that:**
 
-
-
 *   You License Freely Your Contributions – you generally must license your content (reviews, comments, and media files) under a free and open license.
 *   Attribution – when sharing and re-using the Mangrove data set, you must give appropriate credit, and indicate if changes to the content were made (this shall ensure that the reviews are not misrepresented, and that any reader can find their way to the original content in the Mangrove open data set). 
-*   No Professional Advice – the content in the Mangrove data set is for informational purposes only and does not constitute professional advice.
+*   No Professional Advice – the content in the Mangrove dataset is for informational purposes only and does not constitute professional advice.
 
 
 # Terms of Use
@@ -59,15 +51,12 @@ Disclaimer: This summary is not a part of the Terms of Use and is not a legal do
 
 Mangrove is a nonprofit initiative to create an open data set for reviews. It provides tools that allow anyone to capture and share insights gained from genuine experiences, and enable individuals and organisations to leverage this rich and valuable data freely.
 
-Provided tools that constitute the Services
+Provided tools that constitute the Mangrove Services
 
-
-
-*   Website for writing reviews, searching and reading the reviews, commenting on reviews.
-*   Database to store the reviews
-*   API allowing access to the database
-*   Code for embedding the Service in another website
-*   Aggregation algorithm to compute the rating of an item from individual reviews
+*   Mangrove Website: the website https://mangrove.reviews for writing, searching, and reading of reviews, as well as for commenting on reviews
+*   Mangrove API: an API allowing for submission and retrieval of reviews
+*   Mangrove Script: a web script allowing integration of the functionality provided by the Mangrove website into third-party websites or applications 
+*   Mangrove Aggregator: an algorithm to compute the rating of a subject from individual reviews, and to curate a list of the most useful reviews
 
 
 ## <span style="text-decoration:underline;">2. Privacy Policy</span>
@@ -77,10 +66,8 @@ Provided tools that constitute the Services
 
 We want to live in a world where people are in control of their data and each person is able to decide what data is collected and shared about them. Therefore, we from Mangrove worked hard to develop a system that puts the control in the hand of the user. It is designed to respect you and your digital life. This means:
 
-
-
-*   The **Mangrove website does not track users** in any way, and does not collect information from users’ devices. 
-*   There is no user sign-up and no user account in Mangrove. Therefore, **Mangrove is not storing personal information or passwords**. 
+*   The **Mangrove Website does not track users** in any way, and does not collect information from users’ devices. 
+*   There is no user sign-up and no user account in Mangrove. Therefore, **Mangrove does not store personal information or passwords**. 
 *   A user can write or read reviews, as well as make use of the open source software without identifying themselves.
 
 Nevertheless, you can share information voluntarily when using the Services (e.g., adding personal information to a review), or when you interact with the Mangrove team. If you do, you should be aware of how your data is used. We ask that you therefore review the terms of our Privacy Policy. Because our Services are used by people all over the world, personal information that we collect may be stored and processed in any other country in which we or our agents maintain facilities. By using our Services, you consent to any such transfer of information outside of your country.
@@ -94,8 +81,6 @@ We at Mangrove spent significant time researching state-of-the-art cryptographic
 
 ### Information You Share
 
-
-
 *   If you write a review, you have the possibility to **voluntarily** enter information about you as part of the review, to make it more useful for others by providing more context. 
 *   This could be any of the following:
     *   your name or a pseudonym
@@ -105,13 +90,11 @@ We at Mangrove spent significant time researching state-of-the-art cryptographic
 *   **This information will be public and freely available in the open data set**, as part of the review content that you must make available under a free and open license (see “Licensing of Content”).
 
 
-### Identity in Mangrove
+### Identity in Mangrove, Public and Private Keys
 
 Identity does not have to mean your name, address, birthdate or any other personal data, although this is how other services typically want to ensure they know who their customers are, for many reasons. Identity in Mangrove only refers to the ability to identify the reviews written by the same person, without, however, having to know anything about the person. We use public key cryptography in order to create such an identity, with the public key being the identifier for any review. Before explaining the mechanics, we would like you to know why identity is important: 
 
-
-
-*   **Reliability**: the aggregation algorithm that computes the rating for an item gives higher weight to a review written by a person with a track record of quality reviews. Someone who aspires to have a higher influence on the rating therefore has to ensure that there is a link between all reviews they have written, and also, that they write reviews that other people find useful.
+*   **Reliability**: the aggregation algorithm that computes the rating for an item gives higher weight to a review written by a person with a track record of quality reviews. Someone who aspires to have a higher influence on the rating therefore has to ensure that there is a link between the reviews they have written, and also, that they write reviews that other people find useful.
 *   **Discoverability**: the identity allows users to search for their own reviews or reviews of others. 
 *   **Control over data**: a user can find and delete their own review if the conditions for deletion are fulfilled, and if they hold the private key that corresponds to the public key of the review (i.e., if they can identify themselves as the writer of the particular review).
 
@@ -124,22 +107,18 @@ As the creation of the cryptographic key pair happens purely on the users device
 
 ## <span style="text-decoration:underline;">3. Content We Host</span>
 
-
-
 *   You may find some material objectionable or erroneous: Because we provide a wide array of content that is produced or gathered by fellow users, you may encounter material that you find offensive, erroneous, misleading, mislabeled, or otherwise objectionable. We therefore ask that you use common sense and proper judgment when using our services.
 *   Our content is for general informational purposes only. It should not be taken as professional advice. Please seek independent professional counseling from someone who is licensed or qualified in the applicable area in lieu of acting on any information, opinion, or advice contained in one of the reviews.
 
 
 ## <span style="text-decoration:underline;">4. Refraining from Certain Activities</span>
 
-The richness and value of the insights in the Mangrove open data set only exist because of the vibrant community of users like you who collaborate to write and curate the content. We happily welcome your participation in this community. We encourage you to be civil and polite in your interactions with others in the community, to act in good faith, and to make contributions aimed at furthering the mission of Mangrove.
+The richness and value of the insights in the Mangrove open dataset only exist because of the vibrant community of users like you who collaborate to write and curate the content. We happily welcome your participation in this community. We encourage you to be civil and polite in your interactions with others in the community, to act in good faith, and to make contributions aimed at furthering the mission of Mangrove.
 
 Certain activities, whether legal or illegal, may be harmful to other users and violate our rules, and some activities may also subject you to liability. Therefore, for your own protection and for that of other users, you may not engage in such activities on our services. These activities include:
 
 
 ### Harassing and Abusing Others
-
-
 
 *   Engaging in harassment, threats, stalking, spamming, or vandalism; and
 *   Transmitting chain mail, junk mail, or spam to other users.
@@ -147,16 +126,12 @@ Certain activities, whether legal or illegal, may be harmful to other users and 
 
 ### Violating the Privacy of Others
 
-
-
 *   Infringing the privacy rights of others under applicable laws (which may include the laws where you live or where you view content);
 *   Soliciting personally identifiable information for purposes of harassment, exploitation, violation of privacy, or any promotional purpose; and
 *   Soliciting personally identifiable information from anyone under the age of 18 for an illegal purpose or violating any applicable law regarding the health or well-being of minors.
 
 
 ### Engaging in False Statements, Impersonation, or Fraud
-
-
 
 *   Intentionally or knowingly posting content that constitutes libel or defamation, is unlawful, deceptive, misleading, fraudulent, threatening, abusive, harassing, libelous, defamatory, tortious, obscene, pornographic or profane; or that has sexist, political or racial character;
 *   With the intent to deceive, posting content that is false or inaccurate;
@@ -166,14 +141,10 @@ Certain activities, whether legal or illegal, may be harmful to other users and 
 
 ### Committing Infringement
 
-
-
 *   Infringing copyrights, trademarks, patents, or other proprietary rights under applicable law.
 
 
 ### Misusing Our Services for Other Illegal Purposes
-
-
 
 *   Posting child pornography or any other content that violates applicable law concerning child pornography;
 *   Posting or trafficking in obscene material that is unlawful under applicable law; and
@@ -181,8 +152,6 @@ Certain activities, whether legal or illegal, may be harmful to other users and 
 
 
 ### Engaging in Disruptive and Illegal Misuse of Facilities
-
-
 
 *   Posting or distributing content that contains any viruses, malware, worms, Trojan horses, malicious code, or other device that could harm our technical infrastructure or system or that of our users;
 *   Engaging in automated uses of the site that are abusive or disruptive of the services;
@@ -210,15 +179,11 @@ We envision the Mangrove database as a valuable collection of free knowledge and
 
 ### Conditions for Deletion
 
-
-
 *   A review can only be deleted by its author, the legitimate owner, because the deletion requires the private key that is only accessible to the owner (see “Identity in Mangrove” in the Privacy Policy). Neither Mangrove nor any third party can delete a review.
-*   If a review has been commented on by other users, **it cannot be deleted anymore**, because that would lead to censorship of the content provided by others.
+*   If a review has been commented on by other users, **it cannot be deleted anymore**, because that would lead to censorship of the content that was provided subsequently by others.
 
 
 ### Removal of Harmful Content
-
-
 
 *   Mangrove can only remove content from the database if it is violating the Terms, therefore considered “harmful content”. In case of removal, the content is not deleted but moved to a private database in order to be accessible to Mangrove in case of disputes. 
 *   All users have the possibility to flag up harmful content, so that it raises quickly to our attention. Given that this is a non-profit and open initiative, it is impossible for the Mangrove operators to monitor all the content. Therefore, cannot guarantee that the database is free of harmful content, although we do our best to react fast to any flags.
@@ -252,28 +217,26 @@ Attribution is an important part of these licenses. We consider it giving credit
 
 
 
-*   Through display of your review with all fields described in the Mangrove specifications. #todo
-*   Through hyperlink (where possible) or URL to your review on the Mangrove website.
+*   Through display of your review with all fields described in the [Mangrove Review Standard](https://gitlab.com/plantingspace/mangrove/blob/master/Mangrove_Review_Standard_v1.md). 
+*   Through hyperlink (where possible) or URL to your review on the Mangrove Website.
 *   When your review is aggregated with other reviews to a single rating, through a reference to the Mangrove data set.
 
 
 ### No revocation of license
 
-Except as consistent with your license, you agree that you will not unilaterally revoke or seek invalidation of any license that you have granted under these Terms of Use for text content or non-text media contributed to the Mangrove database or features, even if you terminate use of our services.
+You agree that you will not unilaterally revoke or seek invalidation of any license that you have granted under these Terms of Use for text content or non-text media contributed to the Mangrove database or features, even if you terminate use of our services.
 
 
 ### Re-use 
 
-We hope that this open data set will be a fertile ground for new services to develop as alternatives and in competition to some existing services that have reached almost monopolistic status today. Making crowd-sourced information accessible to the public is an important prerequisite to allow for fruitful competition and to reduce centralization of power. We also hope that the data set can be of use to research groups and customer protection institutions.
+We hope that this open data set will be a fertile ground for new services to develop as alternatives and in competition to some established services that have reached almost monopolistic status today. Making crowd-sourced information accessible to the public is an important prerequisite to allow for fruitful competition and to reduce centralization of power. We also hope that the data set can be of use to research groups, customer protection institutions, and generally foster public engagement and participation.
 
 Therefore, we happily welcome re-use of content as part of our mission. Any re-use must comply with the underlying license.
 
 When you re-use or re-distribute reviews created by the Mangrove community, you agree to attribute the authors in any of the following fashions:
 
-
-
-*   Through display of the full Mangrove review that you are re-using, with all fields described in the Mangrove Review specification. #todo
-*   Through hyperlink (where possible) or URL to the review you are re-using on the Mangrove website.
+*   Through display of the full Mangrove review that you are re-using, with all fields describedin the [Mangrove Review Standard](https://gitlab.com/plantingspace/mangrove/blob/master/Mangrove_Review_Standard_v1.md)
+*   Through hyperlink (where possible) or URL to the review you are re-using on the Mangrove Website.
 *   Through reference to the Mangrove database when you re-use the data set for aggregation of reviews to a single rating.
 
 
@@ -291,64 +254,54 @@ You are solely responsible for your use of any third-party websites or resources
 
 In an unusual case, the need may arise, or the community may ask us, to address an especially problematic user because of significant disturbance or dangerous behavior. In such cases, we reserve the right, but do not have the obligation to:
 
-
-
-*   Investigate your use of the service (a) to determine whether a violation of these Terms of Use, or other applicable law or policy has occurred, or (b) to comply with any applicable law, legal process, or appropriate governmental request;
 *   Detect, prevent, or otherwise address fraud, security, or technical issues or respond to user support requests;
-*   Refuse, disable, or restrict access to the contribution of any user who violates these Terms of Use;
-*   Ban a user from editing or contributing or block a user's public key or access for actions violating these Terms of Use, including repeat copyright infringement;
+*   Block a user's public key or IP address for actions violating these Terms of Use, including repeat copyright infringement;
 *   Take legal action against users who violate these Terms of Use (including reports to law enforcement authorities); and
-*   Manage otherwise the database and website in a manner designed to facilitate their proper functioning and protect the rights, property, and safety of ourselves and our users, licensors, partners, and the public.
+*   Manage otherwise the Services in a manner designed to facilitate their proper functioning and protect the rights, property, and safety of ourselves and our users, licensors, partners, and the public.
 
-In the interests of our users, in the extreme circumstance that any individual has had his or her public key or access blocked under this provision, he or she is prohibited from creating or using another public key on or seeking access to the database or website, unless we provide explicit permission. Mangrove will not ban a user from editing or contributing or block a user's public key or access solely because of good faith criticism that does not result in actions otherwise violating these Terms of Use or community policies.
+In the interests of our users, in the extreme circumstance that any individual has had his or her public key or IP address blocked under this provision, he or she is prohibited from creating or using another public key or IP address on or seeking access to the Services, unless we provide explicit permission. Mangrove will not block a user's public key or IP address solely because of good faith criticism that does not result in actions otherwise violating these Terms of Use or community policies.
 
 
 ## <span style="text-decoration:underline;">11. Termination</span>
 
-Though we hope you will stay and continue to contribute to the Mangrove data set, you can stop using our services any time. In certain (hopefully unlikely) circumstances it may be necessary for ourselves (as described in Section 10) to terminate part or all of our services, terminate these Terms of Use, block your public key or access, or ban you as a user. If your public key or access is blocked or otherwise terminated for any reason, your contributions will remain publicly available (subject to applicable policies). We reserve the right to suspend or end the services at any time, with or without cause, and with or without notice. Even after your use and participation are banned, blocked or otherwise suspended, these Terms of Use will remain in effect with respect to relevant provisions, including Sections 1, 3, 4, 7, 8, 9-14, and 16.
+Though we hope you will stay and continue to contribute to the Mangrove data set, you can stop using our Services any time. In certain (hopefully unlikely) circumstances it may be necessary for ourselves (as described in Section 10) to terminate part or all of our Services, terminate these Terms of Use, block your public key or IP address. If your public key or IP address is blocked for any reason, your contributions will remain publicly available (subject to applicable policies). We reserve the right to suspend or end the Services at any time, with or without cause, and with or without notice. Even after your use and participation are banned, blocked or otherwise suspended, these Terms of Use will remain in effect with respect to relevant provisions, including Sections 1, 3, 4, 7, 8, 9-14, and 16.
+
+As Mangrove is an open source project and open data set, the source code and all review data are available for download in the Mangrove repository and on the Mangrove Website. In case of termination of our Services, all source code and review data will be available for download for a period of up to 30 days after termination.
 
 
 ## <span style="text-decoration:underline;">12. Disputes and Jurisdiction</span>
 
-Highlighted for emphasis
+**We hope that no serious disagreements arise involving you, but, in the event there is a dispute, we encourage you to seek resolution through the dispute resolution procedures or mechanisms provided by Mangrove. If you seek to file a legal claim against us, you agree to file and resolve it exclusively in a court located in the Canton of Zug, Switzerland. You also agree that the laws of Switzerland will govern these Terms of Use, as well as any legal claim that might arise between you and us (without reference to conflict of laws principles). You agree to submit to the personal jurisdiction of, and agree that venue is proper in, the courts located in the Canton of Zug, Switzerland, in any legal action or proceeding relating to us or these Terms of Use.**
 
-We hope that no serious disagreements arise involving you, but, in the event there is a dispute, we encourage you to seek resolution through the dispute resolution procedures or mechanisms provided by Mangrove. If you seek to file a legal claim against us, you agree to file and resolve it exclusively in a state or federal court located in the Canton of Zug, Switzerland. You also agree that the laws of Switzerland will govern these Terms of Use, as well as any legal claim that might arise between you and us (without reference to conflict of laws principles). You agree to submit to the personal jurisdiction of, and agree that venue is proper in, the courts located in the Canton of Zug, Switzerland, in any legal action or proceeding relating to us or these Terms of Use.
-
-To ensure that disputes are dealt with soon after they arise, you agree that regardless of any statute or law to the contrary, any claim or cause of action you might have arising out of or related to use of our services or these Terms of Use must be filed within the applicable statute of limitations or, if earlier, one (1) year after the pertinent facts underlying such claim or cause of action could have been discovered with reasonable diligence (or be forever barred).
+**To ensure that disputes are dealt with soon after they arise, you agree that regardless of any statute or law to the contrary, any claim or cause of action you might have arising out of or related to use of our services or these Terms of Use must be filed within the applicable statute of limitations or, if earlier, one (1) year after the pertinent facts underlying such claim or cause of action could have been discovered with reasonable diligence (or be forever barred).**
 
 
 ## <span style="text-decoration:underline;">13. Disclaimers</span>
 
-Highlighted for emphasis
+**We do our best to provide informational content to a wide audience, but your use of our services is at your sole risk. We provide these services on an "as is" and "as available" basis, and we expressly disclaim all express or implied warranties of all kinds, including but not limited to the implied warranties of merchantability, fitness for a particular purpose, and non-infringement. We make no warranty that our services will meet your requirements, be safe, secure, uninterrupted, timely, accurate, or error-free, or that your information will be secure.**
 
-We do our best to provide informational content to a very wide audience, but your use of our services is at your sole risk. We provide these services on an "as is" and "as available" basis, and we expressly disclaim all express or implied warranties of all kinds, including but not limited to the implied warranties of merchantability, fitness for a particular purpose, and non-infringement. We make no warranty that our services will meet your requirements, be safe, secure, uninterrupted, timely, accurate, or error-free, or that your information will be secure.
+**We are not responsible for the content, data, or actions of third parties, and you release us, our directors, officers, employees, and agents from any claims and damages, known and unknown, arising out of or in any way connected with any claim you have against any such third parties. No advice or information, whether oral or written, obtained by you from us or through or from our services creates any warranty not expressly stated in these Terms of Use.**
 
-We are not responsible for the content, data, or actions of third parties, and you release us, our directors, officers, employees, and agents from any claims and damages, known and unknown, arising out of or in any way connected with any claim you have against any such third parties. No advice or information, whether oral or written, obtained by you from us or through or from our services creates any warranty not expressly stated in these Terms of Use.
-
-Any material downloaded or otherwise obtained through your use of our services is done at your own discretion and risk, and you will be solely responsible for any damage to your computer system or loss of data that results from the download of any such material. You agree that we have no responsibility or liability for the deletion of, or the failure to store or to transmit, any content or communication maintained by the service. We retain the right to create limits on use and storage at our sole discretion at any time with or without notice.
-
-Some states or jurisdictions do not allow the types of disclaimers in this section, so they may not apply to you either in part or in full depending on the law.
+**Any material downloaded or otherwise obtained through your use of our services is done at your own discretion and risk, and you will be solely responsible for any damage to your computer system or loss of data that results from the download of any such material. You agree that we have no responsibility or liability for the deletion of, or the failure to store or to transmit, any content or communication maintained by the service. We retain the right to create limits on use and storage at our sole discretion at any time with or without notice.**
 
 
 ## <span style="text-decoration:underline;">14. Limitation on Liability</span>
 
-Highlighted for emphasis
-
-PlantingSpace GmbH or Mangrove will not be liable to you or to any other party for any direct, indirect, incidental, special, consequential or exemplary damages, including but not limited to, damages for loss of profits, goodwill, use, data, or other intangible losses, regardless of whether we were advised of the possibility of such damage. In no event shall our liability exceed one thousand U.S. dollars (USD 1000.00) in aggregate. In the case that applicable law may not allow the limitation or exclusion of liability or incidental or consequential damages, the above limitation or exclusion may not apply to you, although our liability will be limited to the fullest extent permitted by applicable law.
+**PlantingSpace GmbH or Mangrove will not be liable to you or to any other party for any direct, indirect, incidental, special, consequential or exemplary damages, including but not limited to, damages for loss of profits, goodwill, use, data, or other intangible losses, regardless of whether we were advised of the possibility of such damage. In no event shall our liability exceed one thousand Swiss Francs (CHF 1000.00) in aggregate. In the case that applicable law may not allow the limitation or exclusion of liability or incidental or consequential damages, the above limitation or exclusion may not apply to you, although our liability will be limited to the fullest extent permitted by applicable law.**
 
 
 ## <span style="text-decoration:underline;">15. Modifications to these Terms of Use</span>
 
 Just as the Mangrove community's input is essential for the growth and maintenance of the open data set, we believe that community input is essential for these Terms of Use to properly serve our users. It is also essential for a fair contract. Therefore, we will provide these Terms of Use, as well as any substantial future revisions of these Terms of Use to the community for comment at least two weeks before the end of the comment period. The community will be encouraged to translate the proposed revision in other languages as appropriate. For changes for legal or administrative reasons, to correct an inaccurate statement, or changes in response to community comments, we will provide at least three (3) days' notice. 
 
-Because it may be necessary to modify these Terms of Use from time to time, we will provide notice of such modifications on the Mangrove website and the opportunity to comment via GitLab. A pull request will be made in the Mangrove GitLab repository with the proposed changes to the Terms of Use, and will be available for comments and discussion. However, we ask that you please periodically review the most up-to-date version of these Terms of Use. Your continued use of our services after the new Terms of Use become official following the notice and review period constitutes an acceptance of these Terms of Use on your part. For the protection of the Wikimedia Foundation and other users like yourself, if you do not agree with our Terms of Use, you cannot use our services.
+Because it may be necessary to modify these Terms of Use from time to time, we will provide notice of such modifications on the Mangrove Website and the opportunity to comment via GitLab. A pull request will be made in the [Mangrove GitLab repository](https://gitlab.com/plantingspace/mangrove) with the proposed changes to the Terms of Use, and will be available for comments and discussion. However, we ask that you please periodically review the most up-to-date version of these Terms of Use. Your continued use of our services after the new Terms of Use become official following the notice and review period constitutes an acceptance of these Terms of Use on your part. For the protection of the Wikimedia Foundation and other users like yourself, if you do not agree with our Terms of Use, you cannot use our services.
 
 
 ## <span style="text-decoration:underline;">16. Other Terms</span>
 
 These Terms of Use do not create an employment, agency, partnership, or joint venture relationship between you and us, Mangrove, or the PlantingSpace GmbH. If you have not signed a separate agreement with us, these Terms of Use are the entire agreement between you and us. If there is any conflict between these Terms of Use and a signed written agreement between you and us, the signed agreement will control.
 
-You agree that we may provide you with notices, including those regarding changes to the Terms of Use, by email, or postings on the Mangrove website.
+You agree that we may provide you with notices, including those regarding changes to the Terms of Use, by email, or postings on the Mangrove Website.
 
 If in any circumstance, we do not apply or enforce any provision of these Terms of Use, it is not a waiver of that provision.
 
@@ -361,11 +314,12 @@ If any provision or part of a provision of these Terms of Use is found unlawful,
 
 ## <span style="text-decoration:underline;">Thank You!</span>
 
-We appreciate your taking the time to read these Terms of Use, and we are very happy to have you contributing to the Mangrove open data set and using our services. Through your contribution you are helping to build a commons on the web - a public space accessible to all, without the influence of a central authority. ...
+We appreciate your taking the time to read these Terms of Use, and we are very happy to have you contributing to the Mangrove open data set and using our Services. Through your contribution you are helping to build a commons on the web - a public space accessible to all.
 
-**These Terms of Use are open for comments by the community and will become effective on December 1st, 2019, subject to changes based on community input.**
+**These Terms of Use went into effect on November 1st, 2019.**
 
-**Previous versions of the terms: None**
+**Previous versions of the terms:** 
+**None**
 
 In the event of any differences in meaning between the original English version and a translation, the original English version takes precedence.
 
