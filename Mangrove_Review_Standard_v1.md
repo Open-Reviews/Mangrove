@@ -146,9 +146,8 @@ For the dataset to be useful for as many people and organisations as possible, w
 - Be [reliable](#reliability): there should be a set of mechanisms to allow aggregation algorithms to generate a reliable single rating, including the possibility to identify reviews that violate the terms of service, while at the same time upholding high transparency standards towards users.  
 - Enable decision-making: the review format should ensure that the data is well-structured so that reviews can be  aggregated to a single rating; it should allow for [meaningful content](#meaningful-content) that can be processed by different filtering and recommendation algorithms to generate useful insights for different parties; and the data format should be extensible to fit changing decision-making needs.
 - Be unambiguous: each review should contain an [unambiguous](#clear-object-identification) reference to the Object that is reviewed.
-- Be easy to use and develop on: we try to make use of [existing standards](#standards-reuse) as much as possible
 
-#### Reliability
+#### 1.1. Reliability
 
 Reliability is a key element of the usefulness of the dataset, and requires several mechanisms:
 
@@ -157,7 +156,7 @@ Reliability is a key element of the usefulness of the dataset, and requires seve
 - possibility for the community to highlight reviews that are particularly useful, or reviews that violate the terms of service: we introduce a new URN scheme allowing for this highlighting
 - proof of purchase or verified purchase: we will add additional fields to the metadata to capture this feature, in cooperation with the first partners to integrate Mangrove into their service.
 
-#### Meaningful content
+#### 1.2. Meaningful content
 
 Each review should contain at least some useful input about the Object, and at the same time be able to include flexibly a set of additional information. 
 
@@ -165,15 +164,9 @@ The minimal input requirement is to provide either a rating or an opinion descri
 
 Flexible additional information: It should be possible to include additional data with the review. This can include references to media files such as pictures or audio, or metadata which may be useful to the readers or processing algorithms to put the experience into context.
 
-#### Clear object identification
+#### 1.3. Clear object identification
 
 Different objects can by identified by different identifiers, that is why multiple identifier schemes are allowed. Each identifier scheme aims to provide a way to obtain unambiguous id for the object being reviewed.
-
-#### Standards reuse
-
-Where possible and practical, existing standards should be leveraged. Mangrove leverages CBOR, URI, 'geo' URI, URL, URN, LEI, FOAF vocabulary and public key cryptography standard based on FIDO2 and WebCrypto.
-For the overall claim framework [Decentralized Identifiers (DIDs)](https://w3c-ccg.github.io/did-spec/) were considered; however, that emerging standard significantly differs in original goals and specifies a number of components not necessary in Mangrove.
-For message encoding saltpack.org was considered, however [lack of activity around specification](https://github.com/keybase/saltpack/issues) does not inspire confidence. 
 
 ### 2. Decentralisation
 
@@ -187,6 +180,11 @@ The only identifiers being used are the public keys which help to establish reli
 
 An additional format will be established that will allow to link additional public keys to the same identity (e.g., public keys generated with different devices).
 
+### 4. Standards reuse
+
+Where possible and practical, existing standards should be leveraged. Mangrove leverages CBOR, URI, 'geo' URI, URL, URN, LEI, FOAF vocabulary and public key cryptography standard based on FIDO2 and WebCrypto.
+For the overall claim framework [Decentralized Identifiers (DIDs)](https://w3c-ccg.github.io/did-spec/) were considered; however, that emerging standard significantly differs in original goals and specifies a number of components not necessary in Mangrove.
+For message encoding saltpack.org was considered, however [lack of activity around specification](https://github.com/keybase/saltpack/issues) does not inspire confidence. 
 
 ## Change or ask
 
