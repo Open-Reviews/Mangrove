@@ -1,3 +1,5 @@
+# Mangrove Review Standard (MaReSt) v1
+
 The mission of the Mangrove initiative is to create a public space on the Internet where people can freely share insights with each other and make better decisions based on open data. Mangrove contributes to the Open and Privacy movements by proposing an alternative architecture that is characterized by a **separation of data and products**, and that **respects the right to privacy**:
 
 * The **data**, representing the insights, knowledge and wisdom of the public, is open and freely available to all. As such, it provides a valuable foundation for many usecases, including research, social or commercial purposes.
@@ -8,9 +10,7 @@ We want this open dataset to be as useful as possible, to as many people and org
 
 The standard was developed based on a set of [principles](#principles-of-the-data-format-specification) that guided the design decisions made.
 
-# Mangrove Review Standard (MaReSt) v1
-
-### Definitions
+## Definitions
 
 **Mangrove review** ("Review"): a statement by a reviewer about an object, whereby the review is provided according to the MaReSt, and contains, among other things, either a rating (a number between 1 and 100) for the object, or an opinion (a piece of text describing the experience) about the object, or both.
 
@@ -29,7 +29,6 @@ The standard was developed based on a set of [principles](#principles-of-the-dat
 ### Changes currently being considered
 
 - using compressed ECDSA public keys
-- using DateTime as described in ISO 8601 instead of Unix time
 - using [JWT](https://jwt.io/) format for signed reviews
 
 ## Mangrove Review Example
@@ -140,28 +139,18 @@ Additional fields to be added, including items such as proof-of-purchase, identi
 
 ## Principles of the data format specification
 
-### Usefulness
+### 1. Usefulness
 
 For the dataset to be useful for as many people and organisations as possible, we believe it needs to ensure a few key requirements, each explained in more detail further below.
 
 - Be reliable: there should be [a set of mechanisms](#reliability) to allow aggregation algorithms to generate a reliable single rating, including the possibility to identify reviews that violate the terms of service, while at the same time upholding high transparency standards towards users.  
-- Enable decision-making: the review format should ensure that the data is well-structured so that reviews can be  aggregated to a single rating; it should allow for [meaningful content](#meaningful-content) that can be processed by different filtering and recommendation algorithms to generate useful insights for different parties; and the data format should be [upgradeable](#upgradeability) to fit changing decision-making needs.
+- Enable decision-making: the review format should ensure that the data is well-structured so that reviews can be  aggregated to a single rating; it should allow for [meaningful content](#meaningful-content) that can be processed by different filtering and recommendation algorithms to generate useful insights for different parties; and the data format should be extensible to fit changing decision-making needs.
 - Be unambiguous: each review should contain an [unambiguous](#clear-object-identification) reference to the Object that is reviewed.
 - Be easy to use and develop on: we try to make use of [existing standards](#standards-reuse) as much as possible
 
 ### Decentralisation
 
-It should be possible to issue reviews and establish identity without a central authority. The core specification allows anyone to create a review by generating a key pair and signing the review with the private key. Object identifier type specifications also favor any IDs which can be determined without a central authority.
-
-### Privacy
-
-Reviewers should be able to reveal as little information about themselves as they wish. This is why the format does not require inclusion of any personally identifiable data.
-
-The only identifiers being used are the public keys which help to establish reliability of a reviewer. These can be easily generated and used on a one-off basis or in a persistent manner. This means that reviewers can create as many pairs of keys as they wish, although higher reliability is assigned to a reviewer with a longer track-record of high-quality reviews linked to the same public key.
-
-An additional format will be established that will allow to link additional public keys to the same identity (e.g., public keys generated with different devices).
-
-### Reliability
+#### Reliability
 
 Reliability is a key element of the usefulness of the dataset, and requires several mechanisms:
 
@@ -170,7 +159,7 @@ Reliability is a key element of the usefulness of the dataset, and requires seve
 - possibility for the community to highlight reviews that are particularly useful, or reviews that violate the terms of service: we introduce a new URN scheme allowing for this highlighting
 - proof of purchase or verified purchase: we will add additional fields to the metadata to capture this feature, in cooperation with the first partners to integrate Mangrove into their service.
 
-### Meaningful content
+#### Meaningful content
 
 Each review should contain at least some useful input about the Object, and at the same time be able to include flexibly a set of additional information. 
 
@@ -178,19 +167,28 @@ The minimal input requirement is to provide either a rating or an opinion descri
 
 Flexible additional information: It should be possible to include additional data with the review. This can include references to media files such as pictures or audio, or metadata which may be useful to the readers or processing algorithms to put the experience into context.
 
-### Upgradeability
+#### Clear object identification
 
-It should be possible to upgrade the formats, thus each Review includes a version number.
+Different objects can by identified by different identifiers, that is why multiple identifier schemes are allowed. Each identifier scheme aims to provide a way to obtain unambiguous id for the object being reviewed.
 
-### Clear object identification
-
-Different objects can by identified by different identifiers, that is why multiple identifier types are allowed. Each identifier type aims to provide a way to obtain unambiguous id for the object being reviewed.
-
-### Standards reuse
+#### Standards reuse
 
 Where possible and practical, existing standards should be leveraged. Mangrove leverages CBOR, URI, 'geo' URI, URL, URN, LEI, FOAF vocabulary and public key cryptography standard based on FIDO2 and WebCrypto.
 For the overall claim framework [Decentralized Identifiers (DIDs)](https://w3c-ccg.github.io/did-spec/) were considered; however, that emerging standard significantly differs in original goals and specifies a number of components not necessary in Mangrove.
 For message encoding saltpack.org was considered, however [lack of activity around specification](https://github.com/keybase/saltpack/issues) does not inspire confidence. 
+
+### 2. Decentralisation
+
+It should be possible to issue reviews and establish identity without a central authority. The core specification allows anyone to create a review by generating a key pair and signing the review with the private key. Object identifier type specifications also favor any IDs which can be determined without a central authority.
+
+### 3. Privacy
+
+Reviewers should be able to reveal as little information about themselves as they wish. This is why the format does not require inclusion of any personally identifiable data.
+
+The only identifiers being used are the public keys which help to establish reliability of a reviewer. These can be easily generated and used on a one-off basis or in a persistent manner. This means that reviewers can create as many pairs of keys as they wish, although higher reliability is assigned to a reviewer with a longer track-record of high-quality reviews linked to the same public key.
+
+An additional format will be established that will allow to link additional public keys to the same identity (e.g., public keys generated with different devices).
+
 
 ## Change or ask
 
