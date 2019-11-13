@@ -36,13 +36,13 @@ export default {
         this.$store.commit(EMPTY_URIS),
         this.$store.commit(ADD_URIS, this.searchUrl(this.query)),
         //this.$store.commit(ADD_URIS, this.searchGeo(this.query)),
-        this.searchLei(this.query).then(uris =>
-          this.$store.commit(ADD_URIS, uris)
+        this.searchLei(this.query).then(subs =>
+          this.$store.commit(ADD_URIS, subs)
         )
       ]).then(() => {
         // Try to select the first URI from the list.
-        const first = this.$store.state.uris[0];
-        if (first) this.$store.dispatch("requestReviews", { uri: first.uri });
+        const first = this.$store.state.subs[0];
+        if (first) this.$store.dispatch("requestReviews", { sub: first.sub });
       });
     },
     searchUrl(input) {
@@ -55,7 +55,7 @@ export default {
         input.startsWith("http") ? input : `https://${input}`
       );
       return url
-        ? [{ uri: `${url.protocol}//${url.hostname}`, scheme: url.protocol }]
+        ? [{ sub: `${url.protocol}//${url.hostname}`, scheme: url.protocol }]
         : [];
     },
     searchGeo() {
@@ -83,7 +83,7 @@ export default {
                       .then(entity => entity.attributes)
                       .then(attrs => {
                         return {
-                          uri: `urn:LEI:${attrs.lei}`,
+                          sub: `urn:LEI:${attrs.lei}`,
                           scheme: "urn:LEI",
                           description: [
                             attrs.entity.legalName.name,
@@ -100,7 +100,7 @@ export default {
             return Array.from(new Set(entities)).filter(
               (entity, index, self) =>
                 entity &&
-                self.findIndex(e => e && e.uri === entity.uri) === index
+                self.findIndex(e => e && e.sub === entity.sub) === index
             );
           });
         })

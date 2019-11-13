@@ -1,26 +1,28 @@
 <template>
   <div>
-    <input v-model="displayName" placeholder="pick a name to display" />
+    <input v-model="nickname" placeholder="pick a name to display" />
     <br />
     <input v-model="age" placeholder="your age" />
     <br />
-    <input v-model="lastName" placeholder="your last name" />
+    <input v-model="family_name" placeholder="your last name" />
     <br />
-    <input v-model="firstName" placeholder="your first name" />
+    <input v-model="given_name" placeholder="your first name" />
     <br />
     <input v-model="gender" placeholder="your gender" />
   </div>
 </template>
 
 <script>
+import { SET_META } from "../mutation-types";
+
 export default {
   computed: {
-    displayName: {
+    nickname: {
       get() {
-        return this.$store.state.meta.displayName;
+        return this.$store.state.meta.nickname;
       },
       set(value) {
-        this.$store.commit("meta", ["displayName", value]);
+        this.$store.commit(SET_META, ["nickname", value]);
       }
     },
     age: {
@@ -28,23 +30,23 @@ export default {
         return this.$store.state.meta.age;
       },
       set(value) {
-        this.$store.commit("meta", ["age", value]);
+        this.$store.commit(SET_META, ["age", value]);
       }
     },
-    lastName: {
+    family_name: {
       get() {
-        return this.$store.state.meta.lastName;
+        return this.$store.state.meta.family_name;
       },
       set(value) {
-        this.$store.commit("meta", ["lastName", value]);
+        this.$store.commit(SET_META, ["family_name", value]);
       }
     },
-    firstName: {
+    given_name: {
       get() {
-        return this.$store.state.meta.firstName;
+        return this.$store.state.meta.given_name;
       },
       set(value) {
-        this.$store.commit("meta", ["firstName", value]);
+        this.$store.commit(SET_META, ["given_name", value]);
       }
     },
     gender: {
@@ -52,7 +54,7 @@ export default {
         return this.$store.state.meta.gender;
       },
       set(value) {
-        this.$store.commit("meta", ["gender", value]);
+        this.$store.commit(SET_META, ["gender", value]);
       }
     }
   }

@@ -5,6 +5,7 @@ export const ADD_URIS = "ADD_URIS";
 export const SELECT_URI = "SELECT_URI";
 export const ADD_REVIEWS = "ADD_REVIEWS";
 export const EMPTY_URIS = "EMPTY_URIS";
+export const SET_META = "SET_META";
 export const IMPORT_ERROR = "IMPORT_ERROR";
 export const SEARCH_ERROR = "SEARCH_ERROR";
 export const REQUEST_ERROR = "REQUEST_ERROR";

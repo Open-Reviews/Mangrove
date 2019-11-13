@@ -1,12 +1,12 @@
 <template>
-  <div v-if="uris[0]">
+  <div v-if="subs[0]">
     <ul>
-      <li v-for="object in uris" :key="object.uri">
-        {{ object.uri }} {{ object.description }}
-        <button v-on:click="request(object.uri)">
+      <li v-for="object in subs" :key="object.sub">
+        {{ object.sub }} {{ object.description }}
+        <button v-on:click="request(object.sub)">
           Select
         </button>
-        <span v-if="object.uri === $store.state.selectedUri"> selected </span>
+        <span v-if="object.sub === $store.state.selectedUri"> selected </span>
       </li>
     </ul>
   </div>
@@ -15,13 +15,13 @@
 <script>
 export default {
   computed: {
-    uris: function() {
-      return this.$store.state.uris;
+    subs: function() {
+      return this.$store.state.subs;
     }
   },
   methods: {
-    request(uri) {
-      this.$store.dispatch("requestReviews", { uri });
+    request(sub) {
+      this.$store.dispatch("requestReviews", { sub });
     }
   }
 };

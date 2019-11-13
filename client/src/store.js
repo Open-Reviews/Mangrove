@@ -10,8 +10,8 @@ const state = {
   query: null,
   keyPair: null,
   publicKey: null,
-  // Array of objects { uri: ..., scheme: ..., description: ... }
-  uris: [],
+  // Array of objects { sub: ..., scheme: ..., description: ... }
+  subs: [],
   selectedUri: null,
   // Object from MaReSi to reviews, ensuring only unique ones are stored.
   reviews: {},
@@ -34,14 +34,14 @@ const mutations = {
   [t.QUERY](state, newquery) {
     state.query = newquery;
   },
-  [t.ADD_URIS](state, newuris) {
-    state.uris.push(...newuris);
+  [t.ADD_URIS](state, newsubs) {
+    state.subs.push(...newsubs);
   },
   [t.EMPTY_URIS](state) {
-    state.uris = [];
+    state.subs = [];
   },
-  [t.SELECT_URI](state, uri) {
-    state.selectedUri = uri;
+  [t.SELECT_URI](state, sub) {
+    state.selectedUri = sub;
   },
   [t.ADD_REVIEWS](state, newreviews) {
     newreviews.map(r => Vue.set(state.reviews, r.signature, r));
@@ -62,7 +62,7 @@ const mutations = {
   showmeta(state, bool) {
     state.showMeta = bool;
   },
-  meta(state, [key, value]) {
+  [t.SET_META](state, [key, value]) {
     state.meta[key] = value;
   },
   [t.IMPORT_ERROR](state, error) {
@@ -116,7 +116,7 @@ const actions = {
     dispatch("setKeypair", keypair);
   },
   requestReviews({ commit }, params) {
-    commit(t.SELECT_URI, params.uri);
+    commit(t.SELECT_URI, params.sub);
     // Get reviews and put them in the reviews field.
     Vue.prototype.axios
       .get(

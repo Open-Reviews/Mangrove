@@ -79,10 +79,9 @@ export default {
     submitReview: async function() {
       // Add mandatory fields.
       let claim = {
-        version: 1,
-        publickey: this.$store.state.publicKey,
-        timestamp: Math.floor(Date.now() / 1000),
-        uri: this.$store.state.selectedUri
+        iss: this.$store.state.publicKey,
+        iat: Math.floor(Date.now() / 1000),
+        sub: this.$store.state.selectedUri
       };
       // Add field only if it is not empty.
       if (this.rating) claim.rating = this.rating * 25 - 25;
