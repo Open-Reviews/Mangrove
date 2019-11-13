@@ -142,7 +142,7 @@ Additional fields to be added, including items such as proof-of-purchase, identi
 
 ### Usefulness
 
-For the dataset to be useful for as many people and organisations as possible, we believe it needs to ensure 3 key requirements, each explained in more detail further below.
+For the dataset to be useful for as many people and organisations as possible, we believe it needs to ensure a few key requirements, each explained in more detail further below.
 
 - Be reliable: there should be [a set of mechanisms](#reliability) to allow aggregation algorithms to generate a reliable single rating, including the possibility to identify reviews that violate the terms of service, while at the same time upholding high transparency standards towards users.  
 - Enable decision-making: the review format should ensure that the data is well-structured so that reviews can be  aggregated to a single rating; it should allow for [meaningful content](#meaningful-content) that can be processed by different filtering and recommendation algorithms to generate useful insights for different parties; and the data format should be [upgradeable](#upgradeability) to fit changing decision-making needs.
