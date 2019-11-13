@@ -2,11 +2,11 @@ The mission of the Mangrove initiative is to create a public space on the Intern
 
 * The **data**, representing the insights, knowledge and wisdom of the public, is open and freely available to all. As such, it provides a valuable foundation for many usecases, including research, social or commercial purposes.
 * **Products** (i.e., applications and services) built upon crowd-sourced or publicly funded data should make profit based on innovation and technological merit, and not on keeping the data proprietary. An architecture that separates data from products helps remove barriers to entry and avoids information silos.
-* The **privacy** of contributors cannot be compromised in Mangrove, as no personally identifyable information and no metadata is collected on the 'data level'. If service providers need to collect user data to enable their services, they may do so in their user interfaces on the 'product level', affecting only those users who trust their particular services.
+* The **privacy** of contributors cannot be compromised in Mangrove, as no personally identifyable information and no metadata is collected on the 'data level'. If service providers need to collect user data to enable their services, they may do so in their user interfaces on the 'product level', affecting only those users who trust their particular services. 
 
 We want this open dataset to be as useful as possible, to as many people and organisations as possible. Interoperability of data is an important element to reach this goal. To enable interoperability, we need agreed-upon technical standards. Therefore, the Mangrove initiative proposes the **Mangrove Review Standard** as a way for people to represent insights in the form of reviews. We invite the Open and Privacy communities to contribute to this standard.
 
-The standard was developed based on a set of [principles](#principles-of-the-data-format-specification).
+The standard was developed based on a set of [principles](#principles-of-the-data-format-specification) that guided the design decisions made.
 
 # Mangrove Review Standard (MaReSt) v1
 
@@ -22,13 +22,9 @@ The standard was developed based on a set of [principles](#principles-of-the-dat
 
 **Aggregation algorithm**: an algorithm that aggregates individual reviews into a single rating for an object and highlights the most useful ones.
 
-**Identity of reviewers**: to ensure high reliability of reviews in a system that works without a central authority holding user names and passwords of reviewers, Mangrove uses public key cryptography to create persistent, yet privacy-preserving identifiers for Reviewers. Reviewers are assigned a pair of keys, a public and a private key, whereby they use the private key to sign a review. Reviewers can create as many pairs of keys as they wish, although higher reliability is assigned to a reviewer with a longer track-record of high-quality reviews linked to the same public key.
+**Mangrove servers**: servers that host data compatible with the Mangrove Review Standard.
 
-**ECDSA**: Elliptic Curve Digital Signature Algorithm, used in public key cryptography to create a digital signature.
-
-**Usability of MaReSt**: the standard can be used with original Mangrove servers as well as separate databases.
-
-**Mangrove servers**: the servers that host the Mangrove open dataset, maintained by the Mangrove initiative.
+**Original Mangrove server**: server maintained by the Mangrove initiative. 
 
 ### Changes currently being considered
 
@@ -144,9 +140,13 @@ Additional fields to be added, including items such as proof-of-purchase, identi
 
 ## Principles of the data format specification
 
-### Upgradeability
+### Usefulness
 
-It should be possible to upgrade the formats, thus each Review includes a version number.
+For the dataset to be useful for as many people and organisations as possible, we believe it needs to ensure 3 key requirements, each explained in more detail further below.
+
+- Be reliable: there should be a set of mechanisms to allow aggregation algorithms to generate a reliable single rating, including the possibility to disregard reviews that violate the terms of service, while at the same time upholding high transparency standards towards users.  
+- Enable decision-making: the review format should ensure that the data is well-structured so that reviews can be  aggregated to a single rating; it should allow for meaningful metadata that can be processed by different filtering and recommendation algorithms to generate useful insights for different parties; and the data format should be upgradeable to fit changing decision-making needs.
+- Be unambiguous: each review should contain an unambiguous reference to the Object that is reviewed.
 
 ### Decentralisation
 
@@ -156,7 +156,38 @@ It should be possible to issue reviews and establish identity without a central 
 
 Reviewers should be able to reveal as little information about themselves as they wish. This is why the format does not require inclusion of any personally identifiable data.
 
-The only identifiers being used are the public keys which help to establish reliability of a reviewer. These can be easily generated and used on a one-off basis or in a persistent manner. 
+The only identifiers being used are the public keys which help to establish reliability of a reviewer. These can be easily generated and used on a one-off basis or in a persistent manner. This means that reviewers can create as many pairs of keys as they wish, although higher reliability is assigned to a reviewer with a longer track-record of high-quality reviews linked to the same public key.
+
+An additional format will be established that will allow to link additional public keys to the same identity (e.g., public keys generated with different devices).
+
+### Reliability
+
+Reliability is a key element of the usefulness of the dataset, and requires several mechanisms:
+
+- a notion of a persistent identity to establish a track record for a reviewer. This necessitates a special approach in an environment aiming to work without a central authority holding user names and passswords that would allow to identify the users personally. Mangrove uses public key cryptography to allow the persistent association of reviewers with public keys.
+- time relevance: each review includes a time stamp to ensure that older reviews can be given less weight and that reviewers can cease to use a selected public key.
+- possibility for the community to highlight reviews that are particularly useful, or reviews that violate the terms of service: we introduce a new URN scheme allowing for this highlighting
+- 
+
+
+
+### Meaningful content
+
+Each review should contain at least some useful input about the object, that is why leaving either rating or opinion is mandatory for each review.
+
+To make determination of review sentiment easier, a rating field is used. This field provides a numerical value for how likely the reviewer is to recommend the object. The range of values is kept at 100 to ensure a range of rating schemes: percentage rating (1-100), 1-5 stars (1, 25, 50, 75, 100), or thumbs up/down (1, 100).
+
+### Flexible additional information
+
+It should be possible for the reviewer or for the service they use to submit a review to leave additional data with the review. This can include references to pictures, audio or metadata which may be useful to the readers or processing algorithms.
+
+### Upgradeability
+
+It should be possible to upgrade the formats, thus each Review includes a version number.
+
+### Clear object identification
+
+Different objects can by identified by different identifiers, that is why multiple identifier types are allowed. Each identifier type aims to provide a way to obtain unambiguous id for the object being reviewed.
 
 ### Standards reuse
 
@@ -164,35 +195,6 @@ Where possible and practical, existing standards should be leveraged. Mangrove l
 For the overall claim framework [Decentralized Identifiers (DIDs)](https://w3c-ccg.github.io/did-spec/) were considered; however, that emerging standard significantly differs in original goals and specifies a number of components not necessary in Mangrove.
 For message encoding saltpack.org was considered, however [lack of activity around specification](https://github.com/keybase/saltpack/issues) does not inspire confidence. 
 
-### Usefulness
-
-Reviews should be as useful to Users as possible. They should also contain enough data to be meaningfully processed by filtering and recommendation algorithms. 
-
-Reliability is a key element of usefulness, and requires a notion of a persistent identity in order to establish a track record for a reviewer. This necessitates a special approach in an environment aiming to work without a central authority holding user names and passswords to identify the users personally. Mangrove uses public key cryptography to allow the persistent association of reviewers with public keys.
-
-#### Track record
-
-To establish reliability of reviews it is useful to maintain a track record of a reviewer. To be able to do that in a privacy-preserving manner, reviews contain a public key which can be used multiple times by the same reviewer. The longer the track record of high-quality reviews of a reviewer, the higher the associated reliability.
-
-An additional format will be established to link additional public keys to the same identity (e.g., public keys generated with different devices).
-
-#### Time relevance
-
-Each review includes a time stamp to ensure that older reviews can be given less weight and that reviewers can cease to use a selected public key.
-
-#### Clear object identification
-
-Different objects can by identified by different identifiers, that is why multiple identifier types are allowed. Each identifier type aims to provide a way to obtain unambiguous id for the object being reviewed.
-
-#### Meaningful content
-
-Each review should contain at least some useful input about the object, that is why leaving either rating or opinion is mandatory for each review.
-
-To make determination of review sentiment easier, a rating field is used. This field provides a numerical value for how likely the reviewer is to recommend the object. The range of values is kept at 100 to ensure a range of rating schemes: percentage rating (1-100), 1-5 stars (1, 25, 50, 75, 100), or thumbs up/down (1, 100).
-
-#### Flexible additional information
-
-It should be possible for the reviewer or for the service they use to submit a review to leave additional data with the review. This can include references to pictures, audio or metadata which may be useful to the readers or processing algorithms.
 
 ## Change or ask
 
