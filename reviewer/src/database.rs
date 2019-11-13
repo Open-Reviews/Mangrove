@@ -11,10 +11,9 @@ pub struct DbConn(diesel::PgConnection);
 #[derive(Default, Debug, FromForm)]
 pub struct Query {
     pub signature: Option<String>,
-    pub version: Option<i16>,
-    pub publickey: Option<String>,
-    pub timestamp: Option<i64>,
-    pub uri: Option<String>,
+    pub iss: Option<String>,
+    pub iat: Option<i64>,
+    pub sub: Option<String>,
     pub rating: Option<i16>,
     pub opinion: Option<String>,
 }
@@ -37,18 +36,15 @@ impl DbConn {
         if let Some(s) = &query.signature {
             f = Box::new(f.and(signature.eq(s)))
         }
-        if let Some(s) = &query.version {
-            f = Box::new(f.and(version.eq(s)))
+        if let Some(s) = &query.iss {
+            f = Box::new(f.and(iss.eq(s)))
         }
-        if let Some(s) = &query.publickey {
-            f = Box::new(f.and(publickey.eq(s)))
-        }
-        if let Some(s) = &query.timestamp {
-            f = Box::new(f.and(timestamp.eq(s)))
+        if let Some(s) = &query.iat {
+            f = Box::new(f.and(iat.eq(s)))
         }
         // Allow prefix match.
-        if let Some(s) = &query.uri {
-            f = Box::new(f.and(uri.eq(s)))
+        if let Some(s) = &query.sub {
+            f = Box::new(f.and(sub.eq(s)))
         }
         if let Some(s) = &query.rating {
             f = Box::new(f.and(rating.eq(s)))

@@ -7,10 +7,8 @@ use std::collections::HashMap;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use url::Url;
 
-pub type Version = i16;
 pub type Rating = i16;
 
-const V1: Version = 1;
 const MAX_RATING: Rating = 100;
 const MAX_REVIEW_LENGTH: usize = 500;
 
@@ -24,10 +22,9 @@ struct Metadata(HashMap<String, String>);
 #[primary_key(signature)]
 pub struct Review {
     pub signature: String,
-    pub version: Version,
-    pub publickey: String,
-    pub timestamp: i64,
-    pub uri: String,
+    pub iss: String,
+    pub iat: i64,
+    pub sub: String,
     pub rating: Option<Rating>,
     pub opinion: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -38,10 +35,12 @@ pub struct Review {
 
 #[derive(Serialize, PartialEq, Debug)]
 struct UnsignedReview<'a> {
-    version: Version,
-    publickey: &'a str,
-    timestamp: i64,
-    uri: &'a str,
+    // Reviewer public key.
+    iss: &'a str,
+    // Time at which the review was signed.
+    iat: i64,
+    // URI of the object that is being reviewed.
+    sub: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
     rating: Option<Rating>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -52,21 +51,11 @@ struct UnsignedReview<'a> {
     metadata: Option<Metadata>,
 }
 
-fn check_version(version: Version) -> Result<(), Error> {
-    if version == V1 {
-        Ok(())
-    } else {
-        Err(Error::Incorrect(
-            "Only version 1 of Mangrove Data Format is supported.".into(),
-        ))
-    }
-}
-
-fn check_timestamp(timestamp: Duration) -> Result<(), Error> {
+fn check_timestamp(iat: Duration) -> Result<(), Error> {
     let unix_time = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .expect("SystemTime is not before UNIX EPOCH.");
-    if unix_time < timestamp {
+    if unix_time < iat {
         Err(Error::Incorrect("Claim from the future.".into()))
     } else {
         Ok(())
@@ -91,7 +80,7 @@ fn check_opinion(opinion: &str) -> Result<(), Error> {
 
 fn check_signature(msg: &UnsignedReview, sig: &str) -> Result<(), Error> {
     info!("Unsigned review: {:?}", serde_json::to_string(msg));
-    let pubkey_bytes = hex::decode(&msg.publickey)?;
+    let pubkey_bytes = hex::decode(&msg.iss)?;
     let sig_bytes = hex::decode(&sig)?;
     let msg_bytes = serde_cbor::to_vec(msg)?;
     let pubkey = untrusted::Input::from(&pubkey_bytes);
@@ -202,22 +191,22 @@ fn check_short_string(key: &str, value: &str) -> Result<(), Error> {
 
 fn check_metadata(key: &str, value: &str) -> Result<(), Error> {
     match key {
-        "originURI" => match Url::parse(value) {
+        "client_uri" => match Url::parse(value) {
             Ok(_) => Ok(()),
             Err(e) => Err(Error::Incorrect(format!(
-                "Unable to parse originURI: {}",
+                "Unable to parse client_uri: {}",
                 e
             ))),
         },
-        "accountName" => check_short_string(key, value),
-        "displayName" => check_short_string(key, value),
+        "nickname" => check_short_string(key, value),
+        "preferred_username" => check_short_string(key, value),
         "age" => match value.parse::<u8>() {
             Ok(n) if n <= 200 => Ok(()),
             _ => Err(Error::Incorrect("Provided age is incorrect.".into())),
         },
         "birthday" => check_short_string(key, value),
-        "lastName" => check_short_string(key, value),
-        "firstName" => check_short_string(key, value),
+        "family_name" => check_short_string(key, value),
+        "given_name" => check_short_string(key, value),
         "gender" => check_short_string(key, value),
         "openid" => check_short_string(key, value),
         _ => Err(Error::Incorrect(
@@ -238,17 +227,15 @@ impl Review {
             None => None,
         };
         let msg = UnsignedReview {
-            version: self.version,
-            publickey: &self.publickey,
-            timestamp: self.timestamp,
-            uri: &self.uri,
+            iss: &self.iss,
+            iat: self.iat,
+            sub: &self.sub,
             rating: self.rating,
             opinion: self.opinion.as_ref(),
             extradata,
             metadata,
         };
-        check_version(self.version)?;
-        check_timestamp(Duration::from_secs(self.timestamp as u64))?;
+        check_timestamp(Duration::from_secs(self.iat as u64))?;
         if self.rating.is_none() && self.opinion.is_none() {
             return Err(Error::Incorrect(
                 "Review must contain either a rating or a review.".into(),
@@ -268,7 +255,7 @@ impl Review {
         msg.extradata.map_or(Ok(()), |e| {
             e.0.iter().map(|h| check_extrahash(&h)).collect()
         })?;
-        check_uri(conn, &self.uri)?;
+        check_uri(conn, &self.sub)?;
         Ok(true)
     }
 }

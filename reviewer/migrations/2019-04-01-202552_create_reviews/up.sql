@@ -1,10 +1,9 @@
 -- Your SQL goes here
 CREATE TABLE reviews (
   signature text PRIMARY KEY,
-  version smallint NOT NULL,
-  publicKey text NOT NULL,
-  timestamp bigint NOT NULL,
-  uri text NOT NULL,
+  iss text NOT NULL,
+  iat bigint NOT NULL,
+  sub text NOT NULL,
   rating smallint,
   opinion text,
   extradata text,
