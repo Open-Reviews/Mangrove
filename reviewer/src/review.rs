@@ -3,6 +3,7 @@ use super::error::Error;
 use super::schema::reviews;
 use ring::signature;
 use serde::{Deserialize, Serialize};
+use std::borrow::Cow;
 use std::collections::HashMap;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use url::Url;
@@ -89,8 +90,14 @@ fn check_signature(msg: &UnsignedReview, sig: &str) -> Result<(), Error> {
     signature::verify(&signature::ECDSA_P256_SHA256_FIXED, pubkey, msg, sig).map_err(Into::into)
 }
 
-fn check_place(geo: &Url) -> Result<(), Error> {
-    let mut coords = geo.path().split(',').map(|s| s.parse());
+/// Check the q= query field content.
+fn check_geo_q(q: Cow<str>) -> Result<(), Error> {
+    let mut elements = q.split('(');
+    let mut coords = elements
+        .next()
+        .ok_or_else(|| Error::Incorrect("No coordinates specified.".into()))?
+        .split(',')
+        .map(|c| c.parse());
     let lat: f32 = coords
         .next()
         .ok_or_else(|| Error::Incorrect("No latitude found.".into()))??;
@@ -103,27 +110,35 @@ fn check_place(geo: &Url) -> Result<(), Error> {
     if -180. > lon || lon > 180. {
         return Err(Error::Incorrect("Longitude out of range.".into()));
     }
-    if geo.fragment().is_none() {
-        return Err(Error::Incorrect("Place must specify a name.".into()));
-    }
-    Ok(())
-    // Move working with OSM to frontend.
-    /*
-    let response = reqwest::get(&format!("https://www.openstreetmap.org/api/0.6/node/{}", id))?
-        .text()?;
-    if Element::parse(response.as_bytes())?
-        .children
-        .first()
-        .ok_or_else(|| Error::Internal("No XML child.".into()))?
-        .attributes
-        .get("visible")
-        .ok_or_else(|| Error::Incorrect("Node has no \"visible\" attribute.".into()))?
-        == "true" {
+    if elements
+        .next()
+        .ok_or_else(|| Error::Incorrect("No name found.".into()))?
+        .ends_with(')') {
         Ok(())
     } else {
-        Err(Error::Incorrect("Node is not visible".into()))
+        Err(Error::Incorrect("Name must be inside parenthesis.".into()))
     }
-    */
+}
+
+fn check_geo_param(param: (Cow<str>, Cow<str>)) -> Result<(), Error> {
+    match param.0.as_ref() {
+        "q" => check_geo_q(param.1),
+        "u" => match param.1.parse::<f32>() {
+            Ok(n) if 0. < n && n < 2000. => Ok(()),
+            _ => Err(Error::Incorrect("Uncertainty incorrect.".into())),
+        },
+        _ => Err(Error::Incorrect("Query field unknown.".into()))
+    }
+}
+
+/// Check if `geo` URI is correct.
+fn check_place(geo: &Url) -> Result<(), Error> {
+    let mut pairs = geo.query_pairs().peekable();
+    if pairs.peek().is_some() {
+        pairs.map(check_geo_param).collect()
+    } else {
+        Err(Error::Incorrect("Geo URI has to specify query.".into()))
+    }
 }
 
 fn check_url(id: &str) -> Result<(), url::ParseError> {
@@ -296,7 +311,8 @@ mod tests {
 
     #[test]
     fn test_uri() {
-        assert!(check_place(&Url::parse("geo:37.78,-122.399#Juanitos").unwrap()).is_ok());
+        check_place(&Url::parse("geo:0,0?u=30&q=47.1691576,8.514572(Juanitos)").unwrap()).unwrap();
+        check_place(&Url::parse("geo:?u=30&q=47.1691576,8.514572(Juanitos)").unwrap()).unwrap();
         assert!(check_place(&Url::parse("geo:37.78,-122.399").unwrap()).is_err());
     }
 }

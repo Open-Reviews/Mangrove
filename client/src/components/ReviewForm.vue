@@ -110,15 +110,11 @@ export default {
 
       console.log("Mangrove review: ", review);
       this.axios
-        .put(
-          `${process.env.VUE_APP_API_URL}/submit`,
-          review,
-          {
-            headers: {
-              "Content-Type": "application/json"
-            }
+        .put(`${process.env.VUE_APP_API_URL}/submit`, review, {
+          headers: {
+            "Content-Type": "application/json"
           }
-        )
+        })
         .then(() => {
           this.$store.commit("showextra", false);
           this.$store.commit("showmeta", false);

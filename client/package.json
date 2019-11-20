@@ -14,11 +14,13 @@
     "idb-keyval": "^3.2.0",
     "leaflet": "^1.5.1",
     "leaflet-control-geocoder": "^1.10.0",
+    "leaflet-geosearch": "^2.7.0",
     "vue": "^2.6.10",
     "vue-axios": "^2.1.4",
     "vue-star-rating": "^1.6.1",
     "vue-upload-component": "^2.8.20",
     "vue2-leaflet": "^2.2.1",
+    "vue2-leaflet-geosearch": "^1.0.6",
     "vuex": "^3.1.1"
   },
   "devDependencies": {

@@ -8,9 +8,17 @@
 </template>
 
 <script>
+import { OpenStreetMapProvider } from "leaflet-geosearch";
 import { QUERY, SEARCH_ERROR, ADD_URIS, EMPTY_URIS } from "../mutation-types";
 
 export default {
+  data() {
+    return {
+      geosearchOptions: {
+        provider: new OpenStreetMapProvider()
+      }
+    };
+  },
   computed: {
     query: {
       get() {
@@ -35,7 +43,9 @@ export default {
       Promise.all([
         this.$store.commit(EMPTY_URIS),
         this.$store.commit(ADD_URIS, this.searchUrl(this.query)),
-        //this.$store.commit(ADD_URIS, this.searchGeo(this.query)),
+        this.searchGeo(this.query).then(subs =>
+          this.$store.commit(ADD_URIS, subs)
+        ),
         this.searchLei(this.query).then(subs =>
           this.$store.commit(ADD_URIS, subs)
         )
@@ -58,9 +68,35 @@ export default {
         ? [{ sub: `${url.protocol}//${url.hostname}`, scheme: url.protocol }]
         : [];
     },
-    searchGeo() {
+    searchGeo(input) {
       // Do Nominatim and Mangrove server uncertain viscinity/fragment text search.
-      return [];
+      return this.geosearchOptions.provider
+        .search({ query: input })
+        .then(results =>
+          // Compute Geo URI for each result, introducing default uncertainty of the POI of 30 meters.
+          results.map(result => {
+            let label = encodeURI(result.label.substring(0, result.label.indexOf(",")));
+            return {
+              sub: `geo:?q=${result.y},${result.x}(${label})&u=30`,
+              scheme: "geo",
+              description: result.label
+            };
+          })
+        )
+        .catch(error => {
+          if (error.response) {
+            console.log(error.response.status);
+            console.log(error.response.headers);
+            this.error = error.response.data;
+          } else if (error.request) {
+            console.log(error.request);
+            this.error = "Server not reachable.";
+          } else {
+            console.log("Client request processing error: ", error.message);
+            this.error = "Internal client error, please report.";
+          }
+          return [];
+        });
     },
     searchLei(query) {
       return this.axios

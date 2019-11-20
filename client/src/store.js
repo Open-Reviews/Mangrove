@@ -119,10 +119,7 @@ const actions = {
     commit(t.SELECT_URI, params.sub);
     // Get reviews and put them in the reviews field.
     Vue.prototype.axios
-      .get(
-        `${process.env.VUE_APP_API_URL}/request`,
-        { params }
-      )
+      .get(`${process.env.VUE_APP_API_URL}/request`, { params })
       .then(response => {
         console.log(response);
         commit(t.ADD_REVIEWS, response["data"]);

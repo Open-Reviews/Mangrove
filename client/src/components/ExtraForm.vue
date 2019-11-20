@@ -75,7 +75,9 @@ export default {
       return this.currentStatus === STATUS_FAILED;
     },
     uploadedLinks() {
-      return this.extraHashes.map(hash => `${process.env.VUE_APP_FILES_URL}/${hash}`);
+      return this.extraHashes.map(
+        hash => `${process.env.VUE_APP_FILES_URL}/${hash}`
+      );
     },
     extraHashes: {
       get() {
