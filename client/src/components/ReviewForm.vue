@@ -88,7 +88,9 @@ export default {
       if (this.opinion) claim.opinion = this.opinion;
       if (this.$store.state.extraHashes[0])
         claim.extradata = this.$store.state.extraHashes;
-      const meta = this.$store.state.meta;
+      let meta = this.$store.state.meta;
+      // Remove empty metadata fields.
+      Object.keys(meta).forEach(key => meta[key] == null && delete meta[key]);
       if (Object.entries(meta).length !== 0) claim.metadata = meta;
       console.log("claim: ", claim);
       const encoded = cbor.encode(claim);

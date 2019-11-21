@@ -63,7 +63,7 @@ const mutations = {
     state.showMeta = bool;
   },
   [t.SET_META](state, [key, value]) {
-    state.meta[key] = value;
+    state.meta[key] = value === "" ? null : value;
   },
   [t.IMPORT_ERROR](state, error) {
     state.errors.import = error;

@@ -38,7 +38,7 @@ export default {
       return Object.values(this.$store.state.reviews).filter(
         review =>
           (this.selectedUri == null || review.sub === this.selectedUri) &&
-          (!this.onlyMine || review.publickey === this.$store.state.publicKey)
+          (!this.onlyMine || review.iss === this.$store.state.publicKey)
       );
     },
     reviewKeys() {
