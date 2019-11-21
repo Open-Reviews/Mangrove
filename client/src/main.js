@@ -4,7 +4,6 @@ import store from "./store";
 import axios from "axios";
 import VueAxios from "vue-axios";
 import { Icon } from "leaflet";
-import "leaflet/dist/leaflet.css";
 
 Vue.config.productionTip = false;
 

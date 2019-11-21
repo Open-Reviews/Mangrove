@@ -3,20 +3,23 @@
     Search for reviews!
     <input v-model.lazy.trim="query" />
     <button v-on:click="search">Search</button>
+    <MapSearch />
     <div v-if="error">Error encountered: {{ error }}</div>
   </div>
 </template>
 
 <script>
 import { OpenStreetMapProvider } from "leaflet-geosearch";
+import MapSearch from "./MapSearch.vue";
 import { QUERY, SEARCH_ERROR, ADD_URIS, EMPTY_URIS } from "../mutation-types";
 
 export default {
+  components: {
+    MapSearch
+  },
   data() {
     return {
-      geosearchOptions: {
-        provider: new OpenStreetMapProvider()
-      }
+      geoProvider: new OpenStreetMapProvider()
     };
   },
   computed: {
@@ -70,7 +73,7 @@ export default {
     },
     searchGeo(input) {
       // Do Nominatim and Mangrove server uncertain viscinity/fragment text search.
-      return this.geosearchOptions.provider
+      return this.geoProvider
         .search({ query: input })
         .then(results =>
           // Compute Geo URI for each result, introducing default uncertainty of the POI of 30 meters.
