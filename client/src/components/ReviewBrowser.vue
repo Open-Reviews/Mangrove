@@ -4,20 +4,16 @@
     <label for="mine">Show only mine</label>
     <br />
     Showing reviews of {{ selectedUri }}
-    <table>
-      <thead>
-        <tr>
-          <th v-for="key in reviewKeys" :key="key">{{ key }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="entry in reviews" :key="entry[reviewKeys[0]]">
-          <td v-for="key in reviewKeys" :key="key">
-            {{ entry[key] | truncate(20) }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div v-for="review in reviews" :key="review.signature">
+      {{ review.iss | truncate(20) }}
+      {{ review.iat }}
+      {{ (review.rating + 25) / 25 }}
+      {{ review.opinion }}
+      <div v-for="hash in review.extradata" :key="hash">
+        <img :src="imageUrl(hash)" />
+      </div>
+      {{ review.metadata }}
+    </div>
     <br />
   </div>
 </template>
@@ -40,11 +36,10 @@ export default {
           (this.selectedUri == null || review.sub === this.selectedUri) &&
           (!this.onlyMine || review.iss === this.$store.state.publicKey)
       );
-    },
-    reviewKeys() {
-      const first = this.reviews[0];
-      return first ? Object.keys(first) : [];
     }
+  },
+  methods: {
+    imageUrl: function(hash) { return `${process.env.VUE_APP_FILES_URL}/${hash}`; }
   }
 };
 </script>

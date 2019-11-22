@@ -5,6 +5,7 @@ use ring::signature;
 use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
 use std::collections::HashMap;
+use std::env;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use url::Url;
 
@@ -183,7 +184,14 @@ fn check_uri(conn: &DbConn, uri: &str) -> Result<(), Error> {
 }
 
 fn check_extrahash(hash: &str) -> Result<(), Error> {
-    let exists = reqwest::get(&format!("http://localhost:8001/exists/{}", hash))?
+    let query = format!(
+        "{}{}",
+        env::var::<String>("FILES_URL".into())
+            .expect("FILES_URL env variable must be specified."),
+        hash
+    );
+    info!("Checking the file: {}", query);
+    let exists = reqwest::get(&query)?
         .text()?
         .parse()?;
     if exists {
