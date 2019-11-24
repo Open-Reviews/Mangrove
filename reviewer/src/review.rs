@@ -65,7 +65,7 @@ fn check_timestamp(iat: Duration) -> Result<(), Error> {
 }
 
 fn check_rating(rating: Rating) -> Result<(), Error> {
-    if rating == 0 || rating > MAX_RATING {
+    if rating < 0 || rating > MAX_RATING {
         Err(Error::Incorrect("Rating out of range.".into()))
     } else {
         Ok(())

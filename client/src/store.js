@@ -148,7 +148,7 @@ const actions = {
       sub
     };
     // Add field only if it is not empty.
-    if (null !== rating) claim.rating = rating * 25 - 25;
+    if (null !== rating) claim.rating = rating;
     if (opinion) claim.opinion = opinion;
     if (extradata && extradata.length != 0) claim.extradata = extradata;
     let meta = state.meta;

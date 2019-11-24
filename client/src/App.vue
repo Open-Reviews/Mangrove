@@ -9,6 +9,8 @@
     <ReviewBrowser />
     <br />
     <ReviewForm />
+    <br />
+    <a :href="dumpUrl">Get all Mangrove data</a>
   </div>
 </template>
 
@@ -30,6 +32,11 @@ export default {
     UriBrowser,
     ReviewBrowser,
     ReviewForm
+  },
+  data() {
+    return {
+      dumpUrl: `${process.env.VUE_APP_API_URL}/request`
+    };
   }
 };
 </script>
