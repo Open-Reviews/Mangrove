@@ -13,6 +13,12 @@
         <img :src="imageUrl(hash)" />
       </div>
       {{ review.metadata }}
+      <button v-on:click="flag(review.signature)">
+        Flag as innapropriate.
+      </button>
+      <button v-on:click="request(review.signature)">
+        See responses or indicate how useful this review was.
+      </button>
     </div>
     <br />
   </div>
@@ -39,7 +45,16 @@ export default {
     }
   },
   methods: {
-    imageUrl: function(hash) { return `${process.env.VUE_APP_FILES_URL}/${hash}`; }
+    imageUrl: function(hash) { return `${process.env.VUE_APP_FILES_URL}/${hash}`; },
+    reviewStub: function(signature) { return { sub: `urn:MaReSi:${signature}` }; },
+    request(signature) {
+      this.$store.dispatch("requestReviews", this.reviewStub(signature));
+    },
+    flag(signature) {
+      let claim = this.reviewStub(signature);
+      claim.rating = 0;
+      this.$store.dispatch("submitReview", claim);
+    }
   }
 };
 </script>

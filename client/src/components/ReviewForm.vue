@@ -31,10 +31,8 @@
 
 <script>
 import StarRating from "vue-star-rating";
-var cbor = require("cbor");
 import ExtraForm from "./ExtraForm.vue";
 import MetaForm from "./MetaForm.vue";
-import { ADD_REVIEWS } from "../mutation-types";
 import { toHexString } from "../utils";
 
 export default {
@@ -76,68 +74,15 @@ export default {
     showMeta: function() {
       this.$store.commit("showmeta", true);
     },
-    submitReview: async function() {
-      // Add mandatory fields.
-      let claim = {
-        iss: this.$store.state.publicKey,
-        iat: Math.floor(Date.now() / 1000),
-        sub: this.$store.state.selectedUri
-      };
-      // Add field only if it is not empty.
-      if (this.rating) claim.rating = this.rating * 25 - 25;
-      if (this.opinion) claim.opinion = this.opinion;
-      if (this.$store.state.extraHashes[0])
-        claim.extradata = this.$store.state.extraHashes;
-      let meta = this.$store.state.meta;
-      // Remove empty metadata fields.
-      Object.keys(meta).forEach(key => meta[key] == null && delete meta[key]);
-      if (Object.entries(meta).length !== 0) claim.metadata = meta;
-      console.log("claim: ", claim);
-      const encoded = cbor.encode(claim);
-      console.log("msg: ", encoded);
-      const signed = await window.crypto.subtle.sign(
-        {
-          name: "ECDSA",
-          hash: { name: "SHA-256" }
-        },
-        this.$store.state.keyPair.privateKey,
-        encoded
-      );
+    submitReview: function() {
+      this.$store.dispatch("submitReview", {
+        sub: this.$store.state.selectedUri,
+        rating: this.rating,
+        opinion: this.opinion,
+        extradata: this.$store.state.extraHashes
+      })
+    },
 
-      console.log("sig: ", new Uint8Array(signed));
-      const review = {
-        ...claim,
-        signature: toHexString(new Uint8Array(signed))
-      };
-
-      console.log("Mangrove review: ", review);
-      this.axios
-        .put(`${process.env.VUE_APP_API_URL}/submit`, review, {
-          headers: {
-            "Content-Type": "application/json"
-          }
-        })
-        .then(() => {
-          this.$store.commit("showextra", false);
-          this.$store.commit("showmeta", false);
-          this.submitError = null;
-          // Add review so that its immediately visible.
-          this.$store.commit(ADD_REVIEWS, [review]);
-        })
-        .catch(error => {
-          if (error.response) {
-            console.log(error.response.status);
-            console.log(error.response.headers);
-            this.submitError = error.response.data;
-          } else if (error.request) {
-            console.log(error.request);
-            this.submitError = "Server not reachable.";
-          } else {
-            console.log("Client submission processing error: ", error.message);
-            this.submitError = "Internal client error, please report.";
-          }
-        });
-    }
   }
 };
 </script>

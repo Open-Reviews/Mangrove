@@ -23,13 +23,14 @@ const FILES: &str = "files";
 const BUCKET: &str = "files.mangrove.network";
 
 lazy_static! {
-    /*
     static ref STORE: &'static Path = {
-        fs::create_dir("/tmp/files").expect("Access to tmp is missing.");
+        fs::create_dir("/tmp/files").or_else(|e| match e.kind() {
+            io::ErrorKind::AlreadyExists => Ok(()),
+            _ => Err(e),
+        }).expect("Access to tmp is missing.");
         Path::new("/tmp")
     };
-    */
-    static ref STORE: S3Client = S3Client::new(Default::default());
+    //static ref STORE: S3Client = S3Client::new(Default::default());
 }
 
 // Compute hex encoded SHA256 of the file.
@@ -49,12 +50,14 @@ trait HashingStore {
     fn persist(&self, file: &PathBuf) -> bool;
 }
 
+/// Works by using the root Path for temporary files and FILES subfolder for permanent files.
 impl HashingStore for &Path {
     fn save(&self, data: &SingleFileField) -> Result<String, String> {
         let hash = hash(data).map_err(|e| e.to_string())?;
-        if !Path::new(FILES).join(&hash).exists() {
+        if !self.join(FILES).join(&hash).exists() {
             let temp_path = self.join(&hash);
             if !temp_path.exists() {
+                info!("Saving file: {}", hash);
                 fs::rename(&data.path, temp_path).map_err(|e| e.to_string())?;
             }
         }

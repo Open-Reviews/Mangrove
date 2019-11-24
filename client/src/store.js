@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+let cbor = require("cbor");
 import { get, set } from "idb-keyval";
 import * as t from "./mutation-types";
 import { toHexString } from "./utils";
@@ -138,7 +139,69 @@ const actions = {
           commit(t.REQUEST_ERROR, "Internal client error, please report.");
         }
       });
-  }
+  },
+  async submitReview({ state, commit }, { sub, rating, opinion, extradata }) {
+    // Add mandatory fields.
+    let claim = {
+      iss: state.publicKey,
+      iat: Math.floor(Date.now() / 1000),
+      sub
+    };
+    // Add field only if it is not empty.
+    if (null !== rating) claim.rating = rating * 25 - 25;
+    if (opinion) claim.opinion = opinion;
+    if (extradata && extradata.length != 0)
+      claim.extradata = extradata;
+    let meta = state.meta;
+    // Remove empty metadata fields.
+    Object.keys(meta).forEach(key => meta[key] == null && delete meta[key]);
+    if (Object.entries(meta).length !== 0) claim.metadata = meta;
+    console.log("claim: ", claim);
+    const encoded = cbor.encode(claim);
+    console.log("msg: ", encoded);
+    const signed = await window.crypto.subtle.sign(
+      {
+        name: "ECDSA",
+        hash: { name: "SHA-256" }
+      },
+      state.keyPair.privateKey,
+      encoded
+    );
+
+    console.log("sig: ", new Uint8Array(signed));
+    const review = {
+      ...claim,
+      signature: toHexString(new Uint8Array(signed))
+    };
+
+    console.log("Mangrove review: ", review);
+    Vue.prototype.axios
+      .put(`${process.env.VUE_APP_API_URL}/submit`, review, {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      .then(() => {
+        commit("showextra", false);
+        commit("showmeta", false);
+        this.submitError = null;
+        // Add review so that its immediately visible.
+        commit(t.ADD_REVIEWS, [review]);
+      })
+      .catch(error => {
+        if (error.response) {
+          console.log(error.response.status);
+          console.log(error.response.headers);
+          this.submitError = error.response.data;
+        } else if (error.request) {
+          console.log(error.request);
+          this.submitError = "Server not reachable.";
+        } else {
+          console.log("Client submission processing error: ", error.message);
+          this.submitError = "Internal client error, please report.";
+        }
+      });
+    }
 };
 
 const getters = {};
