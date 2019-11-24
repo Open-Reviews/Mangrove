@@ -33,7 +33,6 @@
 import StarRating from "vue-star-rating";
 import ExtraForm from "./ExtraForm.vue";
 import MetaForm from "./MetaForm.vue";
-import { toHexString } from "../utils";
 
 export default {
   components: {
@@ -80,9 +79,8 @@ export default {
         rating: this.rating,
         opinion: this.opinion,
         extradata: this.$store.state.extraHashes
-      })
-    },
-
+      });
+    }
   }
 };
 </script>

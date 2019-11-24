@@ -11,7 +11,7 @@ const state = {
   query: null,
   keyPair: null,
   publicKey: null,
-  // Array of objects { sub: ..., scheme: ..., description: ... }
+  // Array of objects { sub: ..., scheme: ..., profile: ... }
   subs: [],
   selectedUri: null,
   // Object from MaReSi to reviews, ensuring only unique ones are stored.
@@ -150,8 +150,7 @@ const actions = {
     // Add field only if it is not empty.
     if (null !== rating) claim.rating = rating * 25 - 25;
     if (opinion) claim.opinion = opinion;
-    if (extradata && extradata.length != 0)
-      claim.extradata = extradata;
+    if (extradata && extradata.length != 0) claim.extradata = extradata;
     let meta = state.meta;
     // Remove empty metadata fields.
     Object.keys(meta).forEach(key => meta[key] == null && delete meta[key]);
@@ -201,7 +200,7 @@ const actions = {
           this.submitError = "Internal client error, please report.";
         }
       });
-    }
+  }
 };
 
 const getters = {};

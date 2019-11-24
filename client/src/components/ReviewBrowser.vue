@@ -45,8 +45,12 @@ export default {
     }
   },
   methods: {
-    imageUrl: function(hash) { return `${process.env.VUE_APP_FILES_URL}/${hash}`; },
-    reviewStub: function(signature) { return { sub: `urn:MaReSi:${signature}` }; },
+    imageUrl: function(hash) {
+      return `${process.env.VUE_APP_FILES_URL}/${hash}`;
+    },
+    reviewStub: function(signature) {
+      return { sub: `urn:MaReSi:${signature}` };
+    },
     request(signature) {
       this.$store.dispatch("requestReviews", this.reviewStub(signature));
     },

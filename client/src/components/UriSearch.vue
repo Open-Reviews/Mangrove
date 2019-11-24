@@ -45,7 +45,9 @@ export default {
     search() {
       Promise.all([
         this.$store.commit(EMPTY_URIS),
-        this.$store.commit(ADD_URIS, this.searchUrl(this.query)),
+        this.searchUrl(this.query).then(subs =>
+          this.$store.commit(ADD_URIS, subs)
+        ),
         this.searchGeo(this.query).then(subs =>
           this.$store.commit(ADD_URIS, subs)
         ),
@@ -59,17 +61,67 @@ export default {
       });
     },
     searchUrl(input) {
-      // Use a very basic test if the query is a URL,
-      // people rarely use period in queries otherwise.
-      if (!input.includes(".")) {
-        return [];
-      }
-      const url = new URL(
-        input.startsWith("http") ? input : `https://${input}`
-      );
-      return url
-        ? [{ sub: `${url.protocol}//${url.hostname}`, scheme: url.protocol }]
-        : [];
+      return this.axios
+        .get(
+          "https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/WebSearchAPI",
+          {
+            params: {
+              autoCorrect: "true",
+              pageNumber: "1",
+              pageSize: "5",
+              q: input,
+              safeSearch: "false"
+            },
+            headers: {
+              "x-rapidapi-host":
+                "contextualwebsearch-websearch-v1.p.rapidapi.com",
+              "x-rapidapi-key":
+                "251214c417msh8d97fdc071044acp196e11jsn6aae035600e6"
+            }
+          }
+        )
+        .then(response => {
+          this.error = null;
+          return response.data.value.map(result => {
+            return {
+              sub: result.url,
+              scheme: new URL(result.url).protocol,
+              profile: { title: result.title, description: result.description }
+            };
+          });
+        })
+        .then(search => {
+          if (input.includes(".")) {
+            // Use a very basic test if the query is a URL,
+            // people rarely use period in queries otherwise.
+            // Try to recover a valid url.
+            const url = new URL(
+              input.startsWith("http") ? input : `https://${input}`
+            );
+            if (url) {
+              search.push({
+                sub: `${url.protocol}//${url.hostname}`,
+                scheme: url.protocol,
+                profile: { title: url.hostname, description: "" }
+              });
+            }
+          }
+          return search;
+        })
+        .catch(error => {
+          if (error.response) {
+            console.log(error.response.status);
+            console.log(error.response.headers);
+            this.error = error.response.data;
+          } else if (error.request) {
+            console.log(error.request);
+            this.error = "Server not reachable.";
+          } else {
+            console.log("Client request processing error: ", error.message);
+            this.error = "Internal client error, please report.";
+          }
+          return [];
+        });
     },
     searchGeo(input) {
       // Do Nominatim and Mangrove server uncertain viscinity/fragment text search.
@@ -78,11 +130,13 @@ export default {
         .then(results =>
           // Compute Geo URI for each result, introducing default uncertainty of the POI of 30 meters.
           results.map(result => {
-            let label = encodeURI(result.label.substring(0, result.label.indexOf(",")));
+            let label = encodeURI(
+              result.label.substring(0, result.label.indexOf(","))
+            );
             return {
               sub: `geo:?q=${result.y},${result.x}(${label})&u=30`,
               scheme: "geo",
-              description: result.label
+              profile: { title: label, description: result.label }
             };
           })
         )
@@ -124,12 +178,14 @@ export default {
                         return {
                           sub: `urn:LEI:${attrs.lei}`,
                           scheme: "urn:LEI",
-                          description: [
-                            attrs.entity.legalName.name,
-                            attrs.entity.legalAddress.addressLines,
-                            attrs.entity.legalAddress.city,
-                            attrs.entity.legalAddress.country
-                          ]
+                          profile: {
+                            title: attrs.entity.legalName.name,
+                            description: [
+                              attrs.entity.legalAddress.addressLines,
+                              attrs.entity.legalAddress.city,
+                              attrs.entity.legalAddress.country
+                            ]
+                          }
                         };
                       })
                   : null // When no related entity return null.

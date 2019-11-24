@@ -22,7 +22,7 @@ export default {
       geosearchOptions: {
         provider: new OpenStreetMapProvider()
       },
-      zoom: 18,
+      zoom: 18
     };
   },
   computed: {

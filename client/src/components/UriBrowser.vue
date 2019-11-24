@@ -2,7 +2,7 @@
   <div v-if="subs[0]">
     <ul>
       <li v-for="object in subs" :key="object.sub">
-        {{ object.sub }} {{ object.description }}
+        {{ object.sub }} {{ object.profile }}
         <button v-on:click="request(object.sub)">
           Select
         </button>
