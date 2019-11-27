@@ -102,7 +102,7 @@ Review MUST include a `signature` key with value that:
 
 Value corresponding to the `sub` key MUST be of Major type 3 (a text string) and comply with one of Core URI Schemes:
 - `http`/`https`: for this scheme, the `sub`:
-    - Refers to a Website that is to be reviewed.
+    - Refers to a Website that is being reviewed.
     - MUST comply with [URL specification](https://url.spec.whatwg.org/) and is no longer than 100 letters.
 - `geo`: for this scheme, the `sub`:
     - Refers to a business location or physical point of interest being reviewed - a place.
@@ -111,9 +111,13 @@ Value corresponding to the `sub` key MUST be of Major type 3 (a text string) and
         - MUST contain a field `q=` for which the value is a commonly used name of the selected place with [URI compliant percent encoding](https://tools.ietf.org/html/rfc3986).
         - MAY contain a field `u=` for which the value indicates an approximate radius of the place in meters.
 - `urn:LEI`: for this scheme, the `sub`:
-    -  Has to be equal to one of registered legal entity identifiers in [GLEIF database](https://www.gleif.org/en/).
-    -  Scheme MUST be followed by a valid LEI according to [ISO 17442](https://www.gleif.org/en/about-lei/iso-17442-the-lei-code-structure).
+    -  Refers to a legal entity being reviewed.
+    -  Scheme MUST be followed by a valid LEI according to [ISO 17442](https://www.gleif.org/en/about-lei/iso-17442-the-lei-code-structure) which is equal to one of registered legal entity identifiers in [GLEIF database](https://www.gleif.org/en/).
     -  GLEIF data is open and accessible for [download](https://www.gleif.org/en/lei-data/gleif-golden-copy/download-the-golden-copy#/) or access via [API](https://documenter.getpostman.com/view/7679680/SVYrrxuU?version=latest).
+- `urn:isbn`: for this scheme, the `sub`:
+    - Refers to a book being reviewed.
+    - Scheme MUST be followed by a valid ISBN according to [ISO 2108:2017](https://www.iso.org/standard/65483.html) which is equal to one of numbers assigned by [ The International ISBN Agency](https://www.isbn-international.org/).
+    - ISBN data can be accessed via [Open Library](https://openlibrary.org/dev/docs/api/books) or [ISBNdb](https://isbndb.com/).
 - `urn:MaReSi`: for this scheme, the `sub`:
     - Refers to another Mangrove Review that is to be reviewed, indicating its helpfulness or accuracy.
     - Scheme SHOULD be followed by `signature` field of the Review that is to be reviewed (one of Mangrove Reviews in the current database).
