@@ -8,3 +8,4 @@ client/node_modules
 client/src/node_modules
 client/src/dist
 test
+data
