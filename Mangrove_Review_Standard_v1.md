@@ -105,9 +105,11 @@ Value corresponding to the `sub` key MUST be of Major type 3 (a text string) and
     - Refers to a Website that is to be reviewed.
     - MUST comply with [URL specification](https://url.spec.whatwg.org/) and is no longer than 100 letters.
 - `geo`: for this scheme, the `sub`:
-    - Refers to a business location or physical point of interest being reviewed.
-    - MUST comply with [URI for Geographic Locations specification](https://tools.ietf.org/html/rfc5870) with addition of a URI fragment.
-    - Fragment for this URI (content following `#`) MUST be a commonly used name of the selected place.
+    - Refers to a business location or physical point of interest being reviewed - a place.
+    - MUST comply with [URI for Geographic Locations specification](https://tools.ietf.org/html/rfc5870), however using URL encoding - including parameters as query string - which is currently more widely used.
+    - Query string for this URI (content following `?`):
+        - MUST contain a field `q=` for which the value is a commonly used name of the selected place with [URI compliant percent encoding](https://tools.ietf.org/html/rfc3986).
+        - MAY contain a field `u=` for which the value indicates an approximate radius of the place in meters.
 - `urn:LEI`: for this scheme, the `sub`:
     -  Has to be equal to one of registered legal entity identifiers in [GLEIF database](https://www.gleif.org/en/).
     -  Scheme MUST be followed by a valid LEI according to [ISO 17442](https://www.gleif.org/en/about-lei/iso-17442-the-lei-code-structure).
@@ -178,7 +180,7 @@ An additional format will be established that will allow to link additional publ
 
 ### 4. Standards reuse
 
-Where possible and practical, existing standards should be leveraged. Mangrove leverages CBOR, URI, 'geo' URI, URL, URN, LEI, FOAF vocabulary and public key cryptography standard based on FIDO2 and WebCrypto.
+Where possible and practical, existing standards should be leveraged. Mangrove leverages CBOR, URI, [URI for Geographic Locations specification / 'geo' URI](https://tools.ietf.org/html/rfc5870), URL, URN, LEI, FOAF vocabulary and public key cryptography standard based on FIDO2 and WebCrypto.
 
 For the overall claim framework [Decentralized Identifiers (DIDs)](https://w3c-ccg.github.io/did-spec/) were considered; however, that emerging standard significantly differs in original goals and specifies a number of components not necessary in Mangrove. For message encoding saltpack.org was considered, however [lack of activity around specification](https://github.com/keybase/saltpack/issues) does not inspire confidence. 
 
