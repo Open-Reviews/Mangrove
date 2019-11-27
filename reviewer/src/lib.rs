@@ -43,13 +43,6 @@ fn request_reviews(conn: DbConn, query: Form<Query>) -> Result<Json<Vec<Review>>
     Ok(Json(out))
 }
 
-#[get("/search?<search>")]
-fn search_reviews(conn: DbConn, search: String) -> Result<Json<Vec<Review>>, Error> {
-    let out = conn.search(search)?;
-    info!("Returning {:?}", out);
-    Ok(Json(out))
-}
-
 pub fn rocket() -> Rocket {
     let cors = rocket_cors::CorsOptions {
         allowed_methods: vec![Method::Put, Method::Get]
@@ -65,7 +58,7 @@ pub fn rocket() -> Rocket {
         .attach(DbConn::fairing())
         .mount(
             "/",
-            routes![index, submit_review, request_reviews, search_reviews],
+            routes![index, submit_review, request_reviews],
         )
         .attach(cors)
 }

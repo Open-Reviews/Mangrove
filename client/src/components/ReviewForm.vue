@@ -76,7 +76,7 @@ export default {
     submitReview: function() {
       this.$store.dispatch("submitReview", {
         sub: this.$store.state.selectedUri,
-        rating: this.rating * 25 - 25,
+        rating: this.rating ? this.rating * 25 - 25 : null,
         opinion: this.opinion,
         extradata: this.$store.state.extraHashes
       });

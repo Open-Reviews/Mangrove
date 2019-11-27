@@ -10,6 +10,7 @@ pub struct DbConn(diesel::PgConnection);
 /// TODO: reconcile with Review, allow metadata and extradata
 #[derive(Default, Debug, FromForm)]
 pub struct Query {
+    pub q: Option<String>,
     pub signature: Option<String>,
     pub iss: Option<String>,
     pub iat: Option<i64>,
@@ -52,6 +53,12 @@ impl DbConn {
         if let Some(s) = &query.opinion {
             f = Box::new(f.and(opinion.eq(s)))
         }
+        if let Some(s) = &query.q {
+            if !s.is_empty() {
+                let pattern = format!("%{}%", s);
+                f = Box::new(f.and(sub.like(pattern.clone()).or(opinion.like(pattern))))
+            }
+        }
         Ok(reviews.filter(f).load::<Review>(&self.0)?)
     }
 
@@ -62,9 +69,5 @@ impl DbConn {
             .into_iter()
             .next()
             .ok_or_else(|| Error::Incorrect(format!("No review found with MaReSi: {}", sig)))
-    }
-
-    pub fn search(&self, search: String) -> Result<Vec<Review>, Error> {
-        Ok(vec![])
     }
 }

@@ -21,7 +21,7 @@ export default {
   },
   methods: {
     request(sub) {
-      this.$store.dispatch("requestReviews", { sub });
+      this.$store.dispatch("saveReviews", { sub });
     }
   }
 };

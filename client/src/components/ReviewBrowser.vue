@@ -52,7 +52,7 @@ export default {
       return { sub: `urn:MaReSi:${signature}` };
     },
     request(signature) {
-      this.$store.dispatch("requestReviews", this.reviewStub(signature));
+      this.$store.dispatch("saveReviews", this.reviewStub(signature));
     },
     flag(signature) {
       let claim = this.reviewStub(signature);

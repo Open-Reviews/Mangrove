@@ -92,7 +92,7 @@ export default {
     },
     getMyReviews() {
       this.$store.commit(EMPTY_URIS);
-      this.$store.dispatch("requestReviews", {
+      this.$store.dispatch("saveReviews", {
         publickey: this.$store.state.publicKey
       });
     }

@@ -119,12 +119,12 @@ const actions = {
   requestReviews({ commit }, params) {
     commit(t.SELECT_URI, params.sub);
     // Get reviews and put them in the reviews field.
-    Vue.prototype.axios
+    return Vue.prototype.axios
       .get(`${process.env.VUE_APP_API_URL}/request`, { params })
       .then(response => {
         console.log(response);
-        commit(t.ADD_REVIEWS, response["data"]);
         commit(t.REQUEST_ERROR, null);
+        return response["data"];
       })
       .catch(error => {
         if (error.response) {
@@ -139,6 +139,9 @@ const actions = {
           commit(t.REQUEST_ERROR, "Internal client error, please report.");
         }
       });
+  },
+  saveReviews({ commit, dispatch }, params) {
+    dispatch("requestReviews", params).then(rs => commit(t.ADD_REVIEWS, rs));
   },
   async submitReview({ state, commit }, { sub, rating, opinion, extradata }) {
     // Add mandatory fields.

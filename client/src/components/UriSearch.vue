@@ -53,11 +53,23 @@ export default {
         ),
         this.searchLei(this.query).then(subs =>
           this.$store.commit(ADD_URIS, subs)
-        )
+        ),
+        this.$store
+          .dispatch("requestReviews", { q: this.query })
+          .then(rs =>
+            rs.map(r => {
+              return {
+                sub: r.sub,
+                scheme: new URL(r.sub).protocol,
+                profile: {}
+              };
+            })
+          )
+          .then(subs => this.$store.commit(ADD_URIS, subs))
       ]).then(() => {
         // Try to select the first URI from the list.
         const first = this.$store.state.subs[0];
-        if (first) this.$store.dispatch("requestReviews", { sub: first.sub });
+        if (first) this.$store.dispatch("saveReviews", { sub: first.sub });
       });
     },
     searchUrl(input) {
