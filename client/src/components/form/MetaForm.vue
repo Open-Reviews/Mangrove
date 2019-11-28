@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { SET_META } from "../mutation-types";
+import { SET_META } from "../../mutation-types";
 
 export default {
   computed: {

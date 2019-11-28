@@ -3,11 +3,13 @@ import Vuex from "vuex";
 let cbor = require("cbor");
 import { get, set } from "idb-keyval";
 import * as t from "./mutation-types";
+import { FRONT } from "./content-types";
 import { toHexString } from "./utils";
 
 Vue.use(Vuex);
 
 const state = {
+  content: FRONT,
   query: null,
   keyPair: null,
   publicKey: null,
@@ -26,6 +28,9 @@ const state = {
 };
 
 const mutations = {
+  [t.SET_CONTENT](state, content) {
+    state.content = content;
+  },
   [t.SET_KEYPAIR](state, keypair) {
     state.keyPair = keypair;
   },

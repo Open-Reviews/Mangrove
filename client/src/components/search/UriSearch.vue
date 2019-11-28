@@ -1,6 +1,5 @@
 <template>
   <div>
-    Search for reviews!
     <input v-model.lazy.trim="query" />
     <button v-on:click="search">Search</button>
     <MapSearch />
@@ -10,8 +9,13 @@
 
 <script>
 import { OpenStreetMapProvider } from "leaflet-geosearch";
-import MapSearch from "./MapSearch.vue";
-import { QUERY, SEARCH_ERROR, ADD_URIS, EMPTY_URIS } from "../mutation-types";
+import MapSearch from "./MapSearch";
+import {
+  QUERY,
+  SEARCH_ERROR,
+  ADD_URIS,
+  EMPTY_URIS
+} from "../../mutation-types";
 
 export default {
   components: {

@@ -1,3 +1,4 @@
+export const SET_CONTENT = "SET_CONTENT";
 export const SET_KEYPAIR = "SET_KEYPAIR";
 export const SET_PK = "SET_PK";
 export const QUERY = "QUERY";

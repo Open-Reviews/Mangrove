@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { toHexString } from "../utils";
+import { toHexString } from "../../utils";
 
 const STATUS_INITIAL = 0,
   STATUS_SAVING = 1,

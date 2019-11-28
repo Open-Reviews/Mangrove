@@ -33,7 +33,7 @@
 
 <script>
 // <input type="checkbox" id="mine" v-model="showSecret" onChange="this.form.submit()" />
-import { EMPTY_URIS, IMPORT_ERROR } from "../mutation-types";
+import { EMPTY_URIS, IMPORT_ERROR } from "../../mutation-types";
 
 export default {
   data: function() {

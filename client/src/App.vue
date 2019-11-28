@@ -1,25 +1,27 @@
 <template>
   <div id="app">
-    <Profile />
+    <Account />
     <br />
-    <UriSearch />
+    <SubjectList />
     <br />
-    <UriBrowser />
-    <br />
-    <ReviewBrowser />
+    <ReviewList />
     <br />
     <ReviewForm />
     <br />
-    <a :href="dumpUrl">Get all Mangrove data</a>
+    <TopBar />
+    <Content />
+    <Footer />
   </div>
 </template>
 
 <script>
-import Profile from "./components/Profile.vue";
-import UriSearch from "./components/UriSearch.vue";
-import UriBrowser from "./components/UriBrowser.vue";
-import ReviewBrowser from "./components/ReviewBrowser.vue";
-import ReviewForm from "./components/ReviewForm.vue";
+import Account from "./components/personal/Account";
+import SubjectList from "./components/SubjectList.vue";
+import ReviewList from "./components/ReviewList.vue";
+import ReviewForm from "./components/form/ReviewForm.vue";
+import TopBar from "./components/static/TopBar.vue";
+import Content from "./components/Content";
+import Footer from "./components/static/Footer.vue";
 
 export default {
   name: "app",
@@ -27,16 +29,13 @@ export default {
     this.$store.dispatch("generateKeypair");
   },
   components: {
-    Profile,
-    UriSearch,
-    UriBrowser,
-    ReviewBrowser,
-    ReviewForm
-  },
-  data() {
-    return {
-      dumpUrl: `${process.env.VUE_APP_API_URL}/request`
-    };
+    Account,
+    SubjectList,
+    ReviewList,
+    ReviewForm,
+    TopBar,
+    Content,
+    Footer
   }
 };
 </script>
