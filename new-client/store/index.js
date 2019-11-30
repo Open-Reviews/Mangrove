@@ -2,25 +2,21 @@ import Vue from 'vue'
 import { get, set } from 'idb-keyval'
 import { toHexString } from '../utils'
 import * as t from './mutation-types'
-const cbor = require('cbor')
 
-export const state = {
-  query: null,
+export const state = () => ({
   keyPair: null,
   publicKey: null,
   // Array of objects { sub: ..., scheme: ..., profile: ... }
   subs: [],
-  selectedUri: null,
+  selected: null,
   // Object from MaReSi to reviews, ensuring only unique ones are stored.
   reviews: {},
   rating: null,
   opinion: null,
-  showExtra: false,
   extraHashes: [],
-  showMeta: false,
-  meta: {},
+  metadata: {},
   errors: { import: null, search: null, request: null, submit: null }
-}
+})
 
 export const mutations = {
   [t.SET_KEYPAIR](state, keypair) {
@@ -29,17 +25,14 @@ export const mutations = {
   [t.SET_PK](state, key) {
     state.publicKey = key
   },
-  [t.QUERY](state, newquery) {
-    state.query = newquery
-  },
   [t.ADD_URIS](state, newsubs) {
     state.subs.push(...newsubs)
   },
   [t.EMPTY_URIS](state) {
     state.subs = []
   },
-  [t.SELECT_URI](state, sub) {
-    state.selectedUri = sub
+  [t.SELECT_SUB](state, sub) {
+    state.selected = sub
   },
   [t.ADD_REVIEWS](state, newreviews) {
     newreviews.map((r) => Vue.set(state.reviews, r.signature, r))
@@ -51,17 +44,11 @@ export const mutations = {
   opinion(state, text) {
     state.opinion = text
   },
-  showextra(state, bool) {
-    state.showExtra = bool
-  },
   extraHashes(state, files) {
     state.extraHashes = files
   },
-  showmeta(state, bool) {
-    state.showMeta = bool
-  },
   [t.SET_META](state, [key, value]) {
-    state.meta[key] = value === '' ? null : value
+    state.metadata[key] = value === '' ? null : value
   },
   [t.IMPORT_ERROR](state, error) {
     state.errors.import = error
@@ -114,7 +101,6 @@ export const actions = {
     dispatch('setKeypair', keypair)
   },
   requestReviews({ commit }, params) {
-    commit(t.SELECT_URI, params.sub)
     // Get reviews and put them in the reviews field.
     return this.$axios
       .get(`${process.env.VUE_APP_API_URL}/request`, { params })
@@ -140,39 +126,7 @@ export const actions = {
   saveReviews({ commit, dispatch }, params) {
     dispatch('requestReviews', params).then((rs) => commit(t.ADD_REVIEWS, rs))
   },
-  async submitReview({ state, commit }, { sub, rating, opinion, extradata }) {
-    // Add mandatory fields.
-    const claim = {
-      iss: state.publicKey,
-      iat: Math.floor(Date.now() / 1000),
-      sub
-    }
-    // Add field only if it is not empty.
-    if (rating !== null) claim.rating = rating
-    if (opinion) claim.opinion = opinion
-    if (extradata && extradata.length !== 0) claim.extradata = extradata
-    const meta = state.meta
-    // Remove empty metadata fields.
-    Object.keys(meta).forEach((key) => meta[key] == null && delete meta[key])
-    if (Object.entries(meta).length !== 0) claim.metadata = meta
-    console.log('claim: ', claim)
-    const encoded = cbor.encode(claim)
-    console.log('msg: ', encoded)
-    const signed = await window.crypto.subtle.sign(
-      {
-        name: 'ECDSA',
-        hash: { name: 'SHA-256' }
-      },
-      state.keyPair.privateKey,
-      encoded
-    )
-
-    console.log('sig: ', new Uint8Array(signed))
-    const review = {
-      ...claim,
-      signature: toHexString(new Uint8Array(signed))
-    }
-
+  submitReview({ state, commit }, review) {
     console.log('Mangrove review: ', review)
     this.$axios
       .put(`${process.env.VUE_APP_API_URL}/submit`, review, {

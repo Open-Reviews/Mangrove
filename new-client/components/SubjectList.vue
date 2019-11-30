@@ -2,6 +2,7 @@
   <v-container>
     <v-card v-for="sub in subs" :key="sub.sub" active-class="event">
       <v-card-title>{{ sub.profile.title }}</v-card-title>
+      <v-rating v-model="rating"></v-rating>
       <v-card-subtitle>{{ sub.sub }}</v-card-subtitle>
       <v-card-text>{{ sub.profile.description }}</v-card-text>
       <v-card-actions>
@@ -15,6 +16,11 @@
 
 <script>
 export default {
+  data() {
+    return {
+      rating: 4
+    }
+  },
   computed: {
     subs() {
       return this.$store.state.subs

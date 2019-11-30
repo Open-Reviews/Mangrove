@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Results v-if="$store.state.query" />
+    <Results v-if="$route.query.q" />
     <Front v-else />
   </div>
 </template>
@@ -13,6 +13,7 @@ export default {
   components: {
     Front,
     Results
-  }
+  },
+  middleware: 'search'
 }
 </script>

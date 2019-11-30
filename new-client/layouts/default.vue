@@ -50,9 +50,6 @@
 
 <script>
 export default {
-  created() {
-    this.$store.dispatch('generateKeypair')
-  },
   data() {
     return {
       title: 'Mangrove',
@@ -75,6 +72,9 @@ export default {
         { icon: 'mdi-twitter', link: 'https://twitter.com/mangroveReviews' }
       ]
     }
+  },
+  mounted() {
+    this.$store.dispatch('generateKeypair')
   }
 }
 </script>
