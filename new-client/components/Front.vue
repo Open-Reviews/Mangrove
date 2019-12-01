@@ -4,7 +4,7 @@
       <span class="text-center">
         <h1>Read reviews. Write reviews.</h1>
         <br />
-        Find places, companies, websites, books.
+        Find places, companies, websites, or books.
       </span>
     </v-row>
     <SearchBox />
