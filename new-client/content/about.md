@@ -1,5 +1,3 @@
-Saddam AF steadfast as ad sf  
+# About
 
-## adaff
-
-safs
+Vision and mission, organisation, team, roadmap, etc.
