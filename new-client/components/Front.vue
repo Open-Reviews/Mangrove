@@ -50,9 +50,9 @@ export default {
         {
           title: 'Privacy',
           details: [
-            'You are in full control of what information you want to publish and share',
-            'Mangrove does not track you or collect information about you',
-            'You control under what identity you publish your insights'
+            'You are in full control of what information you share. Mangrove does not track you or collect information about you.',
+            'Use Mangrove without a registration or login process.',
+            'Help spread privacy-preserving technologies.'
           ]
         }
       ]
