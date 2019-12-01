@@ -49,9 +49,6 @@ export const mutations = {
   [t.SET_META](state, [key, value]) {
     state.metadata[key] = value === '' ? null : value
   },
-  [t.IMPORT_ERROR](state, error) {
-    state.errors.import = error
-  },
   [t.SEARCH_ERROR](state, error) {
     state.errors.search = error
   },

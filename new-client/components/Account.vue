@@ -35,13 +35,14 @@
       v-model.trim="secretInput"
       placeholder="Paste your private key here"
     />
-    <v-btn :disabled="!isValidInput" @click="importSecret">Import</v-btn>
+    <v-btn :disabled="!secretInput" @click="importSecret">Import</v-btn>
+    <v-alert v-if="error" type="warning" border="left" elevation="8">
+      Private key not valid: {{ error }}
+    </v-alert>
   </v-container>
 </template>
 
 <script>
-import { EMPTY_URIS, IMPORT_ERROR } from '../store/mutation-types'
-
 export default {
   data() {
     return {
@@ -49,15 +50,15 @@ export default {
         'All reviews in the Mangrove data base are saved with a unique <b>public key</b>. If you wish to build up <b>reputation</b> within Mangrove, you should use the same public key as often as possible. You can, however, create several public keys for different purposes. They will all be linked to the same private key, and can be accessed only through this private key. Therefore, it is crucial that you copy and save the <b>private key</b> in a password manager or in another secure place. Please remember that <b>Mangrove does not store any private keys</b>. If you lose it, we cannot retrieve it.',
       hint:
         'Save the private key in a secure place accessible across devices, such as a password manager.',
-      metadata: 'Mangrove private key.',
-      secretInput: null
+      metadata: 'Mangrove private key',
+      secretInput: null,
+      error: null
     }
   },
-  computed: {
-    isValidInput() {
-      const jwk = JSON.parse(this.secretInput)
-      return jwk && jwk.metadata === this.metadata
-    }
+  mounted() {
+    this.$store.dispatch('saveReviews', {
+      publickey: this.$store.state.publicKey
+    })
   },
   methods: {
     copySecret() {
@@ -83,7 +84,19 @@ export default {
         })
     },
     async importSecret() {
-      const jwk = JSON.parse(this.secretInput)
+      let jwk
+      try {
+        jwk = JSON.parse(this.secretInput)
+      } catch (e) {
+        this.error = e
+        return
+      }
+      if (jwk && jwk.metadata === this.metadata) {
+        this.error = null
+      } else {
+        this.error = `does not contain the required metadata field "${this.metadata}"`
+        return
+      }
       const sk = await crypto.subtle
         .importKey(
           'jwk',
@@ -95,7 +108,9 @@ export default {
           true,
           ['sign']
         )
-        .catch((error) => this.$store.commit(IMPORT_ERROR, error))
+        .catch((e) => {
+          this.error = e
+        })
       delete jwk.d
       delete jwk.dp
       delete jwk.dq
@@ -113,14 +128,10 @@ export default {
           true,
           ['verify']
         )
-        .catch((error) => this.$store.commit(IMPORT_ERROR, error))
+        .catch((e) => {
+          this.error = e
+        })
       this.$store.dispatch('setKeypair', { privateKey: sk, publicKey: pk })
-    },
-    getMyReviews() {
-      this.$store.commit(EMPTY_URIS)
-      this.$store.dispatch('saveReviews', {
-        publickey: this.$store.state.publicKey
-      })
     }
   }
 }
