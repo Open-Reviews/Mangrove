@@ -17,9 +17,9 @@ export default {
     return {
       qas: [
         {
-          q: 'How do I do it belsafla jsdadjlkjaflkja afdsfjl?',
+          q: 'How do you avoid spam and ensure reliable reviews and ratings?',
           a:
-            'Each Vue instance goes through a series of initialization steps when it’s created - for example, it needs to set up data observation, compile the template, mount the instance to the DOM, and update the DOM when data changes. Along the way, it also runs functions called lifecycle hooks, giving users the opportunity to add their own code at specific stages.'
+            'Being an open data set that is maintained in a decentralized manner should not impact the reliability of the data negatively. There should not be a possibility for deletion and censorship of genuine reviews. Fraudulent reviews and irrelevant posts should not be taken into account when composing the rating. Furthermore, the data set should not be a place for hate speech and abuse..'
         },
         {
           q: 'How do I make words in answer bold?',
