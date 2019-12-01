@@ -36,7 +36,7 @@ export default {
           details: [
             'Read and write reviews for places, websites, companies, and books.',
             'Get informed before making decisions and share your insights with others.',
-            'Do research, or build useful applications.'
+            'Do research, or build useful applications. Get feedback from your customers and interact with them.'
           ]
         },
         {
