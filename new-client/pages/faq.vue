@@ -18,8 +18,8 @@ export default {
       qas: [
         {
           q: 'How do you avoid spam and ensure reliable reviews and ratings?',
-          a:
-            'Being an open data set that is maintained in a decentralized manner should not impact the reliability of the data negatively. There should not be a possibility for deletion and censorship of genuine reviews. Fraudulent reviews and irrelevant posts should not be taken into account when composing the rating. Furthermore, the data set should not be a place for hate speech and abuse.  
+          a: `
+            Being an open data set that is maintained in a decentralized manner should not impact the reliability of the data negatively. There should not be a possibility for deletion and censorship of genuine reviews. Fraudulent reviews and irrelevant posts should not be taken into account when composing the rating. Furthermore, the data set should not be a place for hate speech and abuse.  
             Mangrove's approach to ensuring this:  
             <ul>
               <li>Users can mark reviews as ‘useful’, and they can ‘confirm the experience’ expressed in a review, so that high quality reviews have a higher weight in the aggregated rating.</li>
@@ -30,7 +30,7 @@ export default {
               <li>The Mangrove filtering and aggregation algorithm uses probabilistic models to identify fraudulent reviews and devalue them, as well as flag them as probably fraudulent to the viewer.</li>
               <li>If reviews clearly violate the Terms of Use (abusive content and harassment), they are not deleted but moved to a different database where Mangrove stores them in case of a dispute. The original review entry will still be visible, but instead of the abusive content a note is displayed why the content was removed.</li>
             </ul>
-          '
+          `
         },
         {
           q: 'How does Mangrove protect the privacy of users?',
@@ -45,7 +45,8 @@ export default {
           `
         },
         {
-          q: 'What’s a cryptographic key pair and why do I need to store my private key?',
+          q:
+            'What’s a cryptographic key pair and why do I need to store my private key?',
           a: `
             When you write a review within Mangrove, your browser generates a cryptographic key pair, consisting of a public key and a private key, and it saves both in its storage on your device called the IndexedDB.
             <ul>
@@ -56,52 +57,36 @@ export default {
           `
         },
         {
-          q: 'HWho is behind the Mangrove initiative?',
+          q: 'Who is behind the Mangrove initiative?',
           a: `
             Mangrove is an open source and non-profit community project started by PlantingSpace, a limited liability company incorporated in Zug, Switzerland. Mangrove’s financial resources are managed 100% transparently via Open Collective, and PlantingSpace LLC has the role of a Fiscal Host, meaning that it is the legal entity holding the money and responsible for admin/taxes forms for the Collective.
           `
         },
         {
           q: 'How is Mangrove funded?',
-          a: '
-            Mangrove is funded by donations and sponsors. All financial resources are managed 100% transparently via Open Collective.  
-            We believe that creating and maintaining an open data commons is not compatible with profit orientation. We believe it can nevertheless be done if we work in a very efficient and cost-effective manner, so that the commons can be maintained purely by donations and sponsorship from people who believe in its value. However, we hope that the open dataset will serve as a ground for many revenue-generating services and products built on top of it, and that these services and products will contribute back to the initiative.  
-            If you run a business and are using the Mangrove open dataset in a revenue-generating service, it makes business sense to sponsor Mangrove: it ensures the project that your service relies on stays healthy and actively maintained. It can also help your exposure in the Open Data community.  
-            If you are an individual user and have enjoyed sharing and gaining insights through Mangrove reviews, consider donating as a sign of appreciation - like offering the Mangrove developers a coffee once in a while :)  
-          '
+          a: `
+            Mangrove is funded by donations and sponsors. All financial resources are managed 100% transparently via Open Collective.<br/><br/>
+            We believe that creating and maintaining an open data commons is not compatible with profit orientation. We believe it can nevertheless 
+            be done if we work in a very efficient and cost-effective manner, so that the commons can be maintained purely by donations and sponsorship 
+            from people who believe in its value. However, we hope that the open dataset will serve as a ground for many revenue-generating services 
+            and products built on top of it, and that these services and products will contribute back to the initiative.<br/><br/>
+            If you run a business and are using the Mangrove open dataset in a revenue-generating service, it makes business sense to 
+            sponsor Mangrove: it ensures the project that your service relies on stays healthy and actively maintained. It can also 
+            help your exposure in the Open Data community.<br/><br/>
+            If you are an individual user and have enjoyed sharing and gaining insights through Mangrove reviews, consider donating as a 
+            sign of appreciation - like offering the Mangrove developers a coffee once in a while :)  
+          `
         },
         {
           q: 'What databases does Mangrove use?',
-          a: '
+          a: `
             <ul>
               <li><b>Places on the map: OpenStreetMap</b>. OpenStreetMap is built by a community of mappers that contribute and maintain data about roads, trails, cafés, railway stations, and much more, all over the world. OpenStreetMap's community is diverse, passionate, and growing every day. Contributors include enthusiast mappers, GIS professionals, engineers running the OSM servers, humanitarians mapping disaster-affected areas, and many more.</li>
               <li><b>Companies: GLEIF’s Legal Entity Identifier (LEI):</b> GLEIF is a supra-national not-for-profit organization established by the Financial Stability Board in June 2014 tasked to support the implementation and use of the Legal Entity Identifier (LEI). The LEI is a 20-character, alpha-numeric code based on the ISO 17442 standard developed by the International Organization for Standardization (ISO). It connects to key reference information that enables clear and unique identification of legal entities participating in financial transactions. Each LEI contains information about an entity’s ownership structure and thus answers the questions of ‘who is who’ and ‘who owns whom’.</li>
               <li><b>Books: Internet Archive’s Open Library.</b> Open Library is an open, editable library catalog, building towards a web page for every book ever published.</li>
             </ul
             Read more about the databases and tools used by Mangrove, as well as the principles guiding the design choices, in the Mangrove Review Standard in our GitLab repository.
-          '
-        },
-        {
-          q: 'How do I make words in answer bold?',
-          a: 'Like <b>this</b>'
-        },
-        {
-          q: 'How do I make a list?',
-          a: `
-            Here is a few points:
-            <ul>
-              <li>Item one</li>
-              <li>Item two</li>
-            </ul>
           `
-        },
-        {
-          q: 'How do I do it b?',
-          a: 'Like this'
-        },
-        {
-          q: 'What else?',
-          a: 'Nothing.'
         }
       ]
     }
