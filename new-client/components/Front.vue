@@ -34,16 +34,17 @@ export default {
         {
           title: 'Valuable insights',
           details: [
-            'Read and write reviews for places, websites, companies, and books',
-            'Get informed before making decisions and share your insights with others',
-            'Do research and build useful applications on this valuable data'
+            'Read and write reviews for places, websites, companies, and books.',
+            'Get informed before making decisions and share your insights with others.',
+            'Do research, or build useful applications.'
           ]
         },
         {
           title: 'Open data',
           details: [
-            'The content you provide is under a free and open license, and not kept proprietary',
-            'Your contribution can be leveraged by researchers, entrepreneurs, and end-users alike, without posing barriers to entry for anyone'
+            'The content you provide is under a free and open license, and cannot be kept proprietary.',
+            'Your contribution can be leveraged by researchers, entrepreneurs, and end-users alike, without posing barriers to entry for anyone',
+            'Make businesses compete based on technological merit, not on access to data.'
           ]
         },
         {
