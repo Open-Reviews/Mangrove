@@ -1,17 +1,17 @@
 <template>
-  <v-container>
-    <v-row>
-      <SearchBox />
-    </v-row>
-    <v-row>
-      <v-col>
+  <v-row>
+    <v-col>
+      <v-row>
+        <SearchBox />
+      </v-row>
+      <v-row>
         <SubjectList />
-      </v-col>
-      <v-col>
-        <SubjectProfile />
-      </v-col>
-    </v-row>
-  </v-container>
+      </v-row>
+    </v-col>
+    <v-col>
+      <SubjectProfile />
+    </v-col>
+  </v-row>
 </template>
 
 <script>

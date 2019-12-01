@@ -12,7 +12,9 @@
         <v-btn :to="queryLink" :disabled="query == ''">Search</v-btn>
       </v-col>
     </v-row>
-    <div v-if="error">Error encountered: {{ error }}</div>
+    <v-alert v-if="error" type="error" border="left" elevation="8">
+      Error encountered: {{ error }}
+    </v-alert>
     <SchemeFilter />
   </v-container>
 </template>
@@ -49,6 +51,7 @@ export default {
     window.setInterval(() => {
       this.nextPlaceholder()
     }, 2000)
+    this.query = this.$route.query.q
   },
   methods: {
     search() {

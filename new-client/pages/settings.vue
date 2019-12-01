@@ -2,6 +2,8 @@
   <v-row>
     <v-col>
       <Account />
+      <h2>Preferences</h2>
+      <v-checkbox v-model="$vuetify.theme.dark" label="Dark mode" />
     </v-col>
     <v-col>
       <YourReviews />

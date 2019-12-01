@@ -1,6 +1,11 @@
 <template>
   <v-container v-if="$store.state.selected">
-    Subject info <br />
+    <v-card>
+      <v-card-title>
+        {{ subject.profile.title }}
+      </v-card-title>
+      <v-row> <v-rating value="4"></v-rating> 4.3 (23) </v-row>
+    </v-card>
     <ReviewForm />
     <ReviewList />
   </v-container>
@@ -14,6 +19,11 @@ export default {
   components: {
     ReviewForm,
     ReviewList
+  },
+  computed: {
+    subject() {
+      return this.$store.state.selected
+    }
   }
 }
 </script>

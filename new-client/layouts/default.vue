@@ -1,5 +1,5 @@
 <template>
-  <v-app light>
+  <v-app>
     <v-app-bar dense app>
       <v-btn to="/" text>
         <v-icon>mdi-tree-outline</v-icon>

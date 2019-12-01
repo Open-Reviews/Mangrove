@@ -9,6 +9,8 @@ export const state = () => ({
   // Array of objects { sub: ..., scheme: ..., profile: ... }
   subs: [],
   selected: null,
+  // Array of schemes that should be selected, empty means display all.
+  filters: [],
   // Object from MaReSi to reviews, ensuring only unique ones are stored.
   reviews: {},
   rating: null,
@@ -34,15 +36,12 @@ export const mutations = {
   [t.SELECT_SUB](state, sub) {
     state.selected = sub
   },
+  [t.SET_FILTERS](state, filters) {
+    state.filters = filters
+  },
   [t.ADD_REVIEWS](state, newreviews) {
     newreviews.map((r) => Vue.set(state.reviews, r.signature, r))
     console.log('ADD_REVIEWS: ', state.reviews)
-  },
-  rating(state, stars) {
-    state.rating = stars
-  },
-  opinion(state, text) {
-    state.opinion = text
   },
   extraHashes(state, files) {
     state.extraHashes = files
@@ -135,8 +134,6 @@ export const actions = {
         }
       })
       .then(() => {
-        commit('showextra', false)
-        commit('showmeta', false)
         this.submitError = null
         // Add review so that its immediately visible.
         commit(t.ADD_REVIEWS, [review])

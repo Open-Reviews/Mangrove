@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <v-container>
     Click on one of public keys to display the associated reviews here.
     <SchemeFilter />
-    <ReviewList />
-  </div>
+    <ReviewList mine />
+  </v-container>
 </template>
 
 <script>
