@@ -8,6 +8,7 @@ use std::collections::HashMap;
 use std::env;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use url::Url;
+use isbn::Isbn;
 
 pub type Rating = i16;
 
@@ -159,7 +160,13 @@ fn check_lei(id: &str) -> Result<(), Error> {
     }
 }
 
-// TODO: check in the database
+fn check_isbn(id: &str) -> Result<(), Error> {
+    match id.parse::<Isbn>() {
+        Ok(_) => Ok(()),
+        Err(e) => Err(Error::Incorrect(format!("ISBN incorrect: {:?}", e)))
+    }
+}
+
 // check Mangrove Review Signature, which is a unique id of a review.
 fn check_maresi(conn: &DbConn, id: &str) -> Result<(), Error> {
     conn.select(id).map(|_| ())
@@ -173,6 +180,7 @@ fn check_sub(conn: &DbConn, uri: &str) -> Result<(), Error> {
             // Parsing lower cases the scheme.
             match sub.scheme() {
                 "lei" => check_lei(sub.path()),
+                "isbn" => check_isbn(sub.path()),
                 "maresi" => check_maresi(conn, sub.path()),
                 s => Err(Error::Incorrect(format!("Unknown URN scheme: {}", s))),
             }
