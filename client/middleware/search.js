@@ -16,7 +16,7 @@ export default function({ store, $axios, route }) {
   }
   store.commit(EMPTY_URIS)
   Promise.all([
-    searchUrl($axios, query).then((subs) => store.commit(ADD_URIS, subs)),
+    store.commit(ADD_URIS, searchUrl(query)),
     searchGeo(query).then((subs) => store.commit(ADD_URIS, subs)),
     searchIsbn($axios, query).then((subs) => store.commit(ADD_URIS, subs)),
     searchLei($axios, query).then((subs) => store.commit(ADD_URIS, subs)),
@@ -63,52 +63,23 @@ export default function({ store, $axios, route }) {
     })
 }
 
-function searchUrl(axios, input) {
-  return axios
-    .get(
-      'https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/WebSearchAPI',
-      {
-        params: {
-          autoCorrect: 'true',
-          pageNumber: '1',
-          pageSize: '5',
-          q: input,
-          safeSearch: 'false'
-        },
-        headers: {
-          'x-rapidapi-host': 'contextualwebsearch-websearch-v1.p.rapidapi.com',
-          'x-rapidapi-key': '251214c417msh8d97fdc071044acp196e11jsn6aae035600e6'
-        }
-      }
-    )
-    .then((response) => {
-      return response.data.value.map((result) => {
-        return {
-          sub: result.url,
-          scheme: HTTPS,
-          profile: { title: result.title, description: result.description }
-        }
+function searchUrl(input) {
+  const search = []
+  if (input.includes('.')) {
+    // Use a very basic test if the query is a URL,
+    // people rarely use period in queries otherwise.
+    // Try to recover a valid url.
+    const url = new URL(input.startsWith('http') ? input : `https://${input}`)
+    if (url) {
+      search.push({
+        sub: `${url.protocol}//${url.hostname}`,
+        // Remove the trailing colon
+        scheme: HTTPS,
+        profile: { title: url.hostname, description: '' }
       })
-    })
-    .then((search) => {
-      if (input.includes('.')) {
-        // Use a very basic test if the query is a URL,
-        // people rarely use period in queries otherwise.
-        // Try to recover a valid url.
-        const url = new URL(
-          input.startsWith('http') ? input : `https://${input}`
-        )
-        if (url) {
-          search.push({
-            sub: `${url.protocol}//${url.hostname}`,
-            // Remove the trailing colon
-            scheme: HTTPS,
-            profile: { title: url.hostname, description: '' }
-          })
-        }
-      }
-      return search
-    })
+    }
+  }
+  return search
 }
 
 function searchGeo(input) {
