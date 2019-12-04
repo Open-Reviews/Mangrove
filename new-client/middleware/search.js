@@ -99,7 +99,8 @@ function searchUrl(axios, input) {
         if (url) {
           search.push({
             sub: `${url.protocol}//${url.hostname}`,
-            scheme: url.protocol,
+            // Remove the trailing colon
+            scheme: url.protocol.slice(0, -1),
             profile: { title: url.hostname, description: '' }
           })
         }
@@ -146,8 +147,8 @@ function searchLei(axios, query) {
                   .then((entity) => entity.attributes)
                   .then((attrs) => {
                     return {
-                      sub: `urn:LEI:${attrs.lei}`,
-                      scheme: 'urn:LEI',
+                      sub: `urn:lei:${attrs.lei}`,
+                      scheme: 'urn:lei',
                       profile: {
                         title: attrs.entity.legalName.name,
                         description: [

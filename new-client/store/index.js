@@ -40,8 +40,9 @@ export const mutations = {
     state.filters = filters
   },
   [t.ADD_REVIEWS](state, newreviews) {
-    newreviews.map((r) => Vue.set(state.reviews, r.signature, r))
-    console.log('ADD_REVIEWS: ', state.reviews)
+    if (newreviews) {
+      newreviews.map((r) => Vue.set(state.reviews, r.signature, r))
+    }
   },
   extraHashes(state, files) {
     state.extraHashes = files

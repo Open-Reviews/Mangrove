@@ -22,8 +22,16 @@ export default {
     }
   },
   computed: {
+    filters() {
+      return this.$store.state.filters
+    },
     subs() {
-      return this.$store.state.subs
+      return this.$store.state.subs.filter((subject) => {
+        return (
+          !this.filters.length ||
+          this.filters.some((filter) => subject.scheme === filter)
+        )
+      })
     }
   },
   methods: {
