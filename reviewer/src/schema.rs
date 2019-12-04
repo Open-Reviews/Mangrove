@@ -6,7 +6,7 @@ table! {
         sub -> Text,
         rating -> Nullable<Int2>,
         opinion -> Nullable<Text>,
-        extradata -> Nullable<Json>,
+        extra_hashes -> Nullable<Json>,
         metadata -> Nullable<Json>,
     }
 }

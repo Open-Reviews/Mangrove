@@ -38,12 +38,12 @@ export default {
     }
   },
   computed: {
-    nickname: {
+    display_name: {
       get() {
-        return this.$store.state.metadata.nickname
+        return this.$store.state.metadata.display_name
       },
       set(value) {
-        this.$store.commit(SET_META, ['nickname', value])
+        this.$store.commit(SET_META, ['display_name', value])
       }
     },
     age: {

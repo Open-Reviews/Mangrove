@@ -41,7 +41,7 @@ The standard was developed based on a set of [principles](#principles-of-the-dat
     "rating": 75,
     "opinion": "Great for finding new sites.",
     "metadata": {
-        "displayName":"john123"
+        "display_name":"john123"
     }
 }
 ```
@@ -86,7 +86,7 @@ Review MUST include either `rating` or `opinion` key, which means it MAY omit on
     - MUST be a Major type 3 (a text string) with length less than or equal to `500`.
 
 Review MAY include any of the following keys and values:
-- `extraHashes`
+- `extra_hashes`
     - References to additional data, such as pictures or audio which are relevant to the review.
     - MUST be a Major type 4 (an array of data items) with each item being a Major type 3 (a text string) of length 64.  Length of the array SHOULD NOT exceed 5 items.
     - Each item MUST be a SHA-256 represented as hexadecimal string, of a file stored on a publicly accessible server or decentralized network.
@@ -130,6 +130,12 @@ The key `metadata` contains a map of key/value pairs, where each key SHOULD be e
 - `client_uri` MUST be a correct URI corresponding to the resource the review originates from: website or app.
 - `display_name` MUST be a user specified name to be displayed of length less than 20.
 - `age` MUST be of Major type 0 (an unsigned integer) which SHOULD be the age of the reviewer of at most 200.
+- `experience_context` SHOULD be one of common contexts in which the reviewer primarily had experience with the subject:
+  - `business`
+  - `family` for experiences involving the whole family, typically with children
+  - `couple` for experiences as a romantic couple
+  - `friends` for experiences made together with one or more friends 
+  - `solo` for experiences made alone 
 - `openid` SHOULD be the openID associated with the reviewer of length less than 20.
 - `data_source` MUST be a correct URL of the data source if the information does not originate from the reviewer.
 - `issuer_index` MUST be of Major type 0 (an unsigned integer) which SHOULD be a unique index used by the reviewer, usually indicating a ranking in a list. MUST be at most the [JavaScript safe integer](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER): 9007199254740991.

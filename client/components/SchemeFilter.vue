@@ -14,15 +14,16 @@
 
 <script>
 import { SET_FILTERS } from '../store/mutation-types'
+import { GEO, LEI, HTTPS, ISBN } from '../store/scheme-types'
 
 export default {
   data() {
     return {
       boxes: [
-        { var: 'geo', label: 'Places on map' },
-        { var: 'urn:lei', label: 'Companies' },
-        { var: 'https', label: 'Websites' },
-        { var: 'urn:isbn', label: 'Books' }
+        { var: GEO, label: 'Places on map' },
+        { var: LEI, label: 'Companies' },
+        { var: HTTPS, label: 'Websites' },
+        { var: ISBN, label: 'Books' }
       ]
     }
   },

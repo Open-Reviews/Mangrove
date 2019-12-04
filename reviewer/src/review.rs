@@ -31,7 +31,7 @@ pub struct Review {
     pub rating: Option<Rating>,
     pub opinion: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub extradata: Option<serde_json::Value>,
+    pub extra_hashes: Option<serde_json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<serde_json::Value>,
 }
@@ -49,7 +49,7 @@ struct UnsignedReview<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     opinion: Option<&'a String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    extradata: Option<ExtraHashes>,
+    extra_hashes: Option<ExtraHashes>,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<Metadata>,
 }
@@ -268,10 +268,10 @@ fn check_metadata(key: &str, value: &str) -> Result<(), Error> {
     }
 }
 
-// TODO: check metadata and extradata
+// TODO: check metadata and extrahashes
 impl Review {
     pub fn check(&self, conn: &DbConn) -> Result<bool, Error> {
-        let extradata = match self.extradata {
+        let extra_hashes = match self.extra_hashes {
             Some(ref v) => serde_json::from_value(v.clone())?,
             None => None,
         };
@@ -285,7 +285,7 @@ impl Review {
             sub: &self.sub,
             rating: self.rating,
             opinion: self.opinion.as_ref(),
-            extradata,
+            extra_hashes,
             metadata,
         };
         check_timestamp(Duration::from_secs(self.iat as u64))?;
@@ -305,7 +305,7 @@ impl Review {
             info!("{:?}", e);
             e
         })?;
-        msg.extradata.map_or(Ok(()), |e| {
+        msg.extra_hashes.map_or(Ok(()), |e| {
             e.0.iter().map(|h| check_extrahash(&h)).collect()
         })?;
         check_sub(conn, &self.sub)?;
