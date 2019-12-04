@@ -4,7 +4,8 @@
       <v-list-item-avatar color="grey"></v-list-item-avatar>
       <v-list-item-content>
         <v-list-item-title class="headline">{{
-          (review.extradata && review.extradata.nickname) || 'Anonymous'
+          (review.extra_hashes && review.extra_hashes.display_name) ||
+            'Anonymous'
         }}</v-list-item-title>
         <v-list-item-subtitle
           >2 reviews <v-icon>mdi-thumb-up</v-icon>2</v-list-item-subtitle
@@ -15,7 +16,7 @@
       {{ review.iat }}
       <v-rating :value="(review.rating + 25) / 25"></v-rating>
       {{ review.opinion }}
-      <div v-for="hash in review.extradata" :key="hash">
+      <div v-for="hash in review.extra_hashes" :key="hash">
         <img :src="imageUrl(hash)" />
       </div>
       {{ review.metadata }}
