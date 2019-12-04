@@ -19,7 +19,7 @@
         <nuxt />
       </v-container>
     </v-content>
-    <v-footer app>
+    <v-footer app absolute>
       <v-btn
         v-for="internal in internals"
         :key="internal.link"

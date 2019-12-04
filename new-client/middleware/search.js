@@ -20,15 +20,17 @@ export default function({ store, $axios, route }) {
     searchLei($axios, query).then((subs) => store.commit(ADD_URIS, subs)),
     store
       .dispatch('requestReviews', { q: query })
-      .then((rs) =>
-        rs.map((r) => {
-          return {
-            sub: r.sub,
-            scheme: new URL(r.sub).protocol,
-            profile: {}
-          }
-        })
-      )
+      .then((rs) => {
+        return rs
+          ? rs.map((r) => {
+              return {
+                sub: r.sub,
+                scheme: new URL(r.sub).protocol,
+                profile: {}
+              }
+            })
+          : []
+      })
       .then((subs) => store.commit(ADD_URIS, subs))
   ])
     .then(() => {

@@ -8,7 +8,7 @@
       :label="box.label"
       multiple
     />
-    <v-btn v-on:click="filters = []" label="Show all">Show all</v-btn>
+    <v-btn v-on:click="filters = []">Clear filters</v-btn>
   </v-row>
 </template>
 
