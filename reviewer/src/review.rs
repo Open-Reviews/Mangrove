@@ -165,7 +165,7 @@ fn check_maresi(conn: &DbConn, id: &str) -> Result<(), Error> {
     conn.select(id).map(|_| ())
 }
 
-fn check_uri(conn: &DbConn, uri: &str) -> Result<(), Error> {
+fn check_sub(conn: &DbConn, uri: &str) -> Result<(), Error> {
     let parsed = Url::parse(&uri)?;
     match parsed.scheme() {
         "urn" => {
@@ -212,26 +212,48 @@ fn check_short_string(key: &str, value: &str) -> Result<(), Error> {
     }
 }
 
+fn check_uri(key: &str, value: &str) -> Result<(), Error> {
+    match Url::parse(value) {
+        Ok(_) => Ok(()),
+        Err(e) => Err(Error::Incorrect(format!(
+            "Unable to parse URI for {}: {}",
+            key, e
+        ))),
+    }
+}
+
+fn check_flag(key: &str, value: &str) -> Result<(), Error> {
+    match value {
+        "true" => Ok(()),
+        _ => Err(Error::Incorrect(format!(
+            "Flag field {} can only have value equal to true",
+            key
+        )))
+    }
+}
+
 fn check_metadata(key: &str, value: &str) -> Result<(), Error> {
     match key {
-        "client_uri" => match Url::parse(value) {
-            Ok(_) => Ok(()),
-            Err(e) => Err(Error::Incorrect(format!(
-                "Unable to parse client_uri: {}",
-                e
-            ))),
-        },
-        "nickname" => check_short_string(key, value),
-        "preferred_username" => check_short_string(key, value),
+        "client_uri" => check_uri(key, value),
+        "display_name" => check_short_string(key, value),
         "age" => match value.parse::<u8>() {
             Ok(n) if n <= 200 => Ok(()),
             _ => Err(Error::Incorrect("Provided age is incorrect.".into())),
         },
-        "birthday" => check_short_string(key, value),
+        "openid" => check_short_string(key, value),
+        "data_source" => check_uri(key, value),
+        "issuer_index" => match value.parse::<u64>() {
+            Ok(n) if n <= 9_007_199_254_740_991 => Ok(()),
+            _ => Err(Error::Incorrect("Provided index is incorrect.".into())),
+        },
+        "preferred_username" => check_short_string(key, value),
+        "birthdate" => check_short_string(key, value),
         "family_name" => check_short_string(key, value),
         "given_name" => check_short_string(key, value),
         "gender" => check_short_string(key, value),
-        "openid" => check_short_string(key, value),
+        "is_generated" => check_flag(key, value),
+        "is_affiliated" => check_flag(key, value),
+        "is_personal_experience" => check_flag(key, value),
         _ => Err(Error::Incorrect(
             "Key is not one of Mangrove Core Metadata Keys.".into(),
         )),
@@ -278,7 +300,7 @@ impl Review {
         msg.extradata.map_or(Ok(()), |e| {
             e.0.iter().map(|h| check_extrahash(&h)).collect()
         })?;
-        check_uri(conn, &self.sub)?;
+        check_sub(conn, &self.sub)?;
         Ok(true)
     }
 }

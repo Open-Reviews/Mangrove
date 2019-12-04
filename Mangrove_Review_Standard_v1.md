@@ -128,14 +128,24 @@ These fields are meant to represent additional data about the reviewer, circumst
 
 The key `metadata` contains a map of key/value pairs, where each key SHOULD be equal to one of following keys and have value as described:
 - `client_uri` MUST be a correct URI corresponding to the resource the review originates from: website or app.
-- `preferred_username` MUST be a name of account used for this review of length less than 20.
-- `nickname` MUST be a user specified name to be displayed of length less than 20.
+- `display_name` MUST be a user specified name to be displayed of length less than 20.
 - `age` MUST be of Major type 0 (an unsigned integer) which SHOULD be the age of the reviewer of at most 200.
-- `birthday` SHOULD be the date of birth of the reviewer.
+- `openid` SHOULD be the openID associated with the reviewer of length less than 20.
+- `data_source` MUST be a correct URL of the data source if the information does not originate from the reviewer.
+- `issuer_index` MUST be of Major type 0 (an unsigned integer) which SHOULD be a unique index used by the reviewer, usually indicating a ranking in a list. MUST be at most the [JavaScript safe integer](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER): 9007199254740991.
+
+Fields based on [OpenID Standard Claims](https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims):
+- `preferred_username` MUST be a name of account used for this review of length less than 20. 
+- `birthdate` SHOULD be the date of birth of the reviewer.
 - `family_name` SHOULD be the last name of the reviewer of length less than 20.
 - `given_name` SHOULD be the first name of the reviewer of length less than 20.
 - `gender` SHOULD be the gender of the reviewer of length less than 20.
-- `openid` SHOULD be the openID associated with the reviewer of length less than 20.
+
+Flag fields can be added to indicate particular review property, when present their value MUST be equal to `true`:
+- `is_generated` SHOULD be present if the review has been left by a review generating bot.
+- `is_affiliated` SHOULD be present if the review has been left by a reviewer affiliated with the subject, such as business owner or employee.
+- `is_personal_experience` SHOULD be present if the review has been left by a reviewer who had direct experience with the subject of the review and is not based on a third party account.
+
 
 Additional fields to be added, including items such as proof-of-purchase, identity token, useful information about the subject, circumstances of the experience.
 
