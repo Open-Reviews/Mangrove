@@ -19,7 +19,7 @@ export default {
   data() {
     return {
       boxes: [
-        { var: GEO, label: 'Places on map' },
+        { var: GEO, label: 'Places' },
         { var: LEI, label: 'Companies' },
         { var: HTTPS, label: 'Websites' },
         { var: ISBN, label: 'Books' }

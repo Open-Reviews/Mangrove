@@ -1,33 +1,40 @@
 <template>
   <v-container>
     <h2>Your account</h2>
-    <v-list>
-      <v-subheader inset>Your default public key</v-subheader>
-      <v-divider inset />
-      <v-list-item v-if="$store.state.publicKey">
-        {{ $store.state.publicKey.slice(0, 10) + '...' }}
-      </v-list-item>
-      <v-subheader inset>Your other public keys</v-subheader>
-      <v-divider inset />
-    </v-list>
+    <v-card v-if="$store.state.publicKey">
+      <v-card-title>Default public key</v-card-title>
+      <v-row>
+        <v-col align="center">
+          <v-icon>mdi-circle</v-icon>
+        </v-col>
+        <v-col>
+          <v-row>
+            <v-card-subtitle>42 reviews · 23 rated useful</v-card-subtitle>
+          </v-row>
+          <v-row>
+            <v-card-text
+              >{{ $store.state.publicKey.slice(0, 10) + '...' }}
+              <v-icon>mdi-content-copy</v-icon>
+            </v-card-text>
+          </v-row>
+        </v-col>
+      </v-row>
+    </v-card>
+    <v-card v-if="false">
+      Your other public keys
+    </v-card>
     <v-row>
-      <h3>Backup your private key</h3>
+      <v-btn @click="copySecret"
+        >Copy to save your private key <v-icon>mdi-content-copy</v-icon></v-btn
+      >
       <v-expansion-panels>
         <v-expansion-panel>
-          <v-expansion-panel-header
-            >Make sure to back up your private key</v-expansion-panel-header
-          >
+          <v-expansion-panel-header>Why?</v-expansion-panel-header>
           <v-expansion-panel-content
             ><span v-html="explanation"
           /></v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
-    </v-row>
-    <v-row>
-      <v-btn @click="copySecret"
-        >Copy your private key <v-icon>mdi-content-copy</v-icon></v-btn
-      >
-      {{ hint }}
     </v-row>
     <h2>Switch account</h2>
     Import another private key to access associated public keys and reviews

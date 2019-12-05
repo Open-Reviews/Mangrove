@@ -104,15 +104,16 @@ function searchGeo(input) {
   return geoProvider.search({ query: input }).then((results) =>
     // Compute Geo URI for each result, introducing default uncertainty of the POI of 30 meters.
     results.map((result) => {
-      const label = encodeURI(
-        result.label.substring(0, result.label.indexOf(','))
-      )
+      const partition = result.label.indexOf(',')
+      const label = result.label.substring(0, partition)
+      const address = result.label.substring(partition + 1)
+      const type = result.raw.type
       return {
         sub: `${GEO}:?q=${result.y},${result.x}(${label})&u=30`,
         scheme: GEO,
         title: label,
-        subtitle: '',
-        description: result.label
+        subtitle: type.charAt(0).toUpperCase() + type.slice(1),
+        description: address
       }
     })
   )
