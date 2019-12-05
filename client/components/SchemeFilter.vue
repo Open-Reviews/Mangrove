@@ -1,5 +1,5 @@
 <template>
-  <v-row justify="space-around">
+  <v-row justify="space-around" class="ma-auto">
     <v-checkbox
       v-for="box in boxes"
       :key="box.var"
@@ -8,7 +8,6 @@
       :label="box.label"
       multiple
     />
-    <v-btn v-on:click="filters = []">Clear filters</v-btn>
   </v-row>
 </template>
 

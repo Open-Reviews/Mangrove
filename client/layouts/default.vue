@@ -1,7 +1,7 @@
 <template>
   <v-app>
-    <v-app-bar dense app>
-      <v-btn to="/" text>
+    <v-app-bar app>
+      <v-btn to="/" class="active" text>
         <v-icon>mdi-tree-outline</v-icon>
         <v-toolbar-title v-text="title" />
       </v-btn>
@@ -20,30 +20,37 @@
       </v-container>
     </v-content>
     <v-footer app absolute>
-      <v-btn
-        v-for="internal in internals"
-        :key="internal.link"
-        :to="internal.link"
-        text
-      >
-        {{ internal.label }}
-      </v-btn>
-      <v-spacer />
-      <v-btn
-        v-for="social in socials"
-        :key="social.icon"
-        :to="social.link"
-        icon
-      >
-        <v-icon>{{ social.icon }}</v-icon>
-      </v-btn>
-      <v-card-text class="text-center">
-        {{ new Date().getFullYear() }} —
-        <strong>
-          A <a :href="psUrl">PlantingSpace</a> Project -
-          <a :href="ccbyUrl">CC-BY-4.0</a>
-        </strong>
-      </v-card-text>
+      <v-col>
+        <v-btn
+          v-for="internal in internals"
+          :key="internal.link"
+          :to="internal.link"
+          text
+        >
+          {{ internal.label }}
+        </v-btn>
+      </v-col>
+      <v-col class="text-center">
+        {{ new Date().getFullYear() }} — A
+        <a :href="psUrl">PlantingSpace</a> Project -
+        <a :href="ccbyUrl">CC-BY-4.0</a>
+      </v-col>
+      <v-col class="text-right">
+        <v-btn
+          v-for="social in socials"
+          :key="social.icon"
+          :href="social.link"
+          icon
+        >
+          <v-icon>{{ social.icon }}</v-icon>
+        </v-btn>
+        <v-btn href="https://riot.im/" icon>
+          <v-img src="icon-riot.png" max-height="30" contain />
+        </v-btn>
+        <v-btn href="https://opencollective.com" icon>
+          <v-img src="icon-collective.svg" max-height="30" contain />
+        </v-btn>
+      </v-col>
     </v-footer>
   </v-app>
 </template>
@@ -65,11 +72,11 @@ export default {
           icon: 'mdi-mastodon',
           link: 'https://mas.to/@PlantingSpace'
         },
+        { icon: 'mdi-twitter', link: 'https://twitter.com/mangroveReviews' },
         {
           icon: 'mdi-gitlab',
           link: 'https://gitlab.com/plantingspace/mangrove'
-        },
-        { icon: 'mdi-twitter', link: 'https://twitter.com/mangroveReviews' }
+        }
       ]
     }
   },
@@ -78,3 +85,12 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+a {
+  text-decoration: none;
+}
+.container {
+  max-width: 70vw;
+}
+</style>
