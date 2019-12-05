@@ -1,16 +1,13 @@
 <template>
-  <v-container>
+  <v-container justify="center">
     <v-row>
-      <v-col>
-        <v-text-field
-          v-on:keyup.enter="search"
-          v-model.trim="query"
-          :placeholder="placeholder"
-        />
-      </v-col>
-      <v-col>
-        <v-btn :to="queryLink" :disabled="query == ''">Search</v-btn>
-      </v-col>
+      <v-text-field
+        v-on:keyup.enter="search"
+        v-model.trim="query"
+        :placeholder="placeholder"
+        @click:append="search"
+        append-icon="mdi-magnify"
+      />
     </v-row>
     <v-alert v-if="error" type="error" border="left" elevation="8">
       Error encountered: {{ error }}

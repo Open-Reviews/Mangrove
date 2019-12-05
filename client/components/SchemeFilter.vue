@@ -1,5 +1,5 @@
 <template>
-  <v-row justify="space-around">
+  <v-row justify="space-around" class="ma-auto">
     <v-checkbox
       v-for="box in boxes"
       :key="box.var"
@@ -8,21 +8,21 @@
       :label="box.label"
       multiple
     />
-    <v-btn v-on:click="filters = []">Clear filters</v-btn>
   </v-row>
 </template>
 
 <script>
 import { SET_FILTERS } from '../store/mutation-types'
+import { GEO, LEI, HTTPS, ISBN } from '../store/scheme-types'
 
 export default {
   data() {
     return {
       boxes: [
-        { var: 'geo', label: 'Places on map' },
-        { var: 'urn:lei', label: 'Companies' },
-        { var: 'https', label: 'Websites' },
-        { var: 'urn:isbn', label: 'Books' }
+        { var: GEO, label: 'Places on map' },
+        { var: LEI, label: 'Companies' },
+        { var: HTTPS, label: 'Websites' },
+        { var: ISBN, label: 'Books' }
       ]
     }
   },

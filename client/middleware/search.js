@@ -5,6 +5,7 @@ import {
   SELECT_SUB,
   SEARCH_ERROR
 } from '../store/mutation-types'
+import { HTTPS, GEO, LEI, ISBN } from '../store/scheme-types'
 
 const geoProvider = new OpenStreetMapProvider()
 
@@ -15,8 +16,9 @@ export default function({ store, $axios, route }) {
   }
   store.commit(EMPTY_URIS)
   Promise.all([
-    searchUrl($axios, query).then((subs) => store.commit(ADD_URIS, subs)),
+    store.commit(ADD_URIS, searchUrl(query)),
     searchGeo(query).then((subs) => store.commit(ADD_URIS, subs)),
+    searchIsbn($axios, query).then((subs) => store.commit(ADD_URIS, subs)),
     searchLei($axios, query).then((subs) => store.commit(ADD_URIS, subs)),
     store
       .dispatch('requestReviews', { q: query })
@@ -25,7 +27,7 @@ export default function({ store, $axios, route }) {
           ? rs.map((r) => {
               return {
                 sub: r.sub,
-                scheme: new URL(r.sub).protocol,
+                scheme: HTTPS,
                 profile: {}
               }
             })
@@ -61,51 +63,23 @@ export default function({ store, $axios, route }) {
     })
 }
 
-function searchUrl(axios, input) {
-  return axios
-    .get(
-      'https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/WebSearchAPI',
-      {
-        params: {
-          autoCorrect: 'true',
-          pageNumber: '1',
-          pageSize: '5',
-          q: input,
-          safeSearch: 'false'
-        },
-        headers: {
-          'x-rapidapi-host': 'contextualwebsearch-websearch-v1.p.rapidapi.com',
-          'x-rapidapi-key': '251214c417msh8d97fdc071044acp196e11jsn6aae035600e6'
-        }
-      }
-    )
-    .then((response) => {
-      return response.data.value.map((result) => {
-        return {
-          sub: result.url,
-          scheme: new URL(result.url).protocol,
-          profile: { title: result.title, description: result.description }
-        }
+function searchUrl(input) {
+  const search = []
+  if (input.includes('.')) {
+    // Use a very basic test if the query is a URL,
+    // people rarely use period in queries otherwise.
+    // Try to recover a valid url.
+    const url = new URL(input.startsWith('http') ? input : `https://${input}`)
+    if (url) {
+      search.push({
+        sub: `${url.protocol}//${url.hostname}`,
+        // Remove the trailing colon
+        scheme: HTTPS,
+        profile: { title: url.hostname, description: '' }
       })
-    })
-    .then((search) => {
-      if (input.includes('.')) {
-        // Use a very basic test if the query is a URL,
-        // people rarely use period in queries otherwise.
-        // Try to recover a valid url.
-        const url = new URL(
-          input.startsWith('http') ? input : `https://${input}`
-        )
-        if (url) {
-          search.push({
-            sub: `${url.protocol}//${url.hostname}`,
-            scheme: url.protocol,
-            profile: { title: url.hostname, description: '' }
-          })
-        }
-      }
-      return search
-    })
+    }
+  }
+  return search
 }
 
 function searchGeo(input) {
@@ -117,12 +91,42 @@ function searchGeo(input) {
         result.label.substring(0, result.label.indexOf(','))
       )
       return {
-        sub: `geo:?q=${result.y},${result.x}(${label})&u=30`,
-        scheme: 'geo',
+        sub: `${GEO}:?q=${result.y},${result.x}(${label})&u=30`,
+        scheme: GEO,
         profile: { title: label, description: result.label }
       }
     })
   )
+}
+
+function searchIsbn(axios, input) {
+  return axios
+    .get('https://openlibrary.org/search.json', {
+      params: {
+        q: input
+      },
+      headers: { Accept: 'application/json' }
+    })
+    .then((response) => {
+      return Promise.all(
+        response.data.docs.map((doc) => {
+          return doc.isbn
+            ? {
+                sub: `${ISBN}:${doc.isbn[0]}`,
+                scheme: ISBN,
+                profile: { title: doc.title, description: doc.author_name }
+              }
+            : null
+        })
+      )
+    })
+    .then((books) => {
+      // Filter out duplicates and entities without isbn.
+      return books.filter(
+        (book, index, self) =>
+          book && self.findIndex((e) => e && e.sub === book.sub) === index
+      )
+    })
 }
 
 function searchLei(axios, query) {
@@ -146,8 +150,8 @@ function searchLei(axios, query) {
                   .then((entity) => entity.attributes)
                   .then((attrs) => {
                     return {
-                      sub: `urn:LEI:${attrs.lei}`,
-                      scheme: 'urn:LEI',
+                      sub: `${LEI}:${attrs.lei}`,
+                      scheme: LEI,
                       profile: {
                         title: attrs.entity.legalName.name,
                         description: [
@@ -163,7 +167,7 @@ function searchLei(axios, query) {
         )
       ).then((entities) => {
         // Filter out duplicates and entities without relationship.
-        return Array.from(new Set(entities)).filter(
+        return entities.filter(
           (entity, index, self) =>
             entity && self.findIndex((e) => e && e.sub === entity.sub) === index
         )

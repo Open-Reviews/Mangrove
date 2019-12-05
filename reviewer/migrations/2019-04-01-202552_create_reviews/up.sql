@@ -6,6 +6,6 @@ CREATE TABLE reviews (
   sub text NOT NULL,
   rating smallint,
   opinion text,
-  extradata text,
+  extra_hashes text,
   metadata text
 );

@@ -10,6 +10,7 @@ log = "0.4"
 rand = "0.6"
 hex = "0.4.0"
 url = "2.1.0"
+isbn = "0.2.0"
 untrusted = "0.6.2"
 ring = "0.13.5"
 diesel = { version = "1.0.0", features = ["postgres", "serde_json"] }

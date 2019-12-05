@@ -77,8 +77,9 @@ export default {
       // Add field only if it is not empty.
       if (this.rating !== null) claim.rating = this.rating * 25 - 25
       if (this.opinion) claim.opinion = this.opinion
-      const extradata = this.$store.state.extraHashes
-      if (extradata && extradata.length !== 0) claim.extradata = extradata
+      const extraHashes = this.$store.state.extraHashes
+      if (extraHashes && extraHashes.length !== 0)
+        claim.extra_hashes = extraHashes
       const meta = this.$store.state.metadata
       // Remove empty metadata fields.
       Object.keys(meta).forEach((key) => meta[key] == null && delete meta[key])
