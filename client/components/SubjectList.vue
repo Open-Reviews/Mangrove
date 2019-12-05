@@ -9,17 +9,26 @@
       class="my-4"
       hover
     >
-      <v-chip small label>
-        {{ name(sub.scheme) }}
-      </v-chip>
-      <v-card-title>{{ sub.title }}</v-card-title>
-      <v-row align="center" class="ma-auto">
-        <v-rating v-model="sub.aggregateRating" />
-        {{ sub.aggregateRating }}
-        ({{ sub.aggregateReviews }})
+      <v-row align="center">
+        <v-col>
+          <v-chip small label>
+            {{ name(sub.scheme) }}
+          </v-chip>
+          <v-card-title>{{ sub.title }}</v-card-title>
+          <v-row align="center" class="ma-auto">
+            <v-rating v-model="sub.aggregateRating" />
+            {{ sub.aggregateRating }}
+            ({{ sub.aggregateReviews }})
+          </v-row>
+          <v-card-subtitle>{{ sub.subtitle }}</v-card-subtitle>
+          <v-card-text>{{ sub.description }}</v-card-text>
+        </v-col>
+        <v-col v-if="sub.image">
+          <v-avatar class="profile" tile height="150" width="100">
+            <v-img :src="sub.image" />
+          </v-avatar>
+        </v-col>
       </v-row>
-      <v-card-subtitle>{{ sub.subtitle }}</v-card-subtitle>
-      <v-card-text>{{ sub.description }}</v-card-text>
     </v-card>
   </v-container>
 </template>

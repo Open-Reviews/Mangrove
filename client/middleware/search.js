@@ -133,9 +133,12 @@ function searchIsbn(axios, input) {
             ? {
                 sub: `${ISBN}:${doc.isbn[0]}`,
                 scheme: ISBN,
-                title: doc.title,
-                subtitle: '',
-                description: doc.author_name
+                title: doc.subtitle
+                  ? `${doc.title}: ${doc.subtitle}`
+                  : doc.title,
+                subtitle: `by ${doc.author_name && doc.author_name.join(', ')}`,
+                description: `Published ${doc.first_publish_year} · ${doc.isbn.length} editions`,
+                image: `http://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg`
               }
             : null
         })
