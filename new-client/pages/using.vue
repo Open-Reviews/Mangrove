@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h1>Making the best out of Mangrove!</h1>
+    <h1>Learn here how to make the best out of Mangrove</h1>
     <v-row v-for="row in content" :key="row[0].title">
       <v-col v-for="item in row" :key="item.title">
         <v-card>
@@ -26,40 +26,40 @@ export default {
       content: [
         [
           {
-            title: 'For reviewers',
+            title: 'For Reviewers',
             subtitle: 'Share your insights',
             bullets: [
-              'Reviewer’s guideline',
+              'Read the reviewer’s guide',
               'Manage your account',
               'See your reviews'
             ]
           },
           {
-            title: 'For subjects of reviews',
-            subtitle:
-              'Local businesses and places on the map, companies, websites, book authors',
+            title: 'For Businesses with reviews',
+            subtitle: 'Manage your reputation',
             bullets: [
-              'Engage with your users',
-              'Embed your reviews in your website or outreach'
+              'Learn how to best engage with your users',
+              'Embed your reviews in your website and outreach',
+              'Verify yourself at business owner'
             ]
           }
         ],
         [
           {
-            title: 'For users',
-            subtitle: 'Using the data set',
+            title: 'For general Users',
+            subtitle: 'Use the data set',
             bullets: [
               'Search, read, and analyse opinions and sentiments',
-              'Download the database',
+              'Download the dataset',
               'Host the database'
             ]
           },
           {
-            title: 'For entrepreneurs',
-            subtitle: 'Build something greatShare your insights',
+            title: 'For Entrepreneurs',
+            subtitle: 'Build something great',
             bullets: [
               'Build new services and products on the dataset',
-              'APIs and documentation',
+              'Check out APIs and documentation',
               'Download the dataset'
             ]
           }
