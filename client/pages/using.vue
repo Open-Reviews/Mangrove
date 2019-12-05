@@ -31,7 +31,7 @@ export default {
             title: 'For Reviewers',
             subtitle: 'Share your insights',
             bullets: [
-              'Read the reviewer’s guide',
+              'Make your voice as a customer being heard',
               'Manage your account',
               'See your reviews'
             ]
@@ -40,7 +40,7 @@ export default {
             title: 'For Businesses with reviews',
             subtitle: 'Manage your reputation',
             bullets: [
-              'Learn how to best engage with your users',
+              'Engage with your customers to improve your business',
               'Embed your reviews in your website and outreach',
               'Verify yourself at business owner'
             ]
