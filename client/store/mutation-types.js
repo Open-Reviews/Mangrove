@@ -1,5 +1,6 @@
 export const SET_KEYPAIR = 'SET_KEYPAIR'
 export const SET_PK = 'SET_PK'
+export const DISMISS_ALPHA_WARNING = 'DISMISS_ALPHA_WARNING'
 export const ADD_URIS = 'ADD_URIS'
 export const SELECT_SUB = 'SELECT_URI'
 export const SET_FILTERS = 'SET_FILTERS'

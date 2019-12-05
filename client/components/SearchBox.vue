@@ -52,7 +52,9 @@ export default {
   },
   methods: {
     search() {
-      this.$router.push({ path: this.queryLink })
+      if (this.query && this.query.length > 0) {
+        this.$router.push({ path: this.queryLink })
+      }
     },
     nextPlaceholder() {
       this.placeholderIndex =

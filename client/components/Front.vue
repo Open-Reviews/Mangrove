@@ -22,7 +22,7 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-dialog v-model="alphaWarning" max-width="500">
+    <v-dialog v-model="$store.state.alphaWarning" max-width="500">
       <v-card>
         <v-card-title>
           This is a DEMO version
@@ -39,7 +39,7 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn @click="alphaWarning = false" text>
+          <v-btn @click="dismissAlphaWarning" text>
             Ok, got it
           </v-btn>
         </v-card-actions>
@@ -49,6 +49,7 @@
 </template>
 
 <script>
+import { DISMISS_ALPHA_WARNING } from '../store/mutation-types'
 import SearchBox from './SearchBox'
 
 export default {
@@ -82,8 +83,12 @@ export default {
             'Help spread privacy-preserving technologies.'
           ]
         }
-      ],
-      alphaWarning: true
+      ]
+    }
+  },
+  methods: {
+    dismissAlphaWarning() {
+      this.$store.commit(DISMISS_ALPHA_WARNING)
     }
   }
 }

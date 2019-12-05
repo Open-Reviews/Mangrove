@@ -6,6 +6,7 @@ import * as t from './mutation-types'
 export const state = () => ({
   keyPair: null,
   publicKey: null,
+  alphaWarning: true,
   // Array of objects { sub: ..., scheme: ..., profile: ... }
   subs: [],
   selected: null,
@@ -26,6 +27,9 @@ export const mutations = {
   },
   [t.SET_PK](state, key) {
     state.publicKey = key
+  },
+  [t.DISMISS_ALPHA_WARNING](state) {
+    state.alphaWarning = false
   },
   [t.ADD_URIS](state, newsubs) {
     state.subs.push(...newsubs)
