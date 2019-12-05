@@ -4,9 +4,7 @@
       <v-btn v-on="on">Write a review</v-btn>
     </template>
     <v-card>
-      <v-card-title>
-        Review {{ $store.state.selected.profile.title }}
-      </v-card-title>
+      <v-card-title> Review {{ $store.state.selected.title }} </v-card-title>
       <v-rating v-model="rating" hover />
       <v-textarea
         v-model="opinion"

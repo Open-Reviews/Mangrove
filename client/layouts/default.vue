@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-app-bar app>
-      <v-btn to="/" class="active" text>
+      <v-btn :ripple="false" to="/" text>
         <v-icon>mdi-tree-outline</v-icon>
         <v-toolbar-title v-text="title" />
       </v-btn>
@@ -85,12 +85,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-a {
-  text-decoration: none;
-}
-.container {
-  max-width: 70vw;
-}
-</style>

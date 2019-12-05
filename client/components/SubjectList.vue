@@ -1,32 +1,39 @@
 <template>
   <v-container>
-    <v-card v-for="sub in subs" :key="sub.sub" active-class="event">
-      <v-card-title>{{ sub.profile.title }}</v-card-title>
-      <v-rating v-model="rating"></v-rating>
-      <v-card-subtitle>{{ sub.sub }}</v-card-subtitle>
-      <v-card-text>{{ sub.profile.description }}</v-card-text>
-      <v-card-actions>
-        <v-btn v-on:click="request(sub.sub)" text>
-          Select
-        </v-btn>
-      </v-card-actions>
+    <v-card
+      v-for="sub in subjects"
+      :key="sub.sub"
+      @click="select(sub)"
+      :ripple="false"
+      active-class="event"
+      class="my-4"
+      hover
+    >
+      <v-chip small label>
+        {{ name(sub.scheme) }}
+      </v-chip>
+      <v-card-title>{{ sub.title }}</v-card-title>
+      <v-row align="center" class="ma-auto">
+        <v-rating v-model="sub.aggregateRating" />
+        {{ sub.aggregateRating }}
+        ({{ sub.aggregateReviews }})
+      </v-row>
+      <v-card-subtitle>{{ sub.subtitle }}</v-card-subtitle>
+      <v-card-text>{{ sub.description }}</v-card-text>
     </v-card>
   </v-container>
 </template>
 
 <script>
+import { NAMES } from '../store/scheme-types'
+import { SELECT_SUB } from '../store/mutation-types'
 export default {
-  data() {
-    return {
-      rating: 4
-    }
-  },
   computed: {
     filters() {
       return this.$store.state.filters
     },
-    subs() {
-      return this.$store.state.subs.filter((subject) => {
+    subjects() {
+      return this.$store.state.subjects.filter((subject) => {
         return (
           !this.filters.length ||
           this.filters.some((filter) => subject.scheme === filter)
@@ -35,8 +42,12 @@ export default {
     }
   },
   methods: {
-    request(sub) {
-      this.$store.dispatch('saveReviews', { sub })
+    select(subject) {
+      this.$store.dispatch('saveReviews', { sub: subject.sub })
+      this.$store.commit(SELECT_SUB, subject)
+    },
+    name(uri) {
+      return NAMES[uri]
     }
   }
 }

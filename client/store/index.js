@@ -7,8 +7,9 @@ export const state = () => ({
   keyPair: null,
   publicKey: null,
   alphaWarning: true,
-  // Array of objects { sub: ..., scheme: ..., profile: ... }
-  subs: [],
+  // Array of objects { sub: ..., scheme: ..., title: ..., description: ... }
+  subjects: [],
+  // Subject object that has been selected.
   selected: null,
   // Array of schemes that should be selected, empty means display all.
   filters: [],
@@ -31,11 +32,11 @@ export const mutations = {
   [t.DISMISS_ALPHA_WARNING](state) {
     state.alphaWarning = false
   },
-  [t.ADD_URIS](state, newsubs) {
-    state.subs.push(...newsubs)
+  [t.ADD_SUBJECTS](state, newsubjects) {
+    state.subjects.push(...newsubjects)
   },
-  [t.EMPTY_URIS](state) {
-    state.subs = []
+  [t.EMPTY_SUBJECTS](state) {
+    state.subjects = []
   },
   [t.SELECT_SUB](state, sub) {
     state.selected = sub

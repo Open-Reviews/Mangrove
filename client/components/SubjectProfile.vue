@@ -2,11 +2,11 @@
   <v-container v-if="$store.state.selected">
     <v-card>
       <v-card-title>
-        {{ subject.profile.title }}
+        {{ subject.title }}
       </v-card-title>
-      <v-row>
-        <v-rating :value="aggregateRating" half-increments></v-rating>
-        {{ aggregateRating }} ({{ aggregateReviews }})
+      <v-row align="center" class="ma-auto">
+        <v-rating :value="subject.aggregateRating" half-increments></v-rating>
+        {{ subject.aggregateRating }} ({{ subject.aggregateReviews }})
       </v-row>
     </v-card>
     <ReviewForm />
@@ -22,12 +22,6 @@ export default {
   components: {
     ReviewForm,
     ReviewList
-  },
-  data() {
-    return {
-      aggregateRating: 4.3,
-      aggregateReviews: 23
-    }
   },
   computed: {
     subject() {

@@ -1,7 +1,7 @@
 import { OpenStreetMapProvider } from 'leaflet-geosearch'
 import {
-  EMPTY_URIS,
-  ADD_URIS,
+  EMPTY_SUBJECTS,
+  ADD_SUBJECTS,
   SELECT_SUB,
   SEARCH_ERROR
 } from '../store/mutation-types'
@@ -14,12 +14,16 @@ export default function({ store, $axios, route }) {
   if (!query) {
     return
   }
-  store.commit(EMPTY_URIS)
+  store.commit(EMPTY_SUBJECTS)
   Promise.all([
-    store.commit(ADD_URIS, searchUrl(query)),
-    searchGeo(query).then((subs) => store.commit(ADD_URIS, subs)),
-    searchIsbn($axios, query).then((subs) => store.commit(ADD_URIS, subs)),
-    searchLei($axios, query).then((subs) => store.commit(ADD_URIS, subs)),
+    storeWithRating(store, searchUrl(query)),
+    searchGeo(query).then((subjects) => storeWithRating(store, subjects)),
+    searchIsbn($axios, query).then((subjects) =>
+      storeWithRating(store, subjects)
+    ),
+    searchLei($axios, query).then((subjects) =>
+      storeWithRating(store, subjects)
+    ),
     store
       .dispatch('requestReviews', { q: query })
       .then((rs) => {
@@ -28,17 +32,19 @@ export default function({ store, $axios, route }) {
               return {
                 sub: r.sub,
                 scheme: HTTPS,
-                profile: {}
+                title: '',
+                subtitle: '',
+                description: ''
               }
             })
           : []
       })
-      .then((subs) => store.commit(ADD_URIS, subs))
+      .then((subjects) => storeWithRating(store, subjects))
   ])
     .then(() => {
       store.commit(SEARCH_ERROR, null)
       // Try to select the first URI from the list.
-      const first = store.state.subs[0]
+      const first = store.state.subjects[0]
       store.commit(SELECT_SUB, first)
       if (first) store.dispatch('saveReviews', { sub: first.sub })
     })
@@ -63,6 +69,15 @@ export default function({ store, $axios, route }) {
     })
 }
 
+function storeWithRating(store, rawSubjects) {
+  const subjects = rawSubjects.map((subject) => {
+    subject.aggregateRating = 4.3
+    subject.aggregateReviews = 23
+    return subject
+  })
+  store.commit(ADD_SUBJECTS, subjects)
+}
+
 function searchUrl(input) {
   const search = []
   if (input.includes('.')) {
@@ -75,7 +90,9 @@ function searchUrl(input) {
         sub: `${url.protocol}//${url.hostname}`,
         // Remove the trailing colon
         scheme: HTTPS,
-        profile: { title: url.hostname, description: '' }
+        title: url.hostname,
+        subtitle: '',
+        description: ''
       })
     }
   }
@@ -93,7 +110,9 @@ function searchGeo(input) {
       return {
         sub: `${GEO}:?q=${result.y},${result.x}(${label})&u=30`,
         scheme: GEO,
-        profile: { title: label, description: result.label }
+        title: label,
+        subtitle: '',
+        description: result.label
       }
     })
   )
@@ -114,7 +133,9 @@ function searchIsbn(axios, input) {
             ? {
                 sub: `${ISBN}:${doc.isbn[0]}`,
                 scheme: ISBN,
-                profile: { title: doc.title, description: doc.author_name }
+                title: doc.title,
+                subtitle: '',
+                description: doc.author_name
               }
             : null
         })
@@ -148,18 +169,21 @@ function searchLei(axios, query) {
                   completion.relationships['lei-records'].data.id
                 )
                   .then((entity) => entity.attributes)
-                  .then((attrs) => {
+                  .then(async (attrs) => {
+                    const address = attrs.entity.legalAddress
+                    const form = attrs.entity.legalForm
                     return {
                       sub: `${LEI}:${attrs.lei}`,
                       scheme: LEI,
-                      profile: {
-                        title: attrs.entity.legalName.name,
-                        description: [
-                          attrs.entity.legalAddress.addressLines,
-                          attrs.entity.legalAddress.city,
-                          attrs.entity.legalAddress.country
-                        ]
-                      }
+                      title: attrs.entity.legalName.name,
+                      subtitle: `${address.addressLines.join(', ')}, ${
+                        address.city
+                      } ${address.postalCode} · ${address.country}`,
+                      // Do the check only if there is valid id.
+                      description: `${form.other ||
+                        (await entityForm(axios, form.id))} · ${
+                        attrs.entity.status
+                      }`
                     }
                   })
               : null
@@ -182,5 +206,18 @@ function entityLookup(axios, lei) {
     })
     .then((response) => {
       return response.data.data
+    })
+}
+
+function entityForm(axios, elf) {
+  return axios
+    .get(`https://api.gleif.org/api/v1/entity-legal-forms/${elf}`, {
+      headers: { 'Content-Type': 'application/vnd.api+json' }
+    })
+    .then((response) => {
+      const list = response.data.data.attributes.names
+      const english = list.find((local) => local.languageCode === 'en')
+      const picked = english || list[0]
+      return picked.localName
     })
 }
