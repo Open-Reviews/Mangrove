@@ -1,7 +1,9 @@
 <template>
   <v-card>
     <v-list-item>
-      <v-list-item-avatar color="grey"></v-list-item-avatar>
+      <v-list-item-avatar>
+        <Identicon :seed="review.publicKey" />
+      </v-list-item-avatar>
       <v-list-item-content>
         <v-list-item-title class="headline">{{
           (review.extra_hashes && review.extra_hashes.display_name) ||
@@ -13,7 +15,7 @@
       </v-list-item-content>
     </v-list-item>
     <v-card-text>
-      {{ review.iat }}
+      {{ new Date(review.iat * 1000).toDateString() }}
       <v-rating :value="(review.rating + 25) / 25"></v-rating>
       {{ review.opinion }}
       <div v-for="hash in review.extra_hashes" :key="hash">
@@ -33,10 +35,14 @@
 </template>
 
 <script>
+import Identicon from './Identicon'
 export default {
   props: {
     review: Object,
     preview: Boolean
+  },
+  components: {
+    Identicon
   },
   methods: {
     imageUrl(hash) {

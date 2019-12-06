@@ -1,0 +1,15 @@
+<template>
+  <div v-html="identicon" />
+</template>
+
+<script>
+import jdenticon from 'jdenticon'
+export default {
+  props: ['seed'],
+  computed: {
+    identicon() {
+      return jdenticon.toSvg(this.seed, 64)
+    }
+  }
+}
+</script>

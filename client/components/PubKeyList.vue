@@ -2,7 +2,7 @@
   <v-list two-line>
     <v-list-item v-for="key in keys" :key="key" @click="">
       <v-list-item-avatar>
-        <v-img src="mangrove.png" />
+        <Identicon :seed="key" />
       </v-list-item-avatar>
       <v-list-item-content>
         <v-list-item-title>42 reviews · 23 rated useful</v-list-item-title>
@@ -20,7 +20,11 @@
 </template>
 
 <script>
+import Identicon from './Identicon'
 export default {
+  components: {
+    Identicon
+  },
   props: {
     keys: Array
   }
