@@ -10,13 +10,15 @@
             'Anonymous'
         }}</v-list-item-title>
         <v-list-item-subtitle
-          >2 reviews <v-icon>mdi-thumb-up</v-icon>2</v-list-item-subtitle
-        >
+          >2 reviews <v-icon>mdi-thumb-up</v-icon> 2
+        </v-list-item-subtitle>
       </v-list-item-content>
     </v-list-item>
     <v-card-text>
-      {{ new Date(review.iat * 1000).toDateString() }}
-      <v-rating :value="(review.rating + 25) / 25"></v-rating>
+      <v-row align="center">
+        <v-rating :value="(review.rating + 25) / 25"></v-rating>
+        Reviewed {{ new Date(review.iat * 1000).toDateString() }}
+      </v-row>
       {{ review.opinion }}
       <div v-for="hash in review.extra_hashes" :key="hash">
         <img :src="imageUrl(hash)" />
@@ -24,17 +26,51 @@
       {{ review.metadata }}
     </v-card-text>
     <v-card-actions v-if="!preview">
-      <button v-on:click="flag(review.signature)">
-        Flag as innapropriate.
-      </button>
-      <button v-on:click="request(review.signature)">
-        See responses or indicate how useful this review was.
-      </button>
+      <v-btn
+        v-for="action in actions"
+        :key="action.icon"
+        @click="action.action(review.signature)"
+        icon
+      >
+        <v-icon>{{ action.icon }}</v-icon>
+      </v-btn>
+      <v-spacer />
+      <v-menu offset-y>
+        <template v-slot:activator="{ on }">
+          <v-btn v-on="on" icon>
+            <v-icon>mdi-dots-vertical</v-icon>
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-item
+            v-for="item in menu"
+            :key="item.title"
+            @click.stop="item.action(review)"
+          >
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+        <v-dialog
+          :value="rawDialog"
+          @click:outside="rawDialog = null"
+          width="600"
+        >
+          <v-card>
+            <v-card-title>
+              Raw Mangrove Review
+            </v-card-title>
+            <v-card-text>
+              {{ rawDialog }}
+            </v-card-text>
+          </v-card>
+        </v-dialog>
+      </v-menu>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
+import { MARESI } from '../store/scheme-types'
 import Identicon from './Identicon'
 export default {
   components: {
@@ -44,20 +80,55 @@ export default {
     review: Object,
     preview: Boolean
   },
+  data() {
+    return {
+      actions: [
+        {
+          icon: 'mdi-thumb-up',
+          tooltip: 'This is useful',
+          action: this.request
+        },
+        {
+          icon: 'mdi-certificate',
+          tooltip: 'Confirm this experience',
+          action: this.request
+        },
+        {
+          icon: 'mdi-comment-text-multiple',
+          tooltip: 'See comments and leave your own',
+          action: this.request
+        }
+      ],
+      menu: [
+        {
+          title: 'Flag as innapropriate',
+          action: this.flag
+        },
+        {
+          title: 'Show raw Mangrove Review',
+          action: this.showRaw
+        }
+      ],
+      rawDialog: null
+    }
+  },
   methods: {
     imageUrl(hash) {
       return `${process.env.VUE_APP_FILES_URL}/${hash}`
     },
     reviewStub(signature) {
-      return { sub: `urn:MaReSi:${signature}` }
+      return { sub: `${MARESI}:${signature}` }
     },
     request(signature) {
       this.$store.dispatch('saveReviews', this.reviewStub(signature))
     },
-    flag(signature) {
-      const claim = this.reviewStub(signature)
+    flag(review) {
+      const claim = this.reviewStub(review.signature)
       claim.rating = 0
       this.$store.dispatch('submitReview', claim)
+    },
+    showRaw(review) {
+      this.rawDialog = review
     }
   }
 }

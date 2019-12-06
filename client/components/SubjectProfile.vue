@@ -8,8 +8,11 @@
         <v-rating :value="subject.aggregateRating" half-increments></v-rating>
         {{ subject.aggregateRating }} ({{ subject.aggregateReviews }})
       </v-row>
+      <v-card-subtitle>{{ subject.subtitle }}</v-card-subtitle>
+      <v-card-actions>
+        <ReviewForm />
+      </v-card-actions>
     </v-card>
-    <ReviewForm />
     <ReviewList />
   </v-container>
 </template>
