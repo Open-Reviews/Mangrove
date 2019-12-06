@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h1>Making the best out of Mangrove!</h1>
+    <h1>Contribute TODO</h1>
     <v-row v-for="row in content" :key="row[0].title">
       <v-col v-for="item in row" :key="item.title">
         <v-card>
@@ -14,7 +14,6 @@
         </v-card>
       </v-col>
     </v-row>
-    <a :href="dumpUrl">Get all Mangrove data</a>
   </v-container>
 </template>
 
@@ -28,40 +27,25 @@ export default {
           {
             title: 'For reviewers',
             subtitle: 'Share your insights',
-            bullets: [
-              'Reviewer’s guideline',
-              'Manage your account',
-              'See your reviews'
-            ]
+            bullets: []
           },
           {
             title: 'For subjects of reviews',
             subtitle:
               'Local businesses and places on the map, companies, websites, book authors',
-            bullets: [
-              'Engage with your users',
-              'Embed your reviews in your website or outreach'
-            ]
+            bullets: []
           }
         ],
         [
           {
             title: 'For users',
             subtitle: 'Using the data set',
-            bullets: [
-              'Search, read, and analyse opinions and sentiments',
-              'Download the database',
-              'Host the database'
-            ]
+            bullets: []
           },
           {
             title: 'For entrepreneurs',
             subtitle: 'Build something greatShare your insights',
-            bullets: [
-              'Build new services and products on the dataset',
-              'APIs and documentation',
-              'Download the dataset'
-            ]
+            bullets: []
           }
         ]
       ]

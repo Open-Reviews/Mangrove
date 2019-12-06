@@ -15,15 +15,16 @@
 </template>
 
 <script>
-import SearchBox from './SearchBox'
-import SubjectList from './SubjectList'
-import SubjectProfile from './SubjectProfile'
+import SearchBox from '../components/SearchBox'
+import SubjectList from '../components/SubjectList'
+import SubjectProfile from '../components/SubjectProfile'
 
 export default {
   components: {
     SearchBox,
     SubjectList,
     SubjectProfile
-  }
+  },
+  middleware: 'search'
 }
 </script>

@@ -1,8 +1,8 @@
 <template>
   <v-app>
     <v-app-bar app>
-      <v-btn :ripple="false" to="/" text>
-        <v-avatar>
+      <v-btn :ripple="false" @click="goHome" text>
+        <v-avatar tile>
           <v-img src="mangrove.png" />
         </v-avatar>
         <v-toolbar-title v-text="title" />
@@ -48,12 +48,12 @@
         </v-btn>
         <v-btn href="https://riot.im/" icon>
           <v-avatar>
-            <v-img src="icon-riot.png" max-height="20" contain />
+            <v-img src="icon-riot.png" max-height="25" contain />
           </v-avatar>
         </v-btn>
         <v-btn href="https://opencollective.com" icon>
           <v-avatar>
-            <v-img src="icon-collective.svg" max-height="20" contain />
+            <v-img src="icon-collective.svg" max-height="25" contain />
           </v-avatar>
         </v-btn>
       </v-col>
@@ -88,6 +88,11 @@ export default {
   },
   mounted() {
     this.$store.dispatch('generateKeypair')
+  },
+  methods: {
+    goHome() {
+      this.$router.push({ path: '/' })
+    }
   }
 }
 </script>

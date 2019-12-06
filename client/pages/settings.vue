@@ -19,6 +19,7 @@ export default {
   components: {
     Account,
     YourReviews
-  }
+  },
+  middleware: 'clear'
 }
 </script>

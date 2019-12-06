@@ -2,7 +2,7 @@
   <v-card>
     <v-list-item>
       <v-list-item-avatar>
-        <Identicon :seed="review.publicKey" />
+        <Identicon :seed="review.iss" />
       </v-list-item-avatar>
       <v-list-item-content>
         <v-list-item-title class="headline">{{
@@ -37,12 +37,12 @@
 <script>
 import Identicon from './Identicon'
 export default {
+  components: {
+    Identicon
+  },
   props: {
     review: Object,
     preview: Boolean
-  },
-  components: {
-    Identicon
   },
   methods: {
     imageUrl(hash) {

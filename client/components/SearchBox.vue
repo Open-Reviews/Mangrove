@@ -35,7 +35,7 @@ export default {
   },
   computed: {
     queryLink() {
-      return `?q=${this.query}`
+      return `search?q=${this.query}`
     },
     error() {
       return this.$store.state.errors.search
