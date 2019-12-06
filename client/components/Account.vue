@@ -1,31 +1,16 @@
 <template>
   <v-container>
     <h2>Your account</h2>
-    <v-card v-if="$store.state.publicKey">
+    <v-card v-if="$store.state.publicKey" class="my-5">
       <v-card-title>Default public key</v-card-title>
-      <v-row>
-        <v-col align="center">
-          <v-icon>mdi-circle</v-icon>
-        </v-col>
-        <v-col>
-          <v-row>
-            <v-card-subtitle>42 reviews · 23 rated useful</v-card-subtitle>
-          </v-row>
-          <v-row>
-            <v-card-text
-              >{{ $store.state.publicKey.slice(0, 10) + '...' }}
-              <v-icon>mdi-content-copy</v-icon>
-            </v-card-text>
-          </v-row>
-        </v-col>
-      </v-row>
+      <PubKeyList :keys="[$store.state.publicKey]" />
     </v-card>
     <v-card v-if="false">
       Your other public keys
     </v-card>
     <v-row>
       <v-btn @click="copySecret"
-        >Copy to save your private key <v-icon>mdi-content-copy</v-icon></v-btn
+        >Copy to save your private key<v-icon>mdi-content-copy</v-icon></v-btn
       >
       <v-expansion-panels>
         <v-expansion-panel>
@@ -37,20 +22,30 @@
       </v-expansion-panels>
     </v-row>
     <h2>Switch account</h2>
-    Import another private key to access associated public keys and reviews
-    <v-text-field
-      v-model.trim="secretInput"
-      placeholder="Paste your private key here"
-    />
-    <v-btn :disabled="!secretInput" @click="importSecret">Import</v-btn>
-    <v-alert v-if="error" type="warning" border="left" elevation="8">
-      Private key not valid: {{ error }}
-    </v-alert>
+    <v-card class="my-5">
+      <v-card-text>
+        Import another private key to access associated public keys and reviews
+        <v-text-field
+          v-model.trim="secretInput"
+          placeholder="Paste your private key here"
+        />
+      </v-card-text>
+      <v-card-actions>
+        <v-btn :disabled="!secretInput" @click="importSecret">Import</v-btn>
+        <v-alert v-if="error" type="warning" border="left" elevation="8">
+          Private key not valid: {{ error }}
+        </v-alert>
+      </v-card-actions>
+    </v-card>
   </v-container>
 </template>
 
 <script>
+import PubKeyList from './PubKeyList'
 export default {
+  components: {
+    PubKeyList
+  },
   data() {
     return {
       explanation:

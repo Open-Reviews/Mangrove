@@ -2,7 +2,9 @@
   <v-app>
     <v-app-bar app>
       <v-btn :ripple="false" to="/" text>
-        <v-icon>mdi-tree-outline</v-icon>
+        <v-avatar>
+          <v-img src="mangrove.png" />
+        </v-avatar>
         <v-toolbar-title v-text="title" />
       </v-btn>
       <v-spacer />
@@ -45,10 +47,14 @@
           <v-icon>{{ social.icon }}</v-icon>
         </v-btn>
         <v-btn href="https://riot.im/" icon>
-          <v-img src="icon-riot.png" max-height="30" contain />
+          <v-avatar>
+            <v-img src="icon-riot.png" max-height="20" contain />
+          </v-avatar>
         </v-btn>
         <v-btn href="https://opencollective.com" icon>
-          <v-img src="icon-collective.svg" max-height="30" contain />
+          <v-avatar>
+            <v-img src="icon-collective.svg" max-height="20" contain />
+          </v-avatar>
         </v-btn>
       </v-col>
     </v-footer>
