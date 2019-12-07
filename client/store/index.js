@@ -64,7 +64,7 @@ export const mutations = {
   [t.REQUEST_ERROR](state, error) {
     state.errors.request = error
   },
-  submiterror(state, error) {
+  [t.SUBMIT_ERROR](state, error) {
     state.errors.submit = error
   }
 }
@@ -133,18 +133,19 @@ export const actions = {
   },
   reviewContent({ state }, stubClaim) {
     // Assumes stubClaim contains at least `sub`
-    // Add other mandatory fields.
+    // Add mandatory fields.
     const claim = {
       iss: state.publicKey,
-      iat: Math.floor(Date.now() / 1000)
+      iat: Math.floor(Date.now() / 1000),
+      sub: stubClaim.sub
     }
     // Add field only if it is not empty.
-    if (stubClaim.rating !== null) claim.rating = this.rating * 25 - 25
-    if (stubClaim.opinion) claim.opinion = this.opinion
+    if (stubClaim.rating !== null) claim.rating = stubClaim.rating
+    if (stubClaim.opinion) claim.opinion = stubClaim.opinion
     const extraHashes = state.extraHashes
     if (extraHashes && extraHashes.length !== 0)
       claim.extra_hashes = extraHashes
-    const meta = state.metadata
+    const meta = { ...state.metadata, ...stubClaim.metadata }
     // Remove empty metadata fields.
     Object.keys(meta).forEach((key) => meta[key] == null && delete meta[key])
     meta.client_uri = clientUri
@@ -180,7 +181,7 @@ export const actions = {
           }
         })
         .then(() => {
-          this.submitError = null
+          commit(t.SUBMIT_ERROR, null)
           // Add review so that its immediately visible.
           commit(t.ADD_REVIEWS, [review])
         })
@@ -188,13 +189,15 @@ export const actions = {
           if (error.response) {
             console.log(error.response.status)
             console.log(error.response.headers)
-            this.submitError = error.response.data
+            commit(t.SUBMIT_ERROR, error.response.data)
           } else if (error.request) {
             console.log(error.request)
-            this.submitError = 'Server not reachable.'
+            commit(t.SUBMIT_ERROR, 'Mangrove Server not reachable.')
           } else {
-            console.log('Client submission processing error: ', error.message)
-            this.submitError = 'Internal client error, please report.'
+            commit(
+              t.SUBMIT_ERROR,
+              `Internal client error, please report: ${error.message}`
+            )
           }
         })
     })

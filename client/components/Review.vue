@@ -66,6 +66,9 @@
         </v-dialog>
       </v-menu>
     </v-card-actions>
+    <v-alert v-if="error" type="error" border="left" elevation="8">
+      Error encountered: {{ error }}
+    </v-alert>
   </v-card>
 </template>
 
@@ -110,7 +113,12 @@ export default {
         }
       ],
       rawDialog: null,
-      personalMeta: { is_personal_experience: true }
+      personalMeta: { is_personal_experience: 'true' }
+    }
+  },
+  computed: {
+    error() {
+      return this.$store.state.errors.submit
     }
   },
   methods: {

@@ -66,7 +66,7 @@ export default {
     reviewStub() {
       return {
         sub: this.$store.state.selected.sub,
-        rating: this.rating,
+        rating: this.rating * 25 - 25,
         opinion: this.opinion
       }
     }
