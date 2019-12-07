@@ -43,6 +43,14 @@ fn request_reviews(conn: DbConn, query: Form<Query>) -> Result<Json<Vec<Review>>
     Ok(Json(out))
 }
 
+#[get("/count?<query..>")]
+fn count_reviews(conn: DbConn, query: Form<Query>) -> Result<Json<usize>, Error> {
+    // TODO: Optimize it by counting closer to DB.
+    let out = conn.filter(query.into_inner())?.len();
+    info!("Returning {:?}", out);
+    Ok(Json(out))
+}
+
 pub fn rocket() -> Rocket {
     let cors = rocket_cors::CorsOptions {
         allowed_methods: vec![Method::Put, Method::Get]
@@ -58,7 +66,7 @@ pub fn rocket() -> Rocket {
         .attach(DbConn::fairing())
         .mount(
             "/",
-            routes![index, submit_review, request_reviews],
+            routes![index, submit_review, request_reviews, count_reviews],
         )
         .attach(cors)
 }

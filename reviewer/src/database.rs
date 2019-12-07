@@ -7,15 +7,20 @@ use super::schema;
 #[database("pg_reviews")]
 pub struct DbConn(diesel::PgConnection);
 
-/// TODO: reconcile with Review, allow metadata and extradata
+/// TODO: allow metadata and extradata
 #[derive(Default, Debug, FromForm)]
 pub struct Query {
+    /// Search for reviews with this string in `sub` and `opinion` fields.
     pub q: Option<String>,
     pub signature: Option<String>,
     pub iss: Option<String>,
     pub iat: Option<i64>,
+    /// Return reviews with timestamp greater than this.
+    pub gt_iat: Option<i64>,
     pub sub: Option<String>,
     pub rating: Option<i16>,
+    /// Return reviews with rating greater than this.
+    pub gt_rating: Option<i16>,
     pub opinion: Option<String>,
 }
 
