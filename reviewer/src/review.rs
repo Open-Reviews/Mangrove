@@ -28,7 +28,9 @@ pub struct Review {
     pub iss: String,
     pub iat: i64,
     pub sub: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub rating: Option<Rating>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub opinion: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub extra_hashes: Option<serde_json::Value>,
