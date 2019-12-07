@@ -16,7 +16,7 @@
           </v-chip>
           <v-card-title>{{ sub.title }}</v-card-title>
           <v-row align="center" class="ma-auto">
-            <v-rating v-model="sub.aggregateRating" />
+            <v-rating v-model="sub.aggregateRating" dense />
             {{ sub.aggregateRating }}
             ({{ sub.aggregateReviews }})
           </v-row>

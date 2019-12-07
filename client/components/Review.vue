@@ -16,7 +16,7 @@
     </v-list-item>
     <v-card-text>
       <v-row align="center">
-        <v-rating :value="(review.rating + 25) / 25"></v-rating>
+        <v-rating :value="(review.rating + 25) / 25" dense></v-rating>
         Reviewed {{ new Date(review.iat * 1000).toDateString() }}
       </v-row>
       {{ review.opinion }}
@@ -26,14 +26,14 @@
       {{ review.metadata }}
     </v-card-text>
     <v-card-actions v-if="!preview">
-      <v-btn
-        v-for="action in actions"
-        :key="action.icon"
-        @click="action.action(review.signature)"
-        icon
-      >
-        <v-icon>{{ action.icon }}</v-icon>
-      </v-btn>
+      <v-tooltip v-for="action in actions" :key="action.icon" top>
+        <template v-slot:activator="{ on }">
+          <v-btn v-on="on" @click="action.action(review.signature)" icon>
+            <v-icon>{{ action.icon }}</v-icon>
+          </v-btn>
+        </template>
+        <span>{{ action.tooltip }}</span>
+      </v-tooltip>
       <v-spacer />
       <v-menu offset-y>
         <template v-slot:activator="{ on }">
@@ -86,16 +86,16 @@ export default {
         {
           icon: 'mdi-thumb-up',
           tooltip: 'This is useful',
-          action: this.request
+          action: this.useful
         },
         {
           icon: 'mdi-certificate',
           tooltip: 'Confirm this experience',
-          action: this.request
+          action: this.confirm
         },
         {
           icon: 'mdi-comment-text-multiple',
-          tooltip: 'See comments and leave your own',
+          tooltip: 'Write a comment',
           action: this.request
         }
       ],
@@ -109,22 +109,36 @@ export default {
           action: this.showRaw
         }
       ],
-      rawDialog: null
+      rawDialog: null,
+      personalMeta: { is_personal_experience: true }
     }
   },
   methods: {
     imageUrl(hash) {
       return `${process.env.VUE_APP_FILES_URL}/${hash}`
     },
-    reviewStub(signature) {
+    reviewSub(signature) {
       return { sub: `${MARESI}:${signature}` }
     },
     request(signature) {
-      this.$store.dispatch('saveReviews', this.reviewStub(signature))
+      this.$store.dispatch('saveReviews', this.reviewSub(signature))
+    },
+    useful(signature) {
+      const claim = this.reviewSub(signature)
+      claim.rating = 100
+      this.$store.dispatch('submitReview', claim)
+    },
+    confirm(signature) {
+      const claim = this.reviewSub(signature)
+      claim.rating = 100
+      claim.metadata = this.personalMeta
+      this.$store.dispatch('submitReview', claim)
     },
     flag(review) {
-      const claim = this.reviewStub(review.signature)
+      const claim = this.reviewSub(review.signature)
       claim.rating = 0
+      // The review being reviewed is displayed above.
+      claim.metadata = this.personalMeta
       this.$store.dispatch('submitReview', claim)
     },
     showRaw(review) {

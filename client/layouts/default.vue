@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-app-bar app>
-      <v-btn :ripple="false" @click="goHome" text>
+      <v-btn :ripple="false" @click="goHome" text-align="center" text>
         <v-avatar tile>
           <v-img src="mangrove.png" />
         </v-avatar>
@@ -48,12 +48,12 @@
         </v-btn>
         <v-btn href="https://riot.im/" icon>
           <v-avatar>
-            <v-img src="icon-riot.png" max-height="25" contain />
+            <v-img src="icon-riot.png" max-height="20" contain />
           </v-avatar>
         </v-btn>
         <v-btn href="https://opencollective.com" icon>
           <v-avatar>
-            <v-img src="icon-collective.svg" max-height="25" contain />
+            <v-img src="icon-collective.svg" max-height="20" contain />
           </v-avatar>
         </v-btn>
       </v-col>

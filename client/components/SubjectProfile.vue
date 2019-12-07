@@ -5,7 +5,7 @@
         {{ subject.title }}
       </v-card-title>
       <v-row align="center" class="ma-auto">
-        <v-rating :value="subject.aggregateRating" half-increments></v-rating>
+        <v-rating :value="subject.aggregateRating" half-increments dense />
         {{ subject.aggregateRating }} ({{ subject.aggregateReviews }})
       </v-row>
       <v-card-subtitle>{{ subject.subtitle }}</v-card-subtitle>

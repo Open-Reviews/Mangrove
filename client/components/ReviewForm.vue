@@ -45,10 +45,8 @@
 </template>
 
 <script>
-import { toHexString } from '../utils'
 import MetaForm from './MetaForm'
 import Review from './Review'
-const cbor = require('cbor')
 
 export default {
   components: {
@@ -64,55 +62,25 @@ export default {
       review: {}
     }
   },
-  methods: {
-    reviewContent() {
-      // Add mandatory fields.
-      const claim = {
-        iss: this.$store.state.publicKey,
-        iat: Math.floor(Date.now() / 1000),
-        sub: this.$store.state.selected.sub
+  computed: {
+    reviewStub() {
+      return {
+        sub: this.$store.state.selected.sub,
+        rating: this.rating,
+        opinion: this.opinion
       }
-      // Add field only if it is not empty.
-      if (this.rating !== null) claim.rating = this.rating * 25 - 25
-      if (this.opinion) claim.opinion = this.opinion
-      const extraHashes = this.$store.state.extraHashes
-      if (extraHashes && extraHashes.length !== 0)
-        claim.extra_hashes = extraHashes
-      const meta = this.$store.state.metadata
-      // Remove empty metadata fields.
-      Object.keys(meta).forEach((key) => meta[key] == null && delete meta[key])
-      if (Object.entries(meta).length !== 0) claim.metadata = meta
-      console.log('claim: ', claim)
-      const encoded = cbor.encode(claim)
-      console.log('msg: ', encoded)
-      return window.crypto.subtle
-        .sign(
-          {
-            name: 'ECDSA',
-            hash: { name: 'SHA-256' }
-          },
-          this.$store.state.keyPair.privateKey,
-          encoded
-        )
-        .then((signed) => {
-          console.log('sig: ', new Uint8Array(signed))
-          return {
-            ...claim,
-            signature: toHexString(new Uint8Array(signed))
-          }
-        })
-    },
+    }
+  },
+  methods: {
     previewReview() {
-      this.reviewContent().then((review) => {
+      this.$store.dispatch('reviewContent', this.reviewStub).then((review) => {
         this.review = review
         this.preview = true
       })
     },
     submitReview() {
-      this.reviewContent().then((review) => {
-        this.$store.dispatch('submitReview', review)
-        this.dialog = false
-      })
+      this.$store.dispatch('submitReview', this.reviewStub)
+      this.dialog = false
     }
   }
 }

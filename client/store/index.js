@@ -2,6 +2,9 @@ import Vue from 'vue'
 import { get, set } from 'idb-keyval'
 import { toHexString } from '../utils'
 import * as t from './mutation-types'
+const cbor = require('cbor')
+
+const clientUri = 'https://mangrove.reviews'
 
 export const state = () => ({
   keyPair: null,
@@ -128,31 +131,72 @@ export const actions = {
   saveReviews({ commit, dispatch }, params) {
     dispatch('requestReviews', params).then((rs) => commit(t.ADD_REVIEWS, rs))
   },
-  submitReview({ state, commit }, review) {
-    console.log('Mangrove review: ', review)
-    this.$axios
-      .put(`${process.env.VUE_APP_API_URL}/submit`, review, {
-        headers: {
-          'Content-Type': 'application/json'
+  reviewContent({ state }, stubClaim) {
+    // Assumes stubClaim contains at least `sub`
+    // Add other mandatory fields.
+    const claim = {
+      iss: state.publicKey,
+      iat: Math.floor(Date.now() / 1000)
+    }
+    // Add field only if it is not empty.
+    if (stubClaim.rating !== null) claim.rating = this.rating * 25 - 25
+    if (stubClaim.opinion) claim.opinion = this.opinion
+    const extraHashes = state.extraHashes
+    if (extraHashes && extraHashes.length !== 0)
+      claim.extra_hashes = extraHashes
+    const meta = state.metadata
+    // Remove empty metadata fields.
+    Object.keys(meta).forEach((key) => meta[key] == null && delete meta[key])
+    meta.client_uri = clientUri
+    // Always at least `client_uri` present.
+    claim.metadata = meta
+    console.log('claim: ', claim)
+    const encoded = cbor.encode(claim)
+    console.log('msg: ', encoded)
+    return window.crypto.subtle
+      .sign(
+        {
+          name: 'ECDSA',
+          hash: { name: 'SHA-256' }
+        },
+        state.keyPair.privateKey,
+        encoded
+      )
+      .then((signed) => {
+        console.log('sig: ', new Uint8Array(signed))
+        return {
+          ...claim,
+          signature: toHexString(new Uint8Array(signed))
         }
       })
-      .then(() => {
-        this.submitError = null
-        // Add review so that its immediately visible.
-        commit(t.ADD_REVIEWS, [review])
-      })
-      .catch((error) => {
-        if (error.response) {
-          console.log(error.response.status)
-          console.log(error.response.headers)
-          this.submitError = error.response.data
-        } else if (error.request) {
-          console.log(error.request)
-          this.submitError = 'Server not reachable.'
-        } else {
-          console.log('Client submission processing error: ', error.message)
-          this.submitError = 'Internal client error, please report.'
-        }
-      })
+  },
+  submitReview({ commit, dispatch }, reviewStub) {
+    dispatch('reviewContent', reviewStub).then((review) => {
+      console.log('Mangrove review: ', review)
+      this.$axios
+        .put(`${process.env.VUE_APP_API_URL}/submit`, review, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(() => {
+          this.submitError = null
+          // Add review so that its immediately visible.
+          commit(t.ADD_REVIEWS, [review])
+        })
+        .catch((error) => {
+          if (error.response) {
+            console.log(error.response.status)
+            console.log(error.response.headers)
+            this.submitError = error.response.data
+          } else if (error.request) {
+            console.log(error.request)
+            this.submitError = 'Server not reachable.'
+          } else {
+            console.log('Client submission processing error: ', error.message)
+            this.submitError = 'Internal client error, please report.'
+          }
+        })
+    })
   }
 }
