@@ -48,12 +48,18 @@ impl DbConn {
         if let Some(s) = &query.iat {
             f = Box::new(f.and(iat.eq(s)))
         }
+        if let Some(s) = &query.gt_iat {
+            f = Box::new(f.and(iat.gt(s)))
+        }
         // Allow prefix match.
         if let Some(s) = &query.sub {
             f = Box::new(f.and(sub.eq(s)))
         }
         if let Some(s) = &query.rating {
             f = Box::new(f.and(rating.eq(s)))
+        }
+        if let Some(s) = &query.gt_rating {
+            f = Box::new(f.and(rating.gt(s)))
         }
         if let Some(s) = &query.opinion {
             f = Box::new(f.and(opinion.eq(s)))
