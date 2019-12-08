@@ -1,18 +1,19 @@
 use super::database::DbConn;
 use super::error::Error;
 use super::schema::reviews;
+use isbn::Isbn;
 use ring::signature;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
 use std::collections::HashMap;
 use std::env;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use url::Url;
-use isbn::Isbn;
 
 pub type Rating = i16;
 
-const MAX_RATING: Rating = 100;
+pub const MAX_RATING: Rating = 100;
 const MAX_REVIEW_LENGTH: usize = 500;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -21,7 +22,10 @@ struct ExtraHashes(Vec<String>);
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 struct Metadata(HashMap<String, String>);
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, Identifiable, Insertable, Queryable)]
+/// Mangrove Review used for submission or retrieval from the database.
+#[derive(
+    Debug, PartialEq, Serialize, Deserialize, Identifiable, Insertable, Queryable, JsonSchema,
+)]
 #[primary_key(signature)]
 pub struct Review {
     pub signature: String,
@@ -117,7 +121,8 @@ fn check_geo_q(q: Cow<str>) -> Result<(), Error> {
     if elements
         .next()
         .ok_or_else(|| Error::Incorrect("No name found.".into()))?
-        .ends_with(')') {
+        .ends_with(')')
+    {
         Ok(())
     } else {
         Err(Error::Incorrect("Name must be inside parenthesis.".into()))
@@ -131,7 +136,7 @@ fn check_geo_param(param: (Cow<str>, Cow<str>)) -> Result<(), Error> {
             Ok(n) if 0. < n && n < 2000. => Ok(()),
             _ => Err(Error::Incorrect("Uncertainty incorrect.".into())),
         },
-        _ => Err(Error::Incorrect("Query field unknown.".into()))
+        _ => Err(Error::Incorrect("Query field unknown.".into())),
     }
 }
 
@@ -165,7 +170,7 @@ fn check_lei(id: &str) -> Result<(), Error> {
 fn check_isbn(id: &str) -> Result<(), Error> {
     match id.parse::<Isbn>() {
         Ok(_) => Ok(()),
-        Err(e) => Err(Error::Incorrect(format!("ISBN incorrect: {:?}", e)))
+        Err(e) => Err(Error::Incorrect(format!("ISBN incorrect: {:?}", e))),
     }
 }
 
@@ -196,14 +201,11 @@ fn check_sub(conn: &DbConn, uri: &str) -> Result<(), Error> {
 fn check_extrahash(hash: &str) -> Result<(), Error> {
     let query = format!(
         "{}{}",
-        env::var::<String>("FILES_URL".into())
-            .expect("FILES_URL env variable must be specified."),
+        env::var::<String>("FILES_URL".into()).expect("FILES_URL env variable must be specified."),
         hash
     );
     info!("Checking the file: {}", query);
-    let exists = reqwest::get(&query)?
-        .text()?
-        .parse()?;
+    let exists = reqwest::get(&query)?.text()?.parse()?;
     if exists {
         Ok(())
     } else {
@@ -238,7 +240,7 @@ fn check_flag(key: &str, value: &str) -> Result<(), Error> {
         _ => Err(Error::Incorrect(format!(
             "Flag field {} can only have value equal to true",
             key
-        )))
+        ))),
     }
 }
 

@@ -1,14 +1,15 @@
-use diesel::prelude::*;
-use diesel::sql_types::Bool;
 use super::error::Error;
 use super::review::Review;
 use super::schema;
+use diesel::prelude::*;
+use diesel::sql_types::Bool;
+use schemars::JsonSchema;
 
 #[database("pg_reviews")]
 pub struct DbConn(diesel::PgConnection);
 
 /// TODO: allow metadata and extradata
-#[derive(Default, Debug, FromForm)]
+#[derive(Default, Debug, FromForm, JsonSchema)]
 pub struct Query {
     /// Search for reviews with this string in `sub` and `opinion` fields.
     pub q: Option<String>,
@@ -19,8 +20,6 @@ pub struct Query {
     pub gt_iat: Option<i64>,
     pub sub: Option<String>,
     pub rating: Option<i16>,
-    /// Return reviews with rating greater than this.
-    pub gt_rating: Option<i16>,
     pub opinion: Option<String>,
 }
 
@@ -57,9 +56,6 @@ impl DbConn {
         }
         if let Some(s) = &query.rating {
             f = Box::new(f.and(rating.eq(s)))
-        }
-        if let Some(s) = &query.gt_rating {
-            f = Box::new(f.and(rating.gt(s)))
         }
         if let Some(s) = &query.opinion {
             f = Box::new(f.and(opinion.eq(s)))

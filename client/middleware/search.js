@@ -3,7 +3,8 @@ import {
   EMPTY_SUBJECTS,
   ADD_SUBJECTS,
   SELECT_SUB,
-  SEARCH_ERROR
+  SEARCH_ERROR,
+  SET_QUERY
 } from '../store/mutation-types'
 import { HTTPS, GEO, LEI, ISBN } from '../store/scheme-types'
 
@@ -11,10 +12,11 @@ const geoProvider = new OpenStreetMapProvider()
 
 export default function({ store, $axios, route }) {
   const query = route.query.q
-  if (!query) {
+  if (!query || store.state.query === query) {
     return
   }
   store.commit(EMPTY_SUBJECTS)
+  store.commit(SET_QUERY, query)
   Promise.all([
     storeWithRating(store, searchUrl(query)),
     searchGeo(query).then((subjects) => storeWithRating(store, subjects)),
@@ -24,8 +26,9 @@ export default function({ store, $axios, route }) {
     searchLei($axios, query).then((subjects) =>
       storeWithRating(store, subjects)
     ),
+    // TODO: make appropriate queries to learn more about these
     store
-      .dispatch('requestReviews', { q: query })
+      .dispatch('getReviews', { q: query })
       .then((rs) => {
         return rs
           ? rs.map((r) => {
@@ -70,12 +73,19 @@ export default function({ store, $axios, route }) {
 }
 
 function storeWithRating(store, rawSubjects) {
-  const subjects = rawSubjects.map((subject) => {
-    subject.aggregateRating = 4.3
-    subject.aggregateReviews = 23
-    return subject
-  })
-  store.commit(ADD_SUBJECTS, subjects)
+  store
+    .dispatch(
+      'bulkSubjects',
+      rawSubjects.map((raw) => raw.sub)
+    )
+    .then((responses) => {
+      const subjects = responses.map((response, i) => {
+        response.quality = (response.quality + 25) / 25
+        return { ...rawSubjects[i], ...response }
+      })
+      console.log('subjects: ', subjects)
+      store.commit(ADD_SUBJECTS, subjects)
+    })
 }
 
 function searchUrl(input) {

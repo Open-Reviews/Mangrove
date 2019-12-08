@@ -1,3 +1,10 @@
+use okapi::openapi3::Responses;
+use rocket_okapi::gen::OpenApiGenerator;
+use rocket_okapi::response::OpenApiResponder;
+use rocket_okapi::util::add_schema_response;
+use rocket_okapi::Result as ApiResult;
+use std::fmt::Debug;
+
 #[derive(Debug, Responder)]
 pub enum Error {
     // Issue with the submitted review.
@@ -6,6 +13,16 @@ pub enum Error {
     // Internal issue when checking a review.
     #[response(status = 500)]
     Internal(String),
+}
+
+impl<'r> OpenApiResponder<'r> for Error {
+    fn responses(gen: &mut OpenApiGenerator) -> ApiResult<Responses> {
+        let mut responses = Responses::default();
+        let schema = gen.json_schema::<String>();
+        add_schema_response(&mut responses, 400, "text/plain", schema.clone())?;
+        add_schema_response(&mut responses, 500, "text/plain", schema)?;
+        Ok(responses)
+    }
 }
 
 impl From<hex::FromHexError> for Error {

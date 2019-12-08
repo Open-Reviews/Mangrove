@@ -34,9 +34,6 @@ export default {
     }
   },
   computed: {
-    queryLink() {
-      return `search?q=${this.query}`
-    },
     error() {
       return this.$store.state.errors.search
     },
@@ -53,7 +50,7 @@ export default {
   methods: {
     search() {
       if (this.query && this.query.length > 0) {
-        this.$router.push({ path: this.queryLink })
+        this.$router.push({ path: 'search', query: { q: this.query } })
       }
     },
     nextPlaceholder() {

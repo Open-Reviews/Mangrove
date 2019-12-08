@@ -1,11 +1,14 @@
 <template>
   <v-app>
     <v-app-bar app>
-      <v-btn :ripple="false" @click="goHome" text-align="center" text>
-        <v-avatar tile>
-          <v-img src="mangrove.png" />
-        </v-avatar>
-        <v-toolbar-title v-text="title" />
+      <v-btn
+        :ripple="false"
+        @click="goHome"
+        :hover="false"
+        text-align="center"
+        text
+      >
+        <v-img src="mangrove-thick.png" max-width="110" contain />
       </v-btn>
       <v-spacer />
       <v-toolbar-items>

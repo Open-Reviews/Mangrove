@@ -2,6 +2,8 @@
 
 [Learn more about the project.](https://planting.space/mangrove.html)
 
+> Work in progress!
+
 This repository contains:
 - [Mangrove Review Standard](Mangrove_Review_Standard_v1.md)
 - [Mangrove Original Services Terms of Use](Mangrove_Original_Services_ToU.md)
@@ -25,7 +27,8 @@ rustup default nightly
 Run the UI:
 ```
 cd client
-npm run serve
+yarn install
+yarn dev
 cd ..
 ```
 

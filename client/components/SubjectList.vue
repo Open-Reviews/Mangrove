@@ -11,14 +11,17 @@
     >
       <v-row align="center">
         <v-col>
-          <v-chip small label>
+          <v-chip small label class="mx-3">
             {{ name(sub.scheme) }}
           </v-chip>
           <v-card-title>{{ sub.title }}</v-card-title>
-          <v-row align="center" class="ma-auto">
-            <v-rating v-model="sub.aggregateRating" dense />
-            {{ sub.aggregateRating }}
-            ({{ sub.aggregateReviews }})
+          <v-row v-if="sub.count" align="center" class="mx-4 mt-n4">
+            <v-rating v-model="sub.quality" dense />
+            {{ sub.quality }}
+            ({{ sub.count }})
+          </v-row>
+          <v-row v-else align="center" class="mx-4 mt-n4">
+            No reviews
           </v-row>
           <v-card-subtitle>{{ sub.subtitle }}</v-card-subtitle>
           <v-card-text>{{ sub.description }}</v-card-text>
@@ -52,6 +55,10 @@ export default {
   },
   methods: {
     select(subject) {
+      this.$router.push({
+        path: 'search',
+        query: { q: this.$route.query.q, sub: subject.sub }
+      })
       this.$store.dispatch('saveReviews', { sub: subject.sub })
       this.$store.commit(SELECT_SUB, subject)
     },

@@ -10,6 +10,7 @@ export const state = () => ({
   keyPair: null,
   publicKey: null,
   alphaWarning: true,
+  query: null,
   // Array of objects { sub: ..., scheme: ..., title: ..., description: ... }
   subjects: [],
   // Subject object that has been selected.
@@ -34,6 +35,9 @@ export const mutations = {
   },
   [t.DISMISS_ALPHA_WARNING](state) {
     state.alphaWarning = false
+  },
+  [t.SET_QUERY](state, query) {
+    state.query = query
   },
   [t.ADD_SUBJECTS](state, newsubjects) {
     state.subjects.push(...newsubjects)
@@ -105,12 +109,30 @@ export const actions = {
       .catch((error) => console.log('Accessing IndexDB failed: ', error))
     dispatch('setKeypair', keypair)
   },
-  requestReviews({ commit }, params) {
-    // Get reviews and put them in the reviews field.
-    return this.$axios
-      .get(`${process.env.VUE_APP_API_URL}/request`, { params })
+  processResponse({ commit }, rawResponse) {
+    return rawResponse
       .then((response) => {
-        console.log(response)
+        commit(t.REQUEST_ERROR, null)
+        return response.data
+      })
+      .catch((error) => {
+        if (error.response) {
+          console.log(error.response.status)
+          console.log(error.response.headers)
+          commit(t.REQUEST_ERROR, error.response.data)
+        } else if (error.request) {
+          console.log(error.request)
+          commit(t.REQUEST_ERROR, 'Server not reachable.')
+        } else {
+          console.log('Client request processing error: ', error.message)
+          commit(t.REQUEST_ERROR, 'Internal client error, please report.')
+        }
+      })
+  },
+  getReviews({ commit }, params) {
+    return this.$axios
+      .get(`${process.env.VUE_APP_API_URL}/reviews`, { params })
+      .then((response) => {
         commit(t.REQUEST_ERROR, null)
         return response.data
       })
@@ -129,7 +151,50 @@ export const actions = {
       })
   },
   saveReviews({ commit, dispatch }, params) {
-    dispatch('requestReviews', params).then((rs) => commit(t.ADD_REVIEWS, rs))
+    // Get reviews and put them in the reviews field.
+    dispatch('getReviews', params).then((rs) => commit(t.ADD_REVIEWS, rs))
+  },
+  bulkSubjects({ commit }, subs) {
+    return this.$axios
+      .post(`${process.env.VUE_APP_API_URL}/bulk`, { subjects: subs })
+      .then((response) => {
+        commit(t.REQUEST_ERROR, null)
+        return response.data
+      })
+      .catch((error) => {
+        if (error.response) {
+          console.log(error.response.status)
+          console.log(error.response.headers)
+          commit(t.REQUEST_ERROR, error.response.data)
+        } else if (error.request) {
+          console.log(error.request)
+          commit(t.REQUEST_ERROR, 'Server not reachable.')
+        } else {
+          console.log('Client request processing error: ', error.message)
+          commit(t.REQUEST_ERROR, 'Internal client error, please report.')
+        }
+      })
+  },
+  bulkIssuers({ commit }, isss) {
+    return this.$axios
+      .post(`${process.env.VUE_APP_API_URL}/bulk`, { issuers: isss })
+      .then((response) => {
+        commit(t.REQUEST_ERROR, null)
+        return response.data
+      })
+      .catch((error) => {
+        if (error.response) {
+          console.log(error.response.status)
+          console.log(error.response.headers)
+          commit(t.REQUEST_ERROR, error.response.data)
+        } else if (error.request) {
+          console.log(error.request)
+          commit(t.REQUEST_ERROR, 'Server not reachable.')
+        } else {
+          console.log('Client request processing error: ', error.message)
+          commit(t.REQUEST_ERROR, 'Internal client error, please report.')
+        }
+      })
   },
   reviewContent({ state }, stubClaim) {
     // Assumes stubClaim contains at least `sub`
