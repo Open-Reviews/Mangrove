@@ -27,6 +27,7 @@ use rocket::Rocket;
 use rocket_contrib::json::Json;
 use rocket_okapi::swagger_ui::{make_swagger_ui, SwaggerUIConfig};
 use serde::{Deserialize, Serialize};
+use std::collections::{HashSet, BTreeMap};
 
 #[openapi(skip)]
 #[get("/")]
@@ -44,10 +45,34 @@ fn submit_review(conn: DbConn, review: Json<Review>) -> Result<String, Error> {
     Ok("true".into())
 }
 
+#[derive(Debug, Serialize, JsonSchema)]
+struct Reviews {
+    reviews: Vec<Review>,
+    issuers: Option<Issuers>,
+}
+
 #[openapi]
-#[get("/reviews?<query..>")]
-fn get_reviews(conn: DbConn, query: Form<Query>) -> Result<Json<Vec<Review>>, Error> {
-    let out = conn.filter(query.into_inner())?;
+#[get("/reviews?<json..>")]
+fn get_reviews(conn: DbConn, json: Form<Query>) -> Result<Json<Reviews>, Error> {
+    let query = json.into_inner();
+    let add_issuers = query.issuers.unwrap_or(false);
+    let reviews = conn.filter(query)?;
+    let out = Reviews {
+        issuers: if add_issuers {
+            Some(Issuer::compute_bulk(
+                &conn,
+                reviews
+                    .iter()
+                    .map(|review| review.iss.clone())
+                    // Deduplicate before computing Issuers.
+                    .collect::<HashSet<_>>()
+                    .into_iter(),
+            )?)
+        } else {
+            None
+        },
+        reviews,
+    };
     info!("Returning {:?}", out);
     Ok(Json(out))
 }
@@ -65,37 +90,38 @@ fn get_issuer(conn: DbConn, iss: String) -> Result<Json<Issuer>, Error> {
     Issuer::compute(&conn, iss).map(Json)
 }
 
-#[serde(rename_all = "lowercase")]
 #[derive(Debug, Deserialize, JsonSchema)]
-enum BulkQuery {
-    Subjects(Vec<String>),
-    Issuers(Vec<String>),
+struct BatchQuery {
+    subs: Option<Vec<String>>,
+    isss: Option<Vec<String>>,
 }
 
-#[serde(rename_all = "lowercase", untagged)]
+type Subjects = BTreeMap<String, Subject>;
+type Issuers = BTreeMap<String, Issuer>;
+
 #[derive(Debug, Serialize, JsonSchema)]
-enum BulkReturn {
-    Subjects(Vec<Subject>),
-    Issuers(Vec<Issuer>),
+struct BatchReturn {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    subjects: Option<Subjects>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    issuers: Option<Issuers>,
 }
 
 #[openapi]
-#[post("/bulk", format = "application/json", data = "<query>")]
-fn bulk(conn: DbConn, query: Json<BulkQuery>) -> Result<Json<BulkReturn>, Error> {
-    match query.into_inner() {
-        BulkQuery::Subjects(subs) => subs
-            .iter()
-            .map(|sub| Subject::compute(&conn, sub.into()))
-            .collect::<Result<_, _>>()
-            .map(BulkReturn::Subjects)
-            .map(Json),
-        BulkQuery::Issuers(isss) => isss
-            .iter()
-            .map(|iss| Issuer::compute(&conn, iss.into()))
-            .collect::<Result<_, _>>()
-            .map(BulkReturn::Issuers)
-            .map(Json),
-    }
+#[post("/batch", format = "application/json", data = "<json>")]
+fn batch(conn: DbConn, json: Json<BatchQuery>) -> Result<Json<BatchReturn>, Error> {
+    let query = json.into_inner();
+    info!("Batch request made: {:?}", query);
+    let subjects = match &query.subs {
+        Some(subs) => Some(Subject::compute_bulk(&conn, subs.iter().cloned())?),
+        None => None,
+    };
+    let issuers = match query.isss {
+        Some(subs) => Some(Issuer::compute_bulk(&conn, subs.into_iter())?),
+        None => None,
+    };
+    info!("Returning batch of subjects and issuers: {:?} {:?}", subjects, issuers);
+    Ok(Json(BatchReturn { subjects, issuers }))
 }
 
 pub fn rocket() -> Rocket {
@@ -119,7 +145,7 @@ pub fn rocket() -> Rocket {
                 get_reviews,
                 get_subject,
                 get_issuer,
-                bulk
+                batch
             ],
         )
         .mount(

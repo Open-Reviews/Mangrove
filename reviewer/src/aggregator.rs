@@ -3,18 +3,32 @@ use super::error::Error;
 use super::review::MAX_RATING;
 use schemars::JsonSchema;
 use serde::Serialize;
+use std::collections::BTreeMap;
 
 pub trait Statistic {
     fn compute(conn: &DbConn, identifier: String) -> Result<Self, Error>
     where
         Self: Sized;
+    fn compute_bulk(
+        conn: &DbConn,
+        identifiers: impl Iterator<Item = String>,
+    ) -> Result<BTreeMap<String, Self>, Error>
+    where
+        Self: Sized,
+    {
+        identifiers
+            .map(|identifier| {
+                Self::compute(&conn, identifier.clone()).map(|statistic| (identifier, statistic))
+            })
+            .collect()
+    }
 }
 
 /// Information about a subject of reviews.
 #[derive(Debug, Serialize, JsonSchema)]
 pub struct Subject {
     pub sub: String,
-    pub quality: usize,
+    pub quality: Option<usize>,
     /// Number of reviews given to this subject.
     pub count: usize,
     /// Number of reviews with rating above 50 given to this subject.
@@ -43,13 +57,15 @@ impl Statistic for Subject {
             })
             .count();
         let quality = if count == 0 {
-            0
+            None
         } else {
-            relevant
-                .iter()
-                .map(|review| review.rating.unwrap_or(0) as usize)
-                .sum::<usize>()
-                / count
+            Some(
+                relevant
+                    .iter()
+                    .map(|review| review.rating.unwrap_or(0) as usize)
+                    .sum::<usize>()
+                    / count,
+            )
         };
         Ok(Subject {
             sub,
@@ -64,8 +80,6 @@ impl Statistic for Subject {
 /// Information about a review issuer.
 #[derive(Debug, Serialize, JsonSchema)]
 pub struct Issuer {
-    /// Public key of the issuer.
-    pub iss: String,
     /// Number of reviews written by this issuer.
     pub count: usize,
 }
@@ -75,11 +89,11 @@ impl Statistic for Issuer {
         // TODO: Optimize it by counting closer to DB.
         let count = conn
             .filter(Query {
-                iss: Some(iss.clone()),
+                iss: Some(iss),
                 ..Default::default()
             })?
             .len();
         info!("Returning count {:?}", count);
-        Ok(Issuer { iss, count })
+        Ok(Issuer { count })
     }
 }
