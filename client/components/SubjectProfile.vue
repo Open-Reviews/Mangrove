@@ -1,5 +1,5 @@
 <template>
-  <v-container v-if="$store.state.selected">
+  <v-container v-if="subject">
     <v-card>
       <v-card-title>
         {{ subject.title }}
@@ -28,7 +28,7 @@ export default {
   },
   computed: {
     subject() {
-      return this.$store.state.selected
+      return this.$store.state.subjects[this.$route.query.sub]
     }
   }
 }

@@ -2,7 +2,6 @@ import { OpenStreetMapProvider } from 'leaflet-geosearch'
 import {
   EMPTY_SUBJECTS,
   ADD_SUBJECTS,
-  SELECT_SUB,
   SEARCH_ERROR,
   SET_QUERY
 } from '../store/mutation-types'
@@ -10,7 +9,7 @@ import { HTTPS, GEO, LEI, ISBN } from '../store/scheme-types'
 
 const geoProvider = new OpenStreetMapProvider()
 
-export default function({ store, $axios, route }) {
+export default function({ store, $axios, route, redirect }) {
   const query = route.query.q
   if (!query || store.state.query === query) {
     return
@@ -30,8 +29,9 @@ export default function({ store, $axios, route }) {
     store
       .dispatch('getReviews', { q: query })
       .then((rs) => {
-        return rs
-          ? rs.map((r) => {
+        console.log('Response: ', rs.reviews)
+        return rs.reviews
+          ? rs.reviews.map((r) => {
               return {
                 sub: r.sub,
                 scheme: HTTPS,
@@ -46,10 +46,10 @@ export default function({ store, $axios, route }) {
   ])
     .then(() => {
       store.commit(SEARCH_ERROR, null)
-      // Try to select the first URI from the list.
-      const first = store.state.subjects[0]
-      store.commit(SELECT_SUB, first)
-      if (first) store.dispatch('saveReviews', { sub: first.sub })
+      // Try to select the first URI from the list or the one from route.
+      const sub = Object.values(store.state.subjects)[0].sub
+      select(redirect, route, sub)
+      store.dispatch('saveReviews', { sub })
     })
     .catch((error) => {
       if (error.response) {
@@ -72,20 +72,27 @@ export default function({ store, $axios, route }) {
     })
 }
 
+function select(redirect, route, sub) {
+  redirect('/search', { q: route.query.q, sub })
+}
+
 function storeWithRating(store, rawSubjects) {
-  store
-    .dispatch(
-      'bulkSubjects',
-      rawSubjects.map((raw) => raw.sub)
-    )
-    .then((responses) => {
-      const subjects = responses.map((response, i) => {
-        response.quality = (response.quality + 25) / 25
-        return { ...rawSubjects[i], ...response }
+  rawSubjects.length &&
+    store
+      .dispatch(
+        'bulkSubjects',
+        rawSubjects.map((raw) => raw.sub)
+      )
+      .then((subjects) => {
+        console.log('ratings: ', subjects)
+        rawSubjects.map((raw) => {
+          const rawQuality = subjects[raw.sub].quality
+          // Quality is null when there are no reviews.
+          subjects[raw.sub].quality = rawQuality && (rawQuality + 25) / 25
+          subjects[raw.sub] = { ...raw, ...subjects[raw.sub] }
+        })
+        store.commit(ADD_SUBJECTS, subjects)
       })
-      console.log('subjects: ', subjects)
-      store.commit(ADD_SUBJECTS, subjects)
-    })
 }
 
 function searchUrl(input) {

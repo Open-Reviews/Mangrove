@@ -11,14 +11,15 @@ export const state = () => ({
   publicKey: null,
   alphaWarning: true,
   query: null,
-  // Array of objects { sub: ..., scheme: ..., title: ..., description: ... }
-  subjects: [],
-  // Subject object that has been selected.
+  // Object from sub (URI) to subject info { sub: ..., scheme: ..., title: ..., description: ... }
+  subjects: {},
+  // Currently selected URI.
   selected: null,
   // Array of schemes that should be selected, empty means display all.
   filters: [],
   // Object from MaReSi to reviews, ensuring only unique ones are stored.
   reviews: {},
+  issuers: {},
   rating: null,
   opinion: null,
   extraHashes: [],
@@ -40,13 +41,13 @@ export const mutations = {
     state.query = query
   },
   [t.ADD_SUBJECTS](state, newsubjects) {
-    state.subjects.push(...newsubjects)
+    state.subjects = { ...state.subjects, ...newsubjects }
   },
   [t.EMPTY_SUBJECTS](state) {
-    state.subjects = []
+    state.subjects = {}
   },
-  [t.SELECT_SUB](state, sub) {
-    state.selected = sub
+  [t.ADD_ISSUERS](state, newissuers) {
+    state.issuers = { ...state.issuers, ...newissuers }
   },
   [t.SET_FILTERS](state, filters) {
     state.filters = filters
@@ -109,26 +110,6 @@ export const actions = {
       .catch((error) => console.log('Accessing IndexDB failed: ', error))
     dispatch('setKeypair', keypair)
   },
-  processResponse({ commit }, rawResponse) {
-    return rawResponse
-      .then((response) => {
-        commit(t.REQUEST_ERROR, null)
-        return response.data
-      })
-      .catch((error) => {
-        if (error.response) {
-          console.log(error.response.status)
-          console.log(error.response.headers)
-          commit(t.REQUEST_ERROR, error.response.data)
-        } else if (error.request) {
-          console.log(error.request)
-          commit(t.REQUEST_ERROR, 'Server not reachable.')
-        } else {
-          console.log('Client request processing error: ', error.message)
-          commit(t.REQUEST_ERROR, 'Internal client error, please report.')
-        }
-      })
-  },
   getReviews({ commit }, params) {
     return this.$axios
       .get(`${process.env.VUE_APP_API_URL}/reviews`, { params })
@@ -151,36 +132,21 @@ export const actions = {
       })
   },
   saveReviews({ commit, dispatch }, params) {
-    // Get reviews and put them in the reviews field.
-    dispatch('getReviews', params).then((rs) => commit(t.ADD_REVIEWS, rs))
+    params.issuers = true
+    // Geta and save in state the reviews and their issuers.
+    dispatch('getReviews', params).then((rs) => {
+      if (rs) {
+        commit(t.ADD_REVIEWS, rs.reviews)
+        commit(t.ADD_ISSUERS, rs.issuers)
+      }
+    })
   },
   bulkSubjects({ commit }, subs) {
     return this.$axios
-      .post(`${process.env.VUE_APP_API_URL}/bulk`, { subjects: subs })
+      .post(`${process.env.VUE_APP_API_URL}/batch`, { subs })
       .then((response) => {
         commit(t.REQUEST_ERROR, null)
-        return response.data
-      })
-      .catch((error) => {
-        if (error.response) {
-          console.log(error.response.status)
-          console.log(error.response.headers)
-          commit(t.REQUEST_ERROR, error.response.data)
-        } else if (error.request) {
-          console.log(error.request)
-          commit(t.REQUEST_ERROR, 'Server not reachable.')
-        } else {
-          console.log('Client request processing error: ', error.message)
-          commit(t.REQUEST_ERROR, 'Internal client error, please report.')
-        }
-      })
-  },
-  bulkIssuers({ commit }, isss) {
-    return this.$axios
-      .post(`${process.env.VUE_APP_API_URL}/bulk`, { issuers: isss })
-      .then((response) => {
-        commit(t.REQUEST_ERROR, null)
-        return response.data
+        return response.data.subjects
       })
       .catch((error) => {
         if (error.response) {

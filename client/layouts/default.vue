@@ -1,15 +1,9 @@
 <template>
   <v-app>
     <v-app-bar app>
-      <v-btn
-        :ripple="false"
-        @click="goHome"
-        :hover="false"
-        text-align="center"
-        text
-      >
-        <v-img src="mangrove-thick.png" max-width="110" contain />
-      </v-btn>
+      <router-link to="/">
+        <v-img src="mangrove-thick.png" max-width="150" contain />
+      </router-link>
       <v-spacer />
       <v-toolbar-items>
         <v-btn to="using">Using Mangrove</v-btn>
@@ -91,11 +85,6 @@ export default {
   },
   mounted() {
     this.$store.dispatch('generateKeypair')
-  },
-  methods: {
-    goHome() {
-      this.$router.push({ path: '/' })
-    }
   }
 }
 </script>

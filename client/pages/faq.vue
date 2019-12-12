@@ -1,14 +1,17 @@
 <template>
-  <v-expansion-panels>
-    <v-expansion-panel v-for="qa in qas" :key="qa.q">
-      <v-expansion-panel-header>
-        <h3>{{ qa.q }}</h3>
-      </v-expansion-panel-header>
-      <v-expansion-panel-content
-        ><span v-html="qa.a"
-      /></v-expansion-panel-content>
-    </v-expansion-panel>
-  </v-expansion-panels>
+  <v-container>
+    <span class="display-1"> Frequently asked questions <br /><br /> </span>
+    <v-expansion-panels>
+      <v-expansion-panel v-for="qa in qas" :key="qa.q">
+        <v-expansion-panel-header>
+          <h3>{{ qa.q }}</h3>
+        </v-expansion-panel-header>
+        <v-expansion-panel-content
+          ><span v-html="qa.a"
+        /></v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
+  </v-container>
 </template>
 
 <script>

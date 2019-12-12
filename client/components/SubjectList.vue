@@ -1,9 +1,9 @@
 <template>
   <v-container>
     <v-card
-      v-for="sub in subjects"
-      :key="sub.sub"
-      @click="select(sub)"
+      v-for="subject in subjects"
+      :key="subject.sub"
+      @click="select(subject.sub)"
       :ripple="false"
       active-class="event"
       class="my-4"
@@ -12,23 +12,23 @@
       <v-row align="center">
         <v-col>
           <v-chip small label class="mx-3">
-            {{ name(sub.scheme) }}
+            {{ name(subject.scheme) }}
           </v-chip>
-          <v-card-title>{{ sub.title }}</v-card-title>
-          <v-row v-if="sub.count" align="center" class="mx-4 mt-n4">
-            <v-rating v-model="sub.quality" dense />
-            {{ sub.quality }}
-            ({{ sub.count }})
+          <v-card-title>{{ subject.title }}</v-card-title>
+          <v-row v-if="subject.count" align="center" class="mx-4 mt-n4">
+            <v-rating v-model="subject.quality" dense />
+            {{ subject.quality }}
+            ({{ subject.count }})
           </v-row>
           <v-row v-else align="center" class="mx-4 mt-n4">
             No reviews
           </v-row>
-          <v-card-subtitle>{{ sub.subtitle }}</v-card-subtitle>
-          <v-card-text>{{ sub.description }}</v-card-text>
+          <v-card-subtitle>{{ subject.subtitle }}</v-card-subtitle>
+          <v-card-text>{{ subject.description }}</v-card-text>
         </v-col>
-        <v-col v-if="sub.image">
+        <v-col v-if="subject.image">
           <v-avatar class="profile" tile height="150" width="100">
-            <v-img :src="sub.image" />
+            <v-img :src="subject.image" />
           </v-avatar>
         </v-col>
       </v-row>
@@ -38,14 +38,13 @@
 
 <script>
 import { NAMES } from '../store/scheme-types'
-import { SELECT_SUB } from '../store/mutation-types'
 export default {
   computed: {
     filters() {
       return this.$store.state.filters
     },
     subjects() {
-      return this.$store.state.subjects.filter((subject) => {
+      return Object.values(this.$store.state.subjects).filter((subject) => {
         return (
           !this.filters.length ||
           this.filters.some((filter) => subject.scheme === filter)
@@ -54,13 +53,13 @@ export default {
     }
   },
   methods: {
-    select(subject) {
+    select(sub) {
+      console.log('Selecting subject: ', sub)
       this.$router.push({
         path: 'search',
-        query: { q: this.$route.query.q, sub: subject.sub }
+        query: { q: this.$route.query.q, sub }
       })
-      this.$store.dispatch('saveReviews', { sub: subject.sub })
-      this.$store.commit(SELECT_SUB, subject)
+      this.$store.dispatch('saveReviews', { sub })
     },
     name(uri) {
       return NAMES[uri]

@@ -9,9 +9,7 @@
           (review.extra_hashes && review.extra_hashes.display_name) ||
             'Anonymous'
         }}</v-list-item-title>
-        <v-list-item-subtitle
-          >2 reviews <v-icon>mdi-thumb-up</v-icon> 2
-        </v-list-item-subtitle>
+        <v-list-item-subtitle>{{ issuer.count }} reviews </v-list-item-subtitle>
       </v-list-item-content>
     </v-list-item>
     <v-card-text>
@@ -30,6 +28,7 @@
         <template v-slot:activator="{ on }">
           <v-btn v-on="on" @click="action.action(review.signature)" icon>
             <v-icon>{{ action.icon }}</v-icon>
+            {{ action.number }}
           </v-btn>
         </template>
         <span>{{ action.tooltip }}</span>
@@ -81,6 +80,8 @@ export default {
   },
   props: {
     review: Object,
+    issuer: Object,
+    subject: Object,
     preview: Boolean
   },
   data() {
@@ -89,17 +90,20 @@ export default {
         {
           icon: 'mdi-thumb-up',
           tooltip: 'This is useful',
-          action: this.useful
+          action: this.useful,
+          number: this.subject.positive_count
         },
         {
           icon: 'mdi-certificate',
           tooltip: 'Confirm this experience',
-          action: this.confirm
+          action: this.confirm,
+          number: this.subject.confirmed_count
         },
         {
           icon: 'mdi-comment-text-multiple',
           tooltip: 'Write a comment',
-          action: this.request
+          action: this.request,
+          number: this.subject.count
         }
       ],
       menu: [

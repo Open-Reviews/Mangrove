@@ -9,34 +9,46 @@
       Your other public keys
     </v-card>
     <v-row>
-      <v-btn @click="copySecret"
+      <v-btn @click="copySecret" class="ma-5"
         >Copy to save your private key<v-icon>mdi-content-copy</v-icon></v-btn
       >
-      <v-expansion-panels>
-        <v-expansion-panel>
-          <v-expansion-panel-header>Why?</v-expansion-panel-header>
-          <v-expansion-panel-content
-            ><span v-html="explanation"
-          /></v-expansion-panel-content>
-        </v-expansion-panel>
-      </v-expansion-panels>
+      <v-dialog v-model="explanationDialog" width="600">
+        <template v-slot:activator="{ on }">
+          <v-btn v-on="on" class="ma-5">Learn more about private key</v-btn>
+        </template>
+        <v-card>
+          <v-card-title>
+            What is a private key?
+          </v-card-title>
+          <v-card-text>
+            <span v-html="explanation" />
+          </v-card-text>
+        </v-card>
+      </v-dialog>
     </v-row>
-    <h2>Switch account</h2>
-    <v-card class="my-5">
-      <v-card-text>
-        Import another private key to access associated public keys and reviews
-        <v-text-field
-          v-model.trim="secretInput"
-          placeholder="Paste your private key here"
-        />
-      </v-card-text>
-      <v-card-actions>
-        <v-btn :disabled="!secretInput" @click="importSecret">Import</v-btn>
-        <v-alert v-if="error" type="warning" border="left" elevation="8">
-          Private key not valid: {{ error }}
-        </v-alert>
-      </v-card-actions>
-    </v-card>
+    <v-row>
+      <v-dialog v-model="switcherDialog" width="600">
+        <template v-slot:activator="{ on }">
+          <v-btn v-on="on" class="ma-5">Switch account</v-btn>
+        </template>
+        <v-card>
+          <v-card-text>
+            Import another private key to access associated public keys and
+            reviews
+            <v-text-field
+              v-model.trim="secretInput"
+              placeholder="Paste your private key here"
+            />
+          </v-card-text>
+          <v-card-actions>
+            <v-btn :disabled="!secretInput" @click="importSecret">Import</v-btn>
+            <v-alert v-if="error" type="warning" border="left" elevation="8">
+              Private key not valid: {{ error }}
+            </v-alert>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
   </v-container>
 </template>
 
@@ -53,6 +65,8 @@ export default {
       hint:
         'Save the private key in a secure place accessible across devices, such as a password manager.',
       metadata: 'Mangrove private key',
+      explanationDialog: false,
+      switcherDialog: false,
       secretInput: null,
       error: null
     }

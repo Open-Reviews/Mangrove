@@ -4,7 +4,9 @@
       <v-btn v-on="on">Write a review</v-btn>
     </template>
     <v-card>
-      <v-card-title> Review {{ $store.state.selected.title }} </v-card-title>
+      <v-card-title>
+        Review {{ $store.state.subjects[$route.query.sub].title }}
+      </v-card-title>
       <v-rating v-model="rating" hover />
       <v-textarea
         v-model="opinion"
@@ -65,7 +67,7 @@ export default {
   computed: {
     reviewStub() {
       return {
-        sub: this.$store.state.selected.sub,
+        sub: this.$route.query.sub,
         rating: this.rating * 25 - 25,
         opinion: this.opinion
       }
