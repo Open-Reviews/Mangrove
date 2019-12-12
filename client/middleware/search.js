@@ -47,9 +47,13 @@ export default function({ store, $axios, route, redirect }) {
     .then(() => {
       store.commit(SEARCH_ERROR, null)
       // Try to select the first URI from the list or the one from route.
-      const sub = Object.values(store.state.subjects)[0].sub
-      select(redirect, route, sub)
-      store.dispatch('saveReviews', { sub })
+      if (route.query.sub) {
+        store.dispatch('saveReviews', { sub: route.query.sub })
+      } else {
+        const sub = Object.values(store.state.subjects)[0].sub
+        select(redirect, route, sub)
+        store.dispatch('saveReviews', { sub })
+      }
     })
     .catch((error) => {
       if (error.response) {
