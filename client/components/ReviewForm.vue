@@ -7,12 +7,13 @@
       <v-card-title>
         Review {{ $store.state.subjects[$route.query.sub].title }}
       </v-card-title>
-      <v-rating v-model="rating" hover />
+      <v-rating v-model="rating" hover class="mx-4" />
       <v-textarea
         v-model="opinion"
         label="Describe your experience here"
         counter="500"
         auto-grow
+        class="mx-4"
       />
       <MetaForm />
       <v-btn @click.stop="previewReview">Preview</v-btn>

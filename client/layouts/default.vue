@@ -43,7 +43,10 @@
         >
           <v-icon>{{ social.icon }}</v-icon>
         </v-btn>
-        <v-btn href="https://riot.im/" icon>
+        <v-btn
+          href="https://matrix.to/#/!NWvCdVEAXYJRnXTudO:matrix.org?via=matrix.org"
+          icon
+        >
           <v-avatar>
             <v-img src="icon-riot.png" max-height="20" contain />
           </v-avatar>
