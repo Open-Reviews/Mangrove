@@ -136,13 +136,10 @@ export const actions = {
       if (rs) {
         commit(t.ADD_REVIEWS, rs.reviews)
         commit(t.ADD_ISSUERS, rs.issuers)
-        commit(
-          t.ADD_SUBJECTS,
-          rs.maresi_subjects.map((subject) => {
-            subject.scheme = MARESI
-            return subject
-          })
-        )
+        Object.keys(rs.maresi_subjects).map((maresi) => {
+          rs.maresi_subjects[maresi].scheme = MARESI
+        })
+        commit(t.ADD_SUBJECTS, rs.maresi_subjects)
       }
     })
   },

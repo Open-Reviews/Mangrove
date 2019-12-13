@@ -17,15 +17,36 @@
         Reviewed {{ new Date(review.iat * 1000).toDateString() }}
       </v-row>
       {{ review.opinion }}
-      <v-container v-if="review.extra_hashes">
-        <v-carousel v-if="review.extra_hashes.length > 1">
-          <v-carousel-item v-for="hash in review.extra_hashes" :key="hash">
-            <v-img :src="imageUrl(hash)" />
-          </v-carousel-item>
-        </v-carousel>
-        <v-img v-else :src="imageUrl(review.extra_hashes[0])" />
-      </v-container>
-      {{ review.metadata }}
+      <v-row v-if="review.extra_hashes">
+        <v-col v-for="hash in review.extra_hashes" :key="hash">
+          <v-img :src="imageUrl(hash)" max-width="80" max-height="80" />
+        </v-col>
+      </v-row>
+      <v-expansion-panels v-if="metadata && metadata.length">
+        <v-expansion-panel>
+          <v-expansion-panel-header>
+            Additional information
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <v-simple-table>
+              <template v-slot:default>
+                <thead>
+                  <tr>
+                    <th class="text-left">Key</th>
+                    <th class="text-left">Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="kv in metadata" :key="kv[0]">
+                    <td>{{ kv[0] }}</td>
+                    <td>{{ kv[1] }}</td>
+                  </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
     </v-card-text>
     <v-card-actions v-if="!preview">
       <v-tooltip v-for="action in actions" :key="action.icon" top>
@@ -126,6 +147,11 @@ export default {
           action: this.showRaw
         }
       ],
+      metadata:
+        this.review.metadata &&
+        Object.entries(this.review.metadata).filter((key, _) =>
+          ['client_uri', 'display_name'].some((hidden) => key === hidden)
+        ),
       rawDialog: null,
       personalMeta: { is_personal_experience: 'true' }
     }

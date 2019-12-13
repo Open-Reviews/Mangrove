@@ -3,7 +3,7 @@
     <v-card>
       <v-container v-if="images.length !== 0">
         <v-carousel v-if="images.length > 1">
-          <v-carousel-item v-for="image in images" :key="image">
+          <v-carousel-item v-for="(image, i) in images" :key="i">
             <v-img :src="image" />
           </v-carousel-item>
         </v-carousel>
