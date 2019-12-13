@@ -8,41 +8,33 @@
         <v-container>
           <v-row justify="space-around">
             <v-col>
-              <v-textarea
+              <v-text-field
                 v-model="display_name"
                 :counter="short_text_length"
                 :rules="[is_short_text]"
                 label="Display name"
-                rows="1"
               />
             </v-col>
             <v-col>
-              <v-textarea
+              <v-text-field
                 v-model="given_name"
                 :counter="short_text_length"
                 :rules="[is_short_text]"
                 label="Given name"
-                rows="1"
               />
             </v-col>
             <v-col>
-              <v-textarea
+              <v-text-field
                 v-model="family_name"
                 :counter="short_text_length"
                 :rules="[is_short_text]"
                 label="Family name"
-                rows="1"
               />
             </v-col>
           </v-row>
           <v-row justify="space-around">
             <v-col>
-              <v-textarea
-                v-model="age"
-                :rules="[is_age]"
-                label="Your age"
-                rows="1"
-              />
+              <v-text-field v-model="age" :rules="[is_age]" label="Your age" />
             </v-col>
             <v-col>
               <v-select v-model="gender" :items="genders" label="Your gender" />
@@ -72,7 +64,7 @@ export default {
       short_text_length: 20,
       is_short_text: (t) =>
         !t || t.length < this.short_text_length || 'Too long',
-      is_age: (a) => parseInt(a, 10) < 200 || 'Too old'
+      is_age: (a) => parseInt(a, 10) < 200 || 'Invalid age'
     }
   },
   computed: {

@@ -15,6 +15,7 @@
           auto-grow
           filled
         />
+        <ExtraForm v-on:uploaded="extra_hashes = $event" />
         Your public key
         <PubKeyList :keys="[$store.state.publicKey]" />
         <MetaForm />
@@ -70,7 +71,11 @@
           Cancel
         </v-btn>
         <v-btn @click.stop="previewReview" text>Preview</v-btn>
-        <v-btn @click="submitReview" text>
+        <v-btn
+          @click="submitReview"
+          :disabled="!termsAgreed || (!rating && !opinion.length)"
+          text
+        >
           Post publicly
         </v-btn>
       </v-card-actions>
@@ -79,12 +84,14 @@
 </template>
 
 <script>
+import ExtraForm from './ExtraForm'
 import MetaForm from './MetaForm'
 import Review from './Review'
 import PubKeyList from './PubKeyList'
 
 export default {
   components: {
+    ExtraForm,
     MetaForm,
     Review,
     PubKeyList
@@ -94,8 +101,9 @@ export default {
       dialog: false,
       preview: false,
       rating: null,
-      opinion: null,
-      is_affiliated: false,
+      opinion: '',
+      extra_hashes: [],
+      is_affiliated: null,
       termsAgreed: false,
       review: {}
     }
@@ -105,11 +113,16 @@ export default {
       return this.$store.state.subjects[this.$route.query.sub]
     },
     reviewStub() {
-      return {
+      const stub = {
         sub: this.$route.query.sub,
-        rating: this.rating * 25 - 25,
-        opinion: this.opinion
+        opinion: this.opinion,
+        extra_hashes: this.extra_hashes,
+        metadata: { is_affiliated: this.is_affiliated }
       }
+      if (this.rating) {
+        stub.rating = this.rating * 25 - 25
+      }
+      return stub
     }
   },
   methods: {

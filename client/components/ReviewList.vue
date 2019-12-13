@@ -5,8 +5,8 @@
       v-for="r in reviews"
       :key="r.signature"
       :review="r"
-      :issuer="issuer(r.iss)"
-      :subject="subject(r.signature)"
+      :issuer="issuers[r.iss]"
+      :subject="subjects[`urn:maresi:${r.signature}`]"
       :preview="mine"
     />
   </v-container>
@@ -41,19 +41,12 @@ export default {
           this.filters.some((filter) => review.sub.startsWith(filter))
         return (isSelected || isMine) && isFiltered
       })
-    }
-  },
-  methods: {
-    issuer(iss) {
-      return { count: 2 }
     },
-    subject(maresi) {
-      return {
-        quality: 3,
-        count: 5,
-        positive_count: 2,
-        confirmed_count: 1
-      }
+    issuers() {
+      return this.$store.state.issuers
+    },
+    subjects() {
+      return this.$store.state.subjects
     }
   }
 }

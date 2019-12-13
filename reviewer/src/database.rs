@@ -22,6 +22,7 @@ pub struct Query {
     pub rating: Option<i16>,
     pub opinion: Option<String>,
     pub issuers: Option<bool>,
+    pub maresi_subjects: Option<bool>,
 }
 
 impl DbConn {

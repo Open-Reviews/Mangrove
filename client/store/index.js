@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import { get, set } from 'idb-keyval'
 import { toHexString } from '../utils'
+import { MARESI } from '../store/scheme-types'
 import * as t from './mutation-types'
 const cbor = require('cbor')
 
@@ -22,7 +23,6 @@ export const state = () => ({
   issuers: {},
   rating: null,
   opinion: null,
-  extraHashes: [],
   metadata: {},
   errors: { import: null, search: null, request: null, submit: null }
 })
@@ -56,9 +56,6 @@ export const mutations = {
     if (newreviews) {
       newreviews.map((r) => Vue.set(state.reviews, r.signature, r))
     }
-  },
-  extraHashes(state, files) {
-    state.extraHashes = files
   },
   [t.SET_META](state, [key, value]) {
     state.metadata[key] = value === '' ? null : value
@@ -133,11 +130,19 @@ export const actions = {
   },
   saveReviews({ commit, dispatch }, params) {
     params.issuers = true
+    params.maresi_subjects = true
     // Geta and save in state the reviews and their issuers.
     dispatch('getReviews', params).then((rs) => {
       if (rs) {
         commit(t.ADD_REVIEWS, rs.reviews)
         commit(t.ADD_ISSUERS, rs.issuers)
+        commit(
+          t.ADD_SUBJECTS,
+          rs.maresi_subjects.map((subject) => {
+            subject.scheme = MARESI
+            return subject
+          })
+        )
       }
     })
   },
@@ -171,11 +176,10 @@ export const actions = {
       sub: stubClaim.sub
     }
     // Add field only if it is not empty.
-    if (stubClaim.rating !== null) claim.rating = stubClaim.rating
+    if (stubClaim.rating != null) claim.rating = stubClaim.rating
     if (stubClaim.opinion) claim.opinion = stubClaim.opinion
-    const extraHashes = state.extraHashes
-    if (extraHashes && extraHashes.length !== 0)
-      claim.extra_hashes = extraHashes
+    if (stubClaim.extra_hashes.length)
+      claim.extra_hashes = stubClaim.extra_hashes
     const meta = { ...state.metadata, ...stubClaim.metadata }
     // Remove empty metadata fields.
     Object.keys(meta).forEach((key) => meta[key] == null && delete meta[key])

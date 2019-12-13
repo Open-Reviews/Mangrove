@@ -6,8 +6,7 @@
       </v-list-item-avatar>
       <v-list-item-content>
         <v-list-item-title class="headline">{{
-          (review.extra_hashes && review.extra_hashes.display_name) ||
-            'Anonymous'
+          (review.metadata && review.metadata.display_name) || 'Anonymous'
         }}</v-list-item-title>
         <v-list-item-subtitle>{{ issuer.count }} reviews </v-list-item-subtitle>
       </v-list-item-content>
@@ -18,9 +17,14 @@
         Reviewed {{ new Date(review.iat * 1000).toDateString() }}
       </v-row>
       {{ review.opinion }}
-      <div v-for="hash in review.extra_hashes" :key="hash">
-        <img :src="imageUrl(hash)" />
-      </div>
+      <v-container v-if="review.extra_hashes">
+        <v-carousel v-if="review.extra_hashes.length > 1">
+          <v-carousel-item v-for="hash in review.extra_hashes" :key="hash">
+            <v-img :src="imageUrl(hash)" />
+          </v-carousel-item>
+        </v-carousel>
+        <v-img v-else :src="imageUrl(review.extra_hashes[0])" />
+      </v-container>
       {{ review.metadata }}
     </v-card-text>
     <v-card-actions v-if="!preview">
@@ -73,6 +77,7 @@
 
 <script>
 import { MARESI } from '../store/scheme-types'
+import { imageUrl } from '../utils'
 import Identicon from './Identicon'
 export default {
   components: {
@@ -81,7 +86,12 @@ export default {
   props: {
     review: Object,
     issuer: Object,
-    subject: Object,
+    subject: {
+      type: Object,
+      default: () => {
+        return {}
+      }
+    },
     preview: Boolean
   },
   data() {
@@ -127,7 +137,7 @@ export default {
   },
   methods: {
     imageUrl(hash) {
-      return `${process.env.VUE_APP_FILES_URL}/${hash}`
+      return imageUrl(hash)
     },
     reviewSub(signature) {
       return { sub: `${MARESI}:${signature}` }

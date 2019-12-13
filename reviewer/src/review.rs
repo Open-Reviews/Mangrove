@@ -6,7 +6,7 @@ use ring::signature;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use std::env;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use url::Url;
@@ -20,7 +20,7 @@ const MAX_REVIEW_LENGTH: usize = 500;
 struct ExtraHashes(Vec<String>);
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-struct Metadata(HashMap<String, String>);
+struct Metadata(BTreeMap<String, serde_json::Value>);
 
 /// Mangrove Review used for submission or retrieval from the database.
 #[derive(
@@ -92,6 +92,7 @@ fn check_signature(msg: &UnsignedReview, sig: &str) -> Result<(), Error> {
     let pubkey_bytes = hex::decode(&msg.iss)?;
     let sig_bytes = hex::decode(&sig)?;
     let msg_bytes = serde_cbor::to_vec(msg)?;
+    info!("msg_bytes: {:?}", msg_bytes);
     let pubkey = untrusted::Input::from(&pubkey_bytes);
     let msg = untrusted::Input::from(&msg_bytes);
     let sig = untrusted::Input::from(&sig_bytes);
@@ -216,16 +217,17 @@ fn check_extrahash(hash: &str) -> Result<(), Error> {
     }
 }
 
-fn check_short_string(key: &str, value: &str) -> Result<(), Error> {
-    if value.len() > 20 {
+fn check_short_string(key: &str, value: serde_json::Value) -> Result<(), Error> {
+    if serde_json::from_value::<String>(value)?.len() > 20 {
         Err(Error::Incorrect(format!("Field {} is too long.", key)))
     } else {
         Ok(())
     }
 }
 
-fn check_uri(key: &str, value: &str) -> Result<(), Error> {
-    match Url::parse(value) {
+fn check_uri(key: &str, value: serde_json::Value) -> Result<(), Error> {
+    let uri = serde_json::from_value::<String>(value)?;
+    match Url::parse(&uri) {
         Ok(_) => Ok(()),
         Err(e) => Err(Error::Incorrect(format!(
             "Unable to parse URI for {}: {}",
@@ -234,28 +236,28 @@ fn check_uri(key: &str, value: &str) -> Result<(), Error> {
     }
 }
 
-fn check_flag(key: &str, value: &str) -> Result<(), Error> {
-    match value {
-        "true" => Ok(()),
+fn check_flag(key: &str, value: serde_json::Value) -> Result<(), Error> {
+    match value.as_bool() {
+        Some(true) => Ok(()),
         _ => Err(Error::Incorrect(format!(
-            "Flag field {} can only have value equal to true",
+            "Flag field {} can only have value equal to `true`",
             key
         ))),
     }
 }
 
-fn check_metadata(key: &str, value: &str) -> Result<(), Error> {
+fn check_metadata(key: &str, value: serde_json::Value) -> Result<(), Error> {
     match key {
         "client_uri" => check_uri(key, value),
         "display_name" => check_short_string(key, value),
-        "age" => match value.parse::<u8>() {
-            Ok(n) if n <= 200 => Ok(()),
+        "age" => match value.as_u64() {
+            Some(n) if n <= 200 => Ok(()),
             _ => Err(Error::Incorrect("Provided age is incorrect.".into())),
         },
         "openid" => check_short_string(key, value),
         "data_source" => check_uri(key, value),
-        "issuer_index" => match value.parse::<u64>() {
-            Ok(n) if n <= 9_007_199_254_740_991 => Ok(()),
+        "issuer_index" => match value.as_u64() {
+            Some(n) if n <= 9_007_199_254_740_991 => Ok(()),
             _ => Err(Error::Incorrect("Provided index is incorrect.".into())),
         },
         "preferred_username" => check_short_string(key, value),
@@ -272,8 +274,8 @@ fn check_metadata(key: &str, value: &str) -> Result<(), Error> {
     }
 }
 
-// TODO: check metadata and extrahashes
 impl Review {
+    /// Check the Review roughly in order of complexity of checks.
     pub fn check(&self, conn: &DbConn) -> Result<bool, Error> {
         let extra_hashes = match self.extra_hashes {
             Some(ref v) => serde_json::from_value(v.clone())?,
@@ -302,12 +304,12 @@ impl Review {
         self.opinion
             .as_ref()
             .map_or(Ok(()), |s| check_opinion(&s))?;
-        msg.metadata.as_ref().map_or(Ok(()), |m| {
-            m.0.iter().map(|(k, v)| check_metadata(k, v)).collect()
-        })?;
         check_signature(&msg, &self.signature).map_err(|e| {
             info!("{:?}", e);
             e
+        })?;
+        msg.metadata.map_or(Ok(()), |m| {
+            m.0.into_iter().map(|(k, v)| check_metadata(&k, v)).collect()
         })?;
         msg.extra_hashes.map_or(Ok(()), |e| {
             e.0.iter().map(|h| check_extrahash(&h)).collect()

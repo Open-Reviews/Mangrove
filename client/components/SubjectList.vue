@@ -37,19 +37,21 @@
 </template>
 
 <script>
-import { NAMES } from '../store/scheme-types'
+import { NAMES, MARESI } from '../store/scheme-types'
 export default {
   computed: {
     filters() {
       return this.$store.state.filters
     },
     subjects() {
-      return Object.values(this.$store.state.subjects).filter((subject) => {
-        return (
-          !this.filters.length ||
-          this.filters.some((filter) => subject.scheme === filter)
-        )
-      })
+      const all = Object.values(this.$store.state.subjects).filter(
+        (subject) => subject.scheme !== MARESI
+      )
+      return this.filters.length
+        ? all.filter((subject) =>
+            this.filters.some((filter) => subject.scheme === filter)
+          )
+        : all
     }
   },
   methods: {

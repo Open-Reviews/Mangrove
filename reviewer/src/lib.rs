@@ -49,6 +49,7 @@ fn submit_review(conn: DbConn, review: Json<Review>) -> Result<String, Error> {
 struct Reviews {
     reviews: Vec<Review>,
     issuers: Option<Issuers>,
+    maresi_subjects: Option<Subjects>,
 }
 
 #[openapi]
@@ -56,6 +57,7 @@ struct Reviews {
 fn get_reviews(conn: DbConn, json: Form<Query>) -> Result<Json<Reviews>, Error> {
     let query = json.into_inner();
     let add_issuers = query.issuers.unwrap_or(false);
+    let add_subjects = query.maresi_subjects.unwrap_or(false);
     let reviews = conn.filter(query)?;
     let out = Reviews {
         issuers: if add_issuers {
@@ -65,6 +67,19 @@ fn get_reviews(conn: DbConn, json: Form<Query>) -> Result<Json<Reviews>, Error> 
                     .iter()
                     .map(|review| review.iss.clone())
                     // Deduplicate before computing Issuers.
+                    .collect::<HashSet<_>>()
+                    .into_iter(),
+            )?)
+        } else {
+            None
+        },
+        maresi_subjects: if add_subjects {
+            Some(Subject::compute_bulk(
+                &conn,
+                reviews
+                    .iter()
+                    .map(|review| format!("urn:maresi:{}", review.signature.clone()))
+                    // Deduplicate before computing Subjects.
                     .collect::<HashSet<_>>()
                     .into_iter(),
             )?)
