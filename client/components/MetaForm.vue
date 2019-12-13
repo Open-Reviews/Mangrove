@@ -2,23 +2,57 @@
   <v-expansion-panels>
     <v-expansion-panel>
       <v-expansion-panel-header
-        >You can provide additional information</v-expansion-panel-header
+        >Add some helpful information about yourself</v-expansion-panel-header
       >
       <v-expansion-panel-content>
         <v-container>
-          <v-row>
+          <v-row justify="space-around">
+            <v-col>
+              <v-textarea
+                v-model="display_name"
+                :counter="short_text_length"
+                :rules="[is_short_text]"
+                label="Display name"
+                rows="1"
+              />
+            </v-col>
+            <v-col>
+              <v-textarea
+                v-model="given_name"
+                :counter="short_text_length"
+                :rules="[is_short_text]"
+                label="Given name"
+                rows="1"
+              />
+            </v-col>
+            <v-col>
+              <v-textarea
+                v-model="family_name"
+                :counter="short_text_length"
+                :rules="[is_short_text]"
+                label="Family name"
+                rows="1"
+              />
+            </v-col>
+          </v-row>
+          <v-row justify="space-around">
+            <v-col>
+              <v-textarea
+                v-model="age"
+                :rules="[is_age]"
+                label="Your age"
+                rows="1"
+              />
+            </v-col>
+            <v-col>
+              <v-select v-model="gender" :items="genders" label="Your gender" />
+            </v-col>
             <v-col>
               <v-select
                 v-model="context"
                 :items="contexts"
                 label="Context of the experience"
               />
-            </v-col>
-            <v-col>
-              <v-textarea v-model="age" label="Age" />
-            </v-col>
-            <v-col>
-              <v-select v-model="gender" :items="genders" label="Gender" />
             </v-col>
           </v-row>
         </v-container>
@@ -34,7 +68,11 @@ export default {
   data() {
     return {
       contexts: ['Business', 'Private', 'Family', 'Couple/Date', 'Friends'],
-      genders: ['Female', 'Male', 'Other']
+      genders: ['Female', 'Male', 'Other'],
+      short_text_length: 20,
+      is_short_text: (t) =>
+        !t || t.length < this.short_text_length || 'Too long',
+      is_age: (a) => parseInt(a, 10) < 200 || 'Too old'
     }
   },
   computed: {
