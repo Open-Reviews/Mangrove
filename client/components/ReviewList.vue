@@ -9,6 +9,11 @@
       :subject="subjects[`urn:maresi:${r.signature}`]"
       :preview="mine"
     />
+    <v-row justify="center">
+      <v-btn v-if="mine" :href="download" download="data.json" class="my-5"
+        >Download reviews</v-btn
+      >
+    </v-row>
   </v-container>
 </template>
 
@@ -47,6 +52,12 @@ export default {
     },
     subjects() {
       return this.$store.state.subjects
+    },
+    download() {
+      return (
+        'data:text/json;charset=utf-8,' +
+        encodeURIComponent(JSON.stringify(this.reviews))
+      )
     }
   }
 }

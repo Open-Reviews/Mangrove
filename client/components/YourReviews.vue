@@ -1,7 +1,11 @@
 <template>
   <v-container>
-    <h2>Your reviews</h2>
-    Click on one of public keys to display the associated reviews here.
+    <p class="display-1">Your reviews</p>
+    <v-divider />
+    <br />
+    <span
+      >Click on one of public keys to display the associated reviews here.</span
+    >
     <SchemeFilter />
     <ReviewList mine />
   </v-container>

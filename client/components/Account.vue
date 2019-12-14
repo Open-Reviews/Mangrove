@@ -1,6 +1,30 @@
 <template>
   <v-container>
-    <h2>Your account</h2>
+    <v-row align="top" justify="space-around">
+      <p class="display-1">Your account</p>
+      <v-dialog v-model="switcherDialog" width="600">
+        <template v-slot:activator="{ on }">
+          <v-btn v-on="on">Switch account</v-btn>
+        </template>
+        <v-card>
+          <v-card-text>
+            Import another private key to access associated public keys and
+            reviews
+            <v-text-field
+              v-model.trim="secretInput"
+              placeholder="Paste your private key here"
+            />
+          </v-card-text>
+          <v-card-actions>
+            <v-btn :disabled="!secretInput" @click="importSecret">Import</v-btn>
+            <v-alert v-if="error" type="warning" border="left" elevation="8">
+              Private key not valid: {{ error }}
+            </v-alert>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
+    <v-divider />
     <v-card v-if="$store.state.publicKey" class="my-5">
       <v-card-title>Default public key</v-card-title>
       <PubKeyList :keys="[$store.state.publicKey]" />
@@ -23,29 +47,6 @@
           <v-card-text>
             <span v-html="explanation" />
           </v-card-text>
-        </v-card>
-      </v-dialog>
-    </v-row>
-    <v-row>
-      <v-dialog v-model="switcherDialog" width="600">
-        <template v-slot:activator="{ on }">
-          <v-btn v-on="on" class="ma-5">Switch account</v-btn>
-        </template>
-        <v-card>
-          <v-card-text>
-            Import another private key to access associated public keys and
-            reviews
-            <v-text-field
-              v-model.trim="secretInput"
-              placeholder="Paste your private key here"
-            />
-          </v-card-text>
-          <v-card-actions>
-            <v-btn :disabled="!secretInput" @click="importSecret">Import</v-btn>
-            <v-alert v-if="error" type="warning" border="left" elevation="8">
-              Private key not valid: {{ error }}
-            </v-alert>
-          </v-card-actions>
         </v-card>
       </v-dialog>
     </v-row>
@@ -73,7 +74,7 @@ export default {
   },
   mounted() {
     this.$store.dispatch('saveReviews', {
-      publickey: this.$store.state.publicKey
+      iss: this.$store.state.publicKey
     })
   },
   methods: {

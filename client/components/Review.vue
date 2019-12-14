@@ -40,10 +40,15 @@
         </v-expansion-panel>
       </v-expansion-panels>
     </v-card-text>
-    <v-card-actions v-if="!preview">
+    <v-card-actions>
       <v-tooltip v-for="action in actions" :key="action.icon" top>
         <template v-slot:activator="{ on }">
-          <v-btn v-on="on" @click="action.action(review.signature)" icon>
+          <v-btn
+            v-on="on"
+            @click="action.action(review.signature)"
+            :disabled="preview"
+            icon
+          >
             <v-icon>{{ action.icon }}</v-icon>
             {{ action.number }}
           </v-btn>
@@ -175,11 +180,13 @@ export default {
       this.$store.dispatch('submitReview', claim)
     },
     flag(review) {
-      const claim = this.reviewSub(review.signature)
-      claim.rating = 0
-      // The review being reviewed is displayed above.
-      claim.metadata = this.personalMeta
-      this.$store.dispatch('submitReview', claim)
+      if (!this.preview) {
+        const claim = this.reviewSub(review.signature)
+        claim.rating = 0
+        // The review being reviewed is displayed above.
+        claim.metadata = this.personalMeta
+        this.$store.dispatch('submitReview', claim)
+      }
     },
     showRaw(review) {
       this.rawDialog = review
