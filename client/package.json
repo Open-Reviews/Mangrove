@@ -16,6 +16,7 @@
     "@nuxtjs/dotenv": "^1.4.0",
     "bip32": "^2.0.4",
     "borc": "^2.1.1",
+    "cbor": "^5.0.1",
     "frontmatter-markdown-loader": "^3.1.0",
     "idb-keyval": "^3.2.0",
     "jdenticon": "^2.2.0",

@@ -91,6 +91,7 @@ fn check_signature(msg: &UnsignedReview, sig: &str) -> Result<(), Error> {
     info!("Unsigned review: {}", serde_json::to_string(msg).unwrap());
     let pubkey_bytes = hex::decode(&msg.iss)?;
     let sig_bytes = hex::decode(&sig)?;
+    //let msg_bytes = serde_cbor::to_vec(&serde_json::to_value(msg)?)?;
     let msg_bytes = serde_cbor::to_vec(msg)?;
     info!("msg_bytes: {:?}", msg_bytes);
     let pubkey = untrusted::Input::from(&pubkey_bytes);

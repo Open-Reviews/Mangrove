@@ -3,7 +3,7 @@ import { get, set } from 'idb-keyval'
 import { toHexString } from '../utils'
 import { MARESI } from '../store/scheme-types'
 import * as t from './mutation-types'
-const cbor = require('borc')
+const cbor = require('cbor')
 
 const clientUri = 'https://mangrove.reviews'
 
@@ -183,9 +183,9 @@ export const actions = {
     meta.client_uri = clientUri
     // Always at least `client_uri` present.
     claim.metadata = meta
-    console.log('claim: ', claim)
+    console.log('claim: ', JSON.stringify(claim))
     const encoded = cbor.encode(claim)
-    console.log('msg: ', encoded)
+    console.log('msg: ', JSON.stringify([].concat(encoded)))
     return window.crypto.subtle
       .sign(
         {
