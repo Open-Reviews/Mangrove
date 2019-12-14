@@ -90,14 +90,15 @@ function storeWithRating(store, rawSubjects) {
         rawSubjects.map((raw) => raw.sub)
       )
       .then((subjects) => {
-        console.log('ratings: ', subjects)
-        rawSubjects.map((raw) => {
-          const rawQuality = subjects[raw.sub].quality
-          // Quality is null when there are no reviews.
-          subjects[raw.sub].quality = rawQuality && (rawQuality + 25) / 25
-          subjects[raw.sub] = { ...raw, ...subjects[raw.sub] }
-        })
-        store.commit(ADD_SUBJECTS, subjects)
+        if (subjects) {
+          rawSubjects.map((raw) => {
+            const rawQuality = subjects[raw.sub].quality
+            // Quality is null when there are no reviews.
+            subjects[raw.sub].quality = rawQuality && (rawQuality + 25) / 25
+            subjects[raw.sub] = { ...raw, ...subjects[raw.sub] }
+          })
+          store.commit(ADD_SUBJECTS, subjects)
+        }
       })
 }
 

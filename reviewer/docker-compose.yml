@@ -2,7 +2,7 @@ version: '2.0'
 services:
   # builds lambda package
   build:
-    image: keorn/lambda-rust
+    image: plantingspace/lambda-rust
     volumes:
     - .:/code
     - ~/.cargo/registry:/root/.cargo/registry

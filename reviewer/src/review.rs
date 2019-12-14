@@ -88,7 +88,7 @@ fn check_opinion(opinion: &str) -> Result<(), Error> {
 }
 
 fn check_signature(msg: &UnsignedReview, sig: &str) -> Result<(), Error> {
-    info!("Unsigned review: {:?}", serde_json::to_string(msg));
+    info!("Unsigned review: {}", serde_json::to_string(msg).unwrap());
     let pubkey_bytes = hex::decode(&msg.iss)?;
     let sig_bytes = hex::decode(&sig)?;
     let msg_bytes = serde_cbor::to_vec(msg)?;

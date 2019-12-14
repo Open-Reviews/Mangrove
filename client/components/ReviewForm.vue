@@ -49,12 +49,14 @@
         <v-dialog v-model="preview">
           <v-card>
             <v-card-title>Preview</v-card-title>
-            <Review
-              :review="review"
-              :subject="subject"
-              :issuer="$store.state.issuers[$store.state.publicKey]"
-              preview
-            />
+            <v-card-text>
+              <Review
+                :review="review"
+                :subject="subject"
+                :issuer="$store.state.issuers[$store.state.publicKey]"
+                preview
+              />
+            </v-card-text>
             <v-card-actions>
               <v-spacer />
               <v-btn @click="preview = false" text>Close</v-btn>

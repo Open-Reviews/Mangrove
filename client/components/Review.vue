@@ -5,9 +5,7 @@
         <Identicon :seed="review.iss" />
       </v-list-item-avatar>
       <v-list-item-content>
-        <v-list-item-title class="headline">{{
-          (review.metadata && review.metadata.display_name) || 'Anonymous'
-        }}</v-list-item-title>
+        <v-list-item-title class="headline">{{ name() }}</v-list-item-title>
         <v-list-item-subtitle>{{ issuer.count }} reviews </v-list-item-subtitle>
       </v-list-item-content>
     </v-list-item>
@@ -30,12 +28,6 @@
           <v-expansion-panel-content>
             <v-simple-table>
               <template v-slot:default>
-                <thead>
-                  <tr>
-                    <th class="text-left">Key</th>
-                    <th class="text-left">Value</th>
-                  </tr>
-                </thead>
                 <tbody>
                   <tr v-for="kv in metadata" :key="kv[0]">
                     <td>{{ kv[0] }}</td>
@@ -191,6 +183,26 @@ export default {
     },
     showRaw(review) {
       this.rawDialog = review
+    },
+    name() {
+      const meta = this.review.metadata
+      if (!meta) {
+        return 'Anonymous'
+      }
+      if (meta.given_name || meta.family_name) {
+        const realName = [meta.given_name, meta.family_name]
+          .filter((n) => n)
+          .join(' ')
+        if (meta.display_name) {
+          return `${meta.display_name} (${realName})`
+        } else {
+          return realName
+        }
+      } else if (meta.display_name) {
+        return meta.display_name
+      } else {
+        return 'Anonymous'
+      }
     }
   }
 }

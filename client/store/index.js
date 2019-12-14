@@ -3,7 +3,7 @@ import { get, set } from 'idb-keyval'
 import { toHexString } from '../utils'
 import { MARESI } from '../store/scheme-types'
 import * as t from './mutation-types'
-const cbor = require('cbor')
+const cbor = require('borc')
 
 const clientUri = 'https://mangrove.reviews'
 
@@ -177,7 +177,7 @@ export const actions = {
     if (stubClaim.opinion) claim.opinion = stubClaim.opinion
     if (stubClaim.extra_hashes.length)
       claim.extra_hashes = stubClaim.extra_hashes
-    const meta = { ...state.metadata, ...stubClaim.metadata }
+    const meta = { ...stubClaim.metadata, ...state.metadata }
     // Remove empty metadata fields.
     Object.keys(meta).forEach((key) => meta[key] == null && delete meta[key])
     meta.client_uri = clientUri
