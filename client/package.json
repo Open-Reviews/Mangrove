@@ -14,7 +14,6 @@
   "dependencies": {
     "@nuxtjs/axios": "^5.3.6",
     "@nuxtjs/dotenv": "^1.4.0",
-    "bip32": "^2.0.4",
     "borc": "^2.1.1",
     "cbor": "^5.0.1",
     "frontmatter-markdown-loader": "^3.1.0",

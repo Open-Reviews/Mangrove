@@ -6,15 +6,15 @@
       </router-link>
       <v-spacer />
       <v-toolbar-items>
-        <v-btn to="using">Using Mangrove</v-btn>
-        <v-btn to="contribute">Contribute</v-btn>
-        <v-btn to="settings">
+        <v-btn to="/using">Using Mangrove</v-btn>
+        <v-btn to="/contribute">Contribute</v-btn>
+        <v-btn to="/settings">
           <v-icon>mdi-account-circle</v-icon>
         </v-btn>
       </v-toolbar-items>
     </v-app-bar>
     <v-content>
-      <v-container>
+      <v-container style="max-width: 1200px">
         <nuxt />
       </v-container>
     </v-content>

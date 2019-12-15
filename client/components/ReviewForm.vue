@@ -17,7 +17,7 @@
         />
         <ExtraForm v-on:uploaded="extra_hashes = $event" />
         Your public key
-        <PubKeyList :keys="[$store.state.publicKey]" />
+        <KeyList :keys="[$store.state.publicKey]" />
         <MetaForm />
 
         <v-list>
@@ -89,14 +89,14 @@
 import ExtraForm from './ExtraForm'
 import MetaForm from './MetaForm'
 import Review from './Review'
-import PubKeyList from './PubKeyList'
+import KeyList from './KeyList'
 
 export default {
   components: {
     ExtraForm,
     MetaForm,
     Review,
-    PubKeyList
+    KeyList
   },
   data() {
     return {

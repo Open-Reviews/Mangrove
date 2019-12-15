@@ -1,21 +1,24 @@
 <template>
   <v-container>
-    <v-row align="top" justify="space-around">
+    <v-row justify="space-around">
       <p class="display-1">Your account</p>
       <v-dialog v-model="switcherDialog" width="600">
         <template v-slot:activator="{ on }">
           <v-btn v-on="on">Switch account</v-btn>
         </template>
         <v-card>
+          <v-card-title>
+            Switch account
+          </v-card-title>
           <v-card-text>
-            Import another private key to access associated public keys and
-            reviews
+            <p v-html="switchContent" />
             <v-text-field
               v-model.trim="secretInput"
               placeholder="Paste your private key here"
             />
           </v-card-text>
           <v-card-actions>
+            <v-spacer />
             <v-btn :disabled="!secretInput" @click="importSecret">Import</v-btn>
             <v-alert v-if="error" type="warning" border="left" elevation="8">
               Private key not valid: {{ error }}
@@ -26,38 +29,39 @@
     </v-row>
     <v-divider />
     <v-card v-if="$store.state.publicKey" class="my-5">
-      <v-card-title>Default public key</v-card-title>
-      <PubKeyList :keys="[$store.state.publicKey]" />
+      <KeyList sk>
+        Private key |
+        <v-dialog v-model="explanationDialog" width="600">
+          <template v-slot:activator="{ on }">
+            <a v-on="on"> &nbsp; Learn more about saving and exporting</a>
+          </template>
+          <v-card>
+            <v-card-title>
+              What is a private key?
+            </v-card-title>
+            <v-card-text>
+              <span v-html="explanation" />
+            </v-card-text>
+          </v-card>
+        </v-dialog>
+      </KeyList>
+      <KeyList :keys="[$store.state.publicKey]">
+        Default public key | Learn more
+      </KeyList>
+      <KeyList v-if="false" :keys="[$store.state.publicKey]">
+        Other public keys
+      </KeyList>
     </v-card>
-    <v-card v-if="false">
-      Your other public keys
-    </v-card>
-    <v-row>
-      <v-btn @click="copySecret" class="ma-5"
-        >Copy to save your private key<v-icon>mdi-content-copy</v-icon></v-btn
-      >
-      <v-dialog v-model="explanationDialog" width="600">
-        <template v-slot:activator="{ on }">
-          <v-btn v-on="on" class="ma-5">Learn more about private key</v-btn>
-        </template>
-        <v-card>
-          <v-card-title>
-            What is a private key?
-          </v-card-title>
-          <v-card-text>
-            <span v-html="explanation" />
-          </v-card-text>
-        </v-card>
-      </v-dialog>
-    </v-row>
+    <v-row> </v-row>
   </v-container>
 </template>
 
 <script>
-import PubKeyList from './PubKeyList'
+import { html as switchContent } from '../content/settings/switch-account.md'
+import KeyList from './KeyList'
 export default {
   components: {
-    PubKeyList
+    KeyList
   },
   data() {
     return {
@@ -66,6 +70,7 @@ export default {
       hint:
         'Save the private key in a secure place accessible across devices, such as a password manager.',
       metadata: 'Mangrove private key',
+      switchContent,
       explanationDialog: false,
       switcherDialog: false,
       secretInput: null,
@@ -78,28 +83,6 @@ export default {
     })
   },
   methods: {
-    copySecret() {
-      crypto.subtle
-        .exportKey('jwk', this.$store.state.keyPair.privateKey)
-        .then((s) => {
-          s.metadata = this.metadata
-          const secret = JSON.stringify(s)
-          // Create new element
-          const el = document.createElement('textarea')
-          // Set value (string to be copied)
-          el.value = secret
-          // Set non-editable to avoid focus and move outside of view
-          el.setAttribute('readonly', '')
-          el.style = { position: 'absolute', left: '-9999px' }
-          document.body.appendChild(el)
-          // Select text inside element
-          el.select()
-          // Copy text to clipboard
-          document.execCommand('copy')
-          // Remove temporary element
-          document.body.removeChild(el)
-        })
-    },
     async importSecret() {
       let jwk
       try {
