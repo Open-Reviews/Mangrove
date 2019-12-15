@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <span class="display-2">Contribute to Mangrove</span>
+    <h1 class="display-3 text-center my-12">Contribute to Mangrove</h1>
     <v-container v-for="(item, i) in content" :key="i">
       <v-row v-if="i % 2">
         <v-col>
