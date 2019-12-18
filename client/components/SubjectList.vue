@@ -4,7 +4,7 @@
       <v-card
         v-for="subject in subjects"
         :key="subject.sub"
-        @click="$store.dispatch('selectSubject', [$route.query.q, subject.sub])"
+        @click="select(subject.sub)"
         :ripple="false"
         active-class="event"
         class="my-4"
@@ -58,10 +58,6 @@ export default {
             this.filters.some((filter) => {
               const accepted = subject.scheme === filter
               if (!accepted && subject.sub === this.$route.query.sub) {
-                this.$store.dispatch('selectSubject', [
-                  this.$route.query.q,
-                  null
-                ])
               }
               return accepted
             })
@@ -72,6 +68,10 @@ export default {
   methods: {
     name(uri) {
       return NAMES[uri]
+    },
+    select(sub) {
+      console.log('SubjectList')
+      this.$store.dispatch('selectSubject', [this.$route.query.q, sub])
     }
   }
 }

@@ -87,7 +87,7 @@ export default {
   computed: {
     selectedFeatures: {
       set(features) {
-        if (features[0]) {
+        if (features[0] && this.$route.query.sub !== features[0].id) {
           this.$store.dispatch('selectSubject', [
             this.$route.query.q,
             features[0].id

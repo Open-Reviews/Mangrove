@@ -238,7 +238,7 @@ export const actions = {
     console.log('Selecting subject: ', sub)
     this.app.router.push({
       path: 'search',
-      query: sub ? { q, sub } : { q }
+      query: { q, sub }
     })
     dispatch('saveReviews', { sub })
   }
