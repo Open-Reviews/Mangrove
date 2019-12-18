@@ -4,9 +4,7 @@
       <span class="text-center">
         <h1 class="display-3">Read reviews. Write reviews.</h1>
         <br />
-        <span class="display-1"
-          >Find places, companies, websites, or books.</span
-        >
+        <h2 class="display-1">Find places, companies, websites, or books.</h2>
       </span>
     </v-row>
     <v-row class="mb-5">

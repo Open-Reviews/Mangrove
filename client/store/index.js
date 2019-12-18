@@ -233,5 +233,13 @@ export const actions = {
           }
         })
     })
+  },
+  selectSubject({ dispatch }, [q, sub]) {
+    console.log('Selecting subject: ', sub)
+    this.app.router.push({
+      path: 'search',
+      query: sub ? { q, sub } : { q }
+    })
+    dispatch('saveReviews', { sub })
   }
 }

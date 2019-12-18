@@ -1,4 +1,3 @@
-import { OpenStreetMapProvider } from 'leaflet-geosearch'
 import {
   EMPTY_SUBJECTS,
   ADD_SUBJECTS,
@@ -6,8 +5,6 @@ import {
   SET_QUERY
 } from '../store/mutation-types'
 import { HTTPS, GEO, LEI, ISBN } from '../store/scheme-types'
-
-const geoProvider = new OpenStreetMapProvider()
 
 export default function({ store, $axios, route, redirect }) {
   const query = route.query.q
@@ -18,7 +15,9 @@ export default function({ store, $axios, route, redirect }) {
   store.commit(SET_QUERY, query)
   Promise.all([
     storeWithRating(store, searchUrl(query)),
-    searchGeo(query).then((subjects) => storeWithRating(store, subjects)),
+    searchGeo($axios, query).then((subjects) =>
+      storeWithRating(store, subjects)
+    ),
     searchIsbn($axios, query).then((subjects) =>
       storeWithRating(store, subjects)
     ),
@@ -123,24 +122,47 @@ function searchUrl(input) {
   return search
 }
 
-function searchGeo(input) {
-  // Do Nominatim and Mangrove server uncertain viscinity/fragment text search.
-  return geoProvider.search({ query: input }).then((results) =>
-    // Compute Geo URI for each result, introducing default uncertainty of the POI of 30 meters.
-    results.map((result) => {
-      const partition = result.label.indexOf(',')
-      const label = result.label.substring(0, partition)
-      const address = result.label.substring(partition + 1)
-      const type = result.raw.type
-      return {
-        sub: `${GEO}:?q=${result.y},${result.x}(${label})&u=30`,
-        scheme: GEO,
-        title: label,
-        subtitle: type.charAt(0).toUpperCase() + type.slice(1),
-        description: address
-      }
+function searchGeo(axios, input) {
+  return axios
+    .get('https://nominatim.openstreetmap.org/search', {
+      params: {
+        q: input,
+        format: 'json',
+        limit: 40,
+        addressdetails: 1,
+        extratags: 1
+      },
+      headers: { Accept: 'application/json' }
     })
-  )
+    .then((response) => {
+      return response.data
+        .map(({ lat, lon, type, address, extratags }) => {
+          if (!lat || !lon) {
+            return null
+          }
+          const title = address[type]
+          const addressString = [
+            [address.street || address.road, address.house_number]
+              .filter(Boolean)
+              .join(' '),
+            address.suburb,
+            address.city || address.town,
+            address.country
+          ]
+            .filter(Boolean)
+            .join(', ')
+          return {
+            sub: `${GEO}:?q=${lat},${lon}(${title})&u=30`,
+            scheme: GEO,
+            title,
+            subtitle:
+              type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' '),
+            description: `${addressString} <br /> ${extratags.opening_hours}`,
+            coordinates: [lon, lat].map(parseFloat)
+          }
+        })
+        .filter(Boolean)
+    })
 }
 
 function searchIsbn(axios, input) {
@@ -152,8 +174,8 @@ function searchIsbn(axios, input) {
       headers: { Accept: 'application/json' }
     })
     .then((response) => {
-      return Promise.all(
-        response.data.docs.map((doc) => {
+      return response.data.docs
+        .map((doc) => {
           return doc.isbn
             ? {
                 sub: `${ISBN}:${doc.isbn[0]}`,
@@ -166,15 +188,9 @@ function searchIsbn(axios, input) {
                 image: `http://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg`
               }
             : null
+          // Filter out duplicates and entities without isbn.
         })
-      )
-    })
-    .then((books) => {
-      // Filter out duplicates and entities without isbn.
-      return books.filter(
-        (book, index, self) =>
-          book && self.findIndex((e) => e && e.sub === book.sub) === index
-      )
+        .filter(Boolean)
     })
 }
 
@@ -219,10 +235,7 @@ function searchLei(axios, query) {
         )
       ).then((entities) => {
         // Filter out duplicates and entities without relationship.
-        return entities.filter(
-          (entity, index, self) =>
-            entity && self.findIndex((e) => e && e.sub === entity.sub) === index
-        )
+        return entities.filter(Boolean)
       })
     })
 }
