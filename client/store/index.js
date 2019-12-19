@@ -234,11 +234,12 @@ export const actions = {
         })
     })
   },
-  selectSubject({ dispatch }, [q, sub]) {
+  selectSubject({ dispatch }, [query, sub]) {
     console.log('Selecting subject: ', sub)
+    query.sub = sub
     this.app.router.push({
       path: 'search',
-      query: { q, sub }
+      query
     })
     dispatch('saveReviews', { sub })
   }

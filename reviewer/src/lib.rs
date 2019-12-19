@@ -21,13 +21,17 @@ use self::aggregator::{Issuer, Statistic, Subject};
 use self::database::{DbConn, Query};
 use self::error::Error;
 use self::review::Review;
-use rocket::http::Method;
-use rocket::request::Form;
+use rocket::outcome::Outcome::{Success, Failure};
+use rocket::http::{Method, Status};
+use rocket::request::{Form, Request};
+use rocket::data::{FromData, Data, Transformed, Transform, Outcome};
 use rocket::Rocket;
 use rocket_contrib::json::Json;
 use rocket_okapi::swagger_ui::{make_swagger_ui, SwaggerUIConfig};
 use serde::{Deserialize, Serialize};
 use std::collections::{HashSet, BTreeMap};
+use std::io::Read;
+use std::ops::Deref;
 
 #[openapi(skip)]
 #[get("/")]
@@ -37,7 +41,69 @@ fn index() -> &'static str {
 
 #[openapi]
 #[put("/submit", format = "application/json", data = "<review>")]
-fn submit_review(conn: DbConn, review: Json<Review>) -> Result<String, Error> {
+fn submit_review_json(conn: DbConn, review: Json<Review>) -> Result<String, Error> {
+    info!("Review received: {:?}", review);
+    review.check(&conn)?;
+    conn.insert(review.into_inner())?;
+    info!("Review checked and inserted.");
+    Ok("true".into())
+}
+
+#[derive(Debug)]
+pub struct ReviewCbor(pub Review);
+
+impl ReviewCbor {
+    /// Consumes the CBOR wrapper and returns the wrapped item.
+    #[inline(always)]
+    pub fn into_inner(self) -> Review {
+        self.0
+    }
+}
+
+/// Default limit for CBOR is 1MB.
+const LIMIT: u64 = 1 << 20;
+
+impl<'a> FromData<'a> for ReviewCbor {
+    type Error = Error;
+    type Owned = String;
+    type Borrowed = str;
+
+    fn transform(r: &Request, d: Data) -> Transform<Outcome<Self::Owned, Self::Error>> {
+        let size_limit = r.limits().get("cbor").unwrap_or(LIMIT);
+        match serde_cbor::from_reader::<String, _>(d.open().take(size_limit)) {
+            Ok(s) => Transform::Borrowed(Success(s)),
+            Err(e) => Transform::Borrowed(Failure((Status::BadRequest, e.into())))
+        }
+    }
+
+    fn from_data(_: &Request, o: Transformed<'a, Self>) -> Outcome<Self, Self::Error> {
+        let string = o.borrowed()?;
+        match serde_cbor::from_slice(&string.as_bytes()) {
+            Ok(v) => Success(ReviewCbor(v)),
+            Err(e) => {
+                error_!("Couldn't parse JSON body: {:?}", e);
+                if e.is_data() {
+                    Failure((Status::UnprocessableEntity, e.into()))
+                } else {
+                    Failure((Status::BadRequest, e.into()))
+                }
+            }
+        }
+    }
+}
+
+impl Deref for ReviewCbor {
+    type Target = Review;
+
+    #[inline(always)]
+    fn deref(&self) -> &Review {
+        &self.0
+    }
+}
+
+#[openapi(skip)]
+#[put("/submit", format = "application/cbor", data = "<review>")]
+fn submit_review_cbor(conn: DbConn, review: ReviewCbor) -> Result<String, Error> {
     info!("Review received: {:?}", review);
     review.check(&conn)?;
     conn.insert(review.into_inner())?;
@@ -156,7 +222,8 @@ pub fn rocket() -> Rocket {
             "/",
             routes_with_openapi![
                 index,
-                submit_review,
+                submit_review_json,
+                submit_review_cbor,
                 get_reviews,
                 get_subject,
                 get_issuer,

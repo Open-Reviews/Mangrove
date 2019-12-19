@@ -70,8 +70,7 @@ export default {
       return NAMES[uri]
     },
     select(sub) {
-      console.log('SubjectList')
-      this.$store.dispatch('selectSubject', [this.$route.query.q, sub])
+      this.$store.dispatch('selectSubject', [this.$route.query, sub])
     }
   }
 }

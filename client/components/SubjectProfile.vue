@@ -4,23 +4,18 @@
     style="height: 90vh;position: fixed;width: 40vw"
     class="overflow-y-auto"
   >
+    <v-btn @click="geoSearch" mb="n10">Search selected area</v-btn>
     <vl-map
+      ref="map"
       :load-tiles-while-animating="true"
       :load-tiles-while-interacting="true"
       v-if="subject.coordinates"
       style="height: 400px"
       data-projection="EPSG:4326"
     >
-      <vl-view
-        ref="view"
-        :zoom.sync="zoom"
-        :center="subject.coordinates"
-        :rotation.sync="rotation"
-      ></vl-view>
+      <vl-view :center="subject.coordinates" :zoom="15" />
 
-      <vl-interaction-select
-        :features.sync="selectedFeatures"
-      ></vl-interaction-select>
+      <vl-interaction-select :features.sync="selectedFeatures" />
 
       <vl-feature v-for="(p, i) in points" :key="i" :id="p.id">
         <vl-geom-point :coordinates="p.coordinates" />
@@ -34,13 +29,9 @@
       </vl-feature>
 
       <vl-layer-tile id="osm">
-        <vl-source-osm></vl-source-osm>
+        <vl-source-osm />
       </vl-layer-tile>
     </vl-map>
-
-    <div>
-      {{ selectedFeatures }}
-    </div>
 
     <v-card>
       <v-container v-if="images.length !== 0">
@@ -68,6 +59,7 @@
 </template>
 
 <script>
+import { transformExtent, get } from 'ol/proj'
 import { imageUrl } from '../utils'
 import { GEO } from '../store/scheme-types'
 import ReviewForm from './ReviewForm'
@@ -78,18 +70,15 @@ export default {
     ReviewForm,
     ReviewList
   },
-  data() {
-    return {
-      zoom: 15,
-      rotation: 0
-    }
-  },
   computed: {
     selectedFeatures: {
+      get() {
+        return []
+      },
       set(features) {
         if (features[0] && this.$route.query.sub !== features[0].id) {
           this.$store.dispatch('selectSubject', [
-            this.$route.query.q,
+            this.$route.query,
             features[0].id
           ])
         }
@@ -123,6 +112,20 @@ export default {
             scale: subject.sub === this.subject.sub ? 1.2 : 0.7
           }
         })
+    }
+  },
+  methods: {
+    geoSearch() {
+      const geo = transformExtent(
+        this.$refs.map.$map.getView().calculateExtent(),
+        get('EPSG:3857'),
+        get('EPSG:4326')
+      ).join(',')
+      console.log('Map query: ', geo)
+      this.$router.push({
+        path: 'search',
+        query: { q: this.$route.query.q, [GEO]: geo }
+      })
     }
   }
 }

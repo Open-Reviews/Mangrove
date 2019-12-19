@@ -8,14 +8,14 @@ import { HTTPS, GEO, LEI, ISBN } from '../store/scheme-types'
 
 export default function({ store, $axios, route, redirect }) {
   const query = route.query.q
-  if (!query || store.state.query === query) {
+  if (!query || (store.state.query === query && !route.query.geo)) {
     return
   }
   store.commit(EMPTY_SUBJECTS)
   store.commit(SET_QUERY, query)
   Promise.all([
     storeWithRating(store, searchUrl(query)),
-    searchGeo($axios, query).then((subjects) =>
+    searchGeo($axios, query, route.query.geo).then((subjects) =>
       storeWithRating(store, subjects)
     ),
     searchIsbn($axios, query).then((subjects) =>
@@ -52,7 +52,7 @@ export default function({ store, $axios, route, redirect }) {
         })
       } else {
         const sub = Object.values(store.state.subjects)[0].sub
-        select(redirect, route, sub)
+        select(redirect, route.query, sub)
         store.dispatch('saveReviews', { sub })
       }
     })
@@ -77,8 +77,9 @@ export default function({ store, $axios, route, redirect }) {
     })
 }
 
-function select(redirect, route, sub) {
-  redirect('/search', { q: route.query.q, sub })
+function select(redirect, query, sub) {
+  query.sub = sub
+  redirect('/search', query)
 }
 
 function storeWithRating(store, rawSubjects) {
@@ -122,16 +123,21 @@ function searchUrl(input) {
   return search
 }
 
-function searchGeo(axios, input) {
+function searchGeo(axios, q, viewbox) {
+  const params = {
+    q,
+    format: 'json',
+    limit: 40,
+    addressdetails: 1,
+    extratags: 1
+  }
+  if (viewbox) {
+    params.viewbox = viewbox
+    params.bounded = 1
+  }
   return axios
     .get('https://nominatim.openstreetmap.org/search', {
-      params: {
-        q: input,
-        format: 'json',
-        limit: 40,
-        addressdetails: 1,
-        extratags: 1
-      },
+      params,
       headers: { Accept: 'application/json' }
     })
     .then((response) => {
