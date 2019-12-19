@@ -68,12 +68,15 @@ impl DbConn {
                 f = Box::new(f.and(sub.like(pattern.clone()).or(opinion.like(pattern))))
             }
         }
-        Ok(reviews.filter(f).load::<Review>(&self.0)?)
+        Ok(reviews.filter(f).select((signature, (iss, iat, sub, rating, opinion, extra_hashes, metadata))).load::<Review>(&self.0)?)
     }
 
     pub fn select(&self, sig: &str) -> Result<Review, Error> {
+        use schema::reviews::dsl::*;
+
         schema::reviews::table
-            .filter(schema::reviews::signature.eq(sig))
+            .filter(signature.eq(sig))
+            .select((signature, (iss, iat, sub, rating, opinion, extra_hashes, metadata)))
             .load::<Review>(&self.0)?
             .into_iter()
             .next()

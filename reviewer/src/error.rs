@@ -25,12 +25,6 @@ impl<'r> OpenApiResponder<'r> for Error {
     }
 }
 
-impl From<hex::FromHexError> for Error {
-    fn from(error: hex::FromHexError) -> Self {
-        Error::Incorrect(format!("Incorrect hex encoding: {}", error))
-    }
-}
-
 impl From<serde_cbor::error::Error> for Error {
     fn from(error: serde_cbor::error::Error) -> Self {
         Error::Incorrect(format!("Incorrect CBOR encoding: {}", error))
@@ -53,6 +47,12 @@ impl From<diesel::result::Error> for Error {
 impl From<reqwest::Error> for Error {
     fn from(error: reqwest::Error) -> Self {
         Error::Incorrect(format!("Non-existent entity: {}", error))
+    }
+}
+
+impl From<std::io::Error> for Error {
+    fn from(error: std::io::Error) -> Self {
+        Error::Incorrect(format!("Incorrect CBOR string encoding: {}", error))
     }
 }
 

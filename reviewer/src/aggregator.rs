@@ -46,11 +46,12 @@ impl Statistic for Subject {
         let count = relevant.len();
         let mut positive = relevant
             .iter()
-            .filter(|review| review.rating.unwrap_or(0) > MAX_RATING / 2);
+            .filter(|review| review.payload.rating.unwrap_or(0) > MAX_RATING / 2);
         let positive_count = positive.by_ref().count();
         let confirmed_count = positive
             .filter(|review| {
                 review
+                    .payload
                     .metadata
                     .as_ref()
                     .map_or(false, |m| m.get("is_personal_experience").is_some())
@@ -62,7 +63,7 @@ impl Statistic for Subject {
             Some(
                 relevant
                     .iter()
-                    .map(|review| review.rating.unwrap_or(0) as usize)
+                    .map(|review| review.payload.rating.unwrap_or(0) as usize)
                     .sum::<usize>()
                     / count,
             )

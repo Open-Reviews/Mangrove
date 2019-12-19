@@ -29,8 +29,20 @@ struct Metadata(BTreeMap<String, serde_json::Value>);
 #[primary_key(signature)]
 pub struct Review {
     pub signature: String,
+    #[diesel(embed)]
+    pub payload: Payload
+}
+
+#[derive(
+    Debug, PartialEq, Serialize, Deserialize, Insertable, Queryable, JsonSchema,
+)]
+#[table_name = "reviews"]
+pub struct Payload {
+    /// Reviewer public key.
     pub iss: String,
+    /// Time at which the review was signed.
     pub iat: i64,
+    /// URI of the object that is being reviewed.
     pub sub: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub rating: Option<Rating>,
@@ -40,24 +52,6 @@ pub struct Review {
     pub extra_hashes: Option<serde_json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<serde_json::Value>,
-}
-
-#[derive(Serialize, PartialEq, Debug)]
-struct UnsignedReview<'a> {
-    // Reviewer public key.
-    iss: &'a str,
-    // Time at which the review was signed.
-    iat: i64,
-    // URI of the object that is being reviewed.
-    sub: &'a str,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    rating: Option<Rating>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    opinion: Option<&'a String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    extra_hashes: Option<ExtraHashes>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
 }
 
 fn check_timestamp(iat: Duration) -> Result<(), Error> {
@@ -87,17 +81,20 @@ fn check_opinion(opinion: &str) -> Result<(), Error> {
     }
 }
 
-fn check_signature(msg: &UnsignedReview, sig: &str) -> Result<(), Error> {
-    info!("Unsigned review: {}", serde_json::to_string(msg).unwrap());
-    let pubkey_bytes = hex::decode(&msg.iss)?;
-    let sig_bytes = hex::decode(&sig)?;
-    //let msg_bytes = serde_cbor::to_vec(&serde_json::to_value(msg)?)?;
-    let msg_bytes = serde_cbor::to_vec(msg)?;
-    info!("msg_bytes: {:?}", msg_bytes);
-    let pubkey = untrusted::Input::from(&pubkey_bytes);
-    let msg = untrusted::Input::from(&msg_bytes);
-    let sig = untrusted::Input::from(&sig_bytes);
-    signature::verify(&signature::ECDSA_P256_SHA256_FIXED, pubkey, msg, sig).map_err(Into::into)
+impl Review {
+    /// TODO: Clean up the base64url handling. base64::decode::DecodeError is private for some reason.
+    pub fn check_signature(&self, msg_bytes: &[u8]) -> Result<(), Error> {
+        let pubkey_bytes: Vec<u8> = base64_url::decode(&self.payload.iss)
+            .map_err(|e| Error::Incorrect(format!("Incorrect base64url encoding: {}", e)))?;
+        let sig_bytes: Vec<u8> = base64_url::decode(&self.signature)
+            .map_err(|e| Error::Incorrect(format!("Incorrect base64url encoding: {}", e)))?;
+        //let msg_bytes = serde_cbor::to_vec(&serde_json::to_value(msg)?)?;
+        info!("msg_bytes: {:?}", msg_bytes);
+        let pubkey = untrusted::Input::from(&pubkey_bytes);
+        let msg = untrusted::Input::from(&msg_bytes);
+        let sig = untrusted::Input::from(&sig_bytes);
+        signature::verify(&signature::ECDSA_P256_SHA256_FIXED, pubkey, msg, sig).map_err(Into::into)
+    }
 }
 
 /// Check the q= query field content.
@@ -275,25 +272,16 @@ fn check_metadata(key: &str, value: serde_json::Value) -> Result<(), Error> {
     }
 }
 
-impl Review {
+impl Payload {
     /// Check the Review roughly in order of complexity of checks.
     pub fn check(&self, conn: &DbConn) -> Result<bool, Error> {
-        let extra_hashes = match self.extra_hashes {
+        let extra_hashes: Option<ExtraHashes> = match self.extra_hashes {
             Some(ref v) => serde_json::from_value(v.clone())?,
             None => None,
         };
-        let metadata = match self.metadata {
+        let metadata: Option<Metadata> = match self.metadata {
             Some(ref v) => serde_json::from_value(v.clone())?,
             None => None,
-        };
-        let msg = UnsignedReview {
-            iss: &self.iss,
-            iat: self.iat,
-            sub: &self.sub,
-            rating: self.rating,
-            opinion: self.opinion.as_ref(),
-            extra_hashes,
-            metadata,
         };
         check_timestamp(Duration::from_secs(self.iat as u64))?;
         if self.rating.is_none() && self.opinion.is_none() {
@@ -305,14 +293,10 @@ impl Review {
         self.opinion
             .as_ref()
             .map_or(Ok(()), |s| check_opinion(&s))?;
-        check_signature(&msg, &self.signature).map_err(|e| {
-            info!("{:?}", e);
-            e
-        })?;
-        msg.metadata.map_or(Ok(()), |m| {
+        metadata.map_or(Ok(()), |m| {
             m.0.into_iter().map(|(k, v)| check_metadata(&k, v)).collect()
         })?;
-        msg.extra_hashes.map_or(Ok(()), |e| {
+        extra_hashes.map_or(Ok(()), |e| {
             e.0.iter().map(|h| check_extrahash(&h)).collect()
         })?;
         check_sub(conn, &self.sub)?;

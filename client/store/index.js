@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import { get, set } from 'idb-keyval'
-import { toHexString } from '../utils'
-import { MARESI } from '../store/scheme-types'
+import { MARESI, GEO } from '../store/scheme-types'
 import * as t from './mutation-types'
+const base64url = require('base64-url')
 const cbor = require('cbor')
 
 const clientUri = 'https://mangrove.reviews'
@@ -11,7 +11,7 @@ export const state = () => ({
   keyPair: null,
   publicKey: null,
   alphaWarning: true,
-  query: null,
+  query: { q: null, geo: null },
   // Object from sub (URI) to subject info { sub: ..., scheme: ..., title: ..., description: ... }
   subjects: {},
   // Currently selected URI.
@@ -54,7 +54,9 @@ export const mutations = {
   },
   [t.ADD_REVIEWS](state, newreviews) {
     if (newreviews) {
-      newreviews.map((r) => Vue.set(state.reviews, r.signature, r))
+      newreviews.map(({ signature, payload }) =>
+        Vue.set(state.reviews, signature, { signature, ...payload })
+      )
     }
   },
   [t.SET_META](state, [key, value]) {
@@ -77,7 +79,7 @@ export const actions = {
     window.crypto.subtle
       .exportKey('raw', keypair.publicKey)
       .then((exported) =>
-        commit(t.SET_PK, toHexString(new Uint8Array(exported)))
+        commit(t.SET_PK, base64url.encode(new Uint8Array(exported)))
       )
   },
   async generateKeypair({ dispatch }) {
@@ -167,25 +169,25 @@ export const actions = {
   reviewContent({ state }, stubClaim) {
     // Assumes stubClaim contains at least `sub`
     // Add mandatory fields.
-    const claim = {
+    const payload = {
       iss: state.publicKey,
       iat: Math.floor(Date.now() / 1000),
       sub: stubClaim.sub
     }
     // Add field only if it is not empty.
-    if (stubClaim.rating != null) claim.rating = stubClaim.rating
-    if (stubClaim.opinion) claim.opinion = stubClaim.opinion
+    if (stubClaim.rating != null) payload.rating = stubClaim.rating
+    if (stubClaim.opinion) payload.opinion = stubClaim.opinion
     if (stubClaim.extra_hashes.length)
-      claim.extra_hashes = stubClaim.extra_hashes
+      payload.extra_hashes = stubClaim.extra_hashes
     const meta = { ...stubClaim.metadata, ...state.metadata }
     // Remove empty metadata fields.
     Object.keys(meta).forEach((key) => meta[key] == null && delete meta[key])
     meta.client_uri = clientUri
     // Always at least `client_uri` present.
-    claim.metadata = meta
-    console.log('claim: ', JSON.stringify(claim))
-    const encoded = cbor.encode(claim)
-    console.log('msg: ', JSON.stringify([].concat(encoded)))
+    payload.metadata = meta
+    console.log('payload: ', JSON.stringify(payload))
+    const encoded = cbor.encode(payload)
+    console.log('msg: ', base64url.encode(encoded))
     return window.crypto.subtle
       .sign(
         {
@@ -198,8 +200,8 @@ export const actions = {
       .then((signed) => {
         console.log('sig: ', new Uint8Array(signed))
         return {
-          ...claim,
-          signature: toHexString(new Uint8Array(signed))
+          signature: base64url.encode(new Uint8Array(signed)),
+          payload: base64url.encode(encoded)
         }
       })
   },
@@ -209,7 +211,7 @@ export const actions = {
       this.$axios
         .put(`${process.env.VUE_APP_API_URL}/submit`, review, {
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/cbor'
           }
         })
         .then(() => {
@@ -236,10 +238,9 @@ export const actions = {
   },
   selectSubject({ dispatch }, [query, sub]) {
     console.log('Selecting subject: ', sub)
-    query.sub = sub
     this.app.router.push({
       path: 'search',
-      query
+      query: { sub, q: query.q, [GEO]: query.geo }
     })
     dispatch('saveReviews', { sub })
   }

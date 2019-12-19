@@ -124,7 +124,11 @@ export default {
       console.log('Map query: ', geo)
       this.$router.push({
         path: 'search',
-        query: { q: this.$route.query.q, [GEO]: geo }
+        query: {
+          [GEO]: geo,
+          q: this.$route.query.q,
+          sub: this.$route.query.sub
+        }
       })
     }
   }

@@ -27,8 +27,8 @@
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title
-                >I am affiliated with Puccini (e.g., work there, friends with
-                the owner, receive compensation for writing a
+                >I am affiliated with {{ subject.title }} (e.g., work there,
+                friends with the owner, receive compensation for writing a
                 review)</v-list-item-title
               >
             </v-list-item-content>

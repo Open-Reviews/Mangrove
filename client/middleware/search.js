@@ -6,13 +6,16 @@ import {
 } from '../store/mutation-types'
 import { HTTPS, GEO, LEI, ISBN } from '../store/scheme-types'
 
-export default function({ store, $axios, route, redirect }) {
+export default function({ store, $axios, route }) {
   const query = route.query.q
-  if (!query || (store.state.query === query && !route.query.geo)) {
+  if (
+    !query ||
+    (store.state.query.q === query && store.state.query.geo === route.query.geo)
+  ) {
     return
   }
   store.commit(EMPTY_SUBJECTS)
-  store.commit(SET_QUERY, query)
+  store.commit(SET_QUERY, { q: query, geo: route.query.geo })
   Promise.all([
     storeWithRating(store, searchUrl(query)),
     searchGeo($axios, query, route.query.geo).then((subjects) =>
@@ -46,15 +49,11 @@ export default function({ store, $axios, route, redirect }) {
     .then(() => {
       store.commit(SEARCH_ERROR, null)
       // Try to select the first URI from the list or the one from route.
-      if (route.query.sub) {
-        store.dispatch('saveReviews', {
-          sub: route.query.sub
-        })
-      } else {
-        const sub = Object.values(store.state.subjects)[0].sub
-        select(redirect, route.query, sub)
-        store.dispatch('saveReviews', { sub })
-      }
+      const first = Object.values(store.state.subjects)[0]
+      const selected = store.state.subjects[route.query.sub]
+        ? route.query.sub
+        : first && first.sub
+      store.dispatch('selectSubject', [route.query, selected])
     })
     .catch((error) => {
       if (error.response) {
@@ -75,11 +74,6 @@ export default function({ store, $axios, route, redirect }) {
       }
       return []
     })
-}
-
-function select(redirect, query, sub) {
-  query.sub = sub
-  redirect('/search', query)
 }
 
 function storeWithRating(store, rawSubjects) {
@@ -163,7 +157,8 @@ function searchGeo(axios, q, viewbox) {
             title,
             subtitle:
               type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' '),
-            description: `${addressString} <br /> ${extratags.opening_hours}`,
+            description:
+              addressString + (`<br/> ${extratags.opening_hours}` || ''),
             coordinates: [lon, lat].map(parseFloat)
           }
         })
