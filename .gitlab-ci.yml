@@ -1,5 +1,6 @@
 variables:
   S3_BUCKET: "mangrove.network"
+  CI_DEBUG_TRACE: "true"
 
 deploy:
   only:
