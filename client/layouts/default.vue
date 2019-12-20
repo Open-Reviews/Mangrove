@@ -1,8 +1,8 @@
 <template>
   <v-app>
-    <v-app-bar app>
+    <v-app-bar app dense>
       <router-link to="/">
-        <v-img src="mangrove-thick.png" max-width="150" contain />
+        <v-img src="mangrove.png" max-width="110" contain />
       </router-link>
       <v-spacer />
       <v-toolbar-items>
