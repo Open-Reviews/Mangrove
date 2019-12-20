@@ -33,12 +33,12 @@ lazy_static! {
     //static ref STORE: S3Client = S3Client::new(Default::default());
 }
 
-// Compute hex encoded SHA256 of the file.
+/// Compute base64url encoded SHA256 of the file.
 fn hash(data: &SingleFileField) -> Result<String, io::Error> {
     let mut hasher = Sha256::new();
     let mut file = File::open(&data.path)?;
     io::copy(&mut file, &mut hasher)?;
-    Ok(hex::encode(&hasher.result()[..]))
+    Ok(base64_url::encode(&hasher.result()[..]))
 }
 
 trait HashingStore {

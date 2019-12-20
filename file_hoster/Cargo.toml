@@ -8,7 +8,7 @@ default-run = "main"
 [dependencies]
 log = "0.4"
 lazy_static = "1.4.0"
-hex = "0.4.0"
+base64-url = "1.1.12"
 sha2 = "0.8.0"
 rusoto_credential = "0.41.1"
 rusoto_core = "0.41.0"
