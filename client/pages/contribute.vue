@@ -2,7 +2,7 @@
   <v-container>
     <h1 class="display-3 text-center my-12">Contribute to Mangrove</h1>
     <v-container v-for="(item, i) in content" :key="i">
-      <v-row v-if="i % 2">
+      <v-row v-if="isSmall || i % 2">
         <v-col>
           <v-img :src="item.image" max-width="550" />
         </v-col>
@@ -70,6 +70,12 @@ export default {
           image: 'contribute/5-donate.jpg'
         }
       ]
+    }
+  },
+  computed: {
+    isSmall() {
+      const size = this.$vuetify.breakpoint.name
+      return size === 'xs' || size === 'sm'
     }
   }
 }

@@ -11,7 +11,7 @@
     </v-row>
     <v-row>
       <v-col v-for="feature in features" :key="feature.title">
-        <v-card min-height="300">
+        <v-card min-height="300" min-width="300">
           <v-card-title>{{ feature.title }}</v-card-title>
           <v-card-text v-for="detail in feature.details" :key="detail">
             {{ detail }}

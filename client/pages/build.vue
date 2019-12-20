@@ -10,7 +10,7 @@
     </span>
     <v-row class="my-7">
       <v-col v-for="section in content" :key="section.title">
-        <v-card min-height="350">
+        <v-card min-height="350" min-width="300">
           <v-row justify="center">
             <v-icon x-large class="ma-12">{{ section.icon }}</v-icon>
           </v-row>
