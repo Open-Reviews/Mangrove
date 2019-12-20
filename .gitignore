@@ -9,6 +9,7 @@ client/src/node_modules
 client/src/dist
 client/dist
 client/.nuxt
+client/.env
 client/package-lock.json
 client/yarn.lock
 test

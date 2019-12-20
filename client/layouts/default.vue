@@ -2,11 +2,11 @@
   <v-app>
     <v-app-bar app dense>
       <router-link to="/">
-        <v-img src="mangrove.png" max-width="110" contain />
+        <v-img src="mangrove.png" max-width="170" contain />
       </router-link>
       <v-spacer />
-      <v-toolbar-items>
-        <v-btn to="/using">Using Mangrove</v-btn>
+      <v-toolbar-items class="mr-n4">
+        <v-btn to="/build">Build on Mangrove</v-btn>
         <v-btn to="/contribute">Contribute</v-btn>
         <v-btn to="/settings">
           <v-icon>mdi-account-circle</v-icon>

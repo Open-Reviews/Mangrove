@@ -1,18 +1,17 @@
 <template>
   <v-container>
-    <v-row justify="center">
-      <span class="text-center">
-        <h1 class="display-3">Read reviews. Write reviews.</h1>
-        <br />
-        <h2 class="display-1">Find places, companies, websites, or books.</h2>
-      </span>
-    </v-row>
-    <v-row class="mb-5">
-      <SearchBox />
+    <span class="text-center">
+      <h1 class="display-3 my-5">Read reviews. Write reviews.</h1>
+      <h2 class="display-1">Find places, companies, websites, or books.</h2>
+    </span>
+    <v-row class="my-5">
+      <v-col />
+      <v-col :cols="7"><SearchBox /></v-col>
+      <v-col />
     </v-row>
     <v-row>
       <v-col v-for="feature in features" :key="feature.title">
-        <v-card min-height="400">
+        <v-card min-height="300">
           <v-card-title>{{ feature.title }}</v-card-title>
           <v-card-text v-for="detail in feature.details" :key="detail">
             {{ detail }}
