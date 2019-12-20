@@ -15,7 +15,8 @@
 </template>
 
 <script>
-import { toHexString, imageUrl } from '../utils'
+import { imageUrl } from '../utils'
+const base64url = require('base64-url')
 
 export default {
   data() {
@@ -63,7 +64,9 @@ export default {
         .then(([hashes, expectedBuffers]) => {
           // Make sure all returned file hashes are as expected.
           for (let i = 0; i < hashes.length; i++) {
-            const expected = toHexString(new Uint8Array(expectedBuffers[i]))
+            const expected = base64url.encode(
+              new Uint8Array(expectedBuffers[i])
+            )
             if (hashes[i] !== expected) {
               throw new Error('Server return unexpected hashes.')
             }

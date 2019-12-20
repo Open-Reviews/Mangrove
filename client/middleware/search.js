@@ -67,10 +67,7 @@ export default function({ store, $axios, route }) {
           `Server not reachable: ${error.request}, ${error.response.data}`
         )
       } else {
-        store.commit(
-          SEARCH_ERROR,
-          `Internal client error, please report: ${error.message}`
-        )
+        store.commit(SEARCH_ERROR, 'Mangrove Server is down.')
       }
       return []
     })
