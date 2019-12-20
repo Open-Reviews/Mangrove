@@ -36,6 +36,27 @@
       </v-card>
     </div>
     <div v-else v-html="missingContent" />
+    <h1>Can’t find what you were looking for?</h1>
+    <div v-for="advice in adviceContent" :key="advice.title">
+      <b>{{ advice.title }}</b>
+      <ul>
+        <li v-for="bullet in advice.bullets" :key="bullet.subtitle">
+          <b>{{ bullet.subtitle }}</b
+          >:
+          {{ bullet.description }}
+        </li>
+      </ul>
+      <br />
+    </div>
+    <v-row>
+      <v-btn
+        v-for="button in adviceButtons"
+        :href="button.action"
+        :key="button.label"
+        target="_blank"
+        >{{ button.label }}</v-btn
+      >
+    </v-row>
   </v-container>
 </template>
 
@@ -43,7 +64,63 @@
 import { NAMES, MARESI } from '../store/scheme-types'
 export default {
   data() {
-    return { missingContent: 'No review subjects found.' }
+    return {
+      missingContent: `No review subjects found.`,
+      adviceContent: [
+        {
+          title: 'Try making your search more specific:',
+          bullets: [
+            {
+              subtitle: 'Restaurants, hotels, local businesses',
+              description: `zoom in on the map and click “Search selected area”,
+                or add the street address in the search`
+            },
+            {
+              subtitle: 'Companies',
+              description: `add the country or street (please note that company search
+                is based on the open GLEIF database that contains companies with
+                a “Legal Entity Identifier” (LEI)`
+            },
+            {
+              subtitle: 'Books',
+              description: 'try adding or searching by author or ISBN'
+            },
+            {
+              subtitle: 'Websites',
+              description: 'enter the complete URL, e.g., https://example.com'
+            }
+          ]
+        },
+        {
+          title: 'Add a missing entry to the underlying datasets:',
+          bullets: [
+            {
+              subtitle: 'Restaurants, hotels, local businesses',
+              description: 'contribute data points to OpenStreetMap'
+            },
+            {
+              subtitle: 'Books',
+              description: 'contribute data to Internet Archive’s Open Library'
+            }
+          ]
+        }
+      ],
+      adviceButtons: [
+        {
+          label: 'Add on OpenStreetMap',
+          action: 'https://learnosm.org/en/beginner/start-osm/'
+        },
+        {
+          label: 'Add on Open Library',
+          action: 'https://openlibrary.org/'
+        },
+        {
+          label: 'Write us',
+          action:
+            'mailto:hello@planting.space?subject=Missing Review Subject on Mangrove'
+        }
+      ]
+    }
   },
   computed: {
     filters() {
