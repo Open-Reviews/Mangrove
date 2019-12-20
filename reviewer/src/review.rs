@@ -33,6 +33,19 @@ pub struct Review {
     pub payload: Payload
 }
 
+impl Review {
+    pub fn check_signature(&self, msg_bytes: &[u8]) -> Result<(), Error> {
+        let pubkey_bytes: Vec<u8> = base64_url::decode(&self.payload.iss)?;
+        let sig_bytes: Vec<u8> = base64_url::decode(&self.signature)?;
+        //let msg_bytes = serde_cbor::to_vec(&serde_json::to_value(msg)?)?;
+        info!("msg_bytes: {:?}", msg_bytes);
+        let pubkey = untrusted::Input::from(&pubkey_bytes);
+        let msg = untrusted::Input::from(&msg_bytes);
+        let sig = untrusted::Input::from(&sig_bytes);
+        signature::verify(&signature::ECDSA_P256_SHA256_FIXED, pubkey, msg, sig).map_err(Into::into)
+    }
+}
+
 #[derive(
     Debug, PartialEq, Serialize, Deserialize, Insertable, Queryable, JsonSchema,
 )]
@@ -78,22 +91,6 @@ fn check_opinion(opinion: &str) -> Result<(), Error> {
         Ok(())
     } else {
         Err(Error::Incorrect("Opinion too long.".into()))
-    }
-}
-
-impl Review {
-    /// TODO: Clean up the base64url handling. base64::decode::DecodeError is private for some reason.
-    pub fn check_signature(&self, msg_bytes: &[u8]) -> Result<(), Error> {
-        let pubkey_bytes: Vec<u8> = base64_url::decode(&self.payload.iss)
-            .map_err(|e| Error::Incorrect(format!("Incorrect base64url encoding: {}", e)))?;
-        let sig_bytes: Vec<u8> = base64_url::decode(&self.signature)
-            .map_err(|e| Error::Incorrect(format!("Incorrect base64url encoding: {}", e)))?;
-        //let msg_bytes = serde_cbor::to_vec(&serde_json::to_value(msg)?)?;
-        info!("msg_bytes: {:?}", msg_bytes);
-        let pubkey = untrusted::Input::from(&pubkey_bytes);
-        let msg = untrusted::Input::from(&msg_bytes);
-        let sig = untrusted::Input::from(&sig_bytes);
-        signature::verify(&signature::ECDSA_P256_SHA256_FIXED, pubkey, msg, sig).map_err(Into::into)
     }
 }
 

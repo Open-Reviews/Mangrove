@@ -61,8 +61,7 @@ pub struct CborReview {
 #[put("/submit", format = "application/cbor", data = "<creview>")]
 fn submit_review_cbor(conn: DbConn, creview: Json<CborReview>) -> Result<String, Error> {
     info!("CBOR review received: {:?}", creview);
-    let payload_bytes = base64_url::decode(&creview.payload)
-        .map_err(|e| Error::Incorrect(format!("Incorrect base64url encoding: {}", e)))?;
+    let payload_bytes = base64_url::decode(&creview.payload)?;
     let review = Review {
         signature: creview.into_inner().signature,
         payload: serde_cbor::from_slice(&payload_bytes)?

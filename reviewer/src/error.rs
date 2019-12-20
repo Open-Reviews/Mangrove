@@ -3,6 +3,7 @@ use rocket_okapi::gen::OpenApiGenerator;
 use rocket_okapi::response::OpenApiResponder;
 use rocket_okapi::util::add_schema_response;
 use rocket_okapi::Result as ApiResult;
+use base64_url::base64;
 use std::fmt::Debug;
 
 #[derive(Debug, Responder)]
@@ -22,6 +23,12 @@ impl<'r> OpenApiResponder<'r> for Error {
         add_schema_response(&mut responses, 400, "text/plain", schema.clone())?;
         add_schema_response(&mut responses, 500, "text/plain", schema)?;
         Ok(responses)
+    }
+}
+
+impl From<base64::DecodeError> for Error {
+    fn from(error: base64::DecodeError) -> Self {
+        Error::Incorrect(format!("Incorrect base64url encoding: {}", error))
     }
 }
 
