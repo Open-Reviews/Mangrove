@@ -4,34 +4,42 @@
     style="height: 90vh;position: fixed;width: 40vw"
     class="overflow-y-auto"
   >
-    <v-btn @click="geoSearch" mb="n10">Search selected area</v-btn>
-    <vl-map
-      ref="map"
-      :load-tiles-while-animating="true"
-      :load-tiles-while-interacting="true"
-      v-if="subject.coordinates"
-      style="height: 400px"
-      data-projection="EPSG:4326"
-    >
-      <vl-view :center="subject.coordinates" :zoom="15" />
+    <v-row justify="center">
+      <vl-map
+        ref="map"
+        :load-tiles-while-animating="true"
+        :load-tiles-while-interacting="true"
+        v-if="subject.coordinates"
+        style="height: 400px"
+        data-projection="EPSG:4326"
+      >
+        <vl-view :center="subject.coordinates" :zoom="15" />
 
-      <vl-interaction-select :features.sync="selectedFeatures" />
+        <vl-interaction-select :features.sync="selectedFeatures" />
 
-      <vl-feature v-for="(p, i) in points" :key="i" :id="p.id">
-        <vl-geom-point :coordinates="p.coordinates" />
-        <vl-style-box>
-          <vl-style-icon
-            :scale="p.scale"
-            :anchor="[0.5, 1]"
-            src="map-marker.png"
-          />
-        </vl-style-box>
-      </vl-feature>
+        <vl-feature v-for="(p, i) in points" :key="i" :id="p.id">
+          <vl-geom-point :coordinates="p.coordinates" />
+          <vl-style-box>
+            <vl-style-icon
+              :scale="p.scale"
+              :anchor="[0.5, 1]"
+              src="map-marker.png"
+            />
+          </vl-style-box>
+        </vl-feature>
 
-      <vl-layer-tile id="osm">
-        <vl-source-osm />
-      </vl-layer-tile>
-    </vl-map>
+        <vl-layer-tile id="osm">
+          <vl-source-osm />
+        </vl-layer-tile>
+      </vl-map>
+      <v-btn
+        @click="geoSearch"
+        absolute
+        class="ma-3"
+        style="background: rgb(255, 255, 255, 0.7)"
+        >Search selected area</v-btn
+      >
+    </v-row>
 
     <v-card>
       <v-container v-if="images.length !== 0">
@@ -50,6 +58,16 @@
         {{ subject.quality }} ({{ subject.count }})
       </v-row>
       <v-card-subtitle>{{ subject.subtitle }}</v-card-subtitle>
+      <v-list flat>
+        <v-list-item v-for="(detail, i) in details" :key="i">
+          <v-list-item-icon>
+            <v-icon v-text="detail.icon" />
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title v-html="detail.content"></v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
       <v-card-actions>
         <ReviewForm />
       </v-card-actions>
@@ -61,7 +79,7 @@
 <script>
 import { transformExtent, get } from 'ol/proj'
 import { imageUrl } from '../utils'
-import { GEO } from '../store/scheme-types'
+import { GEO, LEI, ISBN } from '../store/scheme-types'
 import ReviewForm from './ReviewForm'
 import ReviewList from './ReviewList'
 
@@ -86,6 +104,51 @@ export default {
     },
     subject() {
       return this.$store.state.subjects[this.$route.query.sub]
+    },
+    details() {
+      const s = this.subject
+      return [
+        {
+          icon: 'mdi-map-marker',
+          content: (s.scheme === GEO || s.scheme === LEI) && s.description
+        },
+        {
+          icon: 'mdi-compass',
+          content:
+            s.scheme === GEO &&
+            `<a href="${s.sub}">${s.coordinates.join(', ')}</a>`
+        },
+        {
+          icon: 'mdi-circle',
+          content: s.scheme === ISBN && s.description
+        },
+        {
+          icon: 'mdi-earth',
+          content: s.website && `<a href=${s.website}>${s.website}</a>`
+        },
+        {
+          icon: 'mdi-clock-outline',
+          content: s.openingHours
+        },
+        {
+          icon: 'mdi-phone',
+          content: s.phone
+        },
+        {
+          icon: 'mdi-pound-box',
+          content:
+            s.lei &&
+            `LEI code <a href=https://search.gleif.org/#/record/${s.lei}>${s.lei}</a>`
+        },
+        {
+          icon: 'mdi-circle',
+          content: s.isbn && `ISBN ${s.isbn}`
+        },
+        {
+          icon: 'mdi-circle',
+          content: s.subjects && `Subjects: ${s.subjects.join(', ')}`
+        }
+      ].filter((detail) => detail.content)
     },
     images() {
       const images = [].concat

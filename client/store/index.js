@@ -11,8 +11,9 @@ export const state = () => ({
   keyPair: null,
   publicKey: null,
   alphaWarning: true,
+  isSearching: true,
   query: { q: null, geo: null },
-  // Object from sub (URI) to subject info { sub: ..., scheme: ..., title: ..., description: ... }
+  // Object from sub (URI) to subject info, see `middleware/search.js` for details.
   subjects: {},
   // Currently selected URI.
   selected: null,
@@ -20,9 +21,8 @@ export const state = () => ({
   filters: [],
   // Object from MaReSi to reviews, ensuring only unique ones are stored.
   reviews: {},
+  // Object from public keys to information about issuers.
   issuers: {},
-  rating: null,
-  opinion: null,
   metadata: {},
   errors: { import: null, search: null, request: null, submit: null }
 })
@@ -36,6 +36,12 @@ export const mutations = {
   },
   [t.DISMISS_ALPHA_WARNING](state) {
     state.alphaWarning = false
+  },
+  [t.START_SEARCH](state) {
+    state.isSearching = true
+  },
+  [t.STOP_SEARCH](state) {
+    state.isSearching = false
   },
   [t.SET_QUERY](state, query) {
     state.query = query

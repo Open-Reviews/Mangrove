@@ -36,27 +36,29 @@
       </v-card>
     </div>
     <div v-else v-html="missingContent" />
-    <h1>Can’t find what you were looking for?</h1>
-    <div v-for="advice in adviceContent" :key="advice.title">
-      <b>{{ advice.title }}</b>
-      <ul>
-        <li v-for="bullet in advice.bullets" :key="bullet.subtitle">
-          <b>{{ bullet.subtitle }}</b
-          >:
-          {{ bullet.description }}
-        </li>
-      </ul>
-      <br />
+    <div v-if="showAdvice">
+      <h1>Can’t find what you were looking for?</h1>
+      <div v-for="advice in adviceContent" :key="advice.title">
+        <b>{{ advice.title }}</b>
+        <ul>
+          <li v-for="bullet in advice.bullets" :key="bullet.subtitle">
+            <b>{{ bullet.subtitle }}</b
+            >:
+            {{ bullet.description }}
+          </li>
+        </ul>
+        <br />
+      </div>
+      <v-row>
+        <v-btn
+          v-for="button in adviceButtons"
+          :href="button.action"
+          :key="button.label"
+          target="_blank"
+          >{{ button.label }}</v-btn
+        >
+      </v-row>
     </div>
-    <v-row>
-      <v-btn
-        v-for="button in adviceButtons"
-        :href="button.action"
-        :key="button.label"
-        target="_blank"
-        >{{ button.label }}</v-btn
-      >
-    </v-row>
   </v-container>
 </template>
 
@@ -140,7 +142,14 @@ export default {
             })
           )
         : all
-      return list.sort((s1, s2) => s2.quality - s1.quality)
+      return list.sort(
+        (s1, s2) =>
+          (s2.importance || s2.quality) - (s1.importance || s1.quality)
+      )
+    },
+    showAdvice() {
+      console.log('isSearching: ', this.$store.state.isSearching)
+      return !this.$store.state.isSearching
     }
   },
   methods: {

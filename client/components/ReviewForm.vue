@@ -7,7 +7,7 @@
       <v-card-title> Review {{ subject.title }} </v-card-title>
       <v-divider />
       <v-card-text>
-        <v-rating v-model="rating" hover />
+        <v-rating v-model="rating" hover class="my-5" large />
         <v-textarea
           v-model="opinion"
           label="Describe your experience here"

@@ -2,9 +2,32 @@ import {
   EMPTY_SUBJECTS,
   ADD_SUBJECTS,
   SEARCH_ERROR,
-  SET_QUERY
+  SET_QUERY,
+  START_SEARCH
 } from '../store/mutation-types'
 import { HTTPS, GEO, LEI, ISBN } from '../store/scheme-types'
+
+/*
+Searches for subjects and returns and object for each:
+{
+  sub: URI,
+  scheme: store/scheme-types,
+  title: String,
+  subtitle: String,
+  description: String,
+  isbn: Option<String>,
+  coordinates: Option<[lon, lat]>,
+  website: Option<String>,
+  openingHours: Option<String>,
+  ownership: Option<String>,
+  lei: Option<String>,
+  image: Option<Url>,
+  language: Option<String>,
+  subjects: Option<Vec<String>>,
+  importance: Option<Number>
+}
+
+*/
 
 export default function({ store, $axios, route }) {
   const query = route.query.q
@@ -14,6 +37,8 @@ export default function({ store, $axios, route }) {
   ) {
     return
   }
+  // Stop it only once display is complete.
+  store.commit(START_SEARCH)
   store.commit(EMPTY_SUBJECTS)
   store.commit(SET_QUERY, { q: query, geo: route.query.geo })
   Promise.all([
@@ -57,10 +82,7 @@ export default function({ store, $axios, route }) {
     })
     .catch((error) => {
       if (error.response) {
-        store.commit(
-          SEARCH_ERROR,
-          `Error: ${error.response.status}, ${error.response.headers}, ${error.response.data}`
-        )
+        store.commit(SEARCH_ERROR, `Error: ${JSON.stringify(error.response)}`)
       } else if (error.request) {
         store.commit(
           SEARCH_ERROR,
@@ -69,8 +91,13 @@ export default function({ store, $axios, route }) {
       } else {
         store.commit(SEARCH_ERROR, 'Mangrove Server is down.')
       }
-      return []
     })
+  // Leave some time for render.
+  /*
+  setTimeout(() => {
+    store.commit(STOP_SEARCH)
+  }, 1000)
+  */
 }
 
 function storeWithRating(store, rawSubjects) {
@@ -100,19 +127,23 @@ function searchUrl(input) {
     // people rarely use period in queries otherwise.
     // Try to recover a valid url.
     const url = new URL(input.startsWith('http') ? input : `https://${input}`)
+    const urlString = `${url.protocol}//${url.hostname}`
     if (url) {
       search.push({
-        sub: `${url.protocol}//${url.hostname}`,
+        sub: urlString,
         // Remove the trailing colon
         scheme: HTTPS,
         title: url.hostname,
         subtitle: '',
-        description: ''
+        description: '',
+        website: urlString
       })
     }
   }
   return search
 }
+
+const GEO_IGNORE_CLASSES = ['highway']
 
 function searchGeo(axios, q, viewbox) {
   const params = {
@@ -133,33 +164,59 @@ function searchGeo(axios, q, viewbox) {
     })
     .then((response) => {
       return response.data
-        .map(({ lat, lon, type, address, extratags }) => {
-          if (!lat || !lon) {
-            return null
-          }
-          const title = address[type]
-          const addressString = [
-            [address.street || address.road, address.house_number]
+        .map(
+          ({
+            class: placeClass,
+            lat,
+            lon,
+            type,
+            address,
+            extratags,
+            osm_type: osmType,
+            osm_id: osmId,
+            importance
+          }) => {
+            if (
+              !lat ||
+              !lon ||
+              GEO_IGNORE_CLASSES.some((filter) => filter === placeClass)
+            ) {
+              return null
+            }
+            const title = address[type]
+            const addressString = [
+              [address.street || address.road, address.house_number]
+                .filter(Boolean)
+                .join(' '),
+              address.suburb,
+              address.city || address.town,
+              address.country
+            ]
               .filter(Boolean)
-              .join(' '),
-            address.suburb,
-            address.city || address.town,
-            address.country
-          ]
-            .filter(Boolean)
-            .join(', ')
-          return {
-            sub: `${GEO}:?q=${lat},${lon}(${title})&u=30`,
-            scheme: GEO,
-            title,
-            subtitle:
-              type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' '),
-            description: extratags.opening_hours
-              ? `${addressString} <br/> ${extratags.opening_hours}`
-              : addressString,
-            coordinates: [lon, lat].map(parseFloat)
+              .join(', ')
+            let typeString =
+              type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' ')
+            if (extratags.cuisine) {
+              typeString =
+                typeString +
+                ' · ' +
+                extratags.cuisine.charAt(0).toUpperCase() +
+                extratags.cuisine.slice(1)
+            }
+            return {
+              sub: `${GEO}:?q=${lat},${lon}(${title})&u=30`,
+              scheme: GEO,
+              title,
+              subtitle: typeString,
+              description: addressString,
+              openingHours: extratags.opening_hours,
+              website: extratags.url || extratags['contact:website'],
+              phone: extratags.phone || extratags['contact:phone'],
+              coordinates: [lon, lat].map(parseFloat),
+              importance
+            }
           }
-        })
+        )
         .filter(Boolean)
     })
 }
@@ -184,7 +241,10 @@ function searchIsbn(axios, input) {
                   : doc.title,
                 subtitle: `by ${doc.author_name && doc.author_name.join(', ')}`,
                 description: `Published ${doc.first_publish_year} · ${doc.isbn.length} editions`,
-                image: `http://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg`
+                isbn: doc.isbn[0],
+                website: `https://openlibrary.org${doc.key}`,
+                image: `http://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg`,
+                subjects: doc.subject
               }
             : null
           // Filter out duplicates and entities without isbn.
@@ -212,21 +272,20 @@ function searchLei(axios, query) {
                   completion.relationships['lei-records'].data.id
                 )
                   .then((entity) => entity.attributes)
-                  .then(async (attrs) => {
-                    const address = attrs.entity.legalAddress
-                    const form = attrs.entity.legalForm
+                  .then(async ({ entity, lei }) => {
+                    const address = entity.legalAddress
+                    const form = entity.legalForm
                     return {
-                      sub: `${LEI}:${attrs.lei}`,
+                      sub: `${LEI}:${lei}`,
                       scheme: LEI,
-                      title: attrs.entity.legalName.name,
-                      subtitle: `${address.addressLines.join(', ')}, ${
+                      title: entity.legalName.name,
+                      description: `${address.addressLines.join(', ')}, ${
                         address.city
                       } ${address.postalCode} · ${address.country}`,
                       // Do the check only if there is valid id.
-                      description: `${form.other ||
-                        (await entityForm(axios, form.id))} · ${
-                        attrs.entity.status
-                      }`
+                      subtitle: `${form.other ||
+                        (await entityForm(axios, form.id))} · ${entity.status}`,
+                      lei
                     }
                   })
               : null
