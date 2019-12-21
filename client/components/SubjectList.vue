@@ -130,7 +130,7 @@ export default {
       const all = Object.values(this.$store.state.subjects).filter(
         (subject) => subject.scheme !== MARESI
       )
-      return this.filters.length
+      const list = this.filters.length
         ? all.filter((subject) =>
             this.filters.some((filter) => {
               const accepted = subject.scheme === filter
@@ -140,6 +140,7 @@ export default {
             })
           )
         : all
+      return list.sort((s1, s2) => s2.quality - s1.quality)
     }
   },
   methods: {

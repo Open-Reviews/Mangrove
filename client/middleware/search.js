@@ -154,8 +154,9 @@ function searchGeo(axios, q, viewbox) {
             title,
             subtitle:
               type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' '),
-            description:
-              addressString + (`<br/> ${extratags.opening_hours}` || ''),
+            description: extratags.opening_hours
+              ? `${addressString} <br/> ${extratags.opening_hours}`
+              : addressString,
             coordinates: [lon, lat].map(parseFloat)
           }
         })

@@ -39,6 +39,12 @@ export default {
     '@nuxtjs/eslint-module',
     '@nuxtjs/vuetify'
   ],
+  env: {
+    BASE_URL: process.env.BASE_URL,
+    VUE_APP_API_URL: process.env.VUE_APP_API_URL,
+    VUE_APP_FILES_URL: process.env.VUE_APP_FILES_URL,
+    VUE_APP_UPLOAD_URL: process.env.VUE_APP_UPLOAD_URL
+  },
   /*
    ** Nuxt.js modules
    */
