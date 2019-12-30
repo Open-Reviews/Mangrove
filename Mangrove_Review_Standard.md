@@ -1,4 +1,4 @@
-# Mangrove Review Standard (MaReSt) v1
+# Mangrove Review Standard (MaReSt) v0.1.0
 
 The mission of the Mangrove initiative is to create a public space on the Internet where people can freely share insights with each other and make better decisions based on open data. Mangrove contributes to the Open and Privacy movements by proposing an alternative architecture that is characterized by a **separation of data and products**, and that **respects the right to privacy**:
 
@@ -29,21 +29,31 @@ The standard was developed based on a set of [principles](#principles-of-the-dat
 ### Changes currently being considered
 
 - using compressed ECDSA public keys
-- using [JWT](https://jwt.io/) format for signed reviews
 
 ## Mangrove Review Example
 
+In JSON format:
 ```json
 {
-    "iss": "04fd42cf1c5058cd50c1e4339dd5d7c0010984167194584a1e728ad2517825cc21cf01d74c7d0f4778192fd274c79ce9cc09d9fbe2586b79db29268a22bc7b707e",
-    "iat": 1570562109,
-    "sub": "https://google.com",
-    "rating": 75,
-    "opinion": "Great for finding new sites.",
-    "metadata": {
-        "display_name":"john123"
+    "signature":
+        "ZnQ-uqIhcyUaEwGpS2wXK5Y4aBq4wZaKlnFP1aEuCHsilA1dbNAvbaNSSwShfkuyPPLQlvuj6pN09tZ-ZC71dg",
+    "payload": {
+        "iss":
+            "BBmEKZciGMonT_G0CmiM4HdfM6o0ktuh3xIFadvc1TVgA0ZJUNIS6go0pX8jwSUorbDfv27T_M9M9wldMFk6t00",
+        "iat": 1570562109,
+        "sub": "https://google.com",
+        "rating": 75,
+        "opinion": "Great for finding new sites.",
+        "metadata": {
+            "display_name":"john123"
+        }
     }
 }
+```
+
+As Canonical CBOR:
+```
+TODO
 ```
 
 ## Mangrove Creation and Verification
@@ -63,9 +73,19 @@ Mangrove Review (Review) MUST consist of key/value pairs. Review fields MAY be s
 - CBOR
 - HTTP method query fields
 
-Each Review MUST be representable as [Canonical CBOR](https://tools.ietf.org/html/rfc7049), and in particular Major type 5 (a map of pairs of data items). This means that each key and value MUST be one of the major CBOR types. Review keys MUST be of Major type 3 (a text string).
+Each Review MUST be representable as [Canonical CBOR](https://tools.ietf.org/html/rfc7049), and in particular Major type 5 (a map of pairs of data items). This means that each key and value MUST be one of the major CBOR types. All review keys MUST be of Major type 3 (a text string).
 
 Review MUST include the following keys and corresponding values:
+- `payload`
+    - The content of the review along with any metadata.
+    - MUST be a Major type 5 (a map of pairs of data items) with keys and values described in [Review payload section](#review-payload).
+- `signature`
+    - MUST be a Major type 3 (a text string) signature represented in base64url encoding.
+    - MUST be a valid ES256 (ECDSA on P-256 with SHA-256 digest) signature of [Canonical CBOR](https://tools.ietf.org/html/rfc7049) encoded review payload, corresponding to its `iss` public key value.
+
+### Review payload
+
+Review payload MUST include the following keys and corresponding values:
 - `iss`
     - The public key corresponding to the private key of the reviewer (issuer).
     - MUST be a Major type 3 (a text string) of length `130`.
@@ -91,12 +111,6 @@ Review MAY include any of the following keys and values:
     - MUST be a Major type 4 (an array of data items) with each item being a Major type 3 (a text string) of length 64.  Length of the array SHOULD NOT exceed 5 items.
     - Each item MUST be a SHA-256 represented as hexadecimal string, of a file stored on a publicly accessible server or decentralized network.
 - `metadata` MUST be of Major type 5 (a map of pairs of data items) with keys being Major type 3 (a text string). Each key SHOULD be equal to one of Core Metadata Keys (see Mangrove Core Metadata Field Standards). Each value corresponding to a Core Metadata Key MUST comply with the corresponding Core Metadata Field Standard.
-
-Unsigned Mangrove Review is a Canonical CBOR encoded map with all key/value pairs besides the `signature` field, which is described next.
-
-Review MUST include a `signature` key with value that:
-- MUST be a valid ES256 (ECDSA on P-256 with SHA-256 digest) signature of Unsigned Mangrove Review, corresponding to its `iss` public key value.
-- MUST be Major type 3 (a text string) of signature represented in hexadecimal notation.
 
 ## Mangrove Core URI Schemes
 
@@ -200,11 +214,18 @@ An additional format will be established that will allow to link additional publ
 
 ### 4. Standards reuse
 
-Where possible and practical, existing standards should be leveraged. Mangrove leverages CBOR, URI, [URI for Geographic Locations specification / 'geo' URI](https://tools.ietf.org/html/rfc5870), URL, URN, LEI, FOAF vocabulary and public key cryptography standard based on FIDO2 and WebCrypto.
+Where possible and practical, existing standards should be leveraged. Mangrove leverages:
+- Canonical CBOR for encoding payload before signing for transmission
+- [JSON Web Token (JWT)](https://tools.ietf.org/html/rfc7519) format for the overall review (CBOR based encoding is used as in CWT to be more in line with FIDO2 developments)
+- URI for uniquely identifying subjects which are being reviewed and certain metadata
+- [URI for Geographic Locations specification / 'geo' URI](https://tools.ietf.org/html/rfc5870) for reviewing of places
+- URL for referring websites
+- URN for referring to LEI codes and ISBNs
+- LEI for referring to legal entitites
+- FOAF and [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims) vocabulary for the names of `metadata` fields
+- ES256 public key cryptography standard as used by FIDO2 and WebCrypto
 
 For the overall claim framework [Decentralized Identifiers (DIDs)](https://w3c-ccg.github.io/did-spec/) were considered; however, that emerging standard significantly differs in original goals and specifies a number of components not necessary in Mangrove. For message encoding saltpack.org was considered, however [lack of activity around specification](https://github.com/keybase/saltpack/issues) does not inspire confidence. 
-
-Field names were informed by [JSON Web Token (JWT)](https://tools.ietf.org/html/rfc7519) ones with `metadata` fields using nomenclature from [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims). The overall JWT standard is not being used since its more relevant for use for authentication tokens and introduces some unnecessary serialization primitives.
 
 ## Change or ask
 
