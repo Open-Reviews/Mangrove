@@ -3,7 +3,8 @@ import {
   ADD_SUBJECTS,
   SEARCH_ERROR,
   SET_QUERY,
-  START_SEARCH
+  START_SEARCH,
+  STOP_SEARCH
 } from '../store/mutation-types'
 import { HTTPS, GEO, LEI, ISBN } from '../store/scheme-types'
 
@@ -43,55 +44,79 @@ export default function({ store, $axios, route }) {
   store.commit(SET_QUERY, { q: query, geo: route.query.geo })
   Promise.all([
     storeWithRating(store, searchUrl(query)),
-    searchGeo($axios, query, route.query.geo).then((subjects) =>
-      storeWithRating(store, subjects)
-    ),
-    searchIsbn($axios, query).then((subjects) =>
-      storeWithRating(store, subjects)
-    ),
-    searchLei($axios, query).then((subjects) =>
-      storeWithRating(store, subjects)
-    ),
+    searchGeo($axios, query, route.query.geo)
+      .then((subjects) => storeWithRating(store, subjects))
+      .catch((error) => {
+        if (error.response) {
+          store.commit(SEARCH_ERROR, `Error: ${JSON.stringify(error.response)}`)
+        } else if (error.request) {
+          store.commit(SEARCH_ERROR, `Server not reachable: ${error.request}`)
+        } else {
+          store.commit(SEARCH_ERROR, 'Can not connect to Nominatim API.')
+        }
+      }),
+    searchIsbn($axios, query)
+      .then((subjects) => storeWithRating(store, subjects))
+      .catch((error) => {
+        if (error.response) {
+          store.commit(SEARCH_ERROR, `Error: ${JSON.stringify(error.response)}`)
+        } else if (error.request) {
+          store.commit(SEARCH_ERROR, `Server not reachable: ${error.request}`)
+        } else {
+          store.commit(SEARCH_ERROR, 'Can not connect to OpenLibrary API.')
+        }
+      }),
+    searchLei($axios, query)
+      .then((subjects) => storeWithRating(store, subjects))
+      .catch((error) => {
+        if (error.response) {
+          store.commit(SEARCH_ERROR, `Error: ${JSON.stringify(error.response)}`)
+        } else if (error.request) {
+          store.commit(SEARCH_ERROR, `Server not reachable: ${error.request}`)
+        } else {
+          store.commit(SEARCH_ERROR, 'Can not connect to GLEIF API.')
+        }
+      }),
     // TODO: make appropriate queries to learn more about these
     store
       .dispatch('getReviews', { q: query })
       .then((rs) => {
         console.log('Response: ', rs.reviews)
         return rs.reviews
-          ? rs.reviews.map((r) => {
+          ? rs.reviews.map(({ payload }) => {
+              const uri = new URL(payload.sub)
+              const splitQuery = uri.searchParams.get('q').split(',')
               return {
-                sub: r.sub,
-                scheme: HTTPS,
+                sub: payload.sub,
+                // Strip the colon.
+                scheme: uri.protocol.slice(0, -1),
                 title: '',
                 subtitle: '',
-                description: ''
+                description: '',
+                coordinates: [splitQuery[0], splitQuery[1].split('(')[0]]
               }
             })
           : []
       })
       .then((subjects) => storeWithRating(store, subjects))
-  ])
-    .then(() => {
-      store.commit(SEARCH_ERROR, null)
-      // Try to select the first URI from the list or the one from route.
-      const first = Object.values(store.state.subjects)[0]
-      const selected = store.state.subjects[route.query.sub]
-        ? route.query.sub
-        : first && first.sub
-      store.dispatch('selectSubject', [route.query, selected])
-    })
-    .catch((error) => {
-      if (error.response) {
-        store.commit(SEARCH_ERROR, `Error: ${JSON.stringify(error.response)}`)
-      } else if (error.request) {
-        store.commit(
-          SEARCH_ERROR,
-          `Server not reachable: ${error.request}, ${error.response.data}`
-        )
-      } else {
-        store.commit(SEARCH_ERROR, 'Mangrove Server is down.')
-      }
-    })
+      .catch((error) => {
+        if (error.response) {
+          store.commit(SEARCH_ERROR, `Error: ${JSON.stringify(error.response)}`)
+        } else if (error.request) {
+          store.commit(SEARCH_ERROR, `Server not reachable: ${error.request}`)
+        } else {
+          store.commit(SEARCH_ERROR, 'Can not connect to Mangrove Server.')
+        }
+      })
+  ]).then(() => {
+    // Try to select the first URI from the list or the one from route.
+    const first = Object.values(store.state.subjects)[0]
+    const selected = store.state.subjects[route.query.sub]
+      ? route.query.sub
+      : first && first.sub
+    store.dispatch('selectSubject', [route.query, selected])
+  })
+  store.commit(STOP_SEARCH)
   // Leave some time for render.
   /*
   setTimeout(() => {
@@ -194,6 +219,7 @@ function searchGeo(axios, q, viewbox) {
             ]
               .filter(Boolean)
               .join(', ')
+            // Capitalize.
             let typeString =
               type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' ')
             if (extratags.cuisine) {

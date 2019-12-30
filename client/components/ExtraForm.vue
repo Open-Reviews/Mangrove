@@ -2,8 +2,7 @@
   <v-file-input
     :counter="maxFiles"
     :rules="[isSmallFile]"
-    v-model="files"
-    @change="filesSelected"
+    @change="filesSelected($event)"
     accept="image/*"
     prepend-icon="mdi-camera-plus"
     multiple
@@ -19,6 +18,9 @@ import { imageUrl } from '../utils'
 const base64url = require('base64-url')
 
 export default {
+  props: {
+    extraHashes: Array
+  },
   data() {
     return {
       maxFiles: 5,
@@ -27,9 +29,12 @@ export default {
         fs.every((f) => f.size < 5000000) ||
         'Photo should be less than 5 MB',
       uploadFieldName: 'files',
-      files: [],
-      uploadedLinks: [],
       uploadError: null
+    }
+  },
+  computed: {
+    uploadedLinks() {
+      return this.extraHashes.map(imageUrl)
     }
   },
   mounted() {
@@ -38,7 +43,6 @@ export default {
   methods: {
     reset() {
       // reset form to initial state
-      this.$parent.extra_hashes = []
       this.uploadError = null
     },
     hashFiles(files) {
@@ -49,6 +53,9 @@ export default {
             .then((array) => crypto.subtle.digest('SHA-256', array))
         )
       )
+    },
+    deleteHash(index) {
+      this.$emit('deleted', index)
     },
     upload(formData) {
       return (
@@ -72,23 +79,22 @@ export default {
             }
           }
           this.$emit('uploaded', [].concat(hashes))
-          this.uploadedLinks = hashes.map(imageUrl)
         })
         .catch((err) => {
           console.log('Error from upload: ', err)
           this.uploadError = err.response
         })
     },
-    filesSelected() {
+    filesSelected(files) {
       // handle file changes
       const formData = new FormData()
-      if (!this.files.length) return
+      if (!files.length) return
       // append the files to FormData
-      this.files.map((file) => {
+      files.map((file) => {
         formData.append(this.uploadFieldName, file)
       })
       // save it
-      this.save(formData, this.hashFiles(this.files))
+      this.save(formData, this.hashFiles(files))
     }
   }
 }

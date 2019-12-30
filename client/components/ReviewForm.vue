@@ -15,7 +15,11 @@
           auto-grow
           filled
         />
-        <ExtraForm v-on:uploaded="extra_hashes = $event" />
+        <ExtraForm
+          :extraHashes="extra_hashes"
+          v-on:uploaded="extra_hashes.concat($event)"
+          v-on:deleted="deleteHash($event)"
+        />
         Your public key
         <KeyList :keys="[$store.state.publicKey]" />
         <MetaForm />
@@ -128,6 +132,9 @@ export default {
     }
   },
   methods: {
+    deleteHash(index) {
+      this.extra_hashes.splice(index, 1)
+    },
     previewReview() {
       this.$store.dispatch('reviewContent', this.reviewStub).then((review) => {
         this.review = review

@@ -44,6 +44,7 @@ export default {
         const isFiltered =
           !this.filters.length ||
           this.filters.some((filter) => review.sub.startsWith(filter))
+        console.log('isSelected ', isSelected, ' isFiltered ', isFiltered)
         return (isSelected || isMine) && isFiltered
       })
     },
