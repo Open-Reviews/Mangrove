@@ -89,7 +89,7 @@ Review payload MUST include the following keys and corresponding values:
 - `iss`
     - The public key corresponding to the private key of the reviewer (issuer).
     - MUST be a Major type 3 (a text string) of length `130`.
-    - MUST correspond to an ECDSA public key in hexadecimal notation.
+    - MUST correspond to an ECDSA public key in base64url encoding.
 - `iat`
     - Unix time at the moment the review was left (issued at).
     - MUST be of Major type 0 (an unsigned integer) and MUST NOT be greater than current Unix time.
@@ -109,7 +109,7 @@ Review MAY include any of the following keys and values:
 - `extra_hashes`
     - References to additional data, such as pictures or audio which are relevant to the review.
     - MUST be a Major type 4 (an array of data items) with each item being a Major type 3 (a text string) of length 64.  Length of the array SHOULD NOT exceed 5 items.
-    - Each item MUST be a SHA-256 represented as hexadecimal string, of a file stored on a publicly accessible server or decentralized network.
+    - Each item MUST be a SHA-256 represented as base64url string, of a file stored on a publicly accessible server or decentralized network.
 - `metadata` MUST be of Major type 5 (a map of pairs of data items) with keys being Major type 3 (a text string). Each key SHOULD be equal to one of Core Metadata Keys (see Mangrove Core Metadata Field Standards). Each value corresponding to a Core Metadata Key MUST comply with the corresponding Core Metadata Field Standard.
 
 ## Mangrove Core URI Schemes
