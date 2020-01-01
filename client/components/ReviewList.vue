@@ -8,6 +8,7 @@
       :issuer="issuers[r.payload.iss]"
       :subject="subject(r.signature)"
       :preview="mine"
+      class="my-2"
     />
     <v-row justify="center">
       <v-btn v-if="mine" :href="download" download="data.json" class="my-5"
@@ -18,6 +19,7 @@
 </template>
 
 <script>
+import { downloadLink } from '../utils'
 import { MARESI } from '../store/scheme-types'
 import Review from './Review'
 
@@ -54,10 +56,7 @@ export default {
       return this.$store.state.issuers
     },
     download() {
-      return (
-        'data:text/json;charset=utf-8,' +
-        encodeURIComponent(JSON.stringify(this.reviews))
-      )
+      return downloadLink(this.reviews)
     }
   },
   methods: {

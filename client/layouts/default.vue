@@ -50,8 +50,9 @@
       </v-col>
       <v-col class="text-center">
         {{ new Date().getFullYear() }} — A
-        <a :href="psUrl">PlantingSpace</a> Project -
-        <a :href="ccbyUrl">CC-BY-4.0</a>
+        <a :href="psUrl" style="text-decoration: none">PlantingSpace</a>
+        Project -
+        <a :href="ccbyUrl" style="text-decoration: none">CC-BY-4.0</a>
       </v-col>
       <v-col class="text-right">
         <v-btn

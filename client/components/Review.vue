@@ -11,7 +11,7 @@
     </v-list-item>
     <v-card-text>
       <v-row align="center">
-        <v-rating :value="(payload.rating + 25) / 25" dense></v-rating>
+        <v-rating :value="(payload.rating + 25) / 25" dense class="mr-2" />
         Reviewed {{ new Date(payload.iat * 1000).toDateString() }}
       </v-row>
       {{ payload.opinion }}
@@ -48,6 +48,7 @@
             @click="action.action(review.signature)"
             :disabled="preview"
             icon
+            class="mr-2"
           >
             <v-icon>{{ action.icon }}</v-icon>
             {{ action.number }}
@@ -141,8 +142,8 @@ export default {
       ],
       menu: [
         {
-          title: 'Flag as innapropriate',
-          action: this.flag
+          title: 'Flag as inappropriate',
+          action: this.showFlag
         },
         {
           title: 'Show raw Mangrove Review',
@@ -190,7 +191,7 @@ export default {
       claim.metadata = this.personalMeta
       this.$store.dispatch('submitReview', claim)
     },
-    flag(review) {
+    showFlag(review) {
       if (!this.preview) {
         const claim = this.payloadSub(review.signature)
         claim.rating = 0

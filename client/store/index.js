@@ -118,7 +118,12 @@ export const actions = {
   // Fetch reviews mathing params from the server.
   getReviews({ commit }, params) {
     return this.$axios
-      .get(`${process.env.VUE_APP_API_URL}/reviews`, { params })
+      .get(`${process.env.VUE_APP_API_URL}/reviews`, {
+        params,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
       .then((response) => {
         commit(t.REQUEST_ERROR, null)
         return response.data

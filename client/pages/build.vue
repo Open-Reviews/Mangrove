@@ -36,7 +36,7 @@ export default {
             without them ever having to leave your platform.
             <br />
             <br />
-            Go to the API documentation`
+            <a href="${process.env.VUE_APP_API_URL}/swagger-ui">Go to the API documentation</a>`
         },
         {
           icon: 'mdi-xml',
@@ -56,7 +56,7 @@ export default {
             by analysing the dataset.
             <br />
             <br />
-            Download the dataset`
+            <a href="${process.env.VUE_APP_API_URL}/reviews">Download the dataset</a>`
         }
       ]
     }
