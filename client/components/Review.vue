@@ -2,7 +2,7 @@
   <v-card>
     <v-list-item>
       <v-list-item-avatar>
-        <Identicon :seed="review.iss" />
+        <Identicon :seed="payload.iss" />
       </v-list-item-avatar>
       <v-list-item-content>
         <v-list-item-title class="headline">{{ name() }}</v-list-item-title>
@@ -11,12 +11,12 @@
     </v-list-item>
     <v-card-text>
       <v-row align="center">
-        <v-rating :value="(review.rating + 25) / 25" dense></v-rating>
-        Reviewed {{ new Date(review.iat * 1000).toDateString() }}
+        <v-rating :value="(payload.rating + 25) / 25" dense></v-rating>
+        Reviewed {{ new Date(payload.iat * 1000).toDateString() }}
       </v-row>
-      {{ review.opinion }}
-      <v-row v-if="review.extra_hashes">
-        <v-col v-for="hash in review.extra_hashes" :key="hash">
+      {{ payload.opinion }}
+      <v-row v-if="payload.extra_hashes">
+        <v-col v-for="hash in payload.extra_hashes" :key="hash">
           <v-img :src="imageUrl(hash)" max-width="80" max-height="80" />
         </v-col>
       </v-row>
@@ -72,17 +72,22 @@
           </v-list-item>
         </v-list>
         <v-dialog
-          :value="rawDialog"
-          @click:outside="rawDialog = null"
+          :value="raw.json"
+          @click:outside="raw.json = null"
           width="600"
         >
           <v-card>
             <v-card-title>
               Raw Mangrove Review
             </v-card-title>
-            <v-card-text>
-              {{ rawDialog }}
-            </v-card-text>
+            <v-card-subtitle>
+              JSON
+            </v-card-subtitle>
+            <v-card-text v-html="raw.json" />
+            <v-card-subtitle>
+              CBOR
+            </v-card-subtitle>
+            <v-card-text v-html="raw.cbor" />
           </v-card>
         </v-dialog>
       </v-menu>
@@ -145,43 +150,49 @@ export default {
         }
       ],
       metadata:
-        this.review.metadata &&
-        Object.entries(this.review.metadata).filter((key, _) =>
+        this.review.payload.metadata &&
+        Object.entries(this.review.payload.metadata).filter((key, _) =>
           ['client_uri', 'display_name'].some((hidden) => key === hidden)
         ),
-      rawDialog: null,
+      raw: { json: undefined, cbor: undefined },
       personalMeta: { is_personal_experience: 'true' }
     }
   },
   computed: {
     error() {
       return this.$store.state.errors.submit
+    },
+    payload() {
+      return this.review.payload
     }
   },
   methods: {
     imageUrl(hash) {
       return imageUrl(hash)
     },
-    reviewSub(signature) {
+    payloadSub(signature) {
       return { sub: `${MARESI}:${signature}` }
     },
     request(signature) {
-      this.$store.dispatch('saveReviews', this.reviewSub(signature))
+      this.$store.dispatch('selectSubject', [
+        {},
+        this.payloadSub(signature).sub
+      ])
     },
     useful(signature) {
-      const claim = this.reviewSub(signature)
+      const claim = this.payloadSub(signature)
       claim.rating = 100
       this.$store.dispatch('submitReview', claim)
     },
     confirm(signature) {
-      const claim = this.reviewSub(signature)
+      const claim = this.payloadSub(signature)
       claim.rating = 100
       claim.metadata = this.personalMeta
       this.$store.dispatch('submitReview', claim)
     },
     flag(review) {
       if (!this.preview) {
-        const claim = this.reviewSub(review.signature)
+        const claim = this.payloadSub(review.signature)
         claim.rating = 0
         // The review being reviewed is displayed above.
         claim.metadata = this.personalMeta
@@ -189,10 +200,19 @@ export default {
       }
     },
     showRaw(review) {
-      this.rawDialog = review
+      this.raw.json = JSON.stringify(
+        { signature: review.signature, payload: review.payload },
+        null,
+        2
+      )
+      this.raw.cbor = JSON.stringify(
+        { signature: review.signature, payload: review.encodedPayload },
+        null,
+        2
+      )
     },
     name() {
-      const meta = this.review.metadata
+      const meta = this.payload.metadata
       if (!meta) {
         return 'Anonymous'
       }

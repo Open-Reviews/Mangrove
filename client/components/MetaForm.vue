@@ -81,7 +81,7 @@ export default {
         return this.$store.state.metadata.age
       },
       set(value) {
-        this.$store.commit(SET_META, ['age', value])
+        this.$store.commit(SET_META, ['age', parseInt(value, 10)])
       }
     },
     family_name: {

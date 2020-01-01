@@ -60,8 +60,8 @@ export const mutations = {
   },
   [t.ADD_REVIEWS](state, newreviews) {
     if (newreviews) {
-      newreviews.map(({ signature, payload }) =>
-        Vue.set(state.reviews, signature, { signature, ...payload })
+      newreviews.map((review) =>
+        Vue.set(state.reviews, review.signature, review)
       )
     }
   },
@@ -115,6 +115,7 @@ export const actions = {
       .catch((error) => console.log('Accessing IndexDB failed: ', error))
     dispatch('setKeypair', keypair)
   },
+  // Fetch reviews mathing params from the server.
   getReviews({ commit }, params) {
     return this.$axios
       .get(`${process.env.VUE_APP_API_URL}/reviews`, { params })
@@ -136,6 +137,7 @@ export const actions = {
         }
       })
   },
+  // Fetch reviews mathing params from the server and save the locally.
   saveReviews({ commit, dispatch }, params) {
     params.issuers = true
     params.maresi_subjects = true
@@ -207,41 +209,46 @@ export const actions = {
         console.log('sig: ', new Uint8Array(signed))
         return {
           signature: base64url.encode(new Uint8Array(signed)),
-          payload: base64url.encode(encoded)
+          encodedPayload: base64url.encode(encoded),
+          payload
         }
       })
   },
   submitReview({ commit, dispatch }, reviewStub) {
-    dispatch('reviewContent', reviewStub).then((review) => {
-      console.log('Mangrove review: ', review)
-      this.$axios
-        .put(`${process.env.VUE_APP_API_URL}/submit`, review, {
-          headers: {
-            'Content-Type': 'application/cbor'
-          }
-        })
-        .then(() => {
-          commit(t.SUBMIT_ERROR, null)
-          // Add review so that its immediately visible.
-          commit(t.ADD_REVIEWS, [review])
-        })
-        .catch((error) => {
-          if (error.response) {
-            console.log(error.response.status)
-            console.log(error.response.headers)
-            commit(t.SUBMIT_ERROR, error.response.data)
-          } else if (error.request) {
-            console.log(error.request)
-            commit(t.SUBMIT_ERROR, 'Mangrove Server not reachable.')
-          } else {
-            commit(
-              t.SUBMIT_ERROR,
-              `Internal client error, please report: ${error.message}`
-            )
-          }
-        })
-    })
+    dispatch('reviewContent', reviewStub).then(
+      ({ signature, encodedPayload, payload }) => {
+        const review = { signature, payload: encodedPayload }
+        console.log('Mangrove review: ', review)
+        this.$axios
+          .put(`${process.env.VUE_APP_API_URL}/submit`, review, {
+            headers: {
+              'Content-Type': 'application/cbor'
+            }
+          })
+          .then(() => {
+            commit(t.SUBMIT_ERROR, null)
+            // Add review so that its immediately visible.
+            commit(t.ADD_REVIEWS, [{ signature, payload }])
+          })
+          .catch((error) => {
+            if (error.response) {
+              console.log(error.response.status)
+              console.log(error.response.headers)
+              commit(t.SUBMIT_ERROR, error.response.data)
+            } else if (error.request) {
+              console.log(error.request)
+              commit(t.SUBMIT_ERROR, 'Mangrove Server not reachable.')
+            } else {
+              commit(
+                t.SUBMIT_ERROR,
+                `Internal client error, please report: ${error.message}`
+              )
+            }
+          })
+      }
+    )
   },
+  // Adjust the route and save reviews for the given subject locally.
   selectSubject({ dispatch }, [query, sub]) {
     console.log('Selecting subject: ', sub)
     this.app.router.push({
@@ -249,5 +256,20 @@ export const actions = {
       query: { sub, q: query.q, [GEO]: query.geo }
     })
     dispatch('saveReviews', { sub })
+  },
+  getIssuer({ state, commit }, pubkey) {
+    return (
+      state.issuers[pubkey] ||
+      this.$axios
+        .get(`${process.env.VUE_APP_API_URL}/issuer/${pubkey}`, {
+          headers: {
+            'Content-Type': 'application/cbor'
+          }
+        })
+        .then(({ data }) => {
+          commit(t.ADD_ISSUERS, [data])
+          return data
+        })
+    )
   }
 }

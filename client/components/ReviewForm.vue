@@ -57,7 +57,7 @@
               <Review
                 :review="review"
                 :subject="subject"
-                :issuer="$store.state.issuers[$store.state.publicKey]"
+                :issuer="issuer"
                 preview
               />
             </v-card-text>
@@ -111,7 +111,8 @@ export default {
       extra_hashes: [],
       is_affiliated: null,
       termsAgreed: false,
-      review: {}
+      review: {},
+      issuer: undefined
     }
   },
   computed: {
@@ -130,6 +131,13 @@ export default {
       }
       return stub
     }
+  },
+  mounted() {
+    this.$store
+      .dispatch('getIssuer', this.$store.state.publicKey)
+      .then((issuer) => {
+        this.issuer = issuer
+      })
   },
   methods: {
     deleteHash(index) {

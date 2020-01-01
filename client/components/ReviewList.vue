@@ -5,8 +5,8 @@
       v-for="r in reviews"
       :key="r.signature"
       :review="r"
-      :issuer="issuers[r.iss]"
-      :subject="subjects[`urn:maresi:${r.signature}`]"
+      :issuer="issuers[r.payload.iss]"
+      :subject="subject(r.signature)"
       :preview="mine"
     />
     <v-row justify="center">
@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import { MARESI } from '../store/scheme-types'
 import Review from './Review'
 
 export default {
@@ -36,14 +37,15 @@ export default {
     },
     reviews() {
       // TODO: Return generator to improve performance.
-      return Object.values(this.$store.state.reviews).filter((review) => {
+      return Object.values(this.$store.state.reviews).filter(({ payload }) => {
         // Pick only ones for selected subject.
-        const isSelected = this.selected == null || review.sub === this.selected
+        const isSelected =
+          this.selected == null || payload.sub === this.selected
         // Pick only mine when selected.
-        const isMine = this.mine && review.iss === this.$store.state.publicKey
+        const isMine = this.mine && payload.iss === this.$store.state.publicKey
         const isFiltered =
           !this.filters.length ||
-          this.filters.some((filter) => review.sub.startsWith(filter))
+          this.filters.some((filter) => payload.sub.startsWith(filter))
         console.log('isSelected ', isSelected, ' isFiltered ', isFiltered)
         return (isSelected || isMine) && isFiltered
       })
@@ -51,14 +53,16 @@ export default {
     issuers() {
       return this.$store.state.issuers
     },
-    subjects() {
-      return this.$store.state.subjects
-    },
     download() {
       return (
         'data:text/json;charset=utf-8,' +
         encodeURIComponent(JSON.stringify(this.reviews))
       )
+    }
+  },
+  methods: {
+    subject(signature) {
+      return this.$store.state.subjects[`${MARESI}:${signature}`]
     }
   }
 }

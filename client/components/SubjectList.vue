@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import { NAMES, MARESI } from '../store/scheme-types'
+import { NAMES } from '../store/scheme-types'
 export default {
   data() {
     return {
@@ -129,9 +129,7 @@ export default {
       return this.$store.state.filters
     },
     subjects() {
-      const all = Object.values(this.$store.state.subjects).filter(
-        (subject) => subject.scheme !== MARESI
-      )
+      const all = Object.values(this.$store.state.subjects)
       const list = this.filters.length
         ? all.filter((subject) =>
             this.filters.some((filter) => {

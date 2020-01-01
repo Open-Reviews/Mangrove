@@ -15,7 +15,7 @@
       >
         <vl-view :center="subject.coordinates" :zoom="15" />
 
-        <vl-interaction-select :features.sync="selectedFeatures" />
+        <vl-interaction-select @update:features="selectFeature($event)" />
 
         <vl-feature v-for="(p, i) in points" :key="i" :id="p.id">
           <vl-geom-point :coordinates="p.coordinates" />
@@ -89,19 +89,6 @@ export default {
     ReviewList
   },
   computed: {
-    selectedFeatures: {
-      get() {
-        return []
-      },
-      set(features) {
-        if (features[0] && this.$route.query.sub !== features[0].id) {
-          this.$store.dispatch('selectSubject', [
-            this.$route.query,
-            features[0].id
-          ])
-        }
-      }
-    },
     subject() {
       return this.$store.state.subjects[this.$route.query.sub]
     },
@@ -155,8 +142,8 @@ export default {
         .apply(
           [],
           Object.values(this.$store.state.reviews)
-            .filter((review) => review.sub === this.$route.query.sub)
-            .map((review) => review.extra_hashes)
+            .filter(({ payload }) => payload.sub === this.$route.query.sub)
+            .map(({ payload }) => payload.extra_hashes)
             .filter((eh) => eh)
         )
         .map((eh) => imageUrl(eh))
@@ -178,6 +165,14 @@ export default {
     }
   },
   methods: {
+    selectFeature(features) {
+      if (features[0] && this.$route.query.sub !== features[0].id) {
+        this.$store.dispatch('selectSubject', [
+          this.$route.query,
+          features[0].id
+        ])
+      }
+    },
     geoSearch() {
       const geo = transformExtent(
         this.$refs.map.$map.getView().calculateExtent(),

@@ -6,7 +6,7 @@ import {
   START_SEARCH,
   STOP_SEARCH
 } from '../store/mutation-types'
-import { HTTPS, GEO, LEI, ISBN } from '../store/scheme-types'
+import { HTTPS, GEO, LEI, ISBN, MARESI } from '../store/scheme-types'
 
 /*
 Searches for subjects and returns and object for each:
@@ -32,8 +32,47 @@ Searches for subjects and returns and object for each:
 
 export default function({ store, $axios, route }) {
   const query = route.query.q
-  if (
+  const sub = route.query.sub
+  // Store selected subject if no query is provided.
+  if (!query && sub) {
+    store.commit(START_SEARCH)
+    store.commit(EMPTY_SUBJECTS)
+    return (
+      store
+        // Support only Maresi for now.
+        .dispatch('getReviews', { signature: sub.match(/urn:maresi:(.+)/)[1] })
+        .then((rs) => {
+          console.log('Maresi subject review: ', rs.reviews)
+          const payload = rs.reviews[0].payload
+          return {
+            sub,
+            scheme: MARESI,
+            title: `Review of ${payload.sub}`,
+            subtitle: 'Subtitle',
+            description: payload.metadata
+          }
+        })
+        .then((subject) => storeWithRating(store, [subject]))
+        .catch((error) => {
+          if (error.response) {
+            store.commit(
+              SEARCH_ERROR,
+              `Error: ${JSON.stringify(error.response)}`
+            )
+          } else if (error.request) {
+            store.commit(SEARCH_ERROR, `Server not reachable: ${error.request}`)
+          } else {
+            store.commit(
+              SEARCH_ERROR,
+              `Can not connect to Mangrove Server: ${error}`
+            )
+          }
+        })
+    )
+  } else if (
+    // Do not run if there is no query and specific subject is not selected.
     !query ||
+    // Do not run if query is the same or geo query is the same.
     (store.state.query.q === query && store.state.query.geo === route.query.geo)
   ) {
     return
@@ -77,26 +116,11 @@ export default function({ store, $axios, route }) {
           store.commit(SEARCH_ERROR, 'Can not connect to GLEIF API.')
         }
       }),
-    // TODO: make appropriate queries to learn more about these
     store
       .dispatch('getReviews', { q: query })
       .then((rs) => {
         console.log('Response: ', rs.reviews)
-        return rs.reviews
-          ? rs.reviews.map(({ payload }) => {
-              const uri = new URL(payload.sub)
-              const splitQuery = uri.searchParams.get('q').split(',')
-              return {
-                sub: payload.sub,
-                // Strip the colon.
-                scheme: uri.protocol.slice(0, -1),
-                title: '',
-                subtitle: '',
-                description: '',
-                coordinates: [splitQuery[0], splitQuery[1].split('(')[0]]
-              }
-            })
-          : []
+        return reviewsToSubjects(rs)
       })
       .then((subjects) => storeWithRating(store, subjects))
       .catch((error) => {
@@ -105,7 +129,10 @@ export default function({ store, $axios, route }) {
         } else if (error.request) {
           store.commit(SEARCH_ERROR, `Server not reachable: ${error.request}`)
         } else {
-          store.commit(SEARCH_ERROR, 'Can not connect to Mangrove Server.')
+          store.commit(
+            SEARCH_ERROR,
+            `Can not connect to Mangrove Server: ${error}`
+          )
         }
       })
   ]).then(() => {
@@ -116,13 +143,10 @@ export default function({ store, $axios, route }) {
       : first && first.sub
     store.dispatch('selectSubject', [route.query, selected])
   })
-  store.commit(STOP_SEARCH)
-  // Leave some time for render.
-  /*
+  // Leave some time for render (easier than trying to figure our exact conclusion).
   setTimeout(() => {
     store.commit(STOP_SEARCH)
-  }, 1000)
-  */
+  }, 5000)
 }
 
 function storeWithRating(store, rawSubjects) {
@@ -345,4 +369,23 @@ function entityForm(axios, elf) {
       const picked = english || list[0]
       return picked.localName
     })
+}
+
+// TODO: make appropriate queries to learn more about these
+function reviewsToSubjects(reviews) {
+  return reviews.reviews
+    ? reviews.reviews.map(({ payload }) => {
+        const uri = new URL(payload.sub)
+        const splitQuery = uri.searchParams.get('q').split(',')
+        return {
+          sub: payload.sub,
+          // Strip the colon.
+          scheme: uri.protocol.slice(0, -1),
+          title: '',
+          subtitle: '',
+          description: '',
+          coordinates: [splitQuery[0], splitQuery[1].split('(')[0]]
+        }
+      })
+    : []
 }
