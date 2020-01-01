@@ -43,7 +43,6 @@ impl Statistic for Subject {
             sub: Some(sub.clone()),
             ..Default::default()
         })?;
-        let count = relevant.len();
         let mut positive = relevant
             .iter()
             .filter(|review| review.payload.rating.unwrap_or(0) > MAX_RATING / 2);
@@ -57,7 +56,11 @@ impl Statistic for Subject {
                     .map_or(false, |m| m.get("is_personal_experience").is_some())
             })
             .count();
-        let quality = if count == 0 {
+        let rated_count = relevant
+            .iter()
+            .filter(|review| review.payload.rating.is_none())
+            .count();
+        let quality = if rated_count == 0 {
             None
         } else {
             Some(
@@ -65,13 +68,13 @@ impl Statistic for Subject {
                     .iter()
                     .map(|review| review.payload.rating.unwrap_or(0) as usize)
                     .sum::<usize>()
-                    / count,
+                    / rated_count,
             )
         };
         Ok(Subject {
             sub,
             quality,
-            count,
+            count: relevant.len(),
             positive_count,
             confirmed_count,
         })

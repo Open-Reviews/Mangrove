@@ -38,6 +38,24 @@ impl From<serde_cbor::error::Error> for Error {
     }
 }
 
+impl From<csv::Error> for Error {
+    fn from(error: csv::Error) -> Self {
+        Error::Internal(format!("Could not encode as CSV: {}", error))
+    }
+}
+
+impl From<csv::IntoInnerError<csv::Writer<Vec<u8>>>> for Error {
+    fn from(error: csv::IntoInnerError<csv::Writer<Vec<u8>>>) -> Self {
+        Error::Internal(format!("Could not encode as CSV: {}", error))
+    }
+}
+
+impl From<std::string::FromUtf8Error> for Error {
+    fn from(error: std::string::FromUtf8Error) -> Self {
+        Error::Internal(format!("Could not encode CSV as Utf8: {}", error))
+    }
+}
+
 impl From<ring::error::Unspecified> for Error {
     fn from(error: ring::error::Unspecified) -> Self {
         Error::Incorrect(format!("Incorrect signature: {}", error))

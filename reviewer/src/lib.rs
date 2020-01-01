@@ -24,6 +24,7 @@ use self::review::Review;
 use rocket::http::Method;
 use rocket::request::Form;
 use rocket::Rocket;
+use csv::Writer;
 use rocket_contrib::json::Json;
 use rocket_okapi::swagger_ui::{make_swagger_ui, SwaggerUIConfig};
 use serde::{Deserialize, Serialize};
@@ -84,9 +85,7 @@ struct Reviews {
     maresi_subjects: Option<Subjects>,
 }
 
-#[openapi]
-#[get("/reviews?<json..>")]
-fn get_reviews(conn: DbConn, json: Form<Query>) -> Result<Json<Reviews>, Error> {
+fn get_reviews(conn: DbConn, json: Form<Query>) -> Result<Reviews, Error> {
     let query = json.into_inner();
     let add_issuers = query.issuers.unwrap_or(false);
     let add_subjects = query.maresi_subjects.unwrap_or(false);
@@ -121,7 +120,36 @@ fn get_reviews(conn: DbConn, json: Form<Query>) -> Result<Json<Reviews>, Error> 
         reviews,
     };
     info!("Returning {:?}", out);
-    Ok(Json(out))
+    Ok(out)
+}
+
+#[openapi]
+#[get("/reviews?<json..>", format = "application/json")]
+fn get_reviews_json(conn: DbConn, json: Form<Query>) -> Result<Json<Reviews>, Error> {
+    get_reviews(conn, json).map(Json)
+}
+
+/// Csv serde serialization does not support maps...
+#[openapi(skip)]
+#[get("/reviews?<json..>", rank = 2)] //format = "text/csv"
+fn get_reviews_csv(conn: DbConn, json: Form<Query>) -> Result<String, Error> {
+    let out = get_reviews(conn, json)?;
+    let mut wtr = Writer::from_writer(vec![]);
+    wtr.write_record(&["signature", "iss", "iat", "sub", "rating", "opinion", "extra_hashes", "metadata"])?;
+    for review in out.reviews {
+        let pl = review.payload;
+        wtr.write_record(&[
+            review.signature,
+            pl.iss,
+            pl.iat.to_string(),
+            pl.sub,
+            pl.rating.map_or("none".into(), |r| r.to_string()),
+            pl.opinion.unwrap_or("none".into()),
+            pl.extra_hashes.map_or("none".into(), |eh| eh.to_string()),
+            pl.metadata.map_or("none".into(), |m| m.to_string())
+        ])?;
+    }
+    Ok(String::from_utf8(wtr.into_inner()?)?)
 }
 
 #[openapi]
@@ -190,7 +218,8 @@ pub fn rocket() -> Rocket {
                 index,
                 submit_review_json,
                 submit_review_cbor,
-                get_reviews,
+                get_reviews_json,
+                get_reviews_csv,
                 get_subject,
                 get_issuer,
                 batch
