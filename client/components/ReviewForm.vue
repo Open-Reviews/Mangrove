@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" persistent>
+  <v-dialog v-model="dialog" :width="width" persistent>
     <template v-slot:activator="{ on }">
       <v-btn v-on="on">Write a review</v-btn>
     </template>
@@ -17,40 +17,26 @@
         />
         <ExtraForm
           :extraHashes="extra_hashes"
-          v-on:uploaded="extra_hashes.concat($event)"
-          v-on:deleted="deleteHash($event)"
+          @uploaded="extra_hashes = extra_hashes.concat($event)"
+          @deleted="deleteHash($event)"
         />
         Your public key
         <KeyList :keys="[$store.state.publicKey]" />
         <MetaForm />
 
         <v-list>
-          <v-list-item>
+          <v-list-item v-for="tick in ticks" :key="tick.text">
             <v-list-item-action>
-              <v-checkbox v-model="is_affiliated"></v-checkbox>
+              <v-checkbox v-model="tick.ticked"></v-checkbox>
             </v-list-item-action>
             <v-list-item-content>
-              <v-list-item-title
-                >I am affiliated with {{ subject.title }} (e.g., work there,
-                friends with the owner, receive compensation for writing a
-                review)</v-list-item-title
-              >
-            </v-list-item-content>
-          </v-list-item>
-
-          <v-list-item>
-            <v-list-item-action>
-              <v-checkbox v-model="termsAgreed"></v-checkbox>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title
-                >I agree to the Terms of Service and Privacy Policy
-                *</v-list-item-title
-              >
+              <v-list-item-title class="text-wrap">{{
+                tick.text
+              }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list>
-        <v-dialog v-model="preview">
+        <v-dialog v-model="preview" :width="width - 100">
           <v-card>
             <v-card-title>Preview</v-card-title>
             <v-card-text>
@@ -104,13 +90,24 @@ export default {
   },
   data() {
     return {
+      width: 700,
       dialog: false,
       preview: false,
       rating: null,
       opinion: '',
       extra_hashes: [],
-      is_affiliated: null,
-      termsAgreed: false,
+      ticks: [
+        {
+          ticked: false,
+          text: `I am affiliated with {{ subject.title }} (e.g., work there,
+                friends with the owner, receive compensation for writing a
+                review)`
+        },
+        {
+          ticked: false,
+          text: 'I agree to the Terms of Service and Privacy Policy*'
+        }
+      ],
       review: {},
       issuer: undefined
     }
@@ -124,12 +121,15 @@ export default {
         sub: this.$route.query.sub,
         opinion: this.opinion,
         extra_hashes: this.extra_hashes,
-        metadata: { is_affiliated: this.is_affiliated }
+        metadata: { is_affiliated: this.ticks[0].ticked ? true : null }
       }
       if (this.rating) {
         stub.rating = this.rating * 25 - 25
       }
       return stub
+    },
+    termsAgreed() {
+      return this.ticks[1].ticked
     }
   },
   mounted() {

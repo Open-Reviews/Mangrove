@@ -5,6 +5,7 @@
     @change="filesSelected($event)"
     accept="image/*"
     prepend-icon="mdi-camera-plus"
+    clear-icon="mdi-delete-forever"
     multiple
   >
     <template v-slot:selection="{ index }">
