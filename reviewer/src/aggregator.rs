@@ -58,7 +58,7 @@ impl Statistic for Subject {
             .count();
         let rated_count = relevant
             .iter()
-            .filter(|review| review.payload.rating.is_none())
+            .filter(|review| review.payload.rating.is_some())
             .count();
         let quality = if rated_count == 0 {
             None
