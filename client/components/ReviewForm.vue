@@ -16,8 +16,8 @@
           filled
         />
         <ExtraForm
-          :extraHashes="extra_hashes"
-          @uploaded="extra_hashes = extra_hashes.concat($event)"
+          :extraHashes="extraHashes"
+          @uploaded="addHashes($event)"
           @deleted="deleteHash($event)"
         />
         Your public key
@@ -27,7 +27,7 @@
         <v-list>
           <v-list-item v-for="tick in ticks" :key="tick.text">
             <v-list-item-action>
-              <v-checkbox v-model="tick.ticked"></v-checkbox>
+              <v-checkbox v-model="checkBoxes[tick.ticked]"></v-checkbox>
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title class="text-wrap">{{
@@ -65,7 +65,7 @@
         <v-btn @click.stop="previewReview" text>Preview</v-btn>
         <v-btn
           @click="submitReview"
-          :disabled="!termsAgreed || (!rating && !opinion.length)"
+          :disabled="!checkBoxes.termsAgreed || (!rating && !opinion.length)"
           text
         >
           Post publicly
@@ -95,21 +95,13 @@ export default {
       preview: false,
       rating: null,
       opinion: '',
-      extra_hashes: [],
-      ticks: [
-        {
-          ticked: false,
-          text: `I am affiliated with {{ subject.title }} (e.g., work there,
-                friends with the owner, receive compensation for writing a
-                review)`
-        },
-        {
-          ticked: false,
-          text: 'I agree to the Terms of Service and Privacy Policy*'
-        }
-      ],
+      extraHashes: [],
       review: {},
-      issuer: undefined
+      issuer: undefined,
+      checkBoxes: {
+        termsAgreed: false,
+        isAffiliated: false
+      }
     }
   },
   computed: {
@@ -120,16 +112,27 @@ export default {
       const stub = {
         sub: this.$route.query.sub,
         opinion: this.opinion,
-        extra_hashes: this.extra_hashes,
-        metadata: { is_affiliated: this.ticks[0].ticked ? true : null }
+        extra_hashes: this.extraHashes,
+        metadata: { is_affiliated: this.checkBoxes.isAffiliated ? true : null }
       }
       if (this.rating) {
         stub.rating = this.rating * 25 - 25
       }
       return stub
     },
-    termsAgreed() {
-      return this.ticks[1].ticked
+    ticks() {
+      return [
+        {
+          ticked: 'isAffiliated',
+          text: `I am affiliated with ${this.subject.title} (e.g., work there,
+                friends with the owner, receive compensation for writing a
+                review)`
+        },
+        {
+          ticked: 'termsAgreed',
+          text: 'I agree to the Terms of Service and Privacy Policy*'
+        }
+      ]
     }
   },
   mounted() {
@@ -141,7 +144,14 @@ export default {
   },
   methods: {
     deleteHash(index) {
-      this.extra_hashes.splice(index, 1)
+      this.extraHashes.splice(index, 1)
+    },
+    addHashes(hashes) {
+      hashes.map((hash) => {
+        if (!this.extraHashes.includes(hash)) {
+          this.extraHashes.push(hash)
+        }
+      })
     },
     previewReview() {
       this.$store.dispatch('reviewContent', this.reviewStub).then((review) => {
