@@ -57,8 +57,8 @@
 </template>
 
 <script>
-import { html as switchContent } from '../content/settings/switch-account.md'
 import KeyList from './KeyList'
+import { html as switchContent } from '~/content/settings/switch-account.md'
 export default {
   components: {
     KeyList

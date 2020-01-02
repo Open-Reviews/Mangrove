@@ -2,7 +2,7 @@
   <v-list>
     <v-subheader><slot /></v-subheader>
     <v-divider />
-    <v-list-item v-for="key in keys" :key="key" class="mt-5">
+    <v-list-item v-for="(key, i) in keys" :key="key" class="mt-5">
       <v-list-item-avatar>
         <v-icon v-if="sk" large>mdi-key</v-icon>
         <Identicon v-else :seed="key" />
@@ -23,7 +23,7 @@
           Display
         </v-btn>
       </v-list-item-action>
-      <v-list-item-action v-else>
+      <v-list-item-action v-else-if="i">
         <v-btn>
           Set default
         </v-btn>
@@ -39,6 +39,7 @@ export default {
     Identicon
   },
   props: {
+    // Assume that first one is the default one.
     keys: { type: Array, default: () => [null] },
     sk: Boolean
   },

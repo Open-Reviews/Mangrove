@@ -4,7 +4,7 @@
       <v-btn v-on="on">Write a review</v-btn>
     </template>
     <v-card>
-      <v-card-title> Review {{ subject.title }} </v-card-title>
+      <v-card-title>{{ subjectLine }}</v-card-title>
       <v-divider />
       <v-card-text>
         <v-rating v-model="rating" hover class="my-5" large />
@@ -20,8 +20,7 @@
           @uploaded="addHashes($event)"
           @deleted="deleteHash($event)"
         />
-        Your public key
-        <KeyList :keys="[$store.state.publicKey]" />
+        <KeyList :keys="[$store.state.publicKey]">Your public key</KeyList>
         <MetaForm />
 
         <v-list>
@@ -80,6 +79,7 @@ import ExtraForm from './ExtraForm'
 import MetaForm from './MetaForm'
 import Review from './Review'
 import KeyList from './KeyList'
+import { MARESI } from '~/store/scheme-types'
 
 export default {
   components: {
@@ -107,6 +107,11 @@ export default {
   computed: {
     subject() {
       return this.$store.state.subjects[this.$route.query.sub]
+    },
+    subjectLine() {
+      return this.subject.scheme === MARESI
+        ? `Comment on ${this.subject.subtitle}'s review`
+        : `Review ${this.subject.title}`
     },
     reviewStub() {
       const stub = {

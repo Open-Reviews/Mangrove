@@ -101,7 +101,7 @@
 
 <script>
 import { MARESI } from '../store/scheme-types'
-import { imageUrl } from '../utils'
+import { imageUrl, displayName } from '../utils'
 import Identicon from './Identicon'
 export default {
   components: {
@@ -213,24 +213,7 @@ export default {
       )
     },
     name() {
-      const meta = this.payload.metadata
-      if (!meta) {
-        return 'Anonymous'
-      }
-      if (meta.given_name || meta.family_name) {
-        const realName = [meta.given_name, meta.family_name]
-          .filter((n) => n)
-          .join(' ')
-        if (meta.display_name) {
-          return `${meta.display_name} (${realName})`
-        } else {
-          return realName
-        }
-      } else if (meta.display_name) {
-        return meta.display_name
-      } else {
-        return 'Anonymous'
-      }
+      return displayName(this.payload.metadata)
     }
   }
 }

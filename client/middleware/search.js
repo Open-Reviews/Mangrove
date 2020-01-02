@@ -5,8 +5,9 @@ import {
   SET_QUERY,
   START_SEARCH,
   STOP_SEARCH
-} from '../store/mutation-types'
-import { HTTPS, GEO, LEI, ISBN, MARESI } from '../store/scheme-types'
+} from '~/store/mutation-types'
+import { HTTPS, GEO, LEI, ISBN, MARESI } from '~/store/scheme-types'
+import { displayName } from '~/utils'
 
 /*
 Searches for subjects and returns and object for each:
@@ -48,8 +49,8 @@ export default function({ store, $axios, route }) {
             sub,
             scheme: MARESI,
             title: `Review of ${payload.sub}`,
-            subtitle: 'Subtitle',
-            description: payload.metadata
+            subtitle: displayName(payload.metadata),
+            description: 'Detailed review info.'
           }
         })
         .then((subject) => storeWithRating(store, [subject]))
