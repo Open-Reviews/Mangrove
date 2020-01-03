@@ -13,4 +13,6 @@ client/.env
 client/package-lock.json
 client/yarn.lock
 test
-data
+data/scraper
+data/sources
+data/.ipynb_checkpoints

@@ -80,15 +80,14 @@ export const mutations = {
 }
 
 export const actions = {
-  setKeypair({ commit }, keypair) {
-    commit(t.SET_KEYPAIR, keypair)
+  savePublicKeys({ state, commit }) {
     window.crypto.subtle
-      .exportKey('raw', keypair.publicKey)
+      .exportKey('raw', state.keypair.publicKey)
       .then((exported) =>
         commit(t.SET_PK, base64url.encode(new Uint8Array(exported)))
       )
   },
-  async generateKeypair({ dispatch }) {
+  async generateKeypair({ commit, dispatch }) {
     let keypair
     await get('keyPair')
       .then(async (kp) => {
@@ -113,7 +112,8 @@ export const actions = {
         }
       })
       .catch((error) => console.log('Accessing IndexDB failed: ', error))
-    dispatch('setKeypair', keypair)
+    commit(t.SET_KEYPAIR, keypair)
+    dispatch('savePublicKeys')
   },
   // Fetch reviews mathing params from the server.
   getReviews({ commit }, params) {
