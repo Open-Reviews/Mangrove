@@ -30,6 +30,7 @@ function displayName(meta) {
   }
 }
 
+/*
 async function deriveKey() {
   const keypair = await window.crypto.subtle.generateKey(
     {
@@ -49,7 +50,7 @@ async function deriveKey() {
 
   childSeed.set([1], rootPk.byteLength)
 
-  const childBase = window.crypto.subtle.importKey(
+  const childBase = await window.crypto.subtle.importKey(
     'raw',
     childSeed,
     { name: 'HKDF' },
@@ -98,3 +99,5 @@ async function deriveKey() {
 }
 
 deriveKey()
+
+*/
