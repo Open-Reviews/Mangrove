@@ -29,6 +29,7 @@ The standard was developed based on a set of [principles](#principles-of-the-dat
 ### Changes currently being considered
 
 - using compressed ECDSA public keys
+- use CBOR tagging rather than encoding bytes as base64url
 
 ## Mangrove Review Example
 
