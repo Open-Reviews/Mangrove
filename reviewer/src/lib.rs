@@ -234,3 +234,32 @@ pub fn rocket() -> Rocket {
         )
         .attach(cors)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn check_signature() {
+        let data = r#"
+            {
+                "name": "John Doe",
+                "age": 43,
+                "phones": [
+                    "+44 1234567",
+                    "+44 2345678"
+                ]
+            }"#;
+
+        let creview: CborReview = serde_json::from_str(data).unwrap();
+        
+        let payload_bytes = base64_url::decode(&creview.payload).unwrap();
+        let review = Review {
+            signature: creview.signature,
+            payload: serde_cbor::from_slice(&payload_bytes).unwrap()
+        };
+        review.check_signature(&payload_bytes).map_err(|e| {
+            e
+        }).unwrap();
+    }
+}
+
