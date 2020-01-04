@@ -146,17 +146,12 @@ export default function({ store, $axios, route }) {
     queries,
     new Promise((resolve) => setTimeout(resolve, 2000))
   ]).then(() => {
-    // Try to select the first URI from the list or the one from route.
-    const first = Object.values(store.state.subjects)[0]
-    const selected = store.state.subjects[route.query.sub]
-      ? route.query.sub
-      : first && first.sub
-    store.dispatch('selectSubject', [route.query, selected])
-  })
-  // Leave some time for render (easier than trying to figure our exact conclusion).
-  setTimeout(() => {
+    // Respect the query selection.
+    if (store.state.subjects[route.query.sub]) {
+      store.dispatch('selectSubject', [route.query, route.query.sub])
+    }
     store.commit(STOP_SEARCH)
-  }, 5000)
+  })
 }
 
 function storeWithRating(store, rawSubjects) {

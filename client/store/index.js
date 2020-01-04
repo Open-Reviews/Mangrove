@@ -15,8 +15,6 @@ export const state = () => ({
   query: { q: null, geo: null },
   // Object from sub (URI) to subject info, see `middleware/search.js` for details.
   subjects: {},
-  // Currently selected URI.
-  selected: null,
   // Array of schemes that should be selected, empty means display all.
   filters: [],
   // Object from MaReSi to reviews, ensuring only unique ones are stored.

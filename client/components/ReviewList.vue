@@ -49,7 +49,6 @@ export default {
         const isFiltered =
           !this.filters.length ||
           this.filters.some((filter) => payload.sub.startsWith(filter))
-        console.log('isSelected ', isSelected, ' isFiltered ', isFiltered)
         return (isSelected || isMine) && isFiltered
       })
     },

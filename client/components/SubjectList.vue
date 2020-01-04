@@ -37,6 +37,7 @@
     </div>
     <div v-else v-html="missingContent" />
     <div v-if="showAdvice">
+      <br />
       <h1>Can’t find what you were looking for?</h1>
       <div v-for="advice in adviceContent" :key="advice.title">
         <b>{{ advice.title }}</b>
@@ -44,7 +45,7 @@
           <li v-for="bullet in advice.bullets" :key="bullet.subtitle">
             <b>{{ bullet.subtitle }}</b
             >:
-            {{ bullet.description }}
+            <span v-html="bullet.description" />
           </li>
         </ul>
         <br />
@@ -98,24 +99,18 @@ export default {
           bullets: [
             {
               subtitle: 'Restaurants, hotels, local businesses',
-              description: 'contribute data points to OpenStreetMap'
+              description:
+                '<a href="https://learnosm.org/en/beginner/start-osm/">contribute data points to OpenStreetMap</a>'
             },
             {
               subtitle: 'Books',
-              description: 'contribute data to Internet Archive’s Open Library'
+              description:
+                '<a href="https://openlibrary.org/">contribute data to Internet Archive’s Open Library</a>'
             }
           ]
         }
       ],
       adviceButtons: [
-        {
-          label: 'Add on OpenStreetMap',
-          action: 'https://learnosm.org/en/beginner/start-osm/'
-        },
-        {
-          label: 'Add on Open Library',
-          action: 'https://openlibrary.org/'
-        },
         {
           label: 'Write us',
           action:
@@ -134,16 +129,22 @@ export default {
         ? all.filter((subject) =>
             this.filters.some((filter) => {
               const accepted = subject.scheme === filter
-              if (!accepted && subject.sub === this.$route.query.sub) {
-              }
               return accepted
             })
           )
         : all
-      return list.sort(
+      const sorted = list.sort(
         (s1, s2) =>
           (s2.importance || s2.quality) - (s1.importance || s1.quality)
       )
+      // Select first subject after done searching if one is not selected.
+      if (!this.$store.state.isSearching && !this.$route.query.sub) {
+        const first = sorted[0]
+        if (first && first.sub) {
+          this.$store.dispatch('selectSubject', [this.$route.query, first.sub])
+        }
+      }
+      return sorted
     },
     showAdvice() {
       console.log('isSearching: ', this.$store.state.isSearching)
