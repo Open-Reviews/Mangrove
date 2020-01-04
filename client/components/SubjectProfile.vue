@@ -1,9 +1,5 @@
 <template>
-  <v-container
-    v-if="subject"
-    style="height: 90vh;position: fixed;width: 40vw"
-    class="overflow-y-auto"
-  >
+  <v-container v-if="subject">
     <v-row justify="center">
       <vl-map
         ref="map"

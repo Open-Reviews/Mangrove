@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <v-col>
+    <v-col style="height: 90vh;width: 40vw" class="overflow-y-auto">
       <v-row>
         <SearchBox />
       </v-row>

@@ -270,7 +270,7 @@ function searchGeo(axios, q, viewbox) {
               title,
               subtitle: typeString,
               description: addressString,
-              openingHours: extratags.opening_hours,
+              openingHours: extratags.opening_hours.replace(', ', '/n'),
               website: extratags.url || extratags['contact:website'],
               phone: extratags.phone || extratags['contact:phone'],
               coordinates: [lon, lat].map(parseFloat),
