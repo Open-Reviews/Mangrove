@@ -1,7 +1,8 @@
 <template>
   <v-container>
-    <span v-if="$store.state.isSearching">Results loading...</span>
-    <span v-else-if="!reviews.length">No reviews found</span>
+    <div v-if="!reviews.length" class="text-center">
+      Be the first to review!
+    </div>
     <Review
       v-for="r in reviews"
       :key="r.signature"

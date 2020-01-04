@@ -49,14 +49,14 @@
       <v-card-title>
         {{ subject.title }}
       </v-card-title>
-      <v-row align="center" class="ma-auto">
-        <v-rating :value="subject.quality" half-increments dense />
+      <v-row align="center" class="mx-4 my-n4">
+        <v-rating :value="subject.quality" half-increments dense class="mr-2" />
         {{ subject.quality }} ({{ subject.count }})
       </v-row>
       <v-card-subtitle>{{ subject.subtitle }}</v-card-subtitle>
       <v-list flat>
-        <v-list-item v-for="(detail, i) in details" :key="i">
-          <v-list-item-icon>
+        <v-list-item v-for="(detail, i) in details" :key="i" class="my-n4">
+          <v-list-item-icon class="mr-4">
             <v-icon v-text="detail.icon" />
           </v-list-item-icon>
           <v-list-item-content>
@@ -64,7 +64,7 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-      <v-card-actions>
+      <v-card-actions class="justify-center">
         <ReviewForm />
       </v-card-actions>
     </v-card>

@@ -17,7 +17,7 @@
             </v-chip>
             <v-card-title>{{ subject.title }}</v-card-title>
             <v-row align="center" class="mx-4 mt-n4">
-              <v-rating :value="subject.quality" readonly dense />
+              <v-rating :value="subject.quality" readonly dense class="mr-2" />
               {{ subject.quality }}
               ({{ subject.count }})
             </v-row>
@@ -32,6 +32,7 @@
         </v-row>
       </v-card>
     </div>
+    <div v-else-if="$store.state.isSearching" v-html="searchingContent" />
     <div v-else v-html="missingContent" />
     <div v-if="showAdvice">
       <br />
@@ -65,6 +66,7 @@ import { NAMES } from '../store/scheme-types'
 export default {
   data() {
     return {
+      searchingContent: `Results loading...`,
       missingContent: `No review subjects found.`,
       adviceContent: [
         {
