@@ -82,7 +82,7 @@ export default function({ store, $axios, route }) {
   store.commit(START_SEARCH)
   store.commit(EMPTY_SUBJECTS)
   store.commit(SET_QUERY, { q: query, geo: route.query.geo })
-  Promise.all([
+  const queries = Promise.all([
     storeWithRating(store, searchUrl(query)),
     searchGeo($axios, query, route.query.geo)
       .then((subjects) => storeWithRating(store, subjects))
@@ -141,6 +141,11 @@ export default function({ store, $axios, route }) {
           )
         }
       })
+  ])
+  // Select a subject even if queries take a long time to resolve.
+  Promise.race([
+    queries,
+    new Promise((resolve) => setTimeout(resolve, 2000))
   ]).then(() => {
     // Try to select the first URI from the list or the one from route.
     const first = Object.values(store.state.subjects)[0]
