@@ -6,7 +6,7 @@
         :key="subject.sub"
         @click="select(subject.sub)"
         :ripple="false"
-        active-class="event"
+        :color="subject.sub === $route.query.sub ? 'success' : 'white'"
         class="my-4"
         hover
       >
