@@ -247,7 +247,7 @@ function searchGeo(axios, q, viewbox) {
                 typeString +
                 ' · ' +
                 extratags.cuisine.charAt(0).toUpperCase() +
-                extratags.cuisine.slice(1)
+                extratags.cuisine.slice(1).replace(/;/g, ', ')
             }
             return {
               sub: `${GEO}:?q=${lat},${lon}(${title})&u=30`,
