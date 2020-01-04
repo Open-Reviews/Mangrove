@@ -30,7 +30,6 @@ function displayName(meta) {
   }
 }
 
-/*
 async function deriveKey() {
   const keypair = await window.crypto.subtle.generateKey(
     {
@@ -59,7 +58,12 @@ async function deriveKey() {
   )
 
   const childKeyOne = await window.crypto.subtle.deriveKey(
-    { name: 'HKDF' },
+    {
+      name: 'HKDF',
+      hash: 'SHA-256',
+      salt: new Uint8Array(),
+      info: new Uint8Array()
+    },
     childBase,
     {
       name: 'ECDSA',
@@ -95,9 +99,8 @@ async function deriveKey() {
   )
 
   // Both cases fail with "ECDSA: Unsupported operation: get key length"
-  return [childKeyOne, childKeyTwo]
+  console.log(childKeyOne)
+  console.log(childKeyTwo)
 }
 
 deriveKey()
-
-*/

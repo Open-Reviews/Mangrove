@@ -1,0 +1,15 @@
+[
+  {
+    "sub": "https://facebook.com",
+    "iat": 157806468,
+    "rating": 40,
+    "opinion": "Bad for privacy.",
+    "metadata": { "display_name": "Lake" }
+  },
+  {
+    "sub": "https://planting.space",
+    "iat": 157806568,
+    "rating": 90,
+    "metadata": { "display_name": "Peter", "is_affiliated": true }
+  }
+]

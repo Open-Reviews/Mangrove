@@ -1,7 +1,6 @@
 packaged.yaml
 reviewer/.env
 reviewer/target
-reviewer/.env
 file_hoster/target
 file_hoster/files
 client/node_modules
@@ -16,3 +15,4 @@ test
 data/scraper
 data/sources
 data/.ipynb_checkpoints
+examples/mangrove-rs/target

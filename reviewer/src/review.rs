@@ -73,6 +73,8 @@ fn check_timestamp(iat: Duration) -> Result<(), Error> {
         .expect("SystemTime is not before UNIX EPOCH.");
     if unix_time < iat {
         Err(Error::Incorrect("Claim from the future.".into()))
+    } else if iat < 0 {
+        Err(Error::Incorrect("Claim too old (iat less than 0).".into()))
     } else {
         Ok(())
     }

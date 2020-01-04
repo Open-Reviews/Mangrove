@@ -238,28 +238,59 @@ pub fn rocket() -> Rocket {
 #[cfg(test)]
 mod tests {
     use super::*;
-    #[test]
-    fn check_signature() {
-        let data = r#"
-            {
-                "name": "John Doe",
-                "age": 43,
-                "phones": [
-                    "+44 1234567",
-                    "+44 2345678"
-                ]
-            }"#;
 
-        let creview: CborReview = serde_json::from_str(data).unwrap();
+    fn check_signature_cbor(data: &str) {
+        let creview: Json<CborReview> = Json(serde_json::from_str(data).unwrap());
         
         let payload_bytes = base64_url::decode(&creview.payload).unwrap();
+        //println!("{:?}", serde_cbor::from_slice::<review::Payload>(&payload_bytes).unwrap());
         let review = Review {
-            signature: creview.signature,
+            signature: creview.into_inner().signature,
             payload: serde_cbor::from_slice(&payload_bytes).unwrap()
         };
+        println!("{:?}", review);
         review.check_signature(&payload_bytes).map_err(|e| {
             e
         }).unwrap();
+    }
+
+    #[test]
+    fn test_js() {
+        check_signature_cbor(r#"
+            {
+                "signature": "_FK0VsBTZmMlBca6qIg1eow_4LU1PODyZ2v1FRCNARwZlcCS330GO62_7DYjSRwrARBwyVWHSzVlKEcne9Ro0Q",
+                "payload": "pWNpc3N4V0JCbUVLWmNpR01vblRfRzBDbWlNNEhkZk02bzBrdHVoM3hJRmFkdmMxVFZnQTBaSlVOSVM2Z28wcFg4andTVW9yYkRmdjI3VF9NOU05d2xkTUZrNnQwMGNpYXQaXg82ZGNzdWJ4KWdlbzo_cT00Ny4xNjkxNTc2LDguNTE0NTcyKEp1YW5pdG9zKSZ1PTMwZnJhdGluZxhLaG1ldGFkYXRhoWpjbGllbnRfdXJpeBhodHRwczovL21hbmdyb3ZlLnJldmlld3M"
+            }"#
+        )
+    }
+
+    #[test]
+    fn test_julia() {
+        check_signature_cbor(r#"
+            {"signature":"9tK0nToEjPstvi3plrTa2EusKcPgIdSc_RF8fFXwUKBGhO5XjjJ43mDY_sp0FOvd","payload":"pWdvcGluaW9ueKVUaGlzIGRvbWFpbiBoYXMgYmVlbiByYW5rZWQgMSBvZiAxMCBtaWxsaW9uIHdpdGggT3BlbiBQYWdlUmFuayAxMC4wLgoKU291cmNlOiBodHRwczovL3d3dy5kb21jb3AuY29tL29wZW5wYWdlcmFuay93aGF0LWlzLW9wZW5wYWdlcmFuaywgcmV0cmlldmVkIG9uIDI5IE5vdmVtYmVyIDIwMTljc3VieBxodHRwczovL2ZvbnRzLmdvb2dsZWFwaXMuY29tY2lhdDqh8KTVY2lzc3hAUVpRQmVJN29ISHFaNU5jaWtNNmdaYks0WkFWMHJINDdxRUI4MUFWdVl0dTRDaG9yV19vYUdlSUphRFh6cUN1d2htZXRhZGF0YaNsZGlzcGxheV9uYW1lbE1hbmdyb3ZlIEJvdGtkYXRhX3NvdXJjZXg4aHR0cHM6Ly93d3cuZG9tY29wLmNvbS9vcGVucGFnZXJhbmsvd2hhdC1pcy1vcGVucGFnZXJhbmtsaXNfZ2VuZXJhdGVk9Q"}
+        "#
+        )
+    }
+
+    #[test]
+    #[ignore]
+    fn requiring_api() {
+        use reqwest::header::CONTENT_TYPE;
+        let client = reqwest::Client::new();
+        let out: String = client
+            .put("http://localhost:8000/submit")
+            .header(CONTENT_TYPE, "application/cbor")
+            .body(r#"
+                {"signature":"9tK0nToEjPstvi3plrTa2EusKcPgIdSc_RF8fFXwUKBGhO5XjjJ43mDY_sp0FOvd","payload":"pWdvcGluaW9ueKVUaGlzIGRvbWFpbiBoYXMgYmVlbiByYW5rZWQgMSBvZiAxMCBtaWxsaW9uIHdpdGggT3BlbiBQYWdlUmFuayAxMC4wLgoKU291cmNlOiBodHRwczovL3d3dy5kb21jb3AuY29tL29wZW5wYWdlcmFuay93aGF0LWlzLW9wZW5wYWdlcmFuaywgcmV0cmlldmVkIG9uIDI5IE5vdmVtYmVyIDIwMTljc3VieBxodHRwczovL2ZvbnRzLmdvb2dsZWFwaXMuY29tY2lhdDqh8KTVY2lzc3hAUVpRQmVJN29ISHFaNU5jaWtNNmdaYks0WkFWMHJINDdxRUI4MUFWdVl0dTRDaG9yV19vYUdlSUphRFh6cUN1d2htZXRhZGF0YaNsZGlzcGxheV9uYW1lbE1hbmdyb3ZlIEJvdGtkYXRhX3NvdXJjZXg4aHR0cHM6Ly93d3cuZG9tY29wLmNvbS9vcGVucGFnZXJhbmsvd2hhdC1pcy1vcGVucGFnZXJhbmtsaXNfZ2VuZXJhdGVk9Q"}
+            "#)
+            .send()
+            .unwrap()
+            .text()
+            .unwrap();
+            //.parse()
+            //.unwrap();
+        println!("{:?}", out)
+        //assert!(out)
     }
 }
 
