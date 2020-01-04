@@ -89,7 +89,7 @@ export default function({ store, $axios, route }) {
       .catch((error) => {
         store.commit(
           SEARCH_ERROR,
-          `Places search currently not working, Nominatim API is down.
+          `Places search: the OpenStreetMap server could not be reached.
           Please try again in a few minutes.`
         )
         console.log('Nominatim error: ', error)
@@ -99,27 +99,20 @@ export default function({ store, $axios, route }) {
       .catch((error) => {
         store.commit(
           SEARCH_ERROR,
-          `Books search currently not working, Open Library API is down.
+          `Books search: the Open Library server could not be reached.
           Please try again in a few minutes.`
         )
-        if (error.response) {
-          console.log('OpenLibrary error: ', JSON.stringify(error.response))
-        } else if (error.request) {
-          console.log('Server not reachable: ', error.request)
-        } else {
-          console.log('Can not connect to OpenLibrary API.')
-        }
+        console.log('OpenLibrary error: ', error)
       }),
     searchLei($axios, query)
       .then((subjects) => storeWithRating(store, subjects))
       .catch((error) => {
-        if (error.response) {
-          store.commit(SEARCH_ERROR, `Error: ${JSON.stringify(error.response)}`)
-        } else if (error.request) {
-          store.commit(SEARCH_ERROR, `Server not reachable: ${error.request}`)
-        } else {
-          store.commit(SEARCH_ERROR, 'Can not connect to GLEIF API.')
-        }
+        store.commit(
+          SEARCH_ERROR,
+          `Company search: The GLEIF server for company data could not be reached.
+        Please try again in a few minutes.`
+        )
+        console.log('GLEIF error: ', error)
       }),
     store
       .dispatch('getReviews', { q: query })

@@ -16,13 +16,10 @@
               {{ name(subject.scheme) }}
             </v-chip>
             <v-card-title>{{ subject.title }}</v-card-title>
-            <v-row v-if="subject.count" align="center" class="mx-4 mt-n4">
+            <v-row align="center" class="mx-4 mt-n4">
               <v-rating v-model="subject.quality" dense />
               {{ subject.quality }}
               ({{ subject.count }})
-            </v-row>
-            <v-row v-else align="center" class="mx-4 mt-n4">
-              No reviews
             </v-row>
             <v-card-subtitle>{{ subject.subtitle }}</v-card-subtitle>
             <v-card-text v-html="subject.description" />
