@@ -92,8 +92,8 @@ export const actions = {
     await get('keyPair')
       .then(async (kp) => {
         if (kp) {
-          console.log('Loading existing keys from IndexDB:', keypair)
           keypair = kp
+          console.log('Loading existing keys from IndexDB:', keypair)
         } else {
           await window.crypto.subtle
             .generateKey(

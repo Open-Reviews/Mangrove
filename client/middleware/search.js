@@ -87,13 +87,12 @@ export default function({ store, $axios, route }) {
     searchGeo($axios, query, route.query.geo)
       .then((subjects) => storeWithRating(store, subjects))
       .catch((error) => {
-        if (error.response) {
-          store.commit(SEARCH_ERROR, `Error: ${JSON.stringify(error.response)}`)
-        } else if (error.request) {
-          store.commit(SEARCH_ERROR, `Server not reachable: ${error.request}`)
-        } else {
-          store.commit(SEARCH_ERROR, 'Can not connect to Nominatim API.')
-        }
+        store.commit(
+          SEARCH_ERROR,
+          `Places search currently not working, Nominatim API is down.
+          Please try again in a few minutes.`
+        )
+        console.log('Nominatim error: ', error)
       }),
     searchIsbn($axios, query)
       .then((subjects) => storeWithRating(store, subjects))
@@ -232,8 +231,6 @@ function searchGeo(axios, q, viewbox) {
             type,
             address,
             extratags,
-            osm_type: osmType,
-            osm_id: osmId,
             importance
           }) => {
             if (
@@ -270,7 +267,9 @@ function searchGeo(axios, q, viewbox) {
               title,
               subtitle: typeString,
               description: addressString,
-              openingHours: extratags.opening_hours.replace(', ', '/n'),
+              openingHours:
+                extratags.opening_hours &&
+                extratags.opening_hours.replace(/, /g, '<br />'),
               website: extratags.url || extratags['contact:website'],
               phone: extratags.phone || extratags['contact:phone'],
               coordinates: [lon, lat].map(parseFloat),
