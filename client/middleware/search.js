@@ -98,12 +98,17 @@ export default function({ store, $axios, route }) {
     searchIsbn($axios, query)
       .then((subjects) => storeWithRating(store, subjects))
       .catch((error) => {
+        store.commit(
+          SEARCH_ERROR,
+          `Books search currently not working, Open Library API is down.
+          Please try again in a few minutes.`
+        )
         if (error.response) {
-          store.commit(SEARCH_ERROR, `Error: ${JSON.stringify(error.response)}`)
+          console.log('OpenLibrary error: ', JSON.stringify(error.response))
         } else if (error.request) {
-          store.commit(SEARCH_ERROR, `Server not reachable: ${error.request}`)
+          console.log('Server not reachable: ', error.request)
         } else {
-          store.commit(SEARCH_ERROR, 'Can not connect to OpenLibrary API.')
+          console.log('Can not connect to OpenLibrary API.')
         }
       }),
     searchLei($axios, query)
@@ -239,7 +244,7 @@ function searchGeo(axios, q, viewbox) {
                 .filter(Boolean)
                 .join(' '),
               address.suburb,
-              address.city || address.town,
+              address.city || address.town || address.state,
               address.country
             ]
               .filter(Boolean)
