@@ -17,7 +17,13 @@
             </v-chip>
             <v-card-title>{{ subject.title }}</v-card-title>
             <v-row align="center" class="mx-4 my-n4">
-              <v-rating :value="subject.quality" readonly dense class="mr-2" />
+              <v-rating
+                :value="subject.quality"
+                readonly
+                half-increments
+                dense
+                class="mr-2"
+              />
               {{ subject.quality }}
               ({{ subject.count }})
             </v-row>

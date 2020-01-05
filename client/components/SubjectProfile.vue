@@ -39,14 +39,31 @@
     </v-row>
 
     <v-card>
-      <v-container v-if="images.length !== 0">
-        <v-carousel v-if="images.length > 1">
-          <v-carousel-item v-for="(image, i) in images" :key="i">
-            <v-img :src="image" />
-          </v-carousel-item>
-        </v-carousel>
-        <v-img v-else :src="images[0]" />
-      </v-container>
+      <v-dialog v-if="images.length" max-width="700">
+        <template v-slot:activator="{ on }">
+          <v-row align="center" class="mx-4 pt-4">
+            <v-img
+              v-on="on"
+              v-for="image in images"
+              :key="image"
+              :src="image"
+              max-height="80"
+              max-width="80"
+              contain
+            />
+            <v-btn v-on="on" text>See more photos</v-btn>
+          </v-row>
+        </template>
+        <v-card>
+          <v-carousel>
+            <v-carousel-item v-for="(image, i) in images" :key="i">
+              <v-row>
+                <v-img :src="image" contain />
+              </v-row>
+            </v-carousel-item>
+          </v-carousel>
+        </v-card>
+      </v-dialog>
       <v-card-title>
         {{ subject.title }}
       </v-card-title>
@@ -147,7 +164,7 @@ export default {
       if (this.subject.image) {
         images.push(this.subject.image)
       }
-      return images
+      return images.slice(0, 4)
     },
     points() {
       return Object.values(this.$store.state.subjects)

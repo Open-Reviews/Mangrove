@@ -11,14 +11,19 @@
     </v-list-item>
     <v-card-text>
       <v-row align="center">
-        <v-rating :value="(payload.rating + 25) / 25" dense class="mr-2" />
+        <v-rating :value="(payload.rating + 25) / 25" dense class="mr-2 ml-1" />
         Reviewed {{ new Date(payload.iat * 1000).toDateString() }}
       </v-row>
       {{ payload.opinion }}
       <v-row v-if="payload.extra_hashes">
-        <v-col v-for="hash in payload.extra_hashes" :key="hash">
-          <v-img :src="imageUrl(hash)" max-height="80" contain />
-        </v-col>
+        <v-img
+          v-for="hash in payload.extra_hashes"
+          :key="hash"
+          :src="imageUrl(hash)"
+          max-height="80"
+          max-width="80"
+          contain
+        />
       </v-row>
       <v-expansion-panels v-if="metadata && metadata.length">
         <v-expansion-panel>
@@ -48,9 +53,9 @@
             @click="action.action(review.signature)"
             :disabled="preview"
             icon
-            class="mr-2"
+            class="mr-3"
           >
-            <v-icon>{{ action.icon }}</v-icon>
+            <v-icon class="mr-1">{{ action.icon }}</v-icon>
             {{ action.number }}
           </v-btn>
         </template>
