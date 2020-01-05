@@ -8,6 +8,7 @@
         v-if="subject.coordinates"
         style="height: 400px"
         data-projection="EPSG:4326"
+        class="mx-5 mb-5"
       >
         <vl-view :center="subject.coordinates" :zoom="15" />
 

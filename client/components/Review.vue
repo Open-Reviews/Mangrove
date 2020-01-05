@@ -17,7 +17,7 @@
       {{ payload.opinion }}
       <v-row v-if="payload.extra_hashes">
         <v-col v-for="hash in payload.extra_hashes" :key="hash">
-          <v-img :src="imageUrl(hash)" max-width="80" max-height="80" />
+          <v-img :src="imageUrl(hash)" max-height="80" contain />
         </v-col>
       </v-row>
       <v-expansion-panels v-if="metadata && metadata.length">

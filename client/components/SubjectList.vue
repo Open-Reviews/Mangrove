@@ -16,7 +16,7 @@
               {{ name(subject.scheme) }}
             </v-chip>
             <v-card-title>{{ subject.title }}</v-card-title>
-            <v-row align="center" class="mx-4 mt-n4">
+            <v-row align="center" class="mx-4 my-n4">
               <v-rating :value="subject.quality" readonly dense class="mr-2" />
               {{ subject.quality }}
               ({{ subject.count }})
@@ -24,10 +24,8 @@
             <v-card-subtitle>{{ subject.subtitle }}</v-card-subtitle>
             <v-card-text v-html="subject.description" />
           </v-col>
-          <v-col v-if="subject.image">
-            <v-avatar class="profile" tile height="150" width="100">
-              <v-img :src="subject.image" />
-            </v-avatar>
+          <v-col v-if="subject.image" cols="4">
+            <v-img :src="subject.image" class="mr-5" />
           </v-col>
         </v-row>
       </v-card>
