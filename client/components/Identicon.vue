@@ -8,7 +8,7 @@ export default {
   props: ['seed'],
   computed: {
     identicon() {
-      return jdenticon.toSvg(this.seed, 64)
+      return jdenticon.toSvg(this.seed, 50)
     }
   }
 }

@@ -113,7 +113,7 @@ export default {
         return this.$store.state.metadata.context
       },
       set(value) {
-        this.$store.commit(SET_META, ['cotext', value])
+        this.$store.commit(SET_META, ['context', value])
       }
     }
   }

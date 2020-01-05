@@ -372,18 +372,23 @@ function entityForm(axios, elf) {
 // TODO: make appropriate queries to learn more about these
 function reviewsToSubjects(reviews) {
   return reviews.reviews
-    ? reviews.reviews.map(({ payload }) => {
-        const uri = new URL(payload.sub)
-        const splitQuery = uri.searchParams.get('q').split(',')
-        return {
-          sub: payload.sub,
-          // Strip the colon.
-          scheme: uri.protocol.slice(0, -1),
-          title: '',
-          subtitle: '',
-          description: '',
-          coordinates: [splitQuery[0], splitQuery[1].split('(')[0]]
-        }
-      })
+    ? reviews.reviews
+        .map(({ payload }) => {
+          const uri = new URL(payload.sub)
+          const subject = {
+            sub: payload.sub,
+            // Strip the colon.
+            scheme: uri.protocol.slice(0, -1),
+            title: payload.sub,
+            subtitle: '',
+            description: ''
+          }
+          if (subject.scheme === GEO) {
+            const splitQuery = uri.searchParams.get('q').split(',')
+            subject.coordinates = [splitQuery[0], splitQuery[1].split('(')[0]]
+          }
+          return subject
+        })
+        .filter(({ scheme }) => scheme !== MARESI)
     : []
 }

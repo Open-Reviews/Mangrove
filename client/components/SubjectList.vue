@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import { NAMES } from '../store/scheme-types'
+import { NAMES } from '~/store/scheme-types'
 export default {
   data() {
     return {

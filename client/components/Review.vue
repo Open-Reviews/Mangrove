@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-list-item>
-      <v-list-item-avatar>
+      <v-list-item-avatar class="mr-2">
         <Identicon :seed="payload.iss" />
       </v-list-item-avatar>
       <v-list-item-content>
@@ -10,8 +10,13 @@
       </v-list-item-content>
     </v-list-item>
     <v-card-text>
-      <v-row align="center">
-        <v-rating :value="(payload.rating + 25) / 25" dense class="mr-2 ml-1" />
+      <v-row align="center" class="my-n5">
+        <v-rating
+          :value="(payload.rating + 25) / 25"
+          readonly
+          dense
+          class="mr-2 ml-2"
+        />
         Reviewed {{ new Date(payload.iat * 1000).toDateString() }}
       </v-row>
       {{ payload.opinion }}
@@ -45,22 +50,24 @@
         </v-expansion-panel>
       </v-expansion-panels>
     </v-card-text>
-    <v-card-actions>
+    <v-card-actions v-if="!preview">
       <v-tooltip v-for="action in actions" :key="action.icon" top>
         <template v-slot:activator="{ on }">
           <v-btn
             v-on="on"
             @click="action.action(review.signature)"
-            :disabled="preview"
             icon
-            class="mr-3"
+            class="mr-1"
           >
-            <v-icon class="mr-1">{{ action.icon }}</v-icon>
+            <v-icon class="mr-1" small>{{ action.icon }}</v-icon>
             {{ action.number }}
           </v-btn>
         </template>
         <span>{{ action.tooltip }}</span>
       </v-tooltip>
+      <v-card-text class="ml-n5">
+        <a href="">Read comments</a>
+      </v-card-text>
       <v-spacer />
       <v-menu offset-y>
         <template v-slot:activator="{ on }">
@@ -98,9 +105,6 @@
         </v-dialog>
       </v-menu>
     </v-card-actions>
-    <v-alert v-if="error" type="error" border="left" elevation="8">
-      Error encountered: {{ error }}
-    </v-alert>
   </v-card>
 </template>
 
@@ -165,9 +169,6 @@ export default {
     }
   },
   computed: {
-    error() {
-      return this.$store.state.errors.submit
-    },
     payload() {
       return this.review.payload
     }

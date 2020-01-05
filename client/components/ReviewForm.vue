@@ -70,6 +70,9 @@
           Post publicly
         </v-btn>
       </v-card-actions>
+      <v-alert v-if="error" type="error" border="left" elevation="8">
+        Error encountered: {{ error }}
+      </v-alert>
     </v-card>
   </v-dialog>
 </template>
@@ -138,6 +141,9 @@ export default {
           text: 'I agree to the Terms of Service and Privacy Policy*'
         }
       ]
+    },
+    error() {
+      return this.$store.state.errors.submit
     }
   },
   mounted() {
