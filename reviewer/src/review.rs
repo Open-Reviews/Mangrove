@@ -67,14 +67,16 @@ pub struct Payload {
     pub metadata: Option<serde_json::Value>,
 }
 
+const MANGROVE_EPOCH: Duration = Duration::from_secs(1_577_836_800);
+
 fn check_timestamp(iat: Duration) -> Result<(), Error> {
     let unix_time = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .expect("SystemTime is not before UNIX EPOCH.");
     if unix_time < iat {
         Err(Error::Incorrect("Claim from the future.".into()))
-    } else if iat < 0 {
-        Err(Error::Incorrect("Claim too old (iat less than 0).".into()))
+    } else if iat < MANGROVE_EPOCH {
+        Err(Error::Incorrect("Claim too old (`iat` indicates date lower than year 2020).".into()))
     } else {
         Ok(())
     }
