@@ -218,11 +218,11 @@ export const actions = {
       })
   },
   submitReview({ commit, dispatch }, reviewStub) {
-    dispatch('reviewContent', reviewStub).then(
+    return dispatch('reviewContent', reviewStub).then(
       ({ signature, encodedPayload, payload }) => {
         const review = { signature, payload: encodedPayload }
         console.log('Mangrove review: ', review)
-        this.$axios
+        return this.$axios
           .put(`${process.env.VUE_APP_API_URL}/submit`, review, {
             headers: {
               'Content-Type': 'application/cbor'
@@ -231,7 +231,11 @@ export const actions = {
           .then(() => {
             commit(t.SUBMIT_ERROR, null)
             // Add review so that its immediately visible.
+            return dispatch('getSubject', `${MARESI}:${signature}`)
+          })
+          .then(() => {
             commit(t.ADD_REVIEWS, [{ signature, payload }])
+            return true
           })
           .catch((error) => {
             if (error.response) {
@@ -247,6 +251,7 @@ export const actions = {
                 `Internal client error, please report: ${error.message}`
               )
             }
+            return false
           })
       }
     )
@@ -264,13 +269,20 @@ export const actions = {
     return (
       state.issuers[pubkey] ||
       this.$axios
-        .get(`${process.env.VUE_APP_API_URL}/issuer/${pubkey}`, {
-          headers: {
-            'Content-Type': 'application/cbor'
-          }
-        })
+        .get(`${process.env.VUE_APP_API_URL}/issuer/${pubkey}`)
         .then(({ data }) => {
-          commit(t.ADD_ISSUERS, [data])
+          commit(t.ADD_ISSUERS, { [pubkey]: data })
+          return data
+        })
+    )
+  },
+  getSubject({ state, commit }, subject) {
+    return (
+      state.subjects[subject] ||
+      this.$axios
+        .get(`${process.env.VUE_APP_API_URL}/subject/${subject}`)
+        .then(({ data }) => {
+          commit(t.ADD_SUBJECTS, { [data.sub]: data })
           return data
         })
     )

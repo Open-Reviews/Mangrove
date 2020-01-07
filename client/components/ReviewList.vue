@@ -1,20 +1,21 @@
 <template>
   <v-container>
-    <div v-if="!reviews.length" class="text-center">
+    <div v-if="download && !reviews.length" class="text-center">
       Be the first to review!
     </div>
-    <Review
-      v-for="r in reviews"
-      :key="r.signature"
-      :review="r"
-      :issuer="issuers[r.payload.iss]"
-      :subject="subject(r.signature)"
-      :preview="mine"
-      class="my-2"
-    />
-    <v-row justify="center">
-      <v-btn v-if="mine" :href="download" download="data.json" class="my-5"
-        >Download reviews</v-btn
+    <div v-for="r in reviews" :key="r.signature">
+      <Review
+        :review="r"
+        :issuer="issuers[r.payload.iss]"
+        :subject="subject(r.signature)"
+        :preview="mine"
+        class="my-2"
+      />
+      <ReviewList :rootUri="maresi(r.signature)" class="ml-2 mt-5" />
+    </div>
+    <v-row v-if="download" justify="center">
+      <v-btn :href="download" download="data.json" class="my-5"
+        >Download reviews above</v-btn
       >
     </v-row>
   </v-container>
@@ -26,16 +27,15 @@ import { MARESI } from '../store/scheme-types'
 import Review from './Review'
 
 export default {
+  name: 'ReviewList',
   components: {
     Review
   },
   props: {
+    rootUri: String,
     mine: Boolean
   },
   computed: {
-    selected() {
-      return this.$route.query.sub
-    },
     filters() {
       return this.$store.state.filters
     },
@@ -43,8 +43,7 @@ export default {
       // TODO: Return generator to improve performance.
       return Object.values(this.$store.state.reviews).filter(({ payload }) => {
         // Pick only ones for selected subject.
-        const isSelected =
-          this.selected == null || payload.sub === this.selected
+        const isSelected = this.rootUri == null || payload.sub === this.rootUri
         // Pick only mine when selected.
         const isMine = this.mine && payload.iss === this.$store.state.publicKey
         const isFiltered =
@@ -57,12 +56,21 @@ export default {
       return this.$store.state.issuers
     },
     download() {
-      return downloadLink(this.reviews)
+      return (
+        !this.$store.state.isSearching &&
+        !this.rootUri.startsWith(MARESI) &&
+        downloadLink(this.reviews)
+      )
     }
   },
   methods: {
+    maresi(signature) {
+      return `${MARESI}:${signature}`
+    },
     subject(signature) {
-      return this.$store.state.subjects[`${MARESI}:${signature}`]
+      const ret = this.$store.state.subjects[this.maresi(signature)]
+      console.log(ret, this.maresi(signature))
+      return ret
     }
   }
 }

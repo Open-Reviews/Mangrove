@@ -83,10 +83,11 @@
         </v-list-item>
       </v-list>
       <v-card-actions class="justify-center">
-        <ReviewForm />
+        <v-btn @click.stop="reviewForm = true">Write a review</v-btn>
+        <ReviewForm v-model="reviewForm" :subject="subject" />
       </v-card-actions>
     </v-card>
-    <ReviewList />
+    <ReviewList :rootUri="$route.query.sub" />
   </v-container>
 </template>
 
@@ -101,6 +102,11 @@ export default {
   components: {
     ReviewForm,
     ReviewList
+  },
+  data() {
+    return {
+      reviewForm: false
+    }
   },
   computed: {
     subject() {

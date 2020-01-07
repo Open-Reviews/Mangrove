@@ -7,7 +7,6 @@ import {
   STOP_SEARCH
 } from '~/store/mutation-types'
 import { HTTPS, GEO, LEI, ISBN, MARESI } from '~/store/scheme-types'
-import { displayName } from '~/utils'
 
 /*
 Searches for subjects and returns and object for each:
@@ -33,45 +32,8 @@ Searches for subjects and returns and object for each:
 
 export default function({ store, $axios, route }) {
   const query = route.query.q
-  const sub = route.query.sub
-  // Store selected subject if no query is provided.
-  if (!query && sub) {
-    store.commit(START_SEARCH)
-    store.commit(EMPTY_SUBJECTS)
-    return (
-      store
-        // Support only Maresi for now.
-        .dispatch('getReviews', { signature: sub.match(/urn:maresi:(.+)/)[1] })
-        .then((rs) => {
-          console.log('Maresi subject review: ', rs.reviews)
-          const payload = rs.reviews[0].payload
-          return {
-            sub,
-            scheme: MARESI,
-            title: `Review of ${payload.sub}`,
-            subtitle: displayName(payload.metadata),
-            description: 'Detailed review info.'
-          }
-        })
-        .then((subject) => storeWithRating(store, [subject]))
-        .catch((error) => {
-          if (error.response) {
-            store.commit(
-              SEARCH_ERROR,
-              `Error: ${JSON.stringify(error.response)}`
-            )
-          } else if (error.request) {
-            store.commit(SEARCH_ERROR, `Server not reachable: ${error.request}`)
-          } else {
-            store.commit(
-              SEARCH_ERROR,
-              `Can not connect to Mangrove Server: ${error}`
-            )
-          }
-        })
-    )
-  } else if (
-    // Do not run if there is no query and specific subject is not selected.
+  // Do not run if there is no query and specific subject is not selected.
+  if (
     !query ||
     // Do not run if query is the same or geo query is the same.
     (store.state.query.q === query && store.state.query.geo === route.query.geo)

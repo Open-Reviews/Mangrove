@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { SET_META } from '../store/mutation-types'
+import { SET_META } from '~/store/mutation-types'
 
 export default {
   data() {

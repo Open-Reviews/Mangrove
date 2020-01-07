@@ -1,8 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" :width="width" persistent>
-    <template v-slot:activator="{ on }">
-      <v-btn v-on="on">Write a review</v-btn>
-    </template>
+  <v-dialog v-model="value" :width="width" persistent>
     <v-card>
       <v-card-title>{{ subjectLine }}</v-card-title>
       <v-divider />
@@ -58,7 +55,7 @@
 
       <v-card-actions>
         <v-spacer />
-        <v-btn @click="dialog = false" text>
+        <v-btn @click="$emit('input', false)" text>
           Cancel
         </v-btn>
         <v-btn @click.stop="previewReview" text>Preview</v-btn>
@@ -80,16 +77,19 @@
 <script>
 import ExtraForm from './ExtraForm'
 import MetaForm from './MetaForm'
-import Review from './Review'
 import KeyList from './KeyList'
 import { MARESI } from '~/store/scheme-types'
 
 export default {
+  name: 'ReviewForm',
   components: {
     ExtraForm,
     MetaForm,
-    Review,
     KeyList
+  },
+  props: {
+    value: Boolean,
+    subject: Object
   },
   data() {
     return {
@@ -108,17 +108,14 @@ export default {
     }
   },
   computed: {
-    subject() {
-      return this.$store.state.subjects[this.$route.query.sub]
-    },
     subjectLine() {
       return this.subject.scheme === MARESI
-        ? `Comment on ${this.subject.subtitle}'s review`
+        ? `Comment on ${this.subject.title}'s review`
         : `Review ${this.subject.title}`
     },
-    reviewStub() {
+    payloadStub() {
       const stub = {
-        sub: this.$route.query.sub,
+        sub: this.subject.sub,
         opinion: this.opinion,
         extra_hashes: this.extraHashes,
         metadata: { is_affiliated: this.checkBoxes.isAffiliated ? true : null }
@@ -153,6 +150,10 @@ export default {
         this.issuer = issuer
       })
   },
+  // Avoid issues with circular dependencies.
+  beforeCreate() {
+    this.$options.components.Review = require('./Review').default
+  },
   methods: {
     deleteHash(index) {
       this.extraHashes.splice(index, 1)
@@ -165,14 +166,16 @@ export default {
       })
     },
     previewReview() {
-      this.$store.dispatch('reviewContent', this.reviewStub).then((review) => {
+      this.$store.dispatch('reviewContent', this.payloadStub).then((review) => {
         this.review = review
         this.preview = true
       })
     },
     submitReview() {
-      this.$store.dispatch('submitReview', this.reviewStub)
-      this.dialog = false
+      // Close the dialog if successful.
+      this.$store
+        .dispatch('submitReview', this.payloadStub)
+        .then((outcome) => outcome && this.$emit('input', false))
     }
   }
 }

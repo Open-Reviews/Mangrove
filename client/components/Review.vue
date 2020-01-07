@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-list-item>
+    <v-list-item class="mb-n5">
       <v-list-item-avatar class="mr-2">
         <Identicon :seed="payload.iss" />
       </v-list-item-avatar>
@@ -10,7 +10,7 @@
       </v-list-item-content>
     </v-list-item>
     <v-card-text>
-      <v-row align="center" class="my-n5">
+      <v-row v-if="payload.rating" align="center">
         <v-rating
           :value="(payload.rating + 25) / 25"
           readonly
@@ -50,7 +50,7 @@
         </v-expansion-panel>
       </v-expansion-panels>
     </v-card-text>
-    <v-card-actions v-if="!preview">
+    <v-card-actions v-if="!preview" class="my-n8">
       <v-tooltip v-for="action in actions" :key="action.icon" top>
         <template v-slot:activator="{ on }">
           <v-btn
@@ -66,7 +66,9 @@
         <span>{{ action.tooltip }}</span>
       </v-tooltip>
       <v-card-text class="ml-n5">
-        <a href="">Read comments</a>
+        <div @click="requestResponses(review.signature)">
+          Read comments
+        </div>
       </v-card-text>
       <v-spacer />
       <v-menu offset-y>
@@ -105,26 +107,26 @@
         </v-dialog>
       </v-menu>
     </v-card-actions>
+    <ReviewForm v-model="responseDialog" :subject="subjectWithTitle" />
   </v-card>
 </template>
 
 <script>
-import { MARESI } from '../store/scheme-types'
-import { imageUrl, displayName } from '../utils'
 import Identicon from './Identicon'
+import ReviewForm from './ReviewForm'
+import { MARESI } from '~/store/scheme-types'
+import { imageUrl, displayName } from '~/utils'
+
 export default {
+  name: 'Review',
   components: {
-    Identicon
+    Identicon,
+    ReviewForm
   },
   props: {
     review: Object,
     issuer: Object,
-    subject: {
-      type: Object,
-      default: () => {
-        return {}
-      }
-    },
+    subject: Object,
     preview: Boolean
   },
   data() {
@@ -145,7 +147,7 @@ export default {
         {
           icon: 'mdi-comment-text-multiple',
           tooltip: 'Write a comment',
-          action: this.request,
+          action: this.respond,
           number: this.subject.count
         }
       ],
@@ -165,12 +167,18 @@ export default {
           ['client_uri', 'display_name'].some((hidden) => key === hidden)
         ),
       raw: { json: undefined, cbor: undefined },
-      personalMeta: { is_personal_experience: 'true' }
+      personalMeta: { is_personal_experience: 'true' },
+      responseDialog: false
     }
   },
   computed: {
     payload() {
       return this.review.payload
+    },
+    subjectWithTitle() {
+      const s = this.subject
+      s.title = displayName(this.payload.metadata)
+      return s
     }
   },
   methods: {
@@ -180,11 +188,13 @@ export default {
     payloadSub(signature) {
       return { sub: `${MARESI}:${signature}` }
     },
-    request(signature) {
-      this.$store.dispatch('selectSubject', [
-        {},
-        this.payloadSub(signature).sub
-      ])
+    respond(signature) {
+      this.responseDialog = true
+    },
+    requestResponses(signature) {
+      this.$store.dispatch('saveReviews', {
+        sub: `${MARESI}:${signature}`
+      })
     },
     useful(signature) {
       const claim = this.payloadSub(signature)
