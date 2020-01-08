@@ -1,5 +1,5 @@
 <template>
-  <v-expansion-panels>
+  <v-expansion-panels class="elevation-0" accordion>
     <v-expansion-panel>
       <v-expansion-panel-header
         >Add some helpful information about yourself</v-expansion-panel-header

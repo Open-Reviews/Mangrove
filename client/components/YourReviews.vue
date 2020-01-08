@@ -7,7 +7,7 @@
       >Click on one of public keys to display the associated reviews here.</span
     >
     <SchemeFilter />
-    <ReviewList mine />
+    <ReviewList :rootIss="$store.state.publicKey" />
   </v-container>
 </template>
 

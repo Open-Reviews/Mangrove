@@ -8,10 +8,9 @@
         :review="r"
         :issuer="issuers[r.payload.iss]"
         :subject="subject(r.signature)"
-        :preview="mine"
         class="my-2"
       />
-      <ReviewList :rootUri="maresi(r.signature)" class="ml-2 mt-5" />
+      <ReviewList :rootSub="maresi(r.signature)" class="ml-2 mt-5" />
     </div>
     <v-row v-if="download" justify="center">
       <v-btn :href="download" download="data.json" class="my-5"
@@ -32,8 +31,8 @@ export default {
     Review
   },
   props: {
-    rootUri: String,
-    mine: Boolean
+    rootSub: String,
+    rootIss: String
   },
   computed: {
     filters() {
@@ -42,14 +41,13 @@ export default {
     reviews() {
       // TODO: Return generator to improve performance.
       return Object.values(this.$store.state.reviews).filter(({ payload }) => {
-        // Pick only ones for selected subject.
-        const isSelected = this.rootUri == null || payload.sub === this.rootUri
-        // Pick only mine when selected.
-        const isMine = this.mine && payload.iss === this.$store.state.publicKey
+        // Pick only ones for selected subject or issuer.
+        const isSelected =
+          payload.sub === this.rootSub || payload.iss === this.rootIss
         const isFiltered =
           !this.filters.length ||
           this.filters.some((filter) => payload.sub.startsWith(filter))
-        return (isSelected || isMine) && isFiltered
+        return isSelected && isFiltered
       })
     },
     issuers() {
@@ -58,7 +56,7 @@ export default {
     download() {
       return (
         !this.$store.state.isSearching &&
-        !this.rootUri.startsWith(MARESI) &&
+        (!this.rootSub || !this.rootSub.startsWith(MARESI)) &&
         downloadLink(this.reviews)
       )
     }

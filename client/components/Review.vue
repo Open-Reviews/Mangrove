@@ -56,6 +56,7 @@
           <v-btn
             v-on="on"
             @click="action.action(review.signature)"
+            :disabled="mine"
             icon
             class="mr-1"
           >
@@ -66,7 +67,7 @@
         <span>{{ action.tooltip }}</span>
       </v-tooltip>
       <v-card-text class="ml-n5">
-        <div @click="requestResponses(review.signature)">
+        <div @click="requestResponses">
           Read comments
         </div>
       </v-card-text>
@@ -179,6 +180,9 @@ export default {
       const s = this.subject
       s.title = displayName(this.payload.metadata)
       return s
+    },
+    mine() {
+      return this.subject.iss === this.$store.state.publicKey
     }
   },
   methods: {
@@ -191,10 +195,11 @@ export default {
     respond(signature) {
       this.responseDialog = true
     },
-    requestResponses(signature) {
-      this.$store.dispatch('saveReviews', {
-        sub: `${MARESI}:${signature}`
-      })
+    requestResponses() {
+      this.$store.dispatch(
+        'saveReviews',
+        this.payloadSub(this.review.signature)
+      )
     },
     useful(signature) {
       const claim = this.payloadSub(signature)
