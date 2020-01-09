@@ -106,6 +106,7 @@
             <v-card-text v-html="raw.cbor" />
           </v-card>
         </v-dialog>
+        <FlagForm v-model="flagSubject" />
       </v-menu>
     </v-card-actions>
     <ReviewForm v-model="responseDialog" :subject="subjectWithTitle" />
@@ -115,6 +116,7 @@
 <script>
 import Identicon from './Identicon'
 import ReviewForm from './ReviewForm'
+import FlagForm from './FlagForm'
 import { MARESI } from '~/store/scheme-types'
 import { imageUrl, displayName } from '~/utils'
 
@@ -122,7 +124,8 @@ export default {
   name: 'Review',
   components: {
     Identicon,
-    ReviewForm
+    ReviewForm,
+    FlagForm
   },
   props: {
     review: Object,
@@ -167,7 +170,26 @@ export default {
         Object.entries(this.review.payload.metadata).filter((key, _) =>
           ['client_uri', 'display_name'].some((hidden) => key === hidden)
         ),
+      flagReasons: [
+        {
+          description: `Violation of the Terms of Use`,
+          items: [
+            'The review contains offensive language that is violent, coarse, sexist, racist, accusatory, or defamatory.',
+            'The review contains personal information that could be used to track, identify, contact or impersonate someone.',
+            `The review violates someone else's intellectual property, privacy/confidentiality, or personality rights.`
+          ]
+        },
+        {
+          description: `Low-quality content`,
+          items: [
+            `The review is marketing or spam`,
+            `The review is on the wrong subject profile`,
+            `The content doesn't mention a buying or service experience and is solely ethical, political or value-laden opinion.`
+          ]
+        }
+      ],
       raw: { json: undefined, cbor: undefined },
+      flagSubject: null,
       personalMeta: { is_personal_experience: 'true' },
       responseDialog: false
     }
@@ -213,13 +235,14 @@ export default {
       this.$store.dispatch('submitReview', claim)
     },
     showFlag(review) {
-      if (!this.preview) {
-        const claim = this.payloadSub(review.signature)
-        claim.rating = 0
-        // The review being reviewed is displayed above.
-        claim.metadata = this.personalMeta
-        this.$store.dispatch('submitReview', claim)
-      }
+      this.flagSubject = this.subjectWithTitle
+    },
+    issueFlag(review) {
+      const claim = this.payloadSub(review.signature)
+      claim.rating = 0
+      // The review being reviewed is displayed above.
+      claim.metadata = this.personalMeta
+      this.$store.dispatch('submitReview', claim)
     },
     showRaw(review) {
       this.raw.json = JSON.stringify(

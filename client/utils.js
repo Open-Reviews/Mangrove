@@ -1,16 +1,16 @@
-export { imageUrl, downloadLink, displayName }
+export const MAX_OPINION_LENGTH = 500
 
-function imageUrl(hash) {
+export function imageUrl(hash) {
   return `${process.env.VUE_APP_FILES_URL}/${hash}`
 }
 
-function downloadLink(data) {
+export function downloadLink(data) {
   return `data:text/json;charset=utf-8,${encodeURIComponent(
     JSON.stringify(data)
   )}`
 }
 
-function displayName(meta) {
+export function displayName(meta) {
   if (!meta) {
     return 'Anonymous'
   }

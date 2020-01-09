@@ -7,8 +7,8 @@
         <v-rating v-model="rating" hover class="my-5" large />
         <v-textarea
           v-model="opinion"
+          :counter="MAX_OPINION_LENGTH"
           label="Describe your experience here"
-          counter="500"
           auto-grow
           filled
         />
@@ -79,6 +79,7 @@ import ExtraForm from './ExtraForm'
 import MetaForm from './MetaForm'
 import KeyList from './KeyList'
 import { MARESI } from '~/store/scheme-types'
+import { MAX_OPINION_LENGTH } from '~/utils'
 
 export default {
   name: 'ReviewForm',
@@ -104,7 +105,8 @@ export default {
       checkBoxes: {
         termsAgreed: false,
         isAffiliated: false
-      }
+      },
+      MAX_OPINION_LENGTH
     }
   },
   computed: {

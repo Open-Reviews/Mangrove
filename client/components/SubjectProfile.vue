@@ -55,7 +55,7 @@
           </v-row>
         </template>
         <v-card>
-          <v-carousel>
+          <v-carousel height="auto">
             <v-carousel-item v-for="(image, i) in images" :key="i">
               <v-row>
                 <v-img :src="image" contain />
