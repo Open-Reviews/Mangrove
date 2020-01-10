@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-row justify="space-around">
+    <v-row justify="space-between" class="mx-2">
       <p class="display-1">Your account</p>
       <v-dialog v-model="switcherDialog" width="600">
         <template v-slot:activator="{ on }">
@@ -76,11 +76,6 @@ export default {
       secretInput: null,
       error: null
     }
-  },
-  mounted() {
-    this.$store.dispatch('saveReviews', {
-      iss: this.$store.state.publicKey
-    })
   },
   methods: {
     async importSecret() {

@@ -38,7 +38,7 @@
             <v-card-text>
               <Review
                 :review="review"
-                :subject="subject"
+                :maresiSubject="subject"
                 :issuer="issuer"
                 preview
               />

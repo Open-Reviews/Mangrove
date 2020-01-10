@@ -8,7 +8,7 @@
         <Identicon v-else :seed="key" />
       </v-list-item-avatar>
       <v-list-item-content>
-        <v-list-item-title v-if="sk">XXXX...</v-list-item-title>
+        <v-list-item-title v-if="sk">XXXXXXXXXX</v-list-item-title>
         <v-list-item-title v-else>{{
           key.slice(0, 10) + '...'
         }}</v-list-item-title>

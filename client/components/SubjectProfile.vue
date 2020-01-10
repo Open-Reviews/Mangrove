@@ -110,7 +110,7 @@ export default {
   },
   computed: {
     subject() {
-      return this.$store.state.subjects[this.$route.query.sub]
+      return this.$store.getters.subject(this.$route.query.sub)
     },
     details() {
       const s = this.subject

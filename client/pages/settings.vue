@@ -14,8 +14,8 @@
 </template>
 
 <script>
-import Account from '../components/Account'
-import YourReviews from '../components/YourReviews'
+import Account from '~/components/Account'
+import YourReviews from '~/components/YourReviews'
 
 export default {
   components: {

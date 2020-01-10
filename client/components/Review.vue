@@ -1,5 +1,10 @@
 <template>
   <v-card>
+    <v-subheader
+      v-if="subjectTitle"
+      v-text="subjectTitle"
+      @click="selectSubject"
+    />
     <v-list-item class="mb-n5">
       <v-list-item-avatar class="mr-2">
         <Identicon :seed="payload.iss" />
@@ -130,8 +135,12 @@ export default {
   props: {
     review: Object,
     issuer: Object,
-    subject: Object,
-    preview: Boolean
+    maresiSubject: Object,
+    preview: Boolean,
+    subjectTitle: {
+      type: String,
+      default: () => ''
+    }
   },
   data() {
     return {
@@ -140,19 +149,19 @@ export default {
           icon: 'mdi-thumb-up',
           tooltip: 'This is useful',
           action: this.useful,
-          number: this.subject.positive_count
+          number: this.maresiSubject.positive_count
         },
         {
           icon: 'mdi-certificate',
           tooltip: 'Confirm this experience',
           action: this.confirm,
-          number: this.subject.confirmed_count
+          number: this.maresiSubject.confirmed_count
         },
         {
           icon: 'mdi-comment-text-multiple',
           tooltip: 'Write a comment',
           action: this.respond,
-          number: this.subject.count
+          number: this.maresiSubject.count
         }
       ],
       menu: [
@@ -199,12 +208,13 @@ export default {
       return this.review.payload
     },
     subjectWithTitle() {
-      const s = this.subject
-      s.title = displayName(this.payload.metadata)
-      return s
+      return {
+        ...this.maresiSubject,
+        title: displayName(this.payload.metadata)
+      }
     },
     mine() {
-      return this.subject.iss === this.$store.state.publicKey
+      return this.maresiSubject.iss === this.$store.state.publicKey
     }
   },
   methods: {
@@ -258,6 +268,9 @@ export default {
     },
     name() {
       return displayName(this.payload.metadata)
+    },
+    selectSubject() {
+      this.$store.dispatch('selectSubject', ['', this.review.sub])
     }
   }
 }

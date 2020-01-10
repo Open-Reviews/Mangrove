@@ -77,6 +77,12 @@ export const mutations = {
   }
 }
 
+export const getters = {
+  subject: (state) => (sub) => {
+    return state.subjects[sub] || console.log('not present in subjects', sub)
+  }
+}
+
 export const actions = {
   savePublicKeys({ state, commit }, pubkey) {
     window.crypto.subtle
@@ -144,8 +150,8 @@ export const actions = {
   saveReviews({ commit, dispatch }, params) {
     params.issuers = true
     params.maresi_subjects = true
-    // Geta and save in state the reviews and their issuers.
-    dispatch('getReviews', params).then((rs) => {
+    // Get and save in state the reviews and their issuers.
+    return dispatch('getReviews', params).then((rs) => {
       if (rs) {
         commit(t.ADD_REVIEWS, rs.reviews)
         commit(t.ADD_ISSUERS, rs.issuers)
@@ -154,6 +160,7 @@ export const actions = {
         })
         commit(t.ADD_SUBJECTS, rs.maresi_subjects)
       }
+      return rs
     })
   },
   bulkSubjects({ commit }, subs) {
@@ -276,9 +283,9 @@ export const actions = {
         })
     )
   },
-  getSubject({ state, commit }, subject) {
+  getSubject({ getters, commit }, subject) {
     return (
-      state.subjects[subject] ||
+      getters.subject(subject) ||
       this.$axios
         .get(`${process.env.VUE_APP_API_URL}/subject/${subject}`)
         .then(({ data }) => {
