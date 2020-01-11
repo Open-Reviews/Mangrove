@@ -156,12 +156,12 @@ export const actions = {
     // Get and save in state the reviews and their issuers.
     return dispatch('getReviews', params).then((rs) => {
       if (rs) {
-        commit(t.ADD_REVIEWS, rs.reviews)
         commit(t.ADD_ISSUERS, rs.issuers)
         Object.keys(rs.maresi_subjects).map((maresi) => {
           rs.maresi_subjects[maresi].scheme = MARESI
         })
         commit(t.ADD_SUBJECTS, rs.maresi_subjects)
+        commit(t.ADD_REVIEWS, rs.reviews)
       }
       return rs
     })

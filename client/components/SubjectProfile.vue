@@ -78,7 +78,7 @@
             <v-icon v-text="detail.icon" />
           </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title v-html="detail.content"></v-list-item-title>
+            <v-list-item-title v-html="detail.content" class="text-wrap" />
           </v-list-item-content>
         </v-list-item>
       </v-list>

@@ -125,15 +125,29 @@ export function searchGeo(axios, q, viewbox) {
 }
 
 function isbnToSubject(axios, isbn) {
+  const key = `isbn:${isbn}`
   return axios
-    .get(`https://openlibrary.org/books/${isbn}`, {
-      headers: { Accept: 'application/json' }
-    })
+    .get(
+      `https://openlibrary.org/api/books?bibkeys=${key}&format=json&jscmd=data`,
+      {
+        headers: { Accept: 'application/json' }
+      }
+    )
     .then((response) => {
       console.log('isbn lookup: ', response)
-      return response.data.docs.map((doc) => {
-        return olDocToSubject(doc)
-      })
+      const info = response.data[key]
+      return {
+        sub: `${ISBN}:${isbn}`,
+        scheme: ISBN,
+        title: info.title,
+        subtitle: `by ${info.authors &&
+          info.authors.map(({ name }) => name).join(', ')}`,
+        description: `Published ${info.publish_date}`,
+        isbn,
+        website: `https://openlibrary.org${info.key}`,
+        image: info.cover.medium,
+        subjects: info.subjects.map(({ name }) => name)
+      }
     })
 }
 

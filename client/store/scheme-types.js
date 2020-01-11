@@ -29,6 +29,5 @@ export function subToScheme(sub) {
 }
 
 export function subPath(scheme, sub) {
-  sub.replace(new RegExp(`^(${scheme}.)`), '')
-  return sub
+  return sub.replace(new RegExp(`^(${scheme}:)`), '')
 }
