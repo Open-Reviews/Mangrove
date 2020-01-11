@@ -8,6 +8,7 @@
         <v-textarea
           v-model="opinion"
           :counter="MAX_OPINION_LENGTH"
+          :maxlength="MAX_OPINION_LENGTH"
           label="Describe your experience here"
           auto-grow
           filled
@@ -17,8 +18,8 @@
           @uploaded="addHashes($event)"
           @deleted="deleteHash($event)"
         />
-        <KeyList :keys="[$store.state.publicKey]">Your public key</KeyList>
         <MetaForm />
+        <KeyList :keys="[$store.state.publicKey]">Your public key</KeyList>
 
         <v-list>
           <v-list-item v-for="tick in ticks" :key="tick.text">

@@ -1,7 +1,7 @@
 <template>
   <v-list>
     <v-subheader><slot /></v-subheader>
-    <v-divider />
+    <v-divider class="mb-n3" />
     <v-list-item v-for="(key, i) in keys" :key="key" class="mt-5">
       <v-list-item-avatar>
         <v-icon v-if="sk" large>mdi-key</v-icon>

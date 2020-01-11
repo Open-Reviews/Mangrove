@@ -236,8 +236,8 @@ fn check_uri(key: &str, value: serde_json::Value) -> Result<(), Error> {
 }
 
 fn check_flag(key: &str, value: serde_json::Value) -> Result<(), Error> {
-    match value.as_bool() {
-        Some(true) => Ok(()),
+    match value.as_str() {
+        Some("true") => Ok(()),
         _ => Err(Error::Incorrect(format!(
             "Flag field {} can only have value equal to `true`",
             key

@@ -1,7 +1,7 @@
 <template>
   <v-container>
-    <div v-if="download && !reviews.length" class="text-center">
-      Be the first to review!
+    <div v-if="noReviewsMessage" class="text-center">
+      {{ noReviewsMessage }}
     </div>
     <div v-for="(arg, i) in listArgs" :key="i">
       <Review
@@ -13,7 +13,7 @@
       />
       <ReviewList :rootSub="arg.rootSub" class="ml-2 mt-5" />
     </div>
-    <v-row v-if="download" justify="center">
+    <v-row v-if="reviews.length && download" justify="center">
       <v-btn :href="download" download="data.json" class="my-5"
         >Download reviews above</v-btn
       >
@@ -46,20 +46,20 @@ export default {
       // TODO: Return generator to improve performance.
       return Object.values(this.$store.state.reviews).filter(({ payload }) => {
         // Pick only ones for selected subject or issuer.
-        const isSelected =
-          payload.sub === this.rootSub ||
-          (payload.iss === this.rootIss && !payload.sub.startsWith(MARESI))
+        const isSelected = payload.sub === this.rootSub
         const isFiltered =
-          !this.filters.length ||
-          this.filters.some((filter) => payload.sub.startsWith(filter))
-        return isSelected && isFiltered
+          payload.iss === this.rootIss &&
+          !payload.sub.startsWith(MARESI) &&
+          (!this.filters.length ||
+            this.filters.some((filter) => payload.sub.startsWith(filter)))
+        return isSelected || isFiltered
       })
     },
     listArgs() {
       return this.reviews.map((r) => {
         return {
           review: r,
-          issuer: this.$store.state.issuers[r.payload.iss],
+          issuer: this.$store.getters.issuer(r.payload.iss),
           maresiSubject: this.maresiSubject(r.signature),
           subjectTitle: this.subjectTitle(r.payload.sub),
           rootSub: this.maresi(r.signature)
@@ -72,6 +72,15 @@ export default {
         (!this.rootSub || !this.rootSub.startsWith(MARESI)) &&
         downloadLink(this.reviews)
       )
+    },
+    noReviewsMessage() {
+      if (!this.download || this.reviews.length) {
+        return null
+      } else if (this.rootSub) {
+        return 'Be the first to review!'
+      } else {
+        return 'No reviews yet'
+      }
     }
   },
   methods: {

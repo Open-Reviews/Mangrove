@@ -7,6 +7,7 @@
     accept="image/*"
     prepend-icon="mdi-camera-plus"
     clear-icon="mdi-delete-forever"
+    class="mb-2; mx-2"
     multiple
   >
     <template v-slot:selection="{ index }">

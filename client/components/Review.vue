@@ -210,7 +210,8 @@ export default {
     subjectWithTitle() {
       return {
         ...this.maresiSubject,
-        title: displayName(this.payload.metadata)
+        title: displayName(this.payload.metadata),
+        metadata: this.personalMeta
       }
     },
     mine() {
@@ -247,13 +248,6 @@ export default {
     showFlag(review) {
       this.flagSubject = this.subjectWithTitle
     },
-    issueFlag(review) {
-      const claim = this.payloadSub(review.signature)
-      claim.rating = 0
-      // The review being reviewed is displayed above.
-      claim.metadata = this.personalMeta
-      this.$store.dispatch('submitReview', claim)
-    },
     showRaw(review) {
       this.raw.json = JSON.stringify(
         { signature: review.signature, payload: review.payload },
@@ -270,7 +264,7 @@ export default {
       return displayName(this.payload.metadata)
     },
     selectSubject() {
-      this.$store.dispatch('selectSubject', ['', this.review.sub])
+      this.$store.dispatch('selectSubject', ['', this.payload.sub])
     }
   }
 }

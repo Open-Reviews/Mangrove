@@ -1,6 +1,5 @@
 import {
   EMPTY_SUBJECTS,
-  ADD_SUBJECTS,
   SEARCH_ERROR,
   SET_QUERY,
   START_SEARCH,
@@ -38,8 +37,10 @@ Searches for subjects and returns and object for each:
 
 export default function({ store, $axios, route }) {
   const query = route.query.q
-  // Do not run if there is no query and specific subject is not selected.
-  if (
+  if (!query && route.query.sub) {
+    return
+  } else if (
+    // Do not run if there is no query and specific subject is not selected.
     !query ||
     // Do not run if query is the same or geo query is the same.
     (store.state.query.q === query && store.state.query.geo === route.query.geo)
@@ -51,9 +52,9 @@ export default function({ store, $axios, route }) {
   store.commit(EMPTY_SUBJECTS)
   store.commit(SET_QUERY, { q: query, geo: route.query.geo })
   const queries = Promise.all([
-    storeWithRating(store, searchUrl(query)),
+    store.dispatch('storeWithRating', searchUrl(query)),
     searchGeo($axios, query, route.query.geo)
-      .then((subjects) => storeWithRating(store, subjects))
+      .then((subjects) => store.dispatch('storeWithRating', subjects))
       .catch((error) => {
         store.commit(
           SEARCH_ERROR,
@@ -63,7 +64,7 @@ export default function({ store, $axios, route }) {
         console.log('Nominatim error: ', error)
       }),
     searchIsbn($axios, query)
-      .then((subjects) => storeWithRating(store, subjects))
+      .then((subjects) => store.dispatch('storeWithRating', subjects))
       .catch((error) => {
         store.commit(
           SEARCH_ERROR,
@@ -73,7 +74,7 @@ export default function({ store, $axios, route }) {
         console.log('OpenLibrary error: ', error)
       }),
     searchLei($axios, query)
-      .then((subjects) => storeWithRating(store, subjects))
+      .then((subjects) => store.dispatch('storeWithRating', subjects))
       .catch((error) => {
         store.commit(
           SEARCH_ERROR,
@@ -92,8 +93,8 @@ export default function({ store, $axios, route }) {
         )
       })
       .then((allSubjects) =>
-        storeWithRating(
-          store,
+        store.dispatch(
+          'storeWithRating',
           allSubjects.filter(({ scheme }) => scheme !== MARESI)
         )
       )
@@ -115,32 +116,8 @@ export default function({ store, $axios, route }) {
     queries,
     new Promise((resolve) => setTimeout(resolve, 2000))
   ]).then(() => {
-    // Respect the query selection.
-    if (store.getters.subject(route.query.sub)) {
-      store.dispatch('selectSubject', [route.query, route.query.sub])
-    }
     store.commit(STOP_SEARCH)
   })
-}
-
-function storeWithRating(store, rawSubjects) {
-  rawSubjects.length &&
-    store
-      .dispatch(
-        'bulkSubjects',
-        rawSubjects.map((raw) => raw.sub)
-      )
-      .then((subjects) => {
-        if (subjects) {
-          rawSubjects.map((raw) => {
-            const rawQuality = subjects[raw.sub].quality
-            // Quality is null when there are no reviews.
-            subjects[raw.sub].quality = rawQuality && (rawQuality + 25) / 25
-            subjects[raw.sub] = { ...raw, ...subjects[raw.sub] }
-          })
-          store.commit(ADD_SUBJECTS, subjects)
-        }
-      })
 }
 
 function searchUrl(input) {

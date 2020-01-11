@@ -11,7 +11,7 @@ export const state = () => ({
   keyPair: null,
   publicKey: null,
   alphaWarning: true,
-  isSearching: true,
+  isSearching: false,
   query: { q: null, geo: null },
   // Object from sub (URI) to subject info, see `middleware/search.js` for details.
   subjects: {},
@@ -80,6 +80,9 @@ export const mutations = {
 export const getters = {
   subject: (state) => (sub) => {
     return state.subjects[sub] || console.log('not present in subjects', sub)
+  },
+  issuer: (state) => (iss) => {
+    return state.issuers[iss] || console.log('not present in issuers', iss)
   }
 }
 
@@ -184,6 +187,23 @@ export const actions = {
         }
       })
   },
+  storeWithRating({ commit, dispatch }, rawSubjects) {
+    rawSubjects.length &&
+      dispatch(
+        'bulkSubjects',
+        rawSubjects.map((raw) => raw.sub)
+      ).then((subjects) => {
+        if (subjects) {
+          rawSubjects.map((raw) => {
+            const rawQuality = subjects[raw.sub].quality
+            // Quality is null when there are no reviews.
+            subjects[raw.sub].quality = rawQuality && (rawQuality + 25) / 25
+            subjects[raw.sub] = { ...raw, ...subjects[raw.sub] }
+          })
+          commit(t.ADD_SUBJECTS, subjects)
+        }
+      })
+  },
   reviewContent({ state }, stubClaim) {
     // Assumes stubClaim contains at least `sub`
     // Add mandatory fields.
@@ -195,7 +215,7 @@ export const actions = {
     // Add field only if it is not empty.
     if (stubClaim.rating != null) payload.rating = stubClaim.rating
     if (stubClaim.opinion) payload.opinion = stubClaim.opinion
-    if (stubClaim.extra_hashes.length)
+    if (stubClaim.extra_hashes && stubClaim.extra_hashes.length)
       payload.extra_hashes = stubClaim.extra_hashes
     const meta = { ...stubClaim.metadata, ...state.metadata }
     // Remove empty metadata fields.
@@ -264,17 +284,19 @@ export const actions = {
     )
   },
   // Adjust the route and save reviews for the given subject locally.
-  selectSubject({ dispatch }, [query, sub]) {
+  selectSubject({ commit, dispatch }, [oldQuery, sub]) {
     console.log('Selecting subject: ', sub)
+    const query = { sub, q: oldQuery.q, [GEO]: oldQuery.geo }
+    commit(t.SET_QUERY, query)
     this.app.router.push({
       path: 'search',
-      query: { sub, q: query.q, [GEO]: query.geo }
+      query
     })
     dispatch('saveReviews', { sub })
   },
-  getIssuer({ state, commit }, pubkey) {
+  getIssuer({ getters, commit }, pubkey) {
     return (
-      state.issuers[pubkey] ||
+      getters.issuer(pubkey) ||
       this.$axios
         .get(`${process.env.VUE_APP_API_URL}/issuer/${pubkey}`)
         .then(({ data }) => {

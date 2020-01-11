@@ -155,7 +155,6 @@ export function olDocToSubject(doc) {
 
 // TODO: make appropriate queries to learn more about these
 export function subsToSubjects(axios, subs) {
-  console.log('getting subjects: ', subs)
   return subs
     ? subs.map(async (sub) => {
         const scheme = subToScheme(sub)

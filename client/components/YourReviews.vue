@@ -14,7 +14,6 @@
 <script>
 import SchemeFilter from './SchemeFilter'
 import ReviewList from './ReviewList'
-import { ADD_SUBJECTS } from '~/store/mutation-types'
 import { subsToSubjects } from '~/store/apis'
 
 export default {
@@ -32,7 +31,7 @@ export default {
       )
     subsToSubjects(this.$axios, subs).map((promise) => {
       promise.then((subject) =>
-        this.$store.commit(ADD_SUBJECTS, { [subject.sub]: subject })
+        this.$store.dispatch('storeWithRating', [subject])
       )
     })
   }

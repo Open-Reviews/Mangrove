@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="value" persistent width="600">
+  <v-dialog :value="value" persistent width="600">
     <v-card>
       <v-card-title>
         Flagging a review
@@ -25,7 +25,10 @@
               <v-checkbox
                 v-model="selectedReasons"
                 :value="item"
-                :rules="[countCheck]"
+                :disabled="
+                  selectedReasons.length >= MAX_REASONS_COUNT &&
+                    selectedReasons.indexOf(item) === -1
+                "
               />
             </v-list-item-action>
             <v-list-item-content>
@@ -37,17 +40,27 @@
         <v-list-item>
           <v-textarea
             v-model="otherReason"
-            :counter="MAX_OPINION_LENGTH - opinion.length"
+            :counter="maxOtherLength"
+            :maxlength="maxOtherLength"
           />
         </v-list-item>
       </v-list>
-      {{ opinion }}
       <v-card-actions>
         <v-spacer />
         <v-btn @click="$emit('input', null)" text>
           Cancel
         </v-btn>
+        <v-btn
+          @click="issueFlag"
+          :disabled="!selectedOpinion.length && !otherReason.length"
+          text
+        >
+          Flag as inappropriate
+        </v-btn>
       </v-card-actions>
+      <v-alert v-if="error" type="error" border="left" elevation="8">
+        Error encountered: {{ error }}
+      </v-alert>
     </v-card>
   </v-dialog>
 </template>
@@ -57,6 +70,7 @@ import { MAX_OPINION_LENGTH } from '~/utils'
 
 export default {
   props: {
+    // Subject that can be flagged with this form.
     value: Object
   },
   data() {
@@ -79,17 +93,43 @@ export default {
           ]
         }
       ],
+      // Each item is a vec with two items:
+      // rating indicated by reason and the reason description.
       selectedReasons: [],
       otherReason: '',
-      countCheck(input) {
-        return input.length <= 3
-      },
+      rating: null,
+      MAX_REASONS_COUNT: 3,
       MAX_OPINION_LENGTH
     }
   },
   computed: {
-    opinion() {
-      return this.selectedReasons.concat([this.otherReason]).join('. ')
+    selectedOpinion() {
+      return this.selectedReasons.join('. ')
+    },
+    maxOtherLength() {
+      return MAX_OPINION_LENGTH - this.selectedOpinion.length
+    },
+    error() {
+      return this.$store.state.errors.submit
+    }
+  },
+  methods: {
+    issueFlag() {
+      // Rate 0 only in case of violation.
+      const rating = this.flagReasons[0].items.filter((value) =>
+        this.selectedReasons.includes(value)
+      ).length
+        ? 0
+        : 1
+      const claim = {
+        sub: this.value.sub,
+        metadata: this.value.metadata,
+        rating,
+        opinion: [this.selectedOpinion, this.otherReason].join('. ')
+      }
+      this.$store
+        .dispatch('submitReview', claim)
+        .then((result) => result && this.$emit('input', null))
     }
   }
 }

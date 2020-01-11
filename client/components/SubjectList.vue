@@ -127,9 +127,13 @@ export default {
       return this.$store.state.filters
     },
     subjects() {
-      const all = Object.values(this.$store.state.subjects).filter(
-        (subject) => subject.scheme !== MARESI
-      )
+      const selected = this.$store.getters.subject(this.$route.query.sub)
+      const all =
+        !this.$route.query.q && selected
+          ? [selected]
+          : Object.values(this.$store.state.subjects).filter(
+              (subject) => subject.scheme !== MARESI
+            )
       const list = this.filters.length
         ? all.filter((subject) =>
             this.filters.some((filter) => {
@@ -143,11 +147,15 @@ export default {
           (s2.importance || s2.quality) - (s1.importance || s1.quality)
       )
       // Select first subject after done searching if one is not selected.
-      if (!this.$store.state.isSearching && !this.$route.query.sub) {
-        const first = sorted[0]
-        if (first && first.sub) {
-          this.$store.dispatch('selectSubject', [this.$route.query, first.sub])
-        }
+      const routeSub = this.$route.query.sub
+      if (
+        // Once searching is done.
+        !this.$store.state.isSearching &&
+        // Select if no sub in route or if the sub in route is different.
+        (!routeSub || routeSub !== this.$store.state.query.sub)
+      ) {
+        const selected = routeSub || (sorted[0] && sorted[0].sub)
+        this.$store.dispatch('selectSubject', [this.$route.query, selected])
       }
       return sorted
     },
