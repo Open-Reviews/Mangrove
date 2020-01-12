@@ -52,9 +52,10 @@ fn submit_review_json(conn: DbConn, review: Json<Review>) -> Result<String, Erro
     Ok("true".into())
 }
 
+/// Just like `Review`, but with `payload` encoded as CBOR instead of JSON.
 #[derive(Debug, Deserialize, JsonSchema)]
 pub struct CborReview {
-    /// base64url encoded signature.
+    /// ECDSA signature of the `payload` by the review issuer.
     pub signature: String,
     /// CBOR base64url encoded payload.
     pub payload: String
@@ -82,10 +83,15 @@ fn submit_review_cbor(conn: DbConn, creview: Json<CborReview>) -> Result<String,
     Ok("true".into())
 }
 
+/// Return type used to provide `Review`s and any associated data.
 #[derive(Debug, Serialize, JsonSchema)]
 struct Reviews {
+    /// A list of reviews satisfying the `Query`.
     reviews: Vec<Review>,
+    /// A map from public keys to information about issuers.
     issuers: Option<Issuers>,
+    /// A map from Review identifiers (`urn:maresi:<signature>`)
+    /// to information about the reviews of that review.
     maresi_subjects: Option<Subjects>,
 }
 
@@ -169,9 +175,12 @@ fn get_issuer(conn: DbConn, iss: String) -> Result<Json<Issuer>, Error> {
     Issuer::compute(&conn, iss).map(Json)
 }
 
+/// Query allowing for retrieval of information about multiple subjects or issuers.
 #[derive(Debug, Deserialize, JsonSchema)]
 struct BatchQuery {
+    /// List of subject URIs to get information about.
     subs: Option<Vec<String>>,
+    /// List of issuer public keys to get information about.
     isss: Option<Vec<String>>,
 }
 

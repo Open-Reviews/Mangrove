@@ -28,7 +28,9 @@ struct Metadata(BTreeMap<String, serde_json::Value>);
 )]
 #[primary_key(signature)]
 pub struct Review {
+    /// ECDSA signature of the `payload` by the review issuer.
     pub signature: String,
+    /// Primary content of the review.
     #[diesel(embed)]
     pub payload: Payload
 }
@@ -46,23 +48,30 @@ impl Review {
     }
 }
 
+/// Primary content of the review, this is what gets serialized for signing.
 #[derive(
     Debug, PartialEq, Serialize, Deserialize, Insertable, Queryable, JsonSchema,
 )]
 #[table_name = "reviews"]
 pub struct Payload {
-    /// Reviewer public key.
+    /// Public key of the issuer of the review.
     pub iss: String,
-    /// Time at which the review was signed.
+    /// Unix Time at which the review was signed.
     pub iat: i64,
-    /// URI of the object that is being reviewed.
+    /// URI of the subject that is being reviewed.
     pub sub: String,
+    /// Rating in range [0, 100] indicating how likely
+    /// the issuer is to recommend the subject.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub rating: Option<Rating>,
+    /// Text of an opinion that the issuer had about the subject.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub opinion: Option<String>,
+    /// Hashes referring to additional data,
+    /// such as pictures available at https://files.mangrove.network/<hash>
     #[serde(skip_serializing_if = "Option::is_none")]
     pub extra_hashes: Option<serde_json::Value>,
+    /// Any data relating to the issuer or circumstances of leaving review.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<serde_json::Value>,
 }

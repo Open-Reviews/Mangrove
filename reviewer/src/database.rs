@@ -8,20 +8,29 @@ use schemars::JsonSchema;
 #[database("pg_reviews")]
 pub struct DbConn(diesel::PgConnection);
 
-/// TODO: allow metadata and extradata
+/// Query data used to specify which reviews should be returned.
+/// Review fulfills the query if all conditions are satisfied (intersection).
 #[derive(Default, Debug, FromForm, JsonSchema)]
 pub struct Query {
     /// Search for reviews with this string in `sub` and `opinion` fields.
     pub q: Option<String>,
+    /// Return review with this `signature` value.
     pub signature: Option<String>,
+    /// Return reviews by this issuer.
     pub iss: Option<String>,
+    /// Return reviews issued at this time.
     pub iat: Option<i64>,
     /// Return reviews with timestamp greater than this.
     pub gt_iat: Option<i64>,
+    /// Return reviews with the given subject.
     pub sub: Option<String>,
+    /// Return reviews with the given rating.
     pub rating: Option<i16>,
+    /// Return reviews with the given opinion.
     pub opinion: Option<String>,
+    /// Include aggregate information about review issuers.
     pub issuers: Option<bool>,
+    /// Include aggregate information about reviews of returned reviews.
     pub maresi_subjects: Option<bool>,
 }
 

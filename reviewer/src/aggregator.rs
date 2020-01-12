@@ -27,7 +27,9 @@ pub trait Statistic {
 /// Information about a subject of reviews.
 #[derive(Debug, Serialize, JsonSchema)]
 pub struct Subject {
+    /// URI uniquely identifying the subject.
     pub sub: String,
+    /// Aggregate number representing quality of the subject.
     pub quality: Option<usize>,
     /// Number of reviews given to this subject.
     pub count: usize,
