@@ -9,7 +9,7 @@ const action = process.argv[3]
 const payload = JSON.parse(process.argv[4])
 
 if (action === 'encode') {
-  console.log([...lib.encode(payload)])
+  console.dir([...lib.encode(payload)], {'maxArrayLength': null})
 } else if (action === 'decode') {
   console.log(lib.decode(new Uint8Array(payload)))
 } else {

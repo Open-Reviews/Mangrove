@@ -40,7 +40,9 @@ fn index() -> &'static str {
 #[put("/submit", format = "application/json", data = "<review>")]
 fn submit_review_json(conn: DbConn, review: Json<Review>) -> Result<String, Error> {
     info!("Review received: {:?}", review);
-    review.check_signature(&serde_cbor::to_vec(&review.payload)?).map_err(|e| {
+    // Put into a `serde_cbor::Value` to make sure CBOR is canonical.
+    let cbor_value = serde_cbor::value::to_value(&review.payload).unwrap();
+    review.check_signature(&serde_cbor::to_vec(&cbor_value)?).map_err(|e| {
         info!("{:?}", e);
         e
     })?;
@@ -58,6 +60,8 @@ pub struct CborReview {
     pub payload: String
 }
 
+/// Submit a review with payload encoded in CBOR,
+/// useful for clients that do not have access to Canonical CBOR implementation.
 #[openapi(skip)]
 #[put("/submit", format = "application/cbor", data = "<creview>")]
 fn submit_review_cbor(conn: DbConn, creview: Json<CborReview>) -> Result<String, Error> {
