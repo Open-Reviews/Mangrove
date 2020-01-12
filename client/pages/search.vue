@@ -1,14 +1,14 @@
 <template>
   <v-row>
-    <v-col style="height: 90vh;width: 40vw" class="overflow-y-auto">
-      <v-row>
+    <v-col style="height: 95vh" class="overflow-y-auto pl-12">
+      <v-row class="px-5">
         <SearchBox />
       </v-row>
       <v-row>
         <SubjectList />
       </v-row>
     </v-col>
-    <v-col>
+    <v-col style="height: 95vh" class="overflow-y-auto pr-12">
       <SubjectProfile />
     </v-col>
   </v-row>
@@ -28,3 +28,9 @@ export default {
   middleware: 'search'
 }
 </script>
+
+<style>
+html {
+  overflow-y: hidden;
+}
+</style>

@@ -33,11 +33,12 @@
       </div>
     </v-app-bar>
     <v-content>
-      <v-container style="max-width: 1200px">
+      <v-container v-if="$route.path !== '/search'" style="max-width: 1200px">
         <nuxt />
       </v-container>
+      <nuxt v-else />
     </v-content>
-    <v-footer app absolute>
+    <v-footer v-if="$route.path !== '/search'" app absolute padless>
       <v-col>
         <v-btn
           v-for="internal in internals"
