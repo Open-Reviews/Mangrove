@@ -7,8 +7,6 @@ dist/
 target/
 .ipynb_checkpoints/
 test
-reviewer/.env
-client/.env
-file_hoster/files
-data/scraper
-data/sources
+servers/file_hoster/files
+servers/reviewer/.env
+ui/.env

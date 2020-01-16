@@ -8,9 +8,9 @@ This repository contains:
 - [Mangrove Review Standard](Mangrove_Review_Standard.md)
 - [Mangrove Original Services Terms of Use](Mangrove_Original_Services_ToU.md)
 - Mangrove Original Server implementation as [Lambda](https://aws.amazon.com/lambda/) using [Rocket](https://rocket.rs/)
-  - [Reviewer Lambda](reviewer) accessing PostgreSQL database
-  - [File Hoster Lambda](file_hoster) accessing an S3 bucket
-- [Mangrove Original UI](client) implementation
+  - [Reviewer Lambda](servers/reviewer) accessing PostgreSQL database
+  - [File Hoster Lambda](servers/file_hoster) accessing an S3 bucket
+- [Mangrove Original UI](ui) implementation
   - Client using Vue.js
 
 ## Local testing
@@ -26,7 +26,7 @@ rustup default nightly
 
 Run the UI:
 ```
-cd client
+cd ui
 yarn install
 yarn dev
 cd ..
@@ -42,7 +42,7 @@ diesel setup
 
 Build and run the server.
 ```
-cd reviewer
+cd servers/reviewer
 cargo run
 ```
 
@@ -51,7 +51,7 @@ See [initial autotmated API docs here](https://api.mangrove.network/swagger-ui).
 ### Mangrove File Server
 
 ```
-cd file_hoster
+cd servers/file_hoster
 cargo run
 ```
 
@@ -71,8 +71,8 @@ Requirements:
 Adjust the name of S3 buckets in the scripts below and run:
 
 ```
-./file_hoster/deploy.sh
-./reviewer/deploy.sh
+./servers/file_hoster/deploy.sh
+./servers/reviewer/deploy.sh
 ```
 
 Run the `script` in `.gitlab-ci.yml` making sure to use your own S3 bucket.

@@ -15,10 +15,10 @@ deploy:
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
-    - client/node_modules/
+    - ui/node_modules/
 
   script:
-  - cd client
+  - cd ui
   - yarn install
   - yarn generate
   - aws s3 rm s3://$S3_BUCKET --recursive
