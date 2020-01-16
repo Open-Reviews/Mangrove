@@ -68,7 +68,7 @@ pub struct Payload {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub opinion: Option<String>,
     /// Hashes referring to additional data,
-    /// such as pictures available at https://files.mangrove.network/<hash>
+    /// such as pictures available at https://files.mangrove.reviews/<hash>
     #[serde(skip_serializing_if = "Option::is_none")]
     pub extra_hashes: Option<serde_json::Value>,
     /// Any data relating to the issuer or circumstances of leaving review.
