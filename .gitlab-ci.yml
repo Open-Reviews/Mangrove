@@ -3,8 +3,8 @@ variables:
   CI_DEBUG_TRACE: "true"
   BASE_URL: "https://mangrove.network"
   VUE_APP_API_URL: "https://api.mangrove.network"
-  VUE_APP_FILES_URL: "https://files.mangrove.network"
-  VUE_APP_UPLOAD_URL: "https://upload.mangrove.network"
+  VUE_APP_FILES_URL: "https://files.mangrove.reviews"
+  VUE_APP_UPLOAD_URL: "https://upload.mangrove.reviews"
 
 deploy:
   only:
