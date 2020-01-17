@@ -30,6 +30,10 @@ export function displayName(meta) {
   }
 }
 
+export function isMobile() {
+  return navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i)
+}
+
 async function deriveKey() {
   const keypair = await window.crypto.subtle.generateKey(
     {

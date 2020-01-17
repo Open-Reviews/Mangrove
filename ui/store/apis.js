@@ -152,19 +152,22 @@ function isbnToSubject(axios, isbn) {
 }
 
 export function olDocToSubject(doc) {
-  return doc.isbn
-    ? {
-        sub: `${ISBN}:${doc.isbn[0]}`,
-        scheme: ISBN,
-        title: doc.subtitle ? `${doc.title}: ${doc.subtitle}` : doc.title,
-        subtitle: `by ${doc.author_name && doc.author_name.join(', ')}`,
-        description: `Published ${doc.first_publish_year} · ${doc.isbn.length} editions`,
-        isbn: doc.isbn[0],
-        website: `https://openlibrary.org${doc.key}`,
-        image: `http://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg`,
-        subjects: doc.subject
-      }
-    : null
+  if (doc.isbn) {
+    const subject = {
+      sub: `${ISBN}:${doc.isbn[0]}`,
+      scheme: ISBN,
+      title: doc.subtitle ? `${doc.title}: ${doc.subtitle}` : doc.title,
+      subtitle: `by ${doc.author_name && doc.author_name.join(', ')}`,
+      description: `Published ${doc.first_publish_year} · ${doc.isbn.length} editions`,
+      isbn: doc.isbn[0],
+      website: `https://openlibrary.org${doc.key}`,
+      subjects: doc.subject
+    }
+    if (doc.cover_i) {
+      subject.image = `http://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg`
+    }
+    return subject
+  }
 }
 
 // TODO: make appropriate queries to learn more about these

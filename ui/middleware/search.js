@@ -53,7 +53,9 @@ export default function({ store, $axios, route }) {
   // Do not empty too ealy so that search message has time to render.
   store.commit(EMPTY_SUBJECTS)
   const queries = Promise.all([
-    store.dispatch('storeWithRating', searchUrl(query)),
+    searchUrl($axios, query)
+      .then((subjects) => store.dispatch('storeWithRating', subjects))
+      .catch((error) => console.log('Not a website: ', error)),
     searchGeo($axios, query, route.query.geo)
       .then((subjects) => store.dispatch('storeWithRating', subjects))
       .catch((error) => {
@@ -121,16 +123,23 @@ export default function({ store, $axios, route }) {
   })
 }
 
-function searchUrl(input) {
-  const search = []
-  if (input.includes('.')) {
-    // Use a very basic test if the query is a URL,
-    // people rarely use period in queries otherwise.
-    // Try to recover a valid url.
-    const url = new URL(input.startsWith('http') ? input : `https://${input}`)
-    const urlString = `${url.protocol}//${url.hostname}`
-    if (url) {
-      search.push({
+async function searchUrl(axios, input) {
+  // Try to recover a valid url.
+  const url = new URL(input.startsWith('http') ? input : `https://${input}`)
+  if (!url) {
+    return
+  }
+  const urlString = `${url.protocol}//${url.hostname}`
+  const icoWidth = await new Promise((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => resolve(img.naturalWidth)
+    img.onerror = reject
+    img.src = urlString + '/favicon.ico'
+  })
+  console.log('width: ', icoWidth)
+  if (icoWidth) {
+    return [
+      {
         sub: urlString,
         // Remove the trailing colon
         scheme: HTTPS,
@@ -138,10 +147,9 @@ function searchUrl(input) {
         subtitle: '',
         description: '',
         website: urlString
-      })
-    }
+      }
+    ]
   }
-  return search
 }
 
 function searchIsbn(axios, input) {

@@ -30,8 +30,8 @@
             <v-card-subtitle>{{ subject.subtitle }}</v-card-subtitle>
             <v-card-text v-html="subject.description" />
           </v-col>
-          <v-col v-if="subject.image" cols="4">
-            <v-img :src="subject.image" class="mr-5" />
+          <v-col v-if="subject.image" cols="3">
+            <v-img :src="subject.image" class="mr-5 elevation-3" />
           </v-col>
         </v-row>
       </v-card>
@@ -147,7 +147,7 @@ export default {
         : all
       const sorted = list.sort(
         (s1, s2) =>
-          (s2.importance || s2.quality) - (s1.importance || s1.quality)
+          (s2.quality || s2.importance) - (s1.quality || s1.importance)
       )
       // Select first subject after done searching if one is not selected.
       const routeSub = this.$route.query.sub
@@ -158,7 +158,9 @@ export default {
         (!routeSub || routeSub !== this.$store.state.query.sub)
       ) {
         const selected = routeSub || (sorted[0] && sorted[0].sub)
-        this.$store.dispatch('selectSubject', [this.$route.query, selected])
+        if (selected) {
+          this.$store.dispatch('selectSubject', [this.$route.query, selected])
+        }
       }
       return sorted
     },
@@ -177,3 +179,10 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.v-card__text,
+.v-card__title {
+  word-break: normal;
+}
+</style>

@@ -247,12 +247,12 @@ export const actions = {
   submitReview({ commit, dispatch }, reviewStub) {
     return dispatch('reviewContent', reviewStub).then(
       ({ signature, encodedPayload, payload }) => {
-        const review = { signature, payload }
+        const review = { signature, payload: encodedPayload }
         console.log('Mangrove review: ', review)
         return this.$axios
           .put(`${process.env.VUE_APP_API_URL}/submit`, review, {
             headers: {
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/cbor'
             }
           })
           .then(() => {

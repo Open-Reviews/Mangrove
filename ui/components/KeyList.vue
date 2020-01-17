@@ -10,13 +10,18 @@
       <v-list-item-content>
         <v-list-item-title v-if="sk">XXXXXXXXXX</v-list-item-title>
         <v-list-item-title v-else>{{
-          key.slice(0, 10) + '...'
+          key.slice(0, 10) + '...' + key.slice(-10)
         }}</v-list-item-title>
       </v-list-item-content>
       <v-list-item-action>
-        <v-btn @click="copy(key)" icon>
-          <v-icon>mdi-content-copy</v-icon>
-        </v-btn>
+        <v-tooltip top>
+          <template v-slot:activator="{ on }">
+            <v-btn @click="copy(key)" v-on="on" icon>
+              <v-icon>mdi-content-copy</v-icon>
+            </v-btn>
+          </template>
+          Copy to clipboard
+        </v-tooltip>
       </v-list-item-action>
       <v-list-item-action v-if="sk">
         <v-btn>

@@ -121,7 +121,9 @@ export default {
         sub: this.subject.sub,
         opinion: this.opinion,
         extra_hashes: this.extraHashes,
-        metadata: { is_affiliated: this.checkBoxes.isAffiliated ? true : null }
+        metadata: {
+          is_affiliated: this.checkBoxes.isAffiliated ? `true` : null
+        }
       }
       if (this.rating) {
         stub.rating = this.rating * 25 - 25

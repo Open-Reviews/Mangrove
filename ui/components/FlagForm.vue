@@ -6,20 +6,21 @@
       </v-card-title>
       <v-divider />
       <v-card-subtitle>
-        Thank you for flagging up inappropriate reviews. The Mangrove team will
-        remove reviews that breach the Terms of Use from the dataset.
-        Low-quality reviews will remain in the dataset, but will have a reduced
-        influence on the overall rating.
+        Thank you for flagging up inappropriate reviews.
+        <b>Reviews that violate the Terms of Use</b> will be removed from the
+        dataset. <b>Low-quality reviews</b>
+        will remain in the dataset, but will have a reduced influence on the
+        overall rating.
         <br />
-        <br />
-        <b>Please indicate your reason to flag this review as inappropriate:</b>
+        Please indicate <b>up to 3 reasons</b> why you are flagging this review
+        as inappropriate:
       </v-card-subtitle>
-      <v-list>
+      <v-list dense>
         <v-list-item-group
           v-for="reason in flagReasons"
           :key="reason.description"
         >
-          <v-subheader v-text="reason.description" />
+          <v-subheader v-text="reason.description" class="mt-n5" />
           <v-list-item v-for="item in reason.items" :key="item">
             <v-list-item-action>
               <v-checkbox

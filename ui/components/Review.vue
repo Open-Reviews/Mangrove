@@ -63,7 +63,7 @@
             @click="action.action(review.signature)"
             :disabled="mine"
             icon
-            class="mr-1"
+            class="mr-2"
           >
             <v-icon class="mr-1" small>{{ action.icon }}</v-icon>
             {{ action.number }}
@@ -72,7 +72,7 @@
         <span>{{ action.tooltip }}</span>
       </v-tooltip>
       <v-card-text class="ml-n5">
-        <div @click="requestResponses">
+        <div v-if="maresiSubject.count" @click="requestResponses">
           Read comments
         </div>
       </v-card-text>

@@ -31,7 +31,7 @@
     <v-card v-if="$store.state.publicKey" class="my-5">
       <KeyList sk>
         Private key |
-        <v-dialog v-model="explanationDialog" width="600">
+        <v-dialog width="600">
           <template v-slot:activator="{ on }">
             <a v-on="on"> &nbsp; Learn more about saving and exporting</a>
           </template>
@@ -46,7 +46,20 @@
         </v-dialog>
       </KeyList>
       <KeyList :keys="[$store.state.publicKey]">
-        Default public key | Learn more
+        Default public key |
+        <v-dialog width="600">
+          <template v-slot:activator="{ on }">
+            <a v-on="on"> &nbsp; Learn more</a>
+          </template>
+          <v-card>
+            <v-card-title>
+              What is a public key?
+            </v-card-title>
+            <v-card-text>
+              <span v-html="yourPublicKey" />
+            </v-card-text>
+          </v-card>
+        </v-dialog>
       </KeyList>
       <KeyList v-if="false" :keys="[$store.state.publicKey]">
         Other public keys
@@ -59,6 +72,8 @@
 <script>
 import KeyList from './KeyList'
 import { html as switchContent } from '~/content/settings/switch-account.md'
+import { html as yourPublicKey } from '~/content/settings/your-public-key.md'
+
 export default {
   components: {
     KeyList
@@ -71,7 +86,7 @@ export default {
         'Save the private key in a secure place accessible across devices, such as a password manager.',
       metadata: 'Mangrove private key',
       switchContent,
-      explanationDialog: false,
+      yourPublicKey,
       switcherDialog: false,
       secretInput: null,
       error: null

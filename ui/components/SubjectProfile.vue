@@ -93,7 +93,7 @@
 
 <script>
 import { transformExtent, get } from 'ol/proj'
-import { imageUrl } from '../utils'
+import { imageUrl, isMobile } from '../utils'
 import { GEO, LEI, ISBN } from '../store/scheme-types'
 import ReviewForm from './ReviewForm'
 import ReviewList from './ReviewList'
@@ -114,6 +114,12 @@ export default {
     },
     details() {
       const s = this.subject
+      const coordinates =
+        s.scheme === GEO &&
+        s.coordinates
+          .slice()
+          .reverse()
+          .join(', ')
       return [
         {
           icon: 'mdi-map-marker',
@@ -122,8 +128,9 @@ export default {
         {
           icon: 'mdi-compass',
           content:
-            s.scheme === GEO &&
-            `<a href="${s.sub}">${s.coordinates.join(', ')}</a>`
+            coordinates && isMobile()
+              ? `<a href="${s.sub}">${coordinates}</a>`
+              : coordinates
         },
         {
           icon: 'mdi-circle',
