@@ -1,41 +1,53 @@
 <template>
   <v-container>
-    <div v-if="subjects.length">
-      <v-card
+    <v-list v-if="subjects.length">
+      <v-list-item
         v-for="subject in subjects"
         :key="subject.sub"
         @click="select(subject.sub)"
-        :ripple="false"
-        :color="subject.sub === $route.query.sub ? 'success' : 'white'"
+        :input-value="subject.sub === $route.query.sub"
+        color="success"
         class="my-4"
+        three-line
         hover
+        style="align-items: start"
       >
-        <v-row align="center">
-          <v-col>
-            <v-chip small label class="mx-3">
-              {{ name(subject.scheme) }}
-            </v-chip>
-            <v-card-title>{{ subject.title }}</v-card-title>
-            <v-row align="center" class="mx-4 my-n4">
-              <v-rating
-                :value="subject.quality"
-                readonly
-                half-increments
-                dense
-                class="mr-2"
-              />
-              {{ subject.quality }}
-              ({{ subject.count }})
-            </v-row>
-            <v-card-subtitle>{{ subject.subtitle }}</v-card-subtitle>
-            <v-card-text v-html="subject.description" />
-          </v-col>
-          <v-col v-if="subject.image" cols="3">
-            <v-img :src="subject.image" class="mr-5 elevation-3" />
-          </v-col>
-        </v-row>
-      </v-card>
-    </div>
+        <v-chip small label class="ma-3" style="min-width: 80px">
+          {{ name(subject.scheme) }}
+        </v-chip>
+        <v-list-item-content>
+          <v-list-item-title>{{ subject.title }}</v-list-item-title>
+          <v-row align="center ml-auto">
+            <v-rating
+              :value="subject.quality"
+              readonly
+              half-increments
+              dense
+              class="mr-2"
+            />
+            {{ subject.quality }}
+            ({{ subject.count }})
+          </v-row>
+          <v-list-item-subtitle class="text--primary">{{
+            subject.subtitle
+          }}</v-list-item-subtitle>
+          <v-list-item-subtitle v-html="subject.description" />
+        </v-list-item-content>
+        <v-list-item-avatar
+          v-if="subject.image"
+          min-height="10vh"
+          min-width="7vh"
+          tile
+        >
+          <v-img
+            :src="subject.image"
+            min-height="10vh"
+            min-width="7vh"
+            class="elevation-3"
+          />
+        </v-list-item-avatar>
+      </v-list-item>
+    </v-list>
     <div v-else-if="$store.state.isSearching" v-html="searchingContent" />
     <div v-else v-html="missingContent" />
     <div v-if="showAdvice">

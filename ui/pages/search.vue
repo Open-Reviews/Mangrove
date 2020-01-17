@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <v-col style="height: 95vh" class="overflow-y-auto pl-12">
+    <v-col style="height: 95vh; padding-left: 20vh" class="overflow-y-auto">
       <v-row class="px-5">
         <SearchBox />
       </v-row>
@@ -8,7 +8,7 @@
         <SubjectList />
       </v-row>
     </v-col>
-    <v-col style="height: 95vh" class="overflow-y-auto pr-12">
+    <v-col style="height: 95vh; padding-right: 20vh" class="overflow-y-auto">
       <SubjectProfile />
     </v-col>
   </v-row>
