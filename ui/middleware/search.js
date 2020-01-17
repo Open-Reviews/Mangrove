@@ -49,8 +49,9 @@ export default function({ store, $axios, route }) {
   }
   // Stop it only once display is complete.
   store.commit(START_SEARCH)
-  store.commit(EMPTY_SUBJECTS)
   store.commit(SET_QUERY, { q: query, geo: route.query.geo })
+  // Do not empty too ealy so that search message has time to render.
+  store.commit(EMPTY_SUBJECTS)
   const queries = Promise.all([
     store.dispatch('storeWithRating', searchUrl(query)),
     searchGeo($axios, query, route.query.geo)

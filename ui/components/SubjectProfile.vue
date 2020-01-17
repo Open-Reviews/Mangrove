@@ -1,6 +1,6 @@
 <template>
   <v-container v-if="subject">
-    <v-row justify="center">
+    <v-row justify="center" style="position: relative">
       <vl-map
         ref="map"
         :load-tiles-while-animating="true"
@@ -31,8 +31,8 @@
       </vl-map>
       <v-btn
         @click="geoSearch"
-        absolute
         class="ma-3"
+        absolute
         style="background: rgb(255, 255, 255, 0.7)"
         >Search selected area</v-btn
       >
@@ -51,14 +51,14 @@
               max-width="80"
               contain
             />
-            <v-btn v-on="on" text>See more photos</v-btn>
+            <v-btn v-on="on" v-if="images.length > 5" text>More</v-btn>
           </v-row>
         </template>
         <v-card>
           <v-carousel height="auto">
             <v-carousel-item v-for="(image, i) in images" :key="i">
               <v-row>
-                <v-img :src="image" contain />
+                <v-img :src="image" max-height="90vh" contain />
               </v-row>
             </v-carousel-item>
           </v-carousel>

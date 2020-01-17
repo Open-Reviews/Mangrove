@@ -46,7 +46,7 @@ cd servers/reviewer
 cargo run
 ```
 
-See [initial autotmated API docs here](https://api.mangrove.network/swagger-ui). Two issues make them incomplete: [route descriptions](https://github.com/GREsau/okapi/issues/) and [content types](https://github.com/GREsau/okapi/issues/10).
+See [initial autotmated API docs here](https://api.mangrove.reviews/swagger-ui). Two issues make them incomplete: [route descriptions](https://github.com/GREsau/okapi/issues/) and [content types](https://github.com/GREsau/okapi/issues/10).
 
 ### Mangrove File Server
 

@@ -39,6 +39,9 @@
     <div v-else-if="$store.state.isSearching" v-html="searchingContent" />
     <div v-else v-html="missingContent" />
     <div v-if="showAdvice">
+      <div class="text-center">
+        No more results found for this search criteria
+      </div>
       <br />
       <h1>Can’t find what you were looking for?</h1>
       <div v-for="advice in adviceContent" :key="advice.title">
@@ -52,7 +55,7 @@
         </ul>
         <br />
       </div>
-      <v-row>
+      <v-row justify="space-around">
         <v-btn
           v-for="button in adviceButtons"
           :href="button.action"
