@@ -70,12 +70,14 @@ export default {
         light: {
           primary: colors.deepOrange.accent4,
           secondary: colors.amber.darken3,
-          accent: colors.grey.darken3
+          accent: colors.grey.darken3,
+          background: 'none'
         },
         dark: {
           primary: colors.blue.lighten3,
           secondary: colors.amber.darken3,
-          accent: colors.grey.darken3
+          accent: colors.grey.darken3,
+          background: 'none'
         }
       }
     }

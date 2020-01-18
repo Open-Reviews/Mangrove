@@ -90,19 +90,19 @@ We at Mangrove spent significant time researching state-of-the-art cryptographic
 *   **This information will be public and freely available in the open data set**, as part of the review content that you must make available under a free and open license (see “Licensing of Content”).
 
 
-### Identity in Mangrove, Public and Private Keys
+### Identity in Mangrove, Public and Secret Keys
 
 Identity does not have to mean your name, address, birthdate or any other personal data, although this is how other services typically want to ensure they know who their customers are, for many reasons. Identity in Mangrove only refers to the ability to identify the reviews written by the same person, without, however, having to know anything about the person. We use public key cryptography in order to create such an identity, with the public key being the identifier for any review. Before explaining the mechanics, we would like you to know why identity is important: 
 
 *   **Reliability**: the aggregation algorithm that computes the rating for an item gives higher weight to a review written by a person with a track record of quality reviews. Someone who aspires to have a higher influence on the rating therefore has to ensure that there is a link between the reviews they have written, and also, that they write reviews that other people find useful.
 *   **Discoverability**: the identity allows users to search for their own reviews or reviews of others. 
-*   **Control over data**: a user can find and delete their own review if the conditions for deletion are fulfilled, and if they hold the private key that corresponds to the public key of the review (i.e., if they can identify themselves as the writer of the particular review).
+*   **Control over data**: a user can find and delete their own review if the conditions for deletion are fulfilled, and if they hold the secret key that corresponds to the public key of the review (i.e., if they can identify themselves as the writer of the particular review).
 
-How it works: the first time a reviewer writes a review on the Mangrove website, the reviewer’s browser creates a cryptographic key pair: a public and a private key. The review is stored in the database together with the public key and any information that the reviewer chose to provide about themselves. Depending on the browser used, the corresponding private key may be stored temporarily in the user’s browser until the browser’s storage gets cleared. But it can also be manually saved by the user in their password manager or something similarly secure. The private key is then used in order to “sign” and submit the review, proving the user’s control over the public key. The mechanics are explained in more depth in the [“Reviewer’s Guidelines”]().
+How it works: the first time a reviewer writes a review on the Mangrove website, the reviewer’s browser creates a cryptographic key pair: a public and a secret key. The review is stored in the database together with the public key and any information that the reviewer chose to provide about themselves. Depending on the browser used, the corresponding secret key may be stored temporarily in the user’s browser until the browser’s storage gets cleared. But it can also be manually saved by the user in their password manager or something similarly secure. The secret key is then used in order to “sign” and submit the review, proving the user’s control over the public key. The mechanics are explained in more depth in the [“Reviewer’s Guidelines”]().
 
-As the creation of the cryptographic key pair happens purely on the users device (client side), Mangrove does not have access to and does not store the private key. In case of loss, Mangrove cannot restore it, and the user will have to create another key pair, losing the link to all previous reviews, as well as the possibility to delete them.
+As the creation of the cryptographic key pair happens purely on the users device (client side), Mangrove does not have access to and does not store the secret key. In case of loss, Mangrove cannot restore it, and the user will have to create another key pair, losing the link to all previous reviews, as well as the possibility to delete them.
 
-**By accepting these Terms of Use, you confirm your understanding that you are fully responsible for safeguarding your private key and that there is no recovery method in case of loss. You should never disclose it to any third party. You accept that we cannot delete reviews unless they are in breach with these Terms. You accept that you need to hold the private key in order to delete a review that corresponds to it, as only the possession of the private key can identify you as the legitimate author of that review. **
+**By accepting these Terms of Use, you confirm your understanding that you are fully responsible for safeguarding your secret key and that there is no recovery method in case of loss. You should never disclose it to any third party. You accept that we cannot delete reviews unless they are in breach with these Terms. You accept that you need to hold the secret key in order to delete a review that corresponds to it, as only the possession of the secret key can identify you as the legitimate author of that review. **
 
 
 ## <span style="text-decoration:underline;">3. Content We Host</span>
@@ -179,19 +179,19 @@ We envision the Mangrove database as a valuable collection of free knowledge and
 
 ### Conditions for Deletion
 
-*   A review can only be deleted by its author, the legitimate owner, because the deletion requires the private key that is only accessible to the owner (see “Identity in Mangrove” in the Privacy Policy). Neither Mangrove nor any third party can delete a review.
+*   A review can only be deleted by its author, the legitimate owner, because the deletion requires the secret key that is only accessible to the owner (see “Identity in Mangrove” in the Privacy Policy). Neither Mangrove nor any third party can delete a review.
 *   If a review has been commented on by other users, **it cannot be deleted anymore**, because that would lead to censorship of the content that was provided subsequently by others.
 
 
 ### Removal of Harmful Content
 
-*   Mangrove can only remove content from the database if it is violating the Terms, therefore considered “harmful content”. In case of removal, the content is not deleted but moved to a private database in order to be accessible to Mangrove in case of disputes. 
+*   Mangrove can only remove content from the database if it is violating the Terms, therefore considered “harmful content”. In case of removal, the content is not deleted but moved to a secret database in order to be accessible to Mangrove in case of disputes. 
 *   All users have the possibility to flag up harmful content, so that it raises quickly to our attention. Given that this is a non-profit and open initiative, it is impossible for the Mangrove operators to monitor all the content. Therefore, cannot guarantee that the database is free of harmful content, although we do our best to react fast to any flags.
 
 
-## <span style="text-decoration:underline;">6. Private Key Security</span>
+## <span style="text-decoration:underline;">6. Secret Key Security</span>
 
-You are responsible for safeguarding your private key and should never disclose it to any third party. Mangrove does not have access, does not store, and therefore cannot recover your private key.
+You are responsible for safeguarding your secret key and should never disclose it to any third party. Mangrove does not have access, does not store, and therefore cannot recover your secret key.
 
 
 ## <span style="text-decoration:underline;">7. Trademarks</span>

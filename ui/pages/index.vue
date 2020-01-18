@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container color="black">
     <span class="text-center">
       <h1 class="display-3 my-5">Read reviews. Write reviews.</h1>
       <h2 class="display-1">Find places, companies, websites, or books.</h2>
@@ -11,7 +11,7 @@
     </v-row>
     <v-row>
       <v-col v-for="feature in features" :key="feature.title">
-        <v-card min-height="300" min-width="300">
+        <v-card min-height="300" min-width="300" color="lime">
           <v-card-title>{{ feature.title }}</v-card-title>
           <v-card-text v-for="detail in feature.details" :key="detail">
             {{ detail }}

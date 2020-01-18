@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app :style="{ background: $vuetify.theme.themes[theme].background }">
     <v-app-bar app dense>
       <router-link to="/">
         <v-img src="mangrove.png" max-width="170" contain />
@@ -11,8 +11,9 @@
           :to="item.to"
           v-html="item.label"
           :key="item.to"
+          text
         />
-        <v-btn to="/settings"> <v-icon>mdi-account-circle</v-icon></v-btn>
+        <v-btn text to="/settings"> <v-icon>mdi-account-circle</v-icon></v-btn>
       </v-toolbar-items>
       <div class="hidden-md-and-up">
         <v-menu bottom left>
@@ -111,8 +112,20 @@ export default {
       ]
     }
   },
+  computed: {
+    theme() {
+      return this.$vuetify.theme.dark ? 'dark' : 'light'
+    }
+  },
   mounted() {
     this.$store.dispatch('generateKeypair')
   }
 }
 </script>
+
+<style>
+body {
+  background-image: url('https://images.pexels.com/photos/417173/pexels-photo-417173.jpeg?auto=compress&cs=tinysrgb&dpr=2');
+  background-size: cover;
+}
+</style>

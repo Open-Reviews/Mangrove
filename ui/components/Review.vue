@@ -4,6 +4,7 @@
       v-if="subjectTitle"
       v-text="subjectTitle"
       @click="selectSubject"
+      style="cursor: pointer"
     />
     <v-list-item class="mb-n5">
       <v-list-item-avatar class="mr-2">
@@ -72,7 +73,11 @@
         <span>{{ action.tooltip }}</span>
       </v-tooltip>
       <v-card-text class="ml-n5">
-        <div v-if="maresiSubject.count" @click="requestResponses">
+        <div
+          v-if="maresiSubject.count"
+          @click="requestResponses"
+          style="cursor: pointer"
+        >
           Read comments
         </div>
       </v-card-text>

@@ -3,7 +3,7 @@
 * You can **create a new public key in the Write-a-Review window**. You can choose each time you write a review under which public key to publish. 
 * If you create a new public key when submitting a review, **it will later appear here** in your Account Settings.
 * If you want to use a public key generated on another device or browser, click the “**Switch Account**” button to import it here.
-* We recommend to save your private key in a password manager accessible across different devices and browsers, so that you don’t lose access to your public keys.
+* We recommend to save your secret key in a password manager accessible across different devices and browsers, so that you don’t lose access to your public keys.
 
 
 - The public key represents an identifier for a reviewer, and it is stored together with each review. 

@@ -8,7 +8,7 @@
         <Identicon v-else :seed="key" />
       </v-list-item-avatar>
       <v-list-item-content>
-        <v-list-item-title v-if="sk">XXXXXXXXXX</v-list-item-title>
+        <v-list-item-title v-if="sk">XXXXXXXXXXXXXXX</v-list-item-title>
         <v-list-item-title v-else>{{
           key.slice(0, 10) + '...' + key.slice(-10)
         }}</v-list-item-title>
@@ -24,9 +24,21 @@
         </v-tooltip>
       </v-list-item-action>
       <v-list-item-action v-if="sk">
-        <v-btn>
-          Display
-        </v-btn>
+        <v-dialog>
+          <template v-slot:activator="{ on }">
+            <v-btn v-on="on">
+              Display
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title>
+              Your secret key
+            </v-card-title>
+            <v-card-text>
+              <span v-html="secret" />
+            </v-card-text>
+          </v-card>
+        </v-dialog>
       </v-list-item-action>
       <v-list-item-action v-else-if="i">
         <v-btn>
@@ -39,6 +51,8 @@
 
 <script>
 import Identicon from './Identicon'
+import { copyToClipboard } from '~/utils'
+
 export default {
   components: {
     Identicon
@@ -50,37 +64,25 @@ export default {
   },
   data() {
     return {
-      metadata: 'Mangrove private key'
+      metadata: 'Mangrove secret key',
+      secret: undefined
     }
   },
+  async mounted() {
+    this.secret = await crypto.subtle
+      .exportKey('jwk', this.$store.state.keyPair.secretKey)
+      .then((s) => {
+        s.metadata = this.metadata
+        return s
+      })
+  },
   methods: {
-    secret() {
-      return crypto.subtle
-        .exportKey('jwk', this.$store.state.keyPair.privateKey)
-        .then((s) => {
-          s.metadata = this.metadata
-          return s
-        })
-    },
-    async copy(json) {
+    copy(json) {
       if (this.sk) {
-        json = await this.secret()
+        json = this.secret
       }
       const secret = JSON.stringify(json)
-      // Create new element
-      const el = document.createElement('textarea')
-      // Set value (string to be copied)
-      el.value = secret
-      // Set non-editable to avoid focus and move outside of view
-      el.setAttribute('readonly', '')
-      el.style = { position: 'absolute', left: '-9999px' }
-      document.body.appendChild(el)
-      // Select text inside element
-      el.select()
-      // Copy text to clipboard
-      document.execCommand('copy')
-      // Remove temporary element
-      document.body.removeChild(el)
+      copyToClipboard(secret)
     }
   }
 }
