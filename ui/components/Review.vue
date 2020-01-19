@@ -7,7 +7,7 @@
       style="cursor: pointer"
     />
     <v-list-item class="mb-n5">
-      <v-list-item-avatar class="mr-2">
+      <v-list-item-avatar class="mr-2" tile>
         <Identicon :seed="payload.iss" />
       </v-list-item-avatar>
       <v-list-item-content>

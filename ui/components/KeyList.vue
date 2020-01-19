@@ -3,7 +3,7 @@
     <v-subheader><slot /></v-subheader>
     <v-divider class="mb-n3" />
     <v-list-item v-for="(key, i) in keys" :key="key" class="mt-5">
-      <v-list-item-avatar>
+      <v-list-item-avatar tile>
         <v-icon v-if="sk" large>mdi-key</v-icon>
         <Identicon v-else :seed="key" />
       </v-list-item-avatar>
