@@ -117,7 +117,7 @@ export default {
       return this.$vuetify.theme.dark ? 'dark' : 'light'
     }
   },
-  mounted() {
+  created() {
     this.$store.dispatch('generateKeypair')
   }
 }

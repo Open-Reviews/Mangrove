@@ -70,7 +70,7 @@ export default {
   },
   async mounted() {
     this.secret = await crypto.subtle
-      .exportKey('jwk', this.$store.state.keyPair.secretKey)
+      .exportKey('jwk', this.$store.state.keyPair.privateKey)
       .then((s) => {
         s.metadata = this.metadata
         return s

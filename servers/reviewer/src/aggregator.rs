@@ -33,6 +33,8 @@ pub struct Subject {
     pub quality: Option<usize>,
     /// Number of reviews given to this subject.
     pub count: usize,
+    /// Number of reviews which included an opinion.
+    pub opinion_count: usize,
     /// Number of reviews with rating above 50 given to this subject.
     pub positive_count: usize,
     /// Number of reviews with rating above 50 and `is_personal_experience` flag given to this subject.
@@ -73,10 +75,15 @@ impl Statistic for Subject {
                     / rated_count,
             )
         };
+        let opinion_count = relevant
+            .iter()
+            .filter(|review| review.payload.opinion.is_some())
+            .count();
         Ok(Subject {
             sub,
             quality,
             count: relevant.len(),
+            opinion_count,
             positive_count,
             confirmed_count,
         })

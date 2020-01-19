@@ -3,18 +3,18 @@
     <div v-if="noReviewsMessage" class="text-center">
       {{ noReviewsMessage }}
     </div>
-    <div v-for="(arg, i) in listArgs" :key="i">
-      <Review
-        :review="arg.review"
-        :issuer="arg.issuer"
-        :maresiSubject="arg.maresiSubject"
-        :subjectTitle="arg.subjectTitle"
-        class="my-2"
-      />
-      <ReviewList :rootSub="arg.rootSub" class="ml-2 mt-5" />
-    </div>
-    <v-row v-if="reviews.length && download" justify="center">
-      <v-btn :href="download" download="data.json" class="my-5"
+    <ReviewListBase :listArgs="opinionated" />
+    <v-row
+      v-if="opinionless.length && !showOpinionless && notMaresi"
+      justify="center"
+    >
+      <v-btn @click="showOpinionless = true"
+        >Show reviews without a description</v-btn
+      >
+    </v-row>
+    <ReviewListBase v-if="showOpinionless" :listArgs="opinionless" />
+    <v-row v-if="reviews.length && notMaresi" justify="center">
+      <v-btn :href="download" download="data.json" class="my-7"
         >Download reviews above</v-btn
       >
     </v-row>
@@ -24,18 +24,23 @@
 <script>
 import { downloadLink } from '../utils'
 import { MARESI } from '../store/scheme-types'
-import Review from './Review'
+import ReviewListBase from './ReviewListBase'
 
 export default {
   name: 'ReviewList',
   components: {
-    Review
+    ReviewListBase
   },
   props: {
     rootSub: String,
     rootIss: {
       type: String,
       default: () => ''
+    }
+  },
+  data() {
+    return {
+      showOpinionless: false
     }
   },
   computed: {
@@ -55,23 +60,22 @@ export default {
         return isSelected || isFiltered
       })
     },
-    listArgs() {
-      return this.reviews.map((r) => {
-        return {
-          review: r,
-          issuer: this.$store.getters.issuer(r.payload.iss),
-          maresiSubject: this.maresiSubject(r.signature),
-          subjectTitle: this.subjectTitle(r.payload.sub),
-          rootSub: this.maresi(r.signature)
-        }
-      })
+    opinionated() {
+      return this.reviews.filter((r) => r.payload.opinion).map(this.reviewToArg)
     },
-    download() {
+    opinionless() {
+      return this.reviews
+        .filter((r) => !r.payload.opinion)
+        .map(this.reviewToArg)
+    },
+    notMaresi() {
       return (
         !this.$store.state.isSearching &&
-        (!this.rootSub || !this.rootSub.startsWith(MARESI)) &&
-        downloadLink(this.reviews)
+        (!this.rootSub || !this.rootSub.startsWith(MARESI))
       )
+    },
+    download() {
+      return this.notMaresi && downloadLink(this.reviews)
     },
     noReviewsMessage() {
       if (!this.download || this.reviews.length) {
@@ -84,19 +88,23 @@ export default {
     }
   },
   methods: {
-    maresi(signature) {
-      return `${MARESI}:${signature}`
-    },
-    maresiSubject(signature) {
-      return this.$store.getters.subject(this.maresi(signature))
+    reviewToArg(review) {
+      return {
+        review,
+        issuer: this.$store.getters.issuer(review.payload.iss),
+        maresiSubject: this.$store.getters.subject(
+          `${MARESI}:${review.signature}`
+        ),
+        subjectTitle: this.subjectTitle(review.payload.sub),
+        rootSub: `${MARESI}:${review.signature}`
+      }
     },
     subjectTitle(sub) {
-      if (this.rootIss) {
-        const subject = this.$store.getters.subject(sub)
-        return subject ? `${subject.title}, ${subject.subtitle}` : ''
-      } else {
-        return ''
+      if (!this.rootIss) {
+        return
       }
+      const subject = this.$store.getters.subject(sub)
+      return subject && `${subject.title}, ${subject.subtitle}`
     }
   }
 }

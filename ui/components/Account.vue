@@ -141,7 +141,8 @@ export default {
         .catch((e) => {
           this.error = e
         })
-      this.$store.dispatch('setKeypair', { secretKey: sk, publicKey: pk })
+      this.$store.dispatch('setKeypair', { privateKey: sk, publicKey: pk })
+      this.switcherDialog = false
     }
   }
 }

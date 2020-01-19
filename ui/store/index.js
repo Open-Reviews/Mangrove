@@ -87,9 +87,10 @@ export const getters = {
 }
 
 export const actions = {
-  savePublicKeys({ state, commit }, pubkey) {
+  setKeypair({ commit }, keypair) {
+    commit(t.SET_KEYPAIR, keypair)
     window.crypto.subtle
-      .exportKey('raw', pubkey)
+      .exportKey('raw', keypair.publicKey)
       .then((exported) =>
         commit(t.SET_PK, base64url.encode(new Uint8Array(exported)))
       )
@@ -119,8 +120,7 @@ export const actions = {
         }
       })
       .catch((error) => console.log('Accessing IndexDB failed: ', error))
-    commit(t.SET_KEYPAIR, keypair)
-    await dispatch('savePublicKeys', keypair.publicKey)
+    await dispatch('setKeypair', keypair)
   },
   // Fetch reviews mathing params from the server.
   getReviews({ commit }, params) {
@@ -305,15 +305,12 @@ export const actions = {
         })
     )
   },
-  getSubject({ getters, commit }, subject) {
-    return (
-      getters.subject(subject) ||
-      this.$axios
-        .get(`${process.env.VUE_APP_API_URL}/subject/${subject}`)
-        .then(({ data }) => {
-          commit(t.ADD_SUBJECTS, { [data.sub]: data })
-          return data
-        })
-    )
+  getSubject({ commit }, subject) {
+    return this.$axios
+      .get(`${process.env.VUE_APP_API_URL}/subject/${subject}`)
+      .then(({ data }) => {
+        commit(t.ADD_SUBJECTS, { [data.sub]: data })
+        return data
+      })
   }
 }

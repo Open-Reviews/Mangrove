@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-list v-if="subjects.length" three-line>
-      <template v-for="subject in subjects">
+      <template v-for="(subject, i) in subjects">
         <v-list-item
           :key="subject.sub"
           @click="select(subject.sub)"
@@ -15,7 +15,7 @@
           </v-chip>
           <v-list-item-content>
             <v-list-item-title>{{ subject.title }}</v-list-item-title>
-            <v-row align="center ml-auto">
+            <v-row align="center" class="ml-auto">
               <v-rating
                 :value="subject.quality"
                 readonly
@@ -45,7 +45,7 @@
             />
           </v-list-item-avatar>
         </v-list-item>
-        <v-divider :key="subject.sub" />
+        <v-divider :key="i" />
       </template>
     </v-list>
     <div v-else-if="$store.state.isSearching" v-html="searchingContent" />

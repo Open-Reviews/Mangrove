@@ -62,7 +62,7 @@
           <v-btn
             v-on="on"
             @click="action.action(review.signature)"
-            :disabled="mine"
+            :disabled="action.disabled"
             icon
             class="mr-2"
           >
@@ -74,7 +74,7 @@
       </v-tooltip>
       <v-card-text class="ml-n5">
         <div
-          v-if="maresiSubject.count"
+          v-if="maresiSubject.opinion_count"
           @click="requestResponses"
           style="cursor: pointer"
         >
@@ -140,7 +140,10 @@ export default {
   props: {
     review: Object,
     issuer: Object,
-    maresiSubject: Object,
+    maresiSubject: {
+      type: Object,
+      default: () => {}
+    },
     preview: Boolean,
     subjectTitle: {
       type: String,
@@ -154,19 +157,22 @@ export default {
           icon: 'mdi-thumb-up',
           tooltip: 'This is useful',
           action: this.useful,
-          number: this.maresiSubject.positive_count
+          number: this.maresiSubject.positive_count,
+          disabled: this.review.payload.iss === this.$store.state.publicKey
         },
         {
           icon: 'mdi-certificate',
           tooltip: 'Confirm this experience',
           action: this.confirm,
-          number: this.maresiSubject.confirmed_count
+          number: this.maresiSubject.confirmed_count,
+          disabled: this.review.payload.iss === this.$store.state.publicKey
         },
         {
           icon: 'mdi-comment-text-multiple',
           tooltip: 'Write a comment',
           action: this.respond,
-          number: this.maresiSubject.count
+          number: this.maresiSubject.opinion_count,
+          disabled: false
         }
       ],
       menu: [
@@ -218,9 +224,6 @@ export default {
         title: displayName(this.payload.metadata),
         metadata: this.personalMeta
       }
-    },
-    mine() {
-      return this.maresiSubject.iss === this.$store.state.publicKey
     }
   },
   methods: {
