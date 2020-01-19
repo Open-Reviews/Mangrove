@@ -40,7 +40,7 @@
               What is a secret key?
             </v-card-title>
             <v-card-text>
-              <span v-html="explanation" />
+              <span v-html="yourSecretKey" />
             </v-card-text>
           </v-card>
         </v-dialog>
@@ -73,6 +73,7 @@
 import KeyList from './KeyList'
 import { html as switchContent } from '~/content/settings/switch-account.md'
 import { html as yourPublicKey } from '~/content/settings/your-public-key.md'
+import { html as yourSecretKey } from '~/content/settings/your-secret-key.md'
 
 export default {
   components: {
@@ -80,13 +81,12 @@ export default {
   },
   data() {
     return {
-      explanation:
-        'All reviews in the Mangrove data base are saved with a unique <b>public key</b>. If you wish to build up <b>reputation</b> within Mangrove, you should use the same public key as often as possible. You can, however, create several public keys for different purposes. They will all be linked to the same secret key, and can be accessed only through this secret key. Therefore, it is crucial that you copy and save the <b>secret key</b> in a password manager or in another secure place. Please remember that <b>Mangrove does not store any secret keys</b>. If you lose it, we cannot retrieve it.',
       hint:
         'Save the secret key in a secure place accessible across devices, such as a password manager.',
       metadata: 'Mangrove secret key',
       switchContent,
       yourPublicKey,
+      yourSecretKey,
       switcherDialog: false,
       secretInput: null,
       error: null
