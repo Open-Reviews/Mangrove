@@ -2,6 +2,7 @@ import Vue from 'vue'
 import { get, set } from 'idb-keyval'
 import { MARESI, GEO } from '../store/scheme-types'
 import * as t from './mutation-types'
+import { jwkToKeypair, skToJwk } from '~/utils'
 const base64url = require('base64-url')
 const cbor = require('borc')
 
@@ -95,12 +96,15 @@ export const actions = {
         commit(t.SET_PK, base64url.encode(new Uint8Array(exported)))
       )
   },
+  // Storage in IndexedDB is done as jwk instead CryptoKey due to two issues:
+  // https://bugzilla.mozilla.org/show_bug.cgi?id=1048931
+  // https://gitlab.com/plantingspace/mangrove/issues/7
   async generateKeypair({ commit, dispatch }) {
     let keypair
     await get('keyPair')
-      .then(async (kp) => {
-        if (kp) {
-          keypair = kp
+      .then(async (jwk) => {
+        if (jwk) {
+          keypair = await jwkToKeypair(jwk)
           console.log('Loading existing keys from IndexDB:', keypair)
         } else {
           await window.crypto.subtle
@@ -114,7 +118,7 @@ export const actions = {
             )
             .then((kp) => {
               keypair = kp
-              return set('keyPair', keypair)
+              skToJwk(kp.privateKey).then((jwk) => set('keyPair', jwk))
             })
             .catch((error) => console.log('Accessing IndexDB failed: ', error))
         }

@@ -74,6 +74,7 @@ import KeyList from './KeyList'
 import { html as switchContent } from '~/content/settings/switch-account.md'
 import { html as yourPublicKey } from '~/content/settings/your-public-key.md'
 import { html as yourSecretKey } from '~/content/settings/your-secret-key.md'
+import { jwkToKeypair } from '~/utils'
 
 export default {
   components: {
@@ -83,7 +84,6 @@ export default {
     return {
       hint:
         'Save the secret key in a secure place accessible across devices, such as a password manager.',
-      metadata: 'Mangrove secret key',
       switchContent,
       yourPublicKey,
       yourSecretKey,
@@ -93,7 +93,7 @@ export default {
     }
   },
   methods: {
-    async importSecret() {
+    importSecret() {
       let jwk
       try {
         jwk = JSON.parse(this.secretInput)
@@ -101,48 +101,13 @@ export default {
         this.error = e
         return
       }
-      if (jwk && jwk.metadata === this.metadata) {
-        this.error = null
-      } else {
-        this.error = `does not contain the required metadata field "${this.metadata}"`
-        return
-      }
-      const sk = await crypto.subtle
-        .importKey(
-          'jwk',
-          jwk,
-          {
-            name: 'ECDSA',
-            namedCurve: 'P-256'
-          },
-          true,
-          ['sign']
-        )
-        .catch((e) => {
-          this.error = e
+      jwkToKeypair(jwk)
+        .then((keypair) => {
+          this.$store.dispatch('setKeypair', keypair)
+          this.error = null
+          this.switcherDialog = false
         })
-      delete jwk.d
-      delete jwk.dp
-      delete jwk.dq
-      delete jwk.q
-      delete jwk.qi
-      jwk.key_ops = ['verify']
-      const pk = await crypto.subtle
-        .importKey(
-          'jwk',
-          jwk,
-          {
-            name: 'ECDSA',
-            namedCurve: 'P-256'
-          },
-          true,
-          ['verify']
-        )
-        .catch((e) => {
-          this.error = e
-        })
-      this.$store.dispatch('setKeypair', { privateKey: sk, publicKey: pk })
-      this.switcherDialog = false
+        .catch((error) => (this.error = error))
     }
   }
 }

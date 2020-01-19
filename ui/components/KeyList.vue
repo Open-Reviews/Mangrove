@@ -51,7 +51,7 @@
 
 <script>
 import Identicon from './Identicon'
-import { copyToClipboard } from '~/utils'
+import { copyToClipboard, skToJwk } from '~/utils'
 
 export default {
   components: {
@@ -64,17 +64,11 @@ export default {
   },
   data() {
     return {
-      metadata: 'Mangrove secret key',
       secret: undefined
     }
   },
   async mounted() {
-    this.secret = await crypto.subtle
-      .exportKey('jwk', this.$store.state.keyPair.privateKey)
-      .then((s) => {
-        s.metadata = this.metadata
-        return s
-      })
+    this.secret = await skToJwk(this.$store.state.keyPair.privateKey)
   },
   methods: {
     copy(json) {

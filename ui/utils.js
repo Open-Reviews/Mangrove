@@ -64,3 +64,47 @@ export function copyToClipboard(text) {
     }
   }
 }
+
+const SECRET_KEY_METADATA = 'Mangrove secret key'
+
+export async function jwkToKeypair(jwk) {
+  if (!jwk || jwk.metadata !== SECRET_KEY_METADATA) {
+    throw new Error(
+      `does not contain the required metadata field "${SECRET_KEY_METADATA}"`
+    )
+  }
+  const sk = await crypto.subtle.importKey(
+    'jwk',
+    jwk,
+    {
+      name: 'ECDSA',
+      namedCurve: 'P-256'
+    },
+    true,
+    ['sign']
+  )
+  delete jwk.d
+  delete jwk.dp
+  delete jwk.dq
+  delete jwk.q
+  delete jwk.qi
+  jwk.key_ops = ['verify']
+  const pk = await crypto.subtle.importKey(
+    'jwk',
+    jwk,
+    {
+      name: 'ECDSA',
+      namedCurve: 'P-256'
+    },
+    true,
+    ['verify']
+  )
+  return { privateKey: sk, publicKey: pk }
+}
+
+export function skToJwk(keypair) {
+  return crypto.subtle.exportKey('jwk', keypair).then((s) => {
+    s.metadata = SECRET_KEY_METADATA
+    return s
+  })
+}
