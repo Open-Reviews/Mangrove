@@ -72,15 +72,34 @@
         Error encountered: {{ error }}
       </v-alert>
     </v-card>
+    <v-dialog v-model="keyDialog" width="600">
+      <v-card>
+        <v-card-title v-text="submittedTitle" />
+        <v-card-text>
+          <p v-html="submittedContent" />
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn @click="copySecret">Copy secret key</v-btn>
+          <v-btn @click.stop="dismissKeyDialog">Dismiss</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-dialog>
 </template>
 
 <script>
+import { get } from 'idb-keyval'
 import ExtraForm from './ExtraForm'
 import MetaForm from './MetaForm'
 import KeyList from './KeyList'
+import { HAS_IMPORTED_KEY } from '~/store/indexeddb-types'
 import { MARESI } from '~/store/scheme-types'
-import { MAX_OPINION_LENGTH } from '~/utils'
+import { MAX_OPINION_LENGTH, copyToClipboard, skToJwk } from '~/utils'
+import {
+  html as submittedContent,
+  attributes as submittedAttributes
+} from '~/content/submitted.md'
 
 export default {
   name: 'ReviewForm',
@@ -107,7 +126,10 @@ export default {
         termsAgreed: false,
         isAffiliated: false
       },
-      MAX_OPINION_LENGTH
+      MAX_OPINION_LENGTH,
+      keyDialog: false,
+      submittedTitle: submittedAttributes.title,
+      submittedContent
     }
   },
   computed: {
@@ -178,9 +200,24 @@ export default {
     },
     submitReview() {
       // Close the dialog if successful.
-      this.$store
-        .dispatch('submitReview', this.payloadStub)
-        .then((outcome) => outcome && this.$emit('input', false))
+      this.$store.dispatch('submitReview', this.payloadStub).then(
+        (outcome) =>
+          outcome &&
+          get(HAS_IMPORTED_KEY).then((hasImported) => {
+            if (!hasImported) {
+              this.keyDialog = true
+            } else {
+              this.$emit('input', false)
+            }
+          })
+      )
+    },
+    dismissKeyDialog() {
+      this.$emit('input', false)
+    },
+    async copySecret() {
+      const secret = await skToJwk(this.$store.state.keyPair.privateKey)
+      copyToClipboard(JSON.stringify(secret))
     }
   }
 }

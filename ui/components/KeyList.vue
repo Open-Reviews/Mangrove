@@ -1,7 +1,6 @@
 <template>
   <v-list>
-    <v-subheader><slot /></v-subheader>
-    <v-divider class="mb-n3" />
+    <v-subheader class="mb-n7"><slot /></v-subheader>
     <template v-for="(key, i) in keys">
       <v-list-item v-if="sk" :key="key" class="mt-5">
         <v-list-item-avatar tile>

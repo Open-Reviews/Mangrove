@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import { get, set } from 'idb-keyval'
 import { MARESI, GEO } from '../store/scheme-types'
+import { PRIVATE_KEY } from './indexeddb-types'
 import * as t from './mutation-types'
 import { jwkToKeypair, skToJwk } from '~/utils'
 const base64url = require('base64-url')
@@ -101,7 +102,7 @@ export const actions = {
   // https://gitlab.com/plantingspace/mangrove/issues/7
   async generateKeypair({ commit, dispatch }) {
     let keypair
-    await get('keyPair')
+    await get(PRIVATE_KEY)
       .then(async (jwk) => {
         if (jwk) {
           keypair = await jwkToKeypair(jwk)
@@ -118,7 +119,7 @@ export const actions = {
             )
             .then((kp) => {
               keypair = kp
-              skToJwk(kp.privateKey).then((jwk) => set('keyPair', jwk))
+              skToJwk(kp.privateKey).then((jwk) => set(PRIVATE_KEY, jwk))
             })
             .catch((error) => console.log('Accessing IndexDB failed: ', error))
         }
