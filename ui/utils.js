@@ -10,6 +10,10 @@ export function downloadLink(data) {
   )}`
 }
 
+export function pkDisplay(pk) {
+  return pk.slice(0, 10) + '...' + pk.slice(-10)
+}
+
 export function displayName(meta) {
   if (!meta) {
     return 'Anonymous'

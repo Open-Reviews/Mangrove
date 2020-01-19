@@ -14,7 +14,7 @@
     </v-row>
     <ReviewListBase v-if="showOpinionless" :listArgs="opinionless" />
     <v-row v-if="reviews.length && notMaresi" justify="center">
-      <v-btn :href="download" download="data.json" class="my-7"
+      <v-btn :href="download" :download="downloadName" class="my-7"
         >Download reviews above</v-btn
       >
     </v-row>
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { downloadLink } from '../utils'
+import { downloadLink, pkDisplay } from '../utils'
 import { MARESI } from '../store/scheme-types'
 import ReviewListBase from './ReviewListBase'
 
@@ -76,6 +76,9 @@ export default {
     },
     download() {
       return this.notMaresi && downloadLink(this.reviews)
+    },
+    downloadName() {
+      return `mangrove.reviews_${this.rootSub || pkDisplay(this.rootIss)}.json`
     },
     noReviewsMessage() {
       if (!this.download || this.reviews.length) {
