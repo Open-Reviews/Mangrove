@@ -83,13 +83,19 @@ export function searchGeo(axios, q, viewbox) {
             ) {
               return null
             }
-            const title = address[type]
+            // Dealing with very weird name of place field.
+            const title =
+              address[type] ||
+              address.address26 ||
+              address.address29 ||
+              address.address100 ||
+              address.suburb
             const addressString = [
               [address.street || address.road, address.house_number]
                 .filter(Boolean)
                 .join(' '),
               address.suburb,
-              address.city || address.town || address.state,
+              address.city || address.town || address.village || address.state,
               address.country
             ]
               .filter(Boolean)
@@ -156,7 +162,12 @@ export function olDocToSubject(doc) {
     const subject = {
       sub: `${ISBN}:${doc.isbn[0]}`,
       scheme: ISBN,
-      title: doc.subtitle ? `${doc.title}: ${doc.subtitle}` : doc.title,
+      // Display colon only if title ends with letter or number
+      title: doc.subtitle
+        ? `${doc.title}${doc.title.match(/[A-Za-z0-9]$/) ? ':' : ''} ${
+            doc.subtitle
+          }`
+        : doc.title,
       subtitle: `by ${doc.author_name && doc.author_name.join(', ')}`,
       description: `Published ${doc.first_publish_year} · ${doc.isbn.length} editions`,
       isbn: doc.isbn[0],

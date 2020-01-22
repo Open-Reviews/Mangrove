@@ -1,16 +1,16 @@
 <template>
-  <v-container>
+  <div>
     <div v-for="(arg, i) in listArgs" :key="i">
       <Review
         :review="arg.review"
         :issuer="arg.issuer"
         :maresiSubject="arg.maresiSubject"
         :subjectTitle="arg.subjectTitle"
-        class="my-2"
+        class="mb-10"
       />
-      <ReviewList :rootSub="arg.rootSub" class="ml-2 mt-5" />
+      <ReviewList :rootSub="arg.rootSub" class="ml-4" />
     </div>
-  </v-container>
+  </div>
 </template>
 
 <script>

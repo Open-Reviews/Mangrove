@@ -213,6 +213,7 @@ export default {
       )
     },
     dismissKeyDialog() {
+      Object.assign(this.$data, this.$options.data())
       this.$emit('input', false)
     },
     async copySecret() {

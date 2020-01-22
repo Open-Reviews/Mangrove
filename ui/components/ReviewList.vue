@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <div>
     <div v-if="noReviewsMessage" class="text-center">
       {{ noReviewsMessage }}
     </div>
@@ -18,7 +18,7 @@
         >Download reviews above</v-btn
       >
     </v-row>
-  </v-container>
+  </div>
 </template>
 
 <script>

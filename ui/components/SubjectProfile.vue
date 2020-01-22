@@ -8,7 +8,7 @@
         v-if="subject.coordinates"
         style="height: 400px"
         data-projection="EPSG:4326"
-        class="mx-5 mb-5"
+        class="mx-3"
       >
         <vl-view :center="subject.coordinates" :zoom="15" />
 
@@ -37,8 +37,7 @@
         >Search selected area</v-btn
       >
     </v-row>
-
-    <v-card>
+    <v-card class="my-2">
       <v-dialog v-if="images.length" max-width="700">
         <template v-slot:activator="{ on }">
           <v-row align="center" class="mx-4 pt-4">
@@ -47,9 +46,9 @@
               v-for="image in images"
               :key="image"
               :src="image"
-              max-height="80"
-              max-width="80"
-              contain
+              max-height="400"
+              max-width="7vw"
+              class="elevation-3"
             />
             <v-btn v-on="on" v-if="images.length > 5" text>More</v-btn>
           </v-row>
