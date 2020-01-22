@@ -1,23 +1,32 @@
 <template>
-  <v-container>
-    <span class="text-center">
-      <h1 class="display-3 my-5">Read reviews. Write reviews.</h1>
-      <h2 class="display-1">Find places, companies, websites, or books.</h2>
-    </span>
-    <v-row class="my-5">
-      <v-col />
-      <v-col :cols="7"><SearchBox /></v-col>
-      <v-col />
+  <div class="mt-n3">
+    <v-row align="center" class="mb-1 text-center">
+      <v-img :src="front.image" class="display-3 pa-12">
+        <h1 v-html="front.title" class="display-4 my-5" />
+        <h2 v-text="front.tagline" class="display-1" />
+        <v-row>
+          <v-col />
+          <v-col>
+            <SearchBox no-filter />
+          </v-col>
+          <v-col />
+        </v-row>
+        <h3 v-text="front.subsearch" class="title" />
+      </v-img>
     </v-row>
-    <v-row>
-      <v-col v-for="feature in features" :key="feature.title">
-        <v-card min-height="300" min-width="300" color="lime">
-          <v-card-title>{{ feature.title }}</v-card-title>
-          <v-card-text v-for="detail in feature.details" :key="detail">
-            {{ detail }}
-          </v-card-text>
-        </v-card>
-      </v-col>
+    <v-row v-for="(feature, i) in features" :key="i" class="mb-1">
+      <v-img :src="feature.image" class="align-center">
+        <v-row>
+          <v-col v-if="i % 2" />
+          <v-col>
+            <v-card max-width="700">
+              <v-card-title v-text="feature.title" class="display-2" />
+              <v-card-text v-html="feature.content" class="headline" />
+            </v-card>
+          </v-col>
+          <v-col v-if="!(i % 2)" cols="6" />
+        </v-row>
+      </v-img>
     </v-row>
     <v-dialog v-model="$store.state.alphaWarning" max-width="500">
       <v-card>
@@ -42,12 +51,24 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-container>
+  </div>
 </template>
 
 <script>
 import { DISMISS_ALPHA_WARNING } from '../store/mutation-types'
 import SearchBox from '../components/SearchBox'
+import {
+  html as complexContent,
+  attributes as complexAttributes
+} from '~/content/index/complex.md'
+import {
+  html as openContent,
+  attributes as openAttributes
+} from '~/content/index/open.md'
+import {
+  html as privacyContent,
+  attributes as privacyAttributes
+} from '~/content/index/privacy.md'
 
 export default {
   components: {
@@ -55,30 +76,28 @@ export default {
   },
   data() {
     return {
+      front: {
+        image: require('~/assets/index/BG1_beach_2000x897.jpg'),
+        tagline: 'Take control of your experiences.',
+        title: 'Read reviews. Write reviews.',
+        subsearch:
+          'Restaurants · Hotels · Touristic sites · Websites · Companies · Books'
+      },
       features: [
         {
-          title: 'Valuable insights',
-          details: [
-            'Read and write reviews for places, websites, companies, and books.',
-            'Get informed before making decisions and share your insights with others.',
-            'Do research, or build useful applications. Get feedback from your customers and interact with them.'
-          ]
+          title: complexAttributes.title,
+          content: complexContent,
+          image: require('~/assets/index/BG2_people_1200x703.jpg')
         },
         {
-          title: 'Open data',
-          details: [
-            'The content you provide is under a free and open license, and cannot be kept proprietary.',
-            'Your contribution can be leveraged by researchers, entrepreneurs, and end-users alike, without posing barriers to entry for anyone',
-            'Make businesses compete based on technological merit, not on access to data.'
-          ]
+          title: openAttributes.title,
+          content: openContent,
+          image: require('~/assets/index/BG3_stairs_1200x843.jpg')
         },
         {
-          title: 'Privacy',
-          details: [
-            'You are in full control of what information you share. Mangrove does not track you or collect information about you.',
-            'Use Mangrove without a registration or login process.',
-            'Help spread privacy-preserving technologies.'
-          ]
+          title: privacyAttributes.title,
+          content: privacyContent,
+          image: require('~/assets/index/BG4_cameras_1200x659.jpg')
         }
       ]
     }

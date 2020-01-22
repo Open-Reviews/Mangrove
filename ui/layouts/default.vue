@@ -36,11 +36,11 @@
         </v-menu>
       </div>
     </v-app-bar>
-    <v-content>
-      <v-container v-if="$route.path !== '/search'" style="max-width: 1200px">
+    <v-content class>
+      <nuxt v-if="$route.path === '/search' || $route.path === '/'" />
+      <v-container v-else style="max-width: 1200px">
         <nuxt />
       </v-container>
-      <nuxt v-else />
     </v-content>
     <v-footer v-if="$route.path !== '/search'" app absolute padless>
       <v-col>
@@ -148,3 +148,10 @@ export default {
   }
 }
 </script>
+
+<style>
+.v-card__text,
+.v-card__title {
+  word-break: normal;
+}
+</style>

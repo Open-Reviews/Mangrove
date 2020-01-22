@@ -12,7 +12,7 @@
     <v-alert v-if="error" type="error" border="left" elevation="8">
       Error encountered: {{ error }}
     </v-alert>
-    <SchemeFilter />
+    <SchemeFilter v-if="!noFilter" />
   </v-container>
 </template>
 
@@ -21,6 +21,9 @@ import SchemeFilter from './SchemeFilter'
 
 export default {
   components: { SchemeFilter },
+  props: {
+    noFilter: Boolean
+  },
   data() {
     return {
       query: '',
