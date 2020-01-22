@@ -262,6 +262,7 @@ fn check_metadata(key: &str, value: serde_json::Value) -> Result<(), Error> {
             Some(n) if n <= 200 => Ok(()),
             _ => Err(Error::Incorrect("Provided age is incorrect.".into())),
         },
+        "experience_context" => check_short_string(key, value),
         "openid" => check_short_string(key, value),
         "data_source" => check_uri(key, value),
         "issuer_index" => match value.as_u64() {

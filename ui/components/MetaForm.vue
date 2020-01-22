@@ -110,10 +110,14 @@ export default {
     },
     context: {
       get() {
-        return this.$store.state.metadata.context
+        const c = this.$store.state.metadata.experience_context
+        return c && c.charAt(0).toUpperCase() + c.slice(1)
       },
       set(value) {
-        this.$store.commit(SET_META, ['context', value])
+        this.$store.commit(SET_META, [
+          'experience_context',
+          value.toLowerCase()
+        ])
       }
     }
   }
