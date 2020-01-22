@@ -2,11 +2,10 @@
   <v-container>
     <span class="text-center">
       <h1 class="display-3 my-5">
-        A solid, open-source infrastructure and dataset to foster open
-        innovation
+        Mangrove for Businesses, Entrepreneurs, Developers
       </h1>
       <br />
-      <h2 class="display-1">How can Mangrove help your endeavour?</h2>
+      <h2 class="display-1">Improve your project with open-data online reviews.</h2>
     </span>
     <v-row class="my-7">
       <v-col v-for="section in content" :key="section.title">
