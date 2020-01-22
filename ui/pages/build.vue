@@ -1,11 +1,9 @@
 <template>
   <v-container>
     <span class="text-center">
-      <h1 class="display-3 my-5">
-        Mangrove for Businesses, Entrepreneurs, Developers
-      </h1>
+      <h1 v-text="title" class="display-3 my-5" />
       <br />
-      <h2 class="display-1">Improve your project with open-data online reviews.</h2>
+      <h2 v-text="subtitle" class="display-1" />
     </span>
     <v-row class="my-7">
       <v-col v-for="section in content" :key="section.title">
@@ -26,6 +24,8 @@
 export default {
   data() {
     return {
+      title: 'Mangrove for Businesses, Entrepreneurs, Developers',
+      subtitle: 'Improve your project with open-data online reviews.',
       content: [
         {
           icon: 'mdi-api',
