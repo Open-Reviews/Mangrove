@@ -26,7 +26,7 @@
         Reviewed {{ new Date(payload.iat * 1000).toDateString() }}
       </v-row>
       {{ payload.opinion }}
-      <v-row v-if="payload.extra_hashes">
+      <v-row v-if="payload.extra_hashes" class="mx-n1">
         <v-img
           v-for="hash in payload.extra_hashes"
           :key="hash"
@@ -56,7 +56,7 @@
         </v-expansion-panel>
       </v-expansion-panels>
     </v-card-text>
-    <v-card-actions v-if="!preview" class="my-n8">
+    <v-card-actions v-if="!preview" class="my-n7">
       <v-tooltip v-for="action in actions" :key="action.icon" top>
         <template v-slot:activator="{ on }">
           <v-btn
@@ -64,7 +64,7 @@
             @click="action.action(review.signature)"
             :disabled="action.disabled"
             icon
-            class="mr-2"
+            class="mr-4"
           >
             <v-icon class="mr-1" small>{{ action.icon }}</v-icon>
             {{ action.number }}
