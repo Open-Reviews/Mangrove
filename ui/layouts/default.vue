@@ -42,9 +42,10 @@
     <v-footer v-if="$route.path !== '/search'" app absolute padless>
       <v-col>
         <v-btn
-          v-for="internal in internals"
-          :key="internal.link"
-          :to="internal.link"
+          v-for="(internal, i) in internals"
+          :key="i"
+          :to="internal.to"
+          :href="internal.href"
           text
         >
           {{ internal.label }}
@@ -52,15 +53,20 @@
       </v-col>
       <v-col class="text-center">
         {{ new Date().getFullYear() }} — A
-        <a :href="psUrl" style="text-decoration: none">PlantingSpace</a>
+        <a :href="psUrl" style="text-decoration: none" target="_blank"
+          >PlantingSpace</a
+        >
         Project -
-        <a :href="ccbyUrl" style="text-decoration: none">CC-BY-4.0</a>
+        <a :href="ccbyUrl" style="text-decoration: none" target="_blank"
+          >CC-BY-4.0</a
+        >
       </v-col>
       <v-col class="text-right">
         <v-btn
           v-for="social in socials"
           :key="social.icon"
           :href="social.link"
+          target="_blank"
           icon
         >
           <v-icon>{{ social.icon }}</v-icon>
@@ -68,12 +74,13 @@
         <v-btn
           href="https://matrix.to/#/!NWvCdVEAXYJRnXTudO:matrix.org?via=matrix.org"
           icon
+          target="_blank"
         >
           <v-avatar>
             <v-img src="icon-riot.png" max-height="20" contain />
           </v-avatar>
         </v-btn>
-        <v-btn href="https://opencollective.com" icon>
+        <v-btn href="https://opencollective.com" icon target="_blank">
           <v-avatar>
             <v-img src="icon-collective.svg" max-height="20" contain />
           </v-avatar>
@@ -111,9 +118,9 @@ export default {
       psUrl: 'https://planting.space',
       ccbyUrl: 'https://creativecommons.org/licenses/by/4.0',
       internals: [
-        { label: 'About', link: 'about' },
-        { label: 'FAQ', link: 'faq' },
-        { label: 'Terms & Privacy', link: 'terms' }
+        { label: 'About', href: 'https://planting.space/mangrove.html' },
+        { label: 'FAQ', to: 'faq' },
+        { label: 'Terms & Privacy', to: 'terms' }
       ],
       socials: [
         {
