@@ -1,5 +1,5 @@
 <template>
-  <v-container color="black">
+  <v-container>
     <span class="text-center">
       <h1 class="display-3 my-5">Read reviews. Write reviews.</h1>
       <h2 class="display-1">Find places, companies, websites, or books.</h2>

@@ -1,5 +1,8 @@
 <template>
-  <v-app :style="{ background: $vuetify.theme.themes[theme].background }">
+  <v-app
+    style="
+    background: rgba(0,0,0,0)"
+  >
     <v-app-bar app dense>
       <router-link to="/">
         <v-img src="mangrove.png" max-width="170" contain />
@@ -145,10 +148,3 @@ export default {
   }
 }
 </script>
-
-<style>
-body {
-  background-image: url('https://images.pexels.com/photos/417173/pexels-photo-417173.jpeg?auto=compress&cs=tinysrgb&dpr=2');
-  background-size: cover;
-}
-</style>
