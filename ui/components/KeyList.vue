@@ -6,7 +6,7 @@
         <v-list-item-avatar tile>
           <v-icon large>mdi-key</v-icon>
         </v-list-item-avatar>
-        <v-form
+        <form
           v-on:submit.prevent
           style="display: inline-block; white-space: nowrap"
         >
@@ -33,7 +33,7 @@
               Copy to clipboard
             </v-tooltip>
           </v-list-item-action>
-        </v-form>
+        </form>
         <v-list-item-action>
           <v-dialog>
             <template v-slot:activator="{ on }">

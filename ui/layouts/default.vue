@@ -80,6 +80,22 @@
         </v-btn>
       </v-col>
     </v-footer>
+
+    <script type="text/javascript">
+      var fby = fby || []
+      fby.push([
+        'showTab',
+        { id: '15043', position: 'right', color: '#FF1F3A' }
+      ])
+      ;(function() {
+        var f = document.createElement('script')
+        f.type = 'text/javascript'
+        f.async = true
+        f.src = '//cdn.feedbackify.com/f.js'
+        var s = document.getElementsByTagName('script')[0]
+        s.parentNode.insertBefore(f, s)
+      })()
+    </script>
   </v-app>
 </template>
 
