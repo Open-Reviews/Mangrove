@@ -42,6 +42,8 @@
     <v-footer
       v-if="$route.path !== '/search'"
       :class="isSmall ? 'text-center' : ''"
+      :color="$vuetify.theme.themes[oppositeTheme].background"
+      :dark="theme === 'light'"
       app
       absolute
       padless
@@ -72,20 +74,29 @@
           href="https://matrix.to/#/!NWvCdVEAXYJRnXTudO:matrix.org?via=matrix.org"
           icon
           target="_blank"
+          class="ml-n1"
         >
           <v-avatar>
-            <v-img src="icon-riot.png" max-height="20" contain />
+            <v-img :src="riotIcon" max-height="28" contain />
           </v-avatar>
         </v-btn>
       </v-col>
       <v-col class="text-center" cols="12">
         <v-divider class="mb-2" />
         {{ new Date().getFullYear() }} — A
-        <a :href="psUrl" style="text-decoration: none" target="_blank"
+        <a
+          :href="psUrl"
+          style="text-decoration: none"
+          class="white--text"
+          target="_blank"
           >PlantingSpace</a
         >
         Project -
-        <a :href="ccbyUrl" style="text-decoration: none" target="_blank"
+        <a
+          :href="ccbyUrl"
+          style="text-decoration: none"
+          class="white--text"
+          target="_blank"
           >CC-BY-4.0</a
         >
       </v-col>
@@ -134,12 +145,16 @@ export default {
           link: 'https://mas.to/@PlantingSpace'
         },
         { icon: 'mdi-twitter', link: 'https://twitter.com/mangroveReviews' }
-      ]
+      ],
+      riotIcon: require('~/static/icon-riot.svg')
     }
   },
   computed: {
     theme() {
       return this.$vuetify.theme.dark ? 'dark' : 'light'
+    },
+    oppositeTheme() {
+      return this.$vuetify.theme.dark ? 'light' : 'dark'
     },
     isSmall() {
       const size = this.$vuetify.breakpoint.name

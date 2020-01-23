@@ -7,6 +7,9 @@
         :placeholder="placeholder"
         @click:append="search"
         append-icon="mdi-magnify"
+        filled
+        background-color="white"
+        dense
       />
     </v-row>
     <v-alert v-if="error" type="error" border="left" elevation="8">

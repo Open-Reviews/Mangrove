@@ -2,16 +2,24 @@
   <div class="mt-n3">
     <v-row align="center" class="mb-1 text-center">
       <v-img :src="front.image" class="display-3 pa-12">
-        <h1 v-html="front.title" class="display-4 my-5" />
-        <h2 v-text="front.tagline" class="display-1" />
+        <h1 v-html="front.title" class="display-4 my-5 white--text" />
+        <h2 v-text="front.tagline" class="display-1 white--text" />
         <v-row>
           <v-col />
-          <v-col>
+          <v-col cols="6">
             <SearchBox no-filter />
+            <v-row class="justify-space-around">
+              <span
+                v-for="cat in front.subsearch"
+                v-text="cat"
+                class="title white--text"
+              />
+            </v-row>
           </v-col>
           <v-col />
         </v-row>
-        <h3 v-text="front.subsearch" class="title" />
+        <v-spacer />
+        <span class="justify-center align-end white--text"> </span>
       </v-img>
     </v-row>
     <v-row v-for="(feature, i) in features" :key="i" class="mb-1">
@@ -20,8 +28,14 @@
           <v-col v-if="i % 2" />
           <v-col>
             <v-card max-width="700">
-              <v-card-title v-text="feature.title" class="display-2" />
-              <v-card-text v-html="feature.content" class="headline" />
+              <v-card-title
+                v-text="feature.title"
+                class="display-1 font-weight-light"
+              />
+              <v-card-text
+                v-html="feature.content"
+                class="subtitle-1 font-weight-light"
+              />
             </v-card>
           </v-col>
           <v-col v-if="!(i % 2)" cols="6" />
@@ -73,11 +87,17 @@ export default {
     return {
       demoDialog: `Welcome to Mangrove! Please note that this is a <b>demo version</b> of the Mangrove online reviews service. Its purpose is to allow you to test the basic functionality and to <b>give us feedback</b> so that we can find all bugs and release a beta version soon. We highly appreciate feedback on all pages, just use the red button on the right as often as you like. Finally: please <b>donate</b> to help us add more features :)`,
       front: {
-        image: require('~/assets/index/BG1_beach_2000x897.jpg'),
+        image: require('~/assets/index/BG1_sunset_2000x950.jpg'),
         tagline: 'Take control of your experiences.',
         title: 'Read reviews. Write reviews.',
-        subsearch:
-          'Restaurants · Hotels · Touristic sites · Websites · Companies · Books'
+        subsearch: [
+          'Restaurants',
+          'Hotels',
+          'Touristic sites',
+          'Websites',
+          'Companies',
+          'Books'
+        ]
       },
       features: [
         {
