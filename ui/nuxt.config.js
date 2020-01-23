@@ -70,7 +70,7 @@ export default {
         light: {
           // Filled stars
           primary: colors.deepOrange.accent3,
-          secondary: '#263238',
+          secondary: colors.lightBlue,
           // Star outlines
           accent: colors.deepOrange.accent3,
           anchor: '#689f38',

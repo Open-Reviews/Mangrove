@@ -1,18 +1,20 @@
 <template>
   <v-row>
-    <v-col class="scrollable noscroll mr-n3" cols="6">
+    <v-col class="scrollable noscroll mr-n3" cols="4">
       <perfect-scrollbar>
-        <div style="padding-left: 15vw">
-          <v-row class="px-5">
-            <SearchBox />
-          </v-row>
-          <v-row>
-            <SubjectList />
-          </v-row>
-        </div>
+        <v-row class="px-10">
+          <SearchBox />
+        </v-row>
+        <v-row>
+          <SubjectList />
+        </v-row>
       </perfect-scrollbar>
     </v-col>
-    <v-col style="padding-right: 15vw" class="scrollable noscroll">
+    <v-divider vertical />
+    <v-col
+      style="padding-left: 10vw; padding-right: 15vw"
+      class="scrollable noscroll"
+    >
       <SubjectProfile />
     </v-col>
   </v-row>
@@ -30,11 +32,6 @@ export default {
     SubjectList,
     SubjectProfile,
     PerfectScrollbar
-  },
-  computed: {
-    theme() {
-      return this.$vuetify.theme.dark ? 'dark' : 'light'
-    }
   },
   middleware: 'search'
 }

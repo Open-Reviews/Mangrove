@@ -1,6 +1,6 @@
 <template>
   <v-container v-if="subject">
-    <v-card class="my-3" color="blue">
+    <v-card class="my-3" color="secondary lighten-4">
       <v-row
         v-if="subject.coordinates"
         justify="center"
@@ -75,7 +75,7 @@
         {{ subject.quality }} ({{ subject.count }})
       </v-row>
       <v-card-subtitle class="mb-n3">{{ subject.subtitle }}</v-card-subtitle>
-      <v-list flat color="blue">
+      <v-list flat color="secondary lighten-4">
         <v-list-item v-for="(detail, i) in details" :key="i" class="my-n6">
           <v-list-item-icon class="mr-4">
             <v-icon v-text="detail.icon" />
