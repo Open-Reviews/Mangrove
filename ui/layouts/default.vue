@@ -39,8 +39,14 @@
         <nuxt />
       </v-container>
     </v-content>
-    <v-footer v-if="$route.path !== '/search'" app absolute padless>
-      <v-col>
+    <v-footer
+      v-if="$route.path !== '/search'"
+      :class="isSmall ? 'text-center' : ''"
+      app
+      absolute
+      padless
+    >
+      <v-col :cols="isSmall ? 12 : 6" class="px-4 mb-n2">
         <v-btn
           v-for="(internal, i) in internals"
           :key="i"
@@ -51,17 +57,8 @@
           {{ internal.label }}
         </v-btn>
       </v-col>
-      <v-col class="text-center">
-        {{ new Date().getFullYear() }} — A
-        <a :href="psUrl" style="text-decoration: none" target="_blank"
-          >PlantingSpace</a
-        >
-        Project -
-        <a :href="ccbyUrl" style="text-decoration: none" target="_blank"
-          >CC-BY-4.0</a
-        >
-      </v-col>
-      <v-col class="text-right">
+      <v-col :class="isSmall || 'text-right'" class="mb-n2">
+        <v-divider v-if="isSmall" class="mb-3" />
         <v-btn
           v-for="social in socials"
           :key="social.icon"
@@ -80,11 +77,17 @@
             <v-img src="icon-riot.png" max-height="20" contain />
           </v-avatar>
         </v-btn>
-        <v-btn href="https://opencollective.com" icon target="_blank">
-          <v-avatar>
-            <v-img src="icon-collective.svg" max-height="20" contain />
-          </v-avatar>
-        </v-btn>
+      </v-col>
+      <v-col class="text-center" cols="12">
+        <v-divider class="mb-2" />
+        {{ new Date().getFullYear() }} — A
+        <a :href="psUrl" style="text-decoration: none" target="_blank"
+          >PlantingSpace</a
+        >
+        Project -
+        <a :href="ccbyUrl" style="text-decoration: none" target="_blank"
+          >CC-BY-4.0</a
+        >
       </v-col>
     </v-footer>
 
@@ -120,24 +123,27 @@ export default {
       internals: [
         { label: 'About', href: 'https://planting.space/mangrove.html' },
         { label: 'FAQ', to: 'faq' },
-        { label: 'Terms & Privacy', to: 'terms' }
+        { label: 'Terms & Privacy', to: 'terms' },
+        { label: 'Api', href: 'https://api.mangrove.reviews/swagger-ui' },
+        { label: 'Develop', href: 'https://gitlab.com/plantingspace/mangrove' },
+        { label: 'Donations', href: 'https://opencollective.com/mangrove' }
       ],
       socials: [
         {
           icon: 'mdi-mastodon',
           link: 'https://mas.to/@PlantingSpace'
         },
-        { icon: 'mdi-twitter', link: 'https://twitter.com/mangroveReviews' },
-        {
-          icon: 'mdi-gitlab',
-          link: 'https://gitlab.com/plantingspace/mangrove'
-        }
+        { icon: 'mdi-twitter', link: 'https://twitter.com/mangroveReviews' }
       ]
     }
   },
   computed: {
     theme() {
       return this.$vuetify.theme.dark ? 'dark' : 'light'
+    },
+    isSmall() {
+      const size = this.$vuetify.breakpoint.name
+      return size === 'xs' || size === 'sm'
     }
   },
   created() {
