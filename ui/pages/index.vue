@@ -18,8 +18,7 @@
           </v-col>
           <v-col />
         </v-row>
-        <v-spacer />
-        <span class="justify-center align-end white--text"> </span>
+        <v-col class="white--text title">WHY MANGROVE</v-col>
       </v-img>
     </v-row>
     <v-row v-for="(feature, i) in features" :key="i" class="mb-1">

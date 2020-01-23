@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { get, set } from 'idb-keyval'
-import { MARESI, GEO } from '../store/scheme-types'
+import { MARESI, GEO, subToScheme } from '../store/scheme-types'
 import { PRIVATE_KEY } from './indexeddb-types'
 import * as t from './mutation-types'
 import { jwkToKeypair, skToJwk } from '~/utils'
@@ -314,6 +314,7 @@ export const actions = {
     return this.$axios
       .get(`${process.env.VUE_APP_API_URL}/subject/${subject}`)
       .then(({ data }) => {
+        data.scheme = subToScheme(data.sub)
         commit(t.ADD_SUBJECTS, { [data.sub]: data })
         return data
       })
