@@ -26,7 +26,7 @@ export default {
   /*
    ** Global CSS
    */
-  css: ['vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css'],
+  css: [],
   /*
    ** Plugins to load before mounting the App
    */
@@ -52,7 +52,8 @@ export default {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     // Doc: https://github.com/nuxt-community/dotenv-module
-    '@nuxtjs/dotenv'
+    '@nuxtjs/dotenv',
+    'nuxt-clipboard2'
   ],
   /*
    ** Axios module configuration

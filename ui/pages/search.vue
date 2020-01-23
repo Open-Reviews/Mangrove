@@ -1,14 +1,12 @@
 <template>
   <v-row>
     <v-col class="scrollable noscroll mr-n3" cols="4">
-      <perfect-scrollbar>
-        <v-row class="px-10">
-          <SearchBox />
-        </v-row>
-        <v-row>
-          <SubjectList />
-        </v-row>
-      </perfect-scrollbar>
+      <v-row class="px-10">
+        <SearchBox />
+      </v-row>
+      <v-row>
+        <SubjectList />
+      </v-row>
     </v-col>
     <v-divider vertical />
     <v-col
@@ -21,7 +19,6 @@
 </template>
 
 <script>
-import { PerfectScrollbar } from 'vue2-perfect-scrollbar'
 import SearchBox from '../components/SearchBox'
 import SubjectList from '../components/SubjectList'
 import SubjectProfile from '../components/SubjectProfile'
@@ -30,8 +27,7 @@ export default {
   components: {
     SearchBox,
     SubjectList,
-    SubjectProfile,
-    PerfectScrollbar
+    SubjectProfile
   },
   middleware: 'search'
 }

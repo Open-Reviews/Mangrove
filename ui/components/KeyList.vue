@@ -81,7 +81,7 @@
 
 <script>
 import Identicon from './Identicon'
-import { copyToClipboard, skToJwk, pkDisplay } from '~/utils'
+import { skToJwk, pkDisplay } from '~/utils'
 
 export default {
   components: {
@@ -108,8 +108,12 @@ export default {
       }
       return JSON.stringify(json)
     },
-    copy(json) {
-      copyToClipboard(this.keyString(json))
+    async copy(json) {
+      try {
+        await this.$copyText(this.keyString(json))
+      } catch (e) {
+        console.error(e)
+      }
     }
   }
 }
