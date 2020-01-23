@@ -95,7 +95,7 @@ import MetaForm from './MetaForm'
 import KeyList from './KeyList'
 import { HAS_IMPORTED_KEY } from '~/store/indexeddb-types'
 import { MARESI } from '~/store/scheme-types'
-import { MAX_OPINION_LENGTH, copyToClipboard, skToJwk } from '~/utils'
+import { MAX_OPINION_LENGTH, skToJwk } from '~/utils'
 import {
   html as submittedContent,
   attributes as submittedAttributes
@@ -218,7 +218,11 @@ export default {
     },
     async copySecret() {
       const secret = await skToJwk(this.$store.state.keyPair.privateKey)
-      copyToClipboard(JSON.stringify(secret))
+      try {
+        await this.$copyText(JSON.stringify(secret))
+      } catch (e) {
+        console.error(e)
+      }
     }
   }
 }
