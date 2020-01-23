@@ -34,12 +34,7 @@
           This is a DEMO version
         </v-card-title>
 
-        <v-card-text>
-          A warm Welcome to Mangrove from Dina and Peter. Please note that this
-          is a DEMO version of the Mangrove service. Its purpose is to allow you
-          to test the basic functionality and to give us feedback. Please check
-          out the About page for current and future features.
-        </v-card-text>
+        <v-card-text v-html="demoDialog" />
 
         <v-divider></v-divider>
 
@@ -76,6 +71,7 @@ export default {
   },
   data() {
     return {
+      demoDialog: `Welcome to Mangrove! Please note that this is a <b>demo version</b> of the Mangrove online reviews service. Its purpose is to allow you to test the basic functionality and to <b>give us feedback</b> so that we can find all bugs and release a beta version soon. We highly appreciate feedback on all pages, just use the red button on the right as often as you like. Finally: please <b>donate</b> to help us add more features :)`,
       front: {
         image: require('~/assets/index/BG1_beach_2000x897.jpg'),
         tagline: 'Take control of your experiences.',
@@ -110,3 +106,11 @@ export default {
   middleware: 'clear'
 }
 </script>
+
+<style scoped>
+.v-card {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
