@@ -1,43 +1,47 @@
 <template>
   <v-container v-if="subject">
-    <v-row justify="center" style="position: relative">
-      <vl-map
-        ref="map"
-        :load-tiles-while-animating="true"
-        :load-tiles-while-interacting="true"
+    <v-card class="my-3" color="blue">
+      <v-row
         v-if="subject.coordinates"
-        style="height: 400px"
-        data-projection="EPSG:4326"
-        class="mx-3"
+        justify="center"
+        style="position: relative"
+        class="pa-1"
       >
-        <vl-view :center="subject.coordinates" :zoom="15" />
+        <vl-map
+          ref="map"
+          :load-tiles-while-animating="true"
+          :load-tiles-while-interacting="true"
+          style="height: 400px"
+          data-projection="EPSG:4326"
+          class="mx-3"
+        >
+          <vl-view :center="subject.coordinates" :zoom="15" />
 
-        <vl-interaction-select @update:features="selectFeature($event)" />
+          <vl-interaction-select @update:features="selectFeature($event)" />
 
-        <vl-feature v-for="(p, i) in points" :key="i" :id="p.id">
-          <vl-geom-point :coordinates="p.coordinates" />
-          <vl-style-box>
-            <vl-style-icon
-              :scale="p.scale"
-              :anchor="[0.5, 1]"
-              src="map-marker.png"
-            />
-          </vl-style-box>
-        </vl-feature>
+          <vl-feature v-for="(p, i) in points" :key="i" :id="p.id">
+            <vl-geom-point :coordinates="p.coordinates" />
+            <vl-style-box>
+              <vl-style-icon
+                :scale="p.scale"
+                :anchor="[0.5, 1]"
+                src="map-marker.png"
+              />
+            </vl-style-box>
+          </vl-feature>
 
-        <vl-layer-tile id="osm">
-          <vl-source-osm />
-        </vl-layer-tile>
-      </vl-map>
-      <v-btn
-        @click="geoSearch"
-        class="ma-3"
-        absolute
-        style="background: rgb(255, 255, 255, 0.7)"
-        >Search selected area</v-btn
-      >
-    </v-row>
-    <v-card class="my-2">
+          <vl-layer-tile id="osm">
+            <vl-source-osm />
+          </vl-layer-tile>
+        </vl-map>
+        <v-btn
+          @click="geoSearch"
+          class="ma-3"
+          absolute
+          style="background: rgb(255, 255, 255, 0.7)"
+          >Search selected area</v-btn
+        >
+      </v-row>
       <v-dialog v-if="images.length" max-width="700">
         <template v-slot:activator="{ on }">
           <v-row align="center" class="mx-4 pt-4">
@@ -71,7 +75,7 @@
         {{ subject.quality }} ({{ subject.count }})
       </v-row>
       <v-card-subtitle class="mb-n3">{{ subject.subtitle }}</v-card-subtitle>
-      <v-list flat>
+      <v-list flat color="blue">
         <v-list-item v-for="(detail, i) in details" :key="i" class="my-n6">
           <v-list-item-icon class="mr-4">
             <v-icon v-text="detail.icon" />
@@ -86,7 +90,9 @@
         </v-list-item>
       </v-list>
       <v-card-actions class="justify-center">
-        <v-btn @click.stop="reviewForm = true">Write a review</v-btn>
+        <v-btn @click.stop="reviewForm = true" color="success"
+          >Write a review</v-btn
+        >
         <ReviewForm v-model="reviewForm" :subject="subject" />
       </v-card-actions>
     </v-card>

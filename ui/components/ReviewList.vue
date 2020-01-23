@@ -8,13 +8,17 @@
       v-if="opinionless.length && !showOpinionless && notMaresi"
       justify="center"
     >
-      <v-btn @click="showOpinionless = true"
+      <v-btn @click="showOpinionless = true" color="success"
         >Show reviews without a description</v-btn
       >
     </v-row>
     <ReviewListBase v-if="showOpinionless" :listArgs="opinionless" />
     <v-row v-if="reviews.length && notMaresi" justify="center">
-      <v-btn :href="download" :download="downloadName" class="my-7"
+      <v-btn
+        :href="download"
+        :download="downloadName"
+        class="my-7"
+        color="success"
         >Download reviews above</v-btn
       >
     </v-row>

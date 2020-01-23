@@ -26,7 +26,7 @@ export default {
   /*
    ** Global CSS
    */
-  css: [],
+  css: ['vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css'],
   /*
    ** Plugins to load before mounting the App
    */
@@ -68,14 +68,22 @@ export default {
     theme: {
       themes: {
         light: {
-          primary: colors.deepOrange.accent4,
-          secondary: colors.amber.darken3,
-          accent: colors.grey.darken3
+          // Filled stars
+          primary: colors.deepOrange.accent3,
+          secondary: '#263238',
+          // Star outlines
+          accent: colors.deepOrange.accent3,
+          anchor: '#689f38',
+          background: '#ffffff'
         },
         dark: {
-          primary: colors.blue.lighten3,
-          secondary: colors.amber.darken3,
-          accent: colors.grey.darken3
+          // Filled stars
+          primary: colors.deepOrange.accent3,
+          background: '#263238',
+          // Star outlines
+          accent: colors.deepOrange.accent3,
+          anchor: '#689f38',
+          secondary: '#f7f3ed'
         }
       }
     }

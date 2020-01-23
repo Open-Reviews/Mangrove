@@ -16,12 +16,16 @@
       </v-list-item-content>
     </v-list-item>
     <v-card-text>
-      <v-row v-if="payload.rating" align="center">
+      <v-row v-if="payload.rating !== null" align="center" class="pl-2">
+        <span v-if="payload.rating === 0" class="pl-1"
+          ><b>Flagged as inappropriate.</b>
+        </span>
         <v-rating
+          v-else
           :value="(payload.rating + 25) / 25"
           readonly
           dense
-          class="mr-2 ml-2"
+          class="mr-2"
         />
         Reviewed {{ new Date(payload.iat * 1000).toDateString() }}
       </v-row>

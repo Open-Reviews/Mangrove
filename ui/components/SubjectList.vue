@@ -6,7 +6,7 @@
           :key="subject.sub"
           @click="select(subject.sub)"
           :input-value="subject.sub === $route.query.sub"
-          color="success"
+          color="secondary"
           hover
           style="align-items: start"
         >
