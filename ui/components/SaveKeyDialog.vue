@@ -20,6 +20,9 @@ import {
   attributes as submittedAttributes
 } from '~/content/submitted.md'
 
+// Ideally it should be possible to allow copying the key from here,
+// but it for some reason this.$copyText(s) does not copy anything
+// when called from within a dialog.
 export default {
   data() {
     return {
