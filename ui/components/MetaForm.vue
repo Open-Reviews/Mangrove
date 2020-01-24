@@ -1,56 +1,52 @@
 <template>
-  <v-expansion-panels class="elevation-0" accordion>
-    <v-expansion-panel>
-      <v-expansion-panel-header
-        >Add some helpful information about yourself</v-expansion-panel-header
-      >
-      <v-expansion-panel-content>
-        <v-container>
-          <v-row justify="space-around">
-            <v-col>
-              <v-text-field
-                v-model="display_name"
-                :counter="short_text_length"
-                :rules="[is_short_text]"
-                label="Display name"
-              />
-            </v-col>
-            <v-col>
-              <v-text-field
-                v-model="given_name"
-                :counter="short_text_length"
-                :rules="[is_short_text]"
-                label="Given name"
-              />
-            </v-col>
-            <v-col>
-              <v-text-field
-                v-model="family_name"
-                :counter="short_text_length"
-                :rules="[is_short_text]"
-                label="Family name"
-              />
-            </v-col>
-          </v-row>
-          <v-row justify="space-around">
-            <v-col>
-              <v-text-field v-model="age" :rules="[is_age]" label="Your age" />
-            </v-col>
-            <v-col>
-              <v-select v-model="gender" :items="genders" label="Your gender" />
-            </v-col>
-            <v-col>
-              <v-select
-                v-model="context"
-                :items="contexts"
-                label="Context of the experience"
-              />
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-expansion-panel-content>
-    </v-expansion-panel>
-  </v-expansion-panels>
+  <div>
+    <v-card-subtitle>
+      Add some helpful information about yourself (optional)
+    </v-card-subtitle>
+    <v-card-text>
+      <v-row justify="space-around" class="my-n5">
+        <v-col>
+          <v-text-field
+            v-model="display_name"
+            :counter="short_text_length"
+            :rules="[is_short_text]"
+            label="Display name"
+          />
+        </v-col>
+        <v-col>
+          <v-text-field
+            v-model="given_name"
+            :counter="short_text_length"
+            :rules="[is_short_text]"
+            label="Given name"
+          />
+        </v-col>
+        <v-col>
+          <v-text-field
+            v-model="family_name"
+            :counter="short_text_length"
+            :rules="[is_short_text]"
+            label="Family name"
+          />
+        </v-col>
+      </v-row>
+      <v-row justify="space-around" class="my-n5">
+        <v-col>
+          <v-text-field v-model="age" :rules="[is_age]" label="Your age" />
+        </v-col>
+        <v-col>
+          <v-select v-model="gender" :items="genders" label="Your gender" />
+        </v-col>
+        <v-col>
+          <v-select
+            v-model="context"
+            :items="contexts"
+            label="Context of the experience"
+          />
+        </v-col>
+      </v-row>
+    </v-card-text>
+  </div>
 </template>
 
 <script>
@@ -64,7 +60,7 @@ export default {
       short_text_length: 20,
       is_short_text: (t) =>
         !t || t.length < this.short_text_length || 'Too long',
-      is_age: (a) => parseInt(a, 10) < 200 || 'Invalid age'
+      is_age: (a) => !a || parseInt(a, 10) < 200 || 'Invalid age'
     }
   },
   computed: {

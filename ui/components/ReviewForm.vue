@@ -19,7 +19,9 @@
           @deleted="deleteHash($event)"
         />
         <MetaForm />
-        <KeyList :keys="[$store.state.publicKey]">Your public key</KeyList>
+        <KeyList :keys="[$store.state.publicKey]" class="my-n4"
+          >Your public key</KeyList
+        >
 
         <v-list>
           <v-list-item v-for="tick in ticks" :key="tick.text">
@@ -72,23 +74,24 @@
         Error encountered: {{ error }}
       </v-alert>
     </v-card>
-    <v-dialog :value="ratingDialog">
+    <v-dialog :value="ratingDialog" :width="width - 100">
       <v-card>
         <v-card-title>
-          Leave a rating
+          Would you like to leave a rating as well?
         </v-card-title>
-        <v-rating v-model="rating" hover class="my-5" large />
+        <v-rating v-model="rating" hover class="my-2 mx-4" large />
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            @click.stop="
+              dismissedRating = true
+              submitReview()
+            "
+            >Dismiss</v-btn
+          >
+          <v-btn @click.stop="submitReview">Submit</v-btn>
+        </v-card-actions>
       </v-card>
-      <v-card-actions>
-        <v-btn
-          @click.stop="
-            dismissedRating = true
-            submitReview()
-          "
-          >Dismiss</v-btn
-        >
-        <v-btn @click.stop="submitReview">Submit</v-btn>
-      </v-card-actions>
     </v-dialog>
     <SaveKeyDialog @dismiss="clear" v-if="keyDialog" />
   </v-dialog>
