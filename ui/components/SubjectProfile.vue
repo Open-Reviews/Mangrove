@@ -1,6 +1,6 @@
 <template>
   <v-container v-if="subject">
-    <v-card class="my-3" color="secondary lighten-4">
+    <v-card class="my-3">
       <v-row
         v-if="subject.coordinates"
         justify="center"
@@ -75,7 +75,7 @@
         {{ subject.quality }} ({{ subject.count }})
       </v-row>
       <v-card-subtitle class="mb-n3">{{ subject.subtitle }}</v-card-subtitle>
-      <v-list flat color="secondary lighten-4">
+      <v-list flat>
         <v-list-item v-for="(detail, i) in details" :key="i" class="my-n6">
           <v-list-item-icon class="mr-4">
             <v-icon v-text="detail.icon" />
@@ -90,7 +90,7 @@
         </v-list-item>
       </v-list>
       <v-card-actions class="justify-center">
-        <v-btn @click.stop="reviewForm = true" color="success"
+        <v-btn @click.stop="reviewForm = true" color="#ffeb3b"
           >Write a review</v-btn
         >
         <ReviewForm v-model="reviewForm" :subject="subject" />

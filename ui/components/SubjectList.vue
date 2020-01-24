@@ -6,7 +6,7 @@
           :key="subject.sub"
           @click="select(subject.sub)"
           :input-value="subject.sub === $route.query.sub"
-          color="secondary"
+          :style="subject.sub === $route.query.sub ? 'background: #ffeb3b' : ''"
           hover
           style="align-items: start"
         >
@@ -50,32 +50,42 @@
     </v-list>
     <div v-else-if="$store.state.isSearching" v-html="searchingContent" />
     <div v-else v-html="missingContent" />
-    <div v-if="showAdvice">
-      <div class="text-center">
-        No more results found for this search criteria
-      </div>
-      <br />
-      <h1>Can’t find what you were looking for?</h1>
-      <div v-for="advice in adviceContent" :key="advice.title">
-        <b>{{ advice.title }}</b>
-        <ul>
-          <li v-for="bullet in advice.bullets" :key="bullet.subtitle">
-            <b>{{ bullet.subtitle }}</b
-            >:
-            <span v-html="bullet.description" />
-          </li>
-        </ul>
-        <br />
-      </div>
-      <v-row justify="space-around">
-        <v-btn
-          v-for="button in adviceButtons"
-          :href="button.action"
-          :key="button.label"
-          target="_blank"
-          >{{ button.label }}</v-btn
-        >
-      </v-row>
+    <div v-if="showAdvice" class="mx-12">
+      <v-expansion-panels class="elevation-0 mt-1">
+        <v-expansion-panel>
+          <v-expansion-panel-header>
+            <span class="text-center">
+              Can’t find what you were looking for?
+            </span>
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <div
+              v-for="advice in adviceContent"
+              :key="advice.title"
+              class="body-2"
+            >
+              <b>{{ advice.title }}</b>
+              <ul>
+                <li v-for="bullet in advice.bullets" :key="bullet.subtitle">
+                  <b>{{ bullet.subtitle }}</b
+                  >:
+                  <span v-html="bullet.description" />
+                </li>
+              </ul>
+              <br />
+            </div>
+            <v-row justify="space-around">
+              <v-btn
+                v-for="button in adviceButtons"
+                :href="button.action"
+                :key="button.label"
+                target="_blank"
+                >{{ button.label }}</v-btn
+              >
+            </v-row>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
     </div>
   </v-container>
 </template>

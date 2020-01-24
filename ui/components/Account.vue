@@ -12,7 +12,7 @@
       <v-card-text v-html="yourSecretKey" />
       <v-divider />
       <KeyList :keys="[$store.state.publicKey]">
-        Default public key (your identity)
+        Public key (your identity)
       </KeyList>
       <v-card-text v-html="yourPublicKey" />
       <KeyList v-if="false" :keys="[$store.state.publicKey]">

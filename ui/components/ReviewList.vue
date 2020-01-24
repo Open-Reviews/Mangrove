@@ -8,19 +8,25 @@
       v-if="opinionless.length && !showOpinionless && notMaresi"
       justify="center"
     >
-      <v-btn @click="showOpinionless = true" color="success"
-        >Show reviews without a description</v-btn
+      <span @click="showOpinionless = true" style="cursor: pointer"
+        >Show reviews without a description</span
       >
     </v-row>
     <ReviewListBase v-if="showOpinionless" :listArgs="opinionless" />
     <v-row v-if="reviews.length && notMaresi" justify="center">
-      <v-btn
-        :href="download"
-        :download="downloadName"
-        class="my-7"
-        color="success"
-        >Download reviews above</v-btn
-      >
+      <v-tooltip top>
+        <template v-slot:activator="{ on }">
+          <v-btn
+            :href="download"
+            :download="downloadName"
+            v-on="on"
+            class="my-7"
+            color="success"
+            >Download</v-btn
+          >
+        </template>
+        Download the reviews in this list
+      </v-tooltip>
     </v-row>
   </div>
 </template>

@@ -8,12 +8,15 @@
     <v-row class="my-7">
       <v-col v-for="section in content" :key="section.title">
         <v-card min-height="350" min-width="300">
-          <v-row justify="center">
-            <v-icon x-large class="ma-12">{{ section.icon }}</v-icon>
-          </v-row>
-          <v-divider />
           <v-card-title>{{ section.title }}</v-card-title>
           <v-card-text v-html="section.description" />
+          <v-row justify="center">
+            <v-card-actions>
+              <v-btn color="yellow" elevation="10" large rounded>
+                <v-icon x-large>{{ section.icon }}</v-icon>
+              </v-btn>
+            </v-card-actions>
+          </v-row>
         </v-card>
       </v-col>
     </v-row>

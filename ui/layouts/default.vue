@@ -1,5 +1,5 @@
 <template>
-  <v-app :style="{ background: $vuetify.theme.themes[theme].background }">
+  <v-app>
     <v-app-bar app dense>
       <router-link to="/">
         <v-img src="mangrove.png" max-width="170" contain />

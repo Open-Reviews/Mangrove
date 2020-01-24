@@ -74,8 +74,7 @@ export default {
           secondary: colors.lightBlue,
           // Star outlines
           accent: colors.deepOrange.accent3,
-          anchor: '#689f38',
-          background: '#ffffff'
+          anchor: colors.black
         },
         dark: {
           // Filled stars
