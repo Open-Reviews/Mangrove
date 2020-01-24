@@ -5,4 +5,4 @@ Save your secret key if not done already. Your secret key is like a password, wi
 
 It is as simple as a normal login, yet fundamentally superior as it puts you in control of your data and identity.
 
-Go to your account [Settings](settings) and to save your secret key.
+Go to your account [Settings](settings) and save your secret key.
