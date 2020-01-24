@@ -72,19 +72,25 @@
         Error encountered: {{ error }}
       </v-alert>
     </v-card>
-    <v-dialog v-model="keyDialog" width="600">
+    <v-dialog :value="ratingDialog">
       <v-card>
-        <v-card-title v-text="submittedTitle" />
-        <v-card-text>
-          <p v-html="submittedContent" />
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn @click="copySecret">Copy secret key</v-btn>
-          <v-btn @click.stop="dismissKeyDialog">Dismiss</v-btn>
-        </v-card-actions>
+        <v-card-title>
+          Leave a rating
+        </v-card-title>
+        <v-rating v-model="rating" hover class="my-5" large />
       </v-card>
+      <v-card-actions>
+        <v-btn
+          @click.stop="
+            dismissedRating = true
+            submitReview()
+          "
+          >Dismiss</v-btn
+        >
+        <v-btn @click.stop="submitReview">Submit</v-btn>
+      </v-card-actions>
     </v-dialog>
+    <SaveKeyDialog @dismiss="clear" v-if="keyDialog" />
   </v-dialog>
 </template>
 
@@ -93,20 +99,18 @@ import { get } from 'idb-keyval'
 import ExtraForm from './ExtraForm'
 import MetaForm from './MetaForm'
 import KeyList from './KeyList'
+import SaveKeyDialog from './SaveKeyDialog'
 import { HAS_IMPORTED_KEY } from '~/store/indexeddb-types'
 import { MARESI } from '~/store/scheme-types'
-import { MAX_OPINION_LENGTH, skToJwk } from '~/utils'
-import {
-  html as submittedContent,
-  attributes as submittedAttributes
-} from '~/content/submitted.md'
+import { MAX_OPINION_LENGTH } from '~/utils'
 
 export default {
   name: 'ReviewForm',
   components: {
     ExtraForm,
     MetaForm,
-    KeyList
+    KeyList,
+    SaveKeyDialog
   },
   props: {
     value: Boolean,
@@ -127,9 +131,9 @@ export default {
         isAffiliated: false
       },
       MAX_OPINION_LENGTH,
-      keyDialog: false,
-      submittedTitle: submittedAttributes.title,
-      submittedContent
+      dismissedRating: false,
+      ratingDialog: false,
+      keyDialog: false
     }
   },
   computed: {
@@ -199,6 +203,14 @@ export default {
       })
     },
     submitReview() {
+      if (!this.dismissedRating && !this.rating) {
+        this.ratingDialog = true
+        return
+      }
+      if (this.dismissedRating) {
+        this.rating = null
+      }
+      this.ratingDialog = false
       // Close the dialog if successful.
       this.$store.dispatch('submitReview', this.payloadStub).then(
         (outcome) =>
@@ -207,22 +219,14 @@ export default {
             if (!hasImported) {
               this.keyDialog = true
             } else {
-              this.$emit('input', false)
+              this.clear()
             }
           })
       )
     },
-    dismissKeyDialog() {
+    clear() {
       Object.assign(this.$data, this.$options.data())
       this.$emit('input', false)
-    },
-    async copySecret() {
-      const secret = await skToJwk(this.$store.state.keyPair.privateKey)
-      try {
-        await this.$copyText(JSON.stringify(secret))
-      } catch (e) {
-        console.error(e)
-      }
     }
   }
 }

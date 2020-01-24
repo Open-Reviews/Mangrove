@@ -6,51 +6,54 @@
         <v-list-item-avatar tile>
           <v-icon large>mdi-key</v-icon>
         </v-list-item-avatar>
-        <form
-          v-on:submit.prevent
-          style="display: inline-block; white-space: nowrap"
-        >
-          <v-list-item-content>
-            <v-list-item-title>
-              <v-text-field
-                id="password"
-                :value="keyString(key)"
-                required
-                class="full-width"
-                type="password"
-                name="password"
-                autocomplete="password"
-              />
-            </v-list-item-title>
-          </v-list-item-content>
+        <v-col cols="12">
+          <form
+            ref="form"
+            v-on:submit.prevent
+            style="display: inline-block; white-space: nowrap"
+          >
+            <v-list-item-content>
+              <v-list-item-title>
+                <v-text-field
+                  id="password"
+                  :value="keyString(key)"
+                  required
+                  class="full-width"
+                  type="password"
+                  name="password"
+                  autocomplete="password"
+                />
+              </v-list-item-title>
+            </v-list-item-content>
+            <v-list-item-action>
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-btn @click="copy(key)" v-on="on" icon>
+                    <v-icon>mdi-content-copy</v-icon>
+                  </v-btn>
+                </template>
+                Copy to clipboard
+              </v-tooltip>
+            </v-list-item-action>
+          </form>
           <v-list-item-action>
-            <v-tooltip top>
+            <v-dialog>
               <template v-slot:activator="{ on }">
-                <v-btn @click="copy(key)" v-on="on" icon>
-                  <v-icon>mdi-content-copy</v-icon>
+                <v-btn v-on="on" icon>
+                  <v-icon>mdi-eye</v-icon>
                 </v-btn>
               </template>
-              Copy to clipboard
-            </v-tooltip>
+              <v-card>
+                <v-card-title>
+                  Your secret key
+                </v-card-title>
+                <v-card-text>
+                  <span v-html="secret" />
+                </v-card-text>
+              </v-card>
+            </v-dialog>
           </v-list-item-action>
-        </form>
-        <v-list-item-action>
-          <v-dialog>
-            <template v-slot:activator="{ on }">
-              <v-btn v-on="on" icon>
-                <v-icon>mdi-eye</v-icon>
-              </v-btn>
-            </template>
-            <v-card>
-              <v-card-title>
-                Your secret key
-              </v-card-title>
-              <v-card-text>
-                <span v-html="secret" />
-              </v-card-text>
-            </v-card>
-          </v-dialog>
-        </v-list-item-action>
+        </v-col>
       </v-list-item>
       <v-list-item v-else :key="key" class="mt-5">
         <v-list-item-avatar tile>
@@ -98,22 +101,18 @@ export default {
       pkDisplay
     }
   },
-  async mounted() {
-    this.secret = await skToJwk(this.$store.state.keyPair.privateKey)
+  mounted() {
+    skToJwk(this.$store.state.keyPair.privateKey).then(
+      (s) => (this.secret = JSON.stringify(s))
+    )
   },
   methods: {
     keyString(json) {
-      if (this.sk) {
-        json = this.secret
-      }
-      return JSON.stringify(json)
+      return this.sk ? this.secret : JSON.stringify(json)
     },
-    async copy(json) {
-      try {
-        await this.$copyText(this.keyString(json))
-      } catch (e) {
-        console.error(e)
-      }
+    copy(json) {
+      this.$refs.form.$el.submit()
+      this.$copyText(this.keyString(json)).catch((e) => console.error(e))
     }
   }
 }
