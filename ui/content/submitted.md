@@ -1,7 +1,8 @@
 ---
-title: Thank you for your review. Please save your secret key.
+title: Thank you for your review!
 ---
-
-Mangrove respects your privacy and doesn’t store your identity. By default a new account is created whenever you access Mangrove on a different device or clear your browser data. If you like to keep a consistent identity and access your previous reviews, you need to save your secret key (ideally within a password manager, such as [Bitwarden](https://bitwarden.com/)) and import it on the new device in Mangrove’s [account settings](settings). 
+Save your secret key if not done already. Your secret key is like a password, with the difference that it lives on your own device and that you don't share it with us. It lets you maintain one identity (represented by the avatar) in the system and allows for a number of useful features such as building your reputation. If you open Mangrove on a different device or after clearing your browser data, your browser generates a new identity for you. Only if you saved the secret key, you can use it (like a password) to unlock your previous account and write your new reviews under the same identity as before.
 
 It is as simple as a normal login, yet fundamentally superior as it puts you in control of your data and identity.
+
+Go to your account [Settings](settings) and save your secret key.
