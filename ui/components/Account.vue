@@ -6,6 +6,21 @@
     </v-row>
     <v-divider />
     <v-card v-if="$store.state.publicKey" class="my-5">
+      <v-expansion-panels>
+        <v-expansion-panel>
+          <v-expansion-panel-header v-text="keyTitle.title" />
+          <v-expansion-panel-content>
+            <span v-html="keyInfo" />
+            <v-row justify="space-around">
+              <v-btn :href="downloadKeyLink" :download="downloadKeyName">
+                Download secret key
+              </v-btn>
+              <SwitchAccount />
+            </v-row>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
+      <v-divider />
       <KeyList sk>
         Secret key (your password)
       </KeyList>
@@ -18,15 +33,6 @@
       <KeyList v-if="false" :keys="[$store.state.publicKey]">
         Other public keys
       </KeyList>
-      <v-divider />
-      <v-card-text v-html="keyInfo" />
-      <v-card-actions>
-        <v-btn :href="downloadKeyLink" :download="downloadKeyName">
-          Download secret key
-        </v-btn>
-        <v-spacer />
-        <SwitchAccount />
-      </v-card-actions>
     </v-card>
     <v-row> </v-row>
   </v-container>
@@ -37,7 +43,10 @@ import KeyList from './KeyList'
 import SwitchAccount from './SwitchAccount'
 import { html as yourPublicKey } from '~/content/settings/your-public-key.md'
 import { html as yourSecretKey } from '~/content/settings/your-secret-key.md'
-import { html as keyInfo } from '~/content/settings/key-info.md'
+import {
+  html as keyInfo,
+  attributes as keyTitle
+} from '~/content/settings/key-info.md'
 import { downloadLink, skToJwk, pkDisplay } from '~/utils'
 
 export default {
@@ -51,7 +60,8 @@ export default {
         'Save the secret key in a secure place accessible across devices, such as a password manager.',
       yourPublicKey,
       yourSecretKey,
-      keyInfo
+      keyInfo,
+      keyTitle
     }
   },
   computed: {

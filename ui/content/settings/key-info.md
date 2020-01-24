@@ -1,4 +1,6 @@
-An account in Mangrove consists of a **cryptographically generated pair of keys**. 
+---
+title: "An account in Mangrove consists of a cryptographically generated pair of keys: a secret key and a public key. Learn more about accounts"
+---
 
 The secret key represents your self-controlled password (Mangrove does not have access to your secret key). The public key represents your identity that will be displayed with each review you write, and that keeps track of your reputation.
 
