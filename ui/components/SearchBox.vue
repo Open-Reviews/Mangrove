@@ -8,6 +8,7 @@
         @click:append="search"
         append-icon="mdi-magnify"
         filled
+        outlined
         background-color="white"
         dense
       />

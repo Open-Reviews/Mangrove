@@ -1,8 +1,8 @@
 <template>
-  <v-app>
-    <v-app-bar app dense>
+  <v-app :style="{ background: $vuetify.theme.themes[theme].background }">
+    <v-app-bar app dense color="background">
       <router-link to="/">
-        <v-img src="mangrove.png" max-width="170" contain />
+        <v-img src="mangrove.png" max-width="220" contain />
       </router-link>
       <v-spacer />
       <v-toolbar-items class="mr-n4 hidden-sm-and-down">

@@ -21,11 +21,10 @@
             :download="downloadName"
             v-on="on"
             class="my-7"
-            color="success"
             >Download</v-btn
           >
         </template>
-        Download the reviews in this list
+        Download all reviews in this list
       </v-tooltip>
     </v-row>
   </div>

@@ -81,3 +81,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.v-expansion-panel:before {
+  box-shadow: none !important;
+}
+</style>
