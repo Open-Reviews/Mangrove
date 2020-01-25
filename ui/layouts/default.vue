@@ -172,4 +172,7 @@ export default {
 .v-card__title {
   word-break: normal;
 }
+.v-btn {
+  text-transform: none !important;
+}
 </style>
