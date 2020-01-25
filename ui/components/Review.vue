@@ -3,8 +3,8 @@
     <v-subheader
       v-if="subjectTitle"
       v-text="subjectTitle"
-      @click="selectSubject"
-      style="cursor: pointer"
+      @click="isMaresi || selectSubject()"
+      :style="isMaresi ? '' : 'cursor: pointer'"
     />
     <v-list-item class="mb-n5">
       <v-list-item-avatar class="mr-2" tile>
@@ -228,6 +228,9 @@ export default {
         title: displayName(this.payload.metadata),
         metadata: this.personalMeta
       }
+    },
+    isMaresi() {
+      return this.payload.sub.startsWith(MARESI)
     }
   },
   methods: {

@@ -74,7 +74,7 @@
         Error encountered: {{ error }}
       </v-alert>
     </v-card>
-    <v-dialog :value="ratingDialog" :width="width - 100">
+    <v-dialog :value="ratingDialog" :width="width - 200">
       <v-card>
         <v-card-title>
           Would you like to leave a rating as well?
@@ -83,13 +83,18 @@
         <v-card-actions>
           <v-spacer />
           <v-btn
+            @click.stop="submitReview"
+            color="secondary"
+            class="black--text"
+            >Submit</v-btn
+          >
+          <v-btn
             @click.stop="
               dismissedRating = true
               submitReview()
             "
             >Dismiss</v-btn
           >
-          <v-btn @click.stop="submitReview">Submit</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

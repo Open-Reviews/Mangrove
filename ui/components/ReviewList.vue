@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { downloadLink, pkDisplay } from '../utils'
+import { downloadLink, pkDisplay, displayName } from '../utils'
 import { MARESI } from '../store/scheme-types'
 import ReviewListBase from './ReviewListBase'
 
@@ -61,13 +61,12 @@ export default {
       return Object.values(this.$store.state.reviews)
         .filter(({ payload }) => {
           // Pick only ones for selected subject or issuer.
-          const isSelected = payload.sub === this.rootSub
+          const isSelected =
+            payload.sub === this.rootSub || payload.iss === this.rootIss
           const isFiltered =
-            payload.iss === this.rootIss &&
-            !payload.sub.startsWith(MARESI) &&
-            (!this.filters.length ||
-              this.filters.some((filter) => payload.sub.startsWith(filter)))
-          return isSelected || isFiltered
+            !this.filters.length ||
+            this.filters.some((filter) => payload.sub.startsWith(filter))
+          return isSelected && isFiltered
         })
         .sort((r1, r2) => r2.payload.iat - r1.payload.iat)
     },
@@ -109,16 +108,20 @@ export default {
         maresiSubject: this.$store.getters.subject(
           `${MARESI}:${review.signature}`
         ),
-        subjectTitle: this.subjectTitle(review.payload.sub),
+        subjectTitle: this.subjectTitle(review.payload),
         rootSub: `${MARESI}:${review.signature}`
       }
     },
-    subjectTitle(sub) {
+    subjectTitle({ sub, metadata }) {
       if (!this.rootIss) {
         return
       }
-      const subject = this.$store.getters.subject(sub)
-      return subject && `${subject.title}, ${subject.subtitle}`
+      if (sub.startsWith(MARESI)) {
+        return `Your comment on ${displayName(metadata)}'s review`
+      } else {
+        const subject = this.$store.getters.subject(sub)
+        return subject && `Your review of ${subject.title}, ${subject.subtitle}`
+      }
     }
   }
 }

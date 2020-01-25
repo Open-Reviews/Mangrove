@@ -14,7 +14,12 @@
           <v-expansion-panel-content>
             <span v-html="keyInfo" />
             <v-row justify="space-around">
-              <v-btn :href="downloadKeyLink" :download="downloadKeyName">
+              <v-btn
+                :href="downloadKeyLink"
+                :download="downloadKeyName"
+                color="secondary"
+                class="black--text"
+              >
                 Download secret key
               </v-btn>
               <SwitchAccount />

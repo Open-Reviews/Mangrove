@@ -7,7 +7,9 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn to="/settings">Settings</v-btn>
+        <v-btn to="/settings" color="secondary" class="black--text"
+          >Go to settings</v-btn
+        >
         <v-btn @click.stop="$emit('dismiss')">Dismiss</v-btn>
       </v-card-actions>
     </v-card>
