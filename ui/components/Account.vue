@@ -8,7 +8,9 @@
     <v-card v-if="$store.state.publicKey" class="my-5">
       <v-expansion-panels>
         <v-expansion-panel>
-          <v-expansion-panel-header v-text="keyTitle.title" />
+          <v-expansion-panel-header>
+            {{ keyTitle.title }}
+          </v-expansion-panel-header>
           <v-expansion-panel-content>
             <span v-html="keyInfo" />
             <v-row justify="space-around">
