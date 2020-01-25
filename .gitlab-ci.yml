@@ -27,7 +27,7 @@ pages:
   - yarn generate
   - cd ..
   - mkdir public
-  - cp ui/dist/* public
+  - cp -r ui/dist/* public
   artifacts:
     paths:
     - public
