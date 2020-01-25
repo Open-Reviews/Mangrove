@@ -59,16 +59,18 @@ export default {
     },
     reviews() {
       // TODO: Return generator to improve performance.
-      return Object.values(this.$store.state.reviews).filter(({ payload }) => {
-        // Pick only ones for selected subject or issuer.
-        const isSelected = payload.sub === this.rootSub
-        const isFiltered =
-          payload.iss === this.rootIss &&
-          !payload.sub.startsWith(MARESI) &&
-          (!this.filters.length ||
-            this.filters.some((filter) => payload.sub.startsWith(filter)))
-        return isSelected || isFiltered
-      })
+      return Object.values(this.$store.state.reviews)
+        .filter(({ payload }) => {
+          // Pick only ones for selected subject or issuer.
+          const isSelected = payload.sub === this.rootSub
+          const isFiltered =
+            payload.iss === this.rootIss &&
+            !payload.sub.startsWith(MARESI) &&
+            (!this.filters.length ||
+              this.filters.some((filter) => payload.sub.startsWith(filter)))
+          return isSelected || isFiltered
+        })
+        .sort((r1, r2) => r2.payload.iat - r1.payload.iat)
     },
     opinionated() {
       return this.reviews.filter((r) => r.payload.opinion).map(this.reviewToArg)

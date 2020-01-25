@@ -6,7 +6,7 @@
 
 This repository contains:
 - [Mangrove Review Standard](Mangrove_Review_Standard.md)
-- [Mangrove Original Services Terms of Use](Mangrove_Original_Services_ToU.md)
+- [Mangrove Original Services Terms of Use](ui/content/Mangrove_Original_Services_ToU.md)
 - Mangrove Original Server implementation as [Lambda](https://aws.amazon.com/lambda/) using [Rocket](https://rocket.rs/)
   - [Reviewer Lambda](servers/reviewer) accessing PostgreSQL database
   - [File Hoster Lambda](servers/file_hoster) accessing an S3 bucket
