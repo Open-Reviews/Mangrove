@@ -1,25 +1,37 @@
 variables:
   S3_BUCKET: "mangrove.reviews"
+  CDN_DISTRIBUTION_ID: "E3R6KTTYJH0XRG"
   CI_DEBUG_TRACE: "true"
   BASE_URL: "https://mangrove.reviews"
   VUE_APP_API_URL: "https://api.mangrove.reviews"
   VUE_APP_FILES_URL: "https://files.mangrove.reviews"
   VUE_APP_UPLOAD_URL: "https://upload.mangrove.reviews"
 
-deploy:
+image: wilson208/circleci-awscli:node
+
+build:
   only:
     - master
-
-  image: wilson208/circleci-awscli:node
-
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
     - ui/node_modules/
-
   script:
   - cd ui
   - yarn install
   - yarn generate
+
+pages:
+  stage: deploy
+  script:
+  - mkdir public
+  - cp ui/dist/* public
+  artifacts:
+    paths:
+    - public
+
+production:
+  stage: deploy
+  script:
   - aws s3 rm s3://$S3_BUCKET --recursive
-  - aws s3 cp --recursive ./dist s3://$S3_BUCKET
+  - aws s3 cp --recursive ./ui/dist s3://$S3_BUCKET
