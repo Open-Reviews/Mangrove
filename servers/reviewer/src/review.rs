@@ -1,4 +1,4 @@
-use super::database::DbConn;
+use super::database::{self, DbConn};
 use super::error::Error;
 use super::schema::reviews;
 use isbn::Isbn;
@@ -74,6 +74,25 @@ pub struct Payload {
     /// Any data relating to the issuer or circumstances of leaving review.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<serde_json::Value>,
+}
+
+impl Payload {
+    fn check_unique(&self, conn: &DbConn) -> Result<(), Error> {
+        let similar = conn.filter(database::Query {
+            iss: Some(self.iss.clone()),
+            sub: Some(self.sub.clone()),
+            rating: self.rating,
+            opinion: self.opinion.clone(),
+            ..Default::default()
+        })?;
+        if similar.len() == 0 {
+            Ok(())
+        } else {
+            Err(Error::Incorrect(
+                "Duplicate entry found in the database, please submit reviews with differing rating or opinion.".into()
+            ))
+        }
+    }
 }
 
 const MANGROVE_EPOCH: Duration = Duration::from_secs(1_577_836_800);
@@ -307,6 +326,7 @@ impl Payload {
         metadata.map_or(Ok(()), |m| {
             m.0.into_iter().map(|(k, v)| check_metadata(&k, v)).collect()
         })?;
+        self.check_unique(conn)?;
         extra_hashes.map_or(Ok(()), |e| {
             e.0.iter().map(|h| check_extrahash(&h)).collect()
         })?;
