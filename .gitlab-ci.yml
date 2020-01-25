@@ -2,7 +2,6 @@ variables:
   S3_BUCKET: "mangrove.reviews"
   CDN_DISTRIBUTION_ID: "E3R6KTTYJH0XRG"
   CI_DEBUG_TRACE: "true"
-  BASE_URL: "https://mangrove.reviews"
   VUE_APP_API_URL: "https://api.mangrove.reviews"
   VUE_APP_FILES_URL: "https://files.mangrove.reviews"
   VUE_APP_UPLOAD_URL: "https://upload.mangrove.reviews"
@@ -20,6 +19,8 @@ build:
   - yarn generate
 
 pages:
+  variables:
+    BASE_URL: "https://plantingspace.gitlab.io/mangrove"
   stage: deploy
   script:
   - cd ui
@@ -35,6 +36,8 @@ pages:
   - master
 
 production:
+  variables:
+    BASE_URL: "https://mangrove.reviews"
   stage: deploy
   script:
   - cd ui

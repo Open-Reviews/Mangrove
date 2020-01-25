@@ -5,8 +5,7 @@
         <v-list-item
           :key="subject.sub"
           @click="select(subject.sub)"
-          :input-value="subject.sub === $route.query.sub"
-          :style="subject.sub === $route.query.sub ? 'background: #ffeb3b' : ''"
+          :class="subject.sub === $route.query.sub ? 'active-item' : ''"
           hover
           style="align-items: start"
         >
@@ -201,3 +200,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.active-item {
+  background: var(--v-secondary-base);
+}
+</style>
