@@ -12,6 +12,14 @@ export const NAMES = {
   [MARESI]: 'Review'
 }
 
+export const ICONS = {
+  [HTTPS]: 'mdi-earth',
+  [GEO]: 'mdi-map-marker',
+  [LEI]: 'mdi-domain',
+  [ISBN]: 'mdi-book-open-page-variant',
+  [MARESI]: 'Review'
+}
+
 export function subToScheme(sub) {
   let scheme
   if (sub.startsWith(GEO)) {

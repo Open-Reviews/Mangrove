@@ -91,7 +91,7 @@
           target="_blank"
           >PlantingSpace</a
         >
-        Project -
+        Project —
         <a
           :href="ccbyUrl"
           style="text-decoration: none"
@@ -135,7 +135,7 @@ export default {
         { label: 'About', href: 'https://planting.space/mangrove.html' },
         { label: 'FAQ', to: 'faq' },
         { label: 'Terms & Privacy', to: 'terms' },
-        { label: 'Api', href: 'https://api.mangrove.reviews/swagger-ui' },
+        { label: 'API', href: 'https://api.mangrove.reviews/swagger-ui' },
         { label: 'Develop', href: 'https://gitlab.com/plantingspace/mangrove' },
         { label: 'Donations', href: 'https://opencollective.com/mangrove' }
       ],

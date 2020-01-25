@@ -9,7 +9,8 @@
           hover
           style="align-items: start"
         >
-          <v-chip small label class="ma-3" style="min-width: 80px">
+          <v-chip small class="ma-3" style="min-width: 100px">
+            <v-avatar><v-icon v-text="icon(subject.scheme)" small/></v-avatar>
             {{ name(subject.scheme) }}
           </v-chip>
           <v-list-item-content>
@@ -90,7 +91,7 @@
 </template>
 
 <script>
-import { NAMES, MARESI } from '~/store/scheme-types'
+import { NAMES, MARESI, ICONS } from '~/store/scheme-types'
 export default {
   data() {
     return {
@@ -193,6 +194,9 @@ export default {
   methods: {
     name(uri) {
       return NAMES[uri]
+    },
+    icon(uri) {
+      return ICONS[uri]
     },
     select(sub) {
       this.$store.dispatch('selectSubject', [this.$route.query, sub])

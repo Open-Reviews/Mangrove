@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <v-col class="scrollable noscroll mr-n3" cols="4">
+    <v-col class="scrollable noscroll mr-n3" cols="5">
       <v-row class="px-10">
         <SearchBox />
       </v-row>
@@ -10,7 +10,7 @@
     </v-col>
     <v-divider vertical />
     <v-col
-      style="padding-left: 10vw; padding-right: 15vw"
+      style="padding-left: 7vw; padding-right: 7vw"
       class="scrollable noscroll"
     >
       <SubjectProfile />
