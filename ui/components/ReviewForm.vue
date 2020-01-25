@@ -58,7 +58,7 @@
 
       <v-card-actions>
         <v-spacer />
-        <v-btn @click="$emit('input', false)" text>
+        <v-btn @click.stop="clear" text>
           Cancel
         </v-btn>
         <v-btn @click.stop="previewReview" text>Preview</v-btn>
@@ -99,6 +99,7 @@
 
 <script>
 import { get } from 'idb-keyval'
+import { SUBMIT_ERROR } from '../store/mutation-types'
 import ExtraForm from './ExtraForm'
 import MetaForm from './MetaForm'
 import KeyList from './KeyList'
@@ -178,6 +179,7 @@ export default {
     }
   },
   mounted() {
+    this.$store.commit(SUBMIT_ERROR, null)
     this.$store
       .dispatch('getIssuer', this.$store.state.publicKey)
       .then((issuer) => {

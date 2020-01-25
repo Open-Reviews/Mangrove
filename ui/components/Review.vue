@@ -246,16 +246,24 @@ export default {
         this.payloadSub(this.review.signature)
       )
     },
+    disableMarking() {
+      this.actions[0].disabled = true
+      this.actions[1].disabled = true
+    },
     useful(signature) {
       const claim = this.payloadSub(signature)
       claim.rating = 100
-      this.$store.dispatch('submitReview', claim)
+      this.$store
+        .dispatch('submitReview', claim)
+        .then((result) => result || this.disableMarking())
     },
     confirm(signature) {
       const claim = this.payloadSub(signature)
       claim.rating = 100
       claim.metadata = this.personalMeta
-      this.$store.dispatch('submitReview', claim)
+      this.$store
+        .dispatch('submitReview', claim)
+        .then((result) => result || this.disableMarking())
     },
     showFlag(review) {
       this.flagSubject = this.subjectWithTitle

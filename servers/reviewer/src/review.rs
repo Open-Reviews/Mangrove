@@ -85,7 +85,7 @@ impl Payload {
             opinion: self.opinion.clone(),
             ..Default::default()
         })?;
-        if similar.len() == 0 {
+        if similar.is_empty() {
             Ok(())
         } else {
             Err(Error::Incorrect(

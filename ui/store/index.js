@@ -85,6 +85,16 @@ export const getters = {
   },
   issuer: (state) => (iss) => {
     return state.issuers[iss] || console.log('not present in issuers', iss)
+  },
+  isUnique: (state) => (newPayload) => {
+    return (
+      Object.values(state.reviews).filter(
+        ({ payload }) =>
+          newPayload.sub === payload.sub &&
+          newPayload.rating === payload.rating &&
+          newPayload.opinion === payload.opinion
+      ).length === 0
+    )
   }
 }
 
@@ -249,9 +259,13 @@ export const actions = {
         }
       })
   },
-  submitReview({ commit, dispatch }, reviewStub) {
+  submitReview({ getters, commit, dispatch }, reviewStub) {
     return dispatch('reviewContent', reviewStub).then(
       ({ signature, encodedPayload, payload }) => {
+        if (!getters.isUnique(payload)) {
+          commit(t.SUBMIT_ERROR, 'You have already submitted this review.')
+          return false
+        }
         const review = { signature, payload: encodedPayload }
         console.log('Mangrove review: ', review)
         return this.$axios
