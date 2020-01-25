@@ -111,7 +111,6 @@ export default {
       return this.sk ? this.secret : JSON.stringify(json)
     },
     copy(json) {
-      this.$refs.form.$el.submit()
       this.$copyText(this.keyString(json)).catch((e) => console.error(e))
     }
   }
