@@ -67,11 +67,15 @@ export default {
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     theme: {
+      options: {
+        customProperties: true
+      },
       themes: {
         light: {
           // Filled stars
           primary: colors.deepOrange.accent3,
-          secondary: colors.lightBlue,
+          // Buttons and selected list
+          secondary: colors.yellow,
           // Star outlines
           accent: colors.deepOrange.accent3,
           anchor: colors.black
@@ -83,7 +87,8 @@ export default {
           // Star outlines
           accent: colors.deepOrange.accent3,
           anchor: '#689f38',
-          secondary: '#f7f3ed'
+          // Buttons and selected list
+          secondary: colors.yellow
         }
       }
     }
