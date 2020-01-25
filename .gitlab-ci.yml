@@ -8,14 +8,12 @@ variables:
   VUE_APP_UPLOAD_URL: "https://upload.mangrove.reviews"
 
 image: wilson208/circleci-awscli:node
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+  - ui/node_modules/
 
 build:
-  only:
-    - master
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}
-    paths:
-    - ui/node_modules/
   script:
   - cd ui
   - yarn install
@@ -24,14 +22,25 @@ build:
 pages:
   stage: deploy
   script:
+  - cd ui
+  - yarn install
+  - yarn generate
+  - cd ..
   - mkdir public
   - cp ui/dist/* public
   artifacts:
     paths:
     - public
+  except:
+  - master
 
 production:
   stage: deploy
   script:
+  - cd ui
+  - yarn install
+  - yarn generate
   - aws s3 rm s3://$S3_BUCKET --recursive
-  - aws s3 cp --recursive ./ui/dist s3://$S3_BUCKET
+  - aws s3 cp --recursive ./dist s3://$S3_BUCKET
+  only:
+  - master
