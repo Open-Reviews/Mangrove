@@ -4,7 +4,7 @@
       <template v-for="(subject, i) in subjects">
         <v-list-item
           :key="subject.sub"
-          @click="select(subject.sub)"
+          @click="select(subject)"
           :class="subject.sub === $route.query.sub ? 'active-item' : ''"
           hover
           style="align-items: start"
@@ -198,8 +198,9 @@ export default {
     icon(uri) {
       return ICONS[uri]
     },
-    select(sub) {
-      this.$store.dispatch('selectSubject', [this.$route.query, sub])
+    select(subject) {
+      this.$emit('selected')
+      this.$store.dispatch('selectSubject', [this.$route.query, subject.sub])
     }
   }
 }

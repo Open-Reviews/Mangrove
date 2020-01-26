@@ -1,47 +1,7 @@
 <template>
   <v-container v-if="subject">
     <v-card class="my-3">
-      <v-row
-        v-if="subject.coordinates"
-        justify="center"
-        style="position: relative"
-        class="pa-1"
-      >
-        <vl-map
-          ref="map"
-          :load-tiles-while-animating="true"
-          :load-tiles-while-interacting="true"
-          style="height: 400px"
-          data-projection="EPSG:4326"
-          class="mx-3"
-        >
-          <vl-view :center="subject.coordinates" :zoom="15" />
-
-          <vl-interaction-select @update:features="selectFeature($event)" />
-
-          <vl-feature v-for="(p, i) in points" :key="i" :id="p.id">
-            <vl-geom-point :coordinates="p.coordinates" />
-            <vl-style-box>
-              <vl-style-icon
-                :scale="p.scale"
-                :anchor="[0.5, 1]"
-                src="map-marker.png"
-              />
-            </vl-style-box>
-          </vl-feature>
-
-          <vl-layer-tile id="osm">
-            <vl-source-osm />
-          </vl-layer-tile>
-        </vl-map>
-        <v-btn
-          @click="geoSearch"
-          class="ma-3"
-          absolute
-          style="background: rgb(255, 255, 255, 0.7)"
-          >Search selected area</v-btn
-        >
-      </v-row>
+      <slot />
       <v-dialog v-if="images.length" max-width="700">
         <template v-slot:activator="{ on }">
           <v-row align="center" class="mx-4 pt-4">
@@ -101,7 +61,6 @@
 </template>
 
 <script>
-import { transformExtent, get } from 'ol/proj'
 import { imageUrl, isMobile } from '../utils'
 import { GEO, LEI, ISBN } from '../store/scheme-types'
 import ReviewForm from './ReviewForm'
@@ -187,43 +146,6 @@ export default {
         images.push(this.subject.image)
       }
       return images.slice(0, 4)
-    },
-    points() {
-      return Object.values(this.$store.state.subjects)
-        .filter((subject) => subject.scheme === GEO)
-        .map((subject) => {
-          return {
-            id: subject.sub,
-            coordinates: subject.coordinates,
-            scale: subject.sub === this.subject.sub ? 1.2 : 0.7
-          }
-        })
-    }
-  },
-  methods: {
-    selectFeature(features) {
-      if (features[0] && this.$route.query.sub !== features[0].id) {
-        this.$store.dispatch('selectSubject', [
-          this.$route.query,
-          features[0].id
-        ])
-      }
-    },
-    geoSearch() {
-      const geo = transformExtent(
-        this.$refs.map.$map.getView().calculateExtent(),
-        get('EPSG:3857'),
-        get('EPSG:4326')
-      ).join(',')
-      console.log('Map query: ', geo)
-      this.$router.push({
-        path: 'search',
-        query: {
-          [GEO]: geo,
-          q: this.$route.query.q,
-          sub: this.$route.query.sub
-        }
-      })
     }
   }
 }

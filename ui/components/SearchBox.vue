@@ -16,7 +16,10 @@
     <v-alert v-if="error" type="error" border="left" elevation="8">
       Error encountered: {{ error }}
     </v-alert>
-    <SchemeFilter v-if="!noFilter" />
+    <SchemeFilter
+      v-if="!noFilter"
+      :class="{ 'my-n6': $vuetify.breakpoint.smAndDown }"
+    />
   </v-container>
 </template>
 

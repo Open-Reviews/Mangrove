@@ -158,8 +158,7 @@ export default {
       return this.$vuetify.theme.dark ? 'light' : 'dark'
     },
     isSmall() {
-      const size = this.$vuetify.breakpoint.name
-      return size === 'xs' || size === 'sm'
+      return this.$vuetify.breakpoint.smAndDown
     }
   },
   created() {

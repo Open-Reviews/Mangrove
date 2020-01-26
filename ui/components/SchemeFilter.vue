@@ -6,6 +6,7 @@
       v-model="filters"
       :value="box.var"
       :label="box.label"
+      :class="{ 'body-2': $vuetify.breakpoint.smAndDown }"
       multiple
     />
   </v-row>

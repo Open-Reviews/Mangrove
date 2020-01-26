@@ -1,33 +1,95 @@
 <template>
   <v-row>
-    <v-col class="scrollable noscroll mr-n3" cols="5">
+    <v-col
+      :cols="isBig ? 5 : ''"
+      v-if="isBig || !viewProfile"
+      class="scrollable noscroll mr-n3"
+    >
       <v-row class="px-10">
         <SearchBox />
       </v-row>
+      <SelectionMap
+        v-if="!isBig"
+        :selected="selected && selected.coordinates"
+        :points="$store.getters.mapPoints"
+        @select="selectSubject($event)"
+        @search="geoSearch($event)"
+      />
       <v-row>
-        <SubjectList />
+        <SubjectList @selected="viewProfile = true" />
       </v-row>
     </v-col>
-    <v-divider vertical />
+    <v-divider v-if="isBig" vertical />
     <v-col
+      v-if="isBig || viewProfile"
       style="padding-left: 7vw; padding-right: 7vw"
       class="scrollable noscroll"
     >
-      <SubjectProfile />
+      <v-row justify="center">
+        <v-btn @click.stop="viewProfile = false" v-if="!isBig">
+          <v-icon>mdi-arrow-left-bold</v-icon>
+          Back to list
+        </v-btn>
+      </v-row>
+      <SubjectProfile>
+        <SelectionMap
+          v-if="!isBig"
+          :selected="selected && selected.coordinates"
+          :points="$store.getters.mapPoints"
+          @select="selectSubject($event)"
+          @search="geoSearch($event)"
+        />
+      </SubjectProfile>
     </v-col>
   </v-row>
 </template>
 
 <script>
-import SearchBox from '../components/SearchBox'
-import SubjectList from '../components/SubjectList'
-import SubjectProfile from '../components/SubjectProfile'
+import { GEO } from '~/store/scheme-types'
+import SearchBox from '~/components/SearchBox'
+import SubjectList from '~/components/SubjectList'
+import SubjectProfile from '~/components/SubjectProfile'
+import SelectionMap from '~/components/SelectionMap'
 
 export default {
   components: {
     SearchBox,
     SubjectList,
-    SubjectProfile
+    SubjectProfile,
+    SelectionMap
+  },
+  data() {
+    return {
+      viewProfile: false
+    }
+  },
+  computed: {
+    isBig() {
+      return this.$vuetify.breakpoint.mdAndUp
+    },
+    selected() {
+      return this.$store.getters.subject(this.$route.query.sub)
+    }
+  },
+  methods: {
+    selectSubject(sub) {
+      if (sub && this.$route.query.sub !== sub) {
+        this.viewProfile = true
+        this.$store.dispatch('selectSubject', [this.$route.query, sub])
+      }
+    },
+    geoSearch(coordinates) {
+      const geo = coordinates.join(',')
+      console.log('Map query: ', geo)
+      this.$router.push({
+        path: 'search',
+        query: {
+          [GEO]: geo,
+          q: this.$route.query.q,
+          sub: this.$route.query.sub
+        }
+      })
+    }
   },
   middleware: 'search'
 }

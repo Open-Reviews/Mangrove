@@ -95,6 +95,16 @@ export const getters = {
           newPayload.opinion === payload.opinion
       ).length === 0
     )
+  },
+  mapPoints: (state) => {
+    return Object.values(state.subjects)
+      .filter((subject) => subject.scheme === GEO)
+      .map((subject) => {
+        return {
+          id: subject.sub,
+          coordinates: subject.coordinates
+        }
+      })
   }
 }
 
