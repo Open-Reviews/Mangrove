@@ -1,3 +1,7 @@
+---
+title: Integrate
+---
+
 Let us know, or make pull requests to the projects that could benefit from integrating Mangrove, and help to grow the ecosystem. Examples are:
 * Any Google Maps alternatives, and in-car navigation apps
 * Company and business listing apps

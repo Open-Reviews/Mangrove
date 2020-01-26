@@ -1,1 +1,0 @@
-Help to improve the user experience so that Mangrove is more fun to use. Write us or discuss with us in our Riot chat, or make pull requests to the UI on [GitLab](https://gitlab.com/plantingspace/mangrove).

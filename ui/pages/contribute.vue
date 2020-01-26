@@ -32,11 +32,10 @@
 </template>
 
 <script>
-import { html as integrateContent } from '../content/contribute/1-integrate.md'
-import { html as spreadContent } from '../content/contribute/2-spread.md'
-import { html as codeContent } from '../content/contribute/3-code.md'
-import { html as designContent } from '../content/contribute/4-design.md'
-import { html as donateContent } from '../content/contribute/5-donate.md'
+import { html as integrateContent } from '../content/contribute/integrate.md'
+import { html as spreadContent } from '../content/contribute/spread.md'
+import { html as codeContent } from '../content/contribute/code.md'
+import { html as donateContent } from '../content/contribute/donate.md'
 
 export default {
   data() {
@@ -48,14 +47,12 @@ export default {
       titleClass: 'display-1',
       content: [
         {
-          title:
-            'Can your favourite app be improved by integrating open reviews?',
+          title: 'Support Mangrove financially',
           content: integrateContent,
-          image: 'contribute/1-integrate.jpg'
+          button: 'Donate'
         },
         {
-          title:
-            'Would you like to see more people using open and privacy-preserving services?',
+          title: 'Spread the word',
           content: spreadContent,
           image: 'contribute/2-spread.jpg'
         },
@@ -63,11 +60,6 @@ export default {
           title: 'Do you code for fun?',
           content: codeContent,
           image: 'contribute/3-code.jpg'
-        },
-        {
-          title: 'Are you a UI/UX artist?',
-          content: designContent,
-          image: 'contribute/4-design.jpg'
         },
         {
           title:
