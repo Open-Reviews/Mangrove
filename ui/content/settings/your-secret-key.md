@@ -1,1 +1,1 @@
-Your secret key **represents your self-controlled password** that lets you write reviews with the same identity. **Save your secret key** in your password manager and import it to a new device to preserve your identity.
+Your secret key acts like a password that lets you access your account across different devices or browsers. It is generated cryptographically by your browser and it is not stored on Mangrove's servers, so you are in full control of it. **Save your secret key** in a password manager to be able to import it easily to a new device.

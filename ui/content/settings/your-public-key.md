@@ -1,1 +1,1 @@
-Your public key **represents your privacy-preserving identity** within Mangrove and keeps track of your reputation. It is linked to the secret key and you can only access it if you saved the secret key.
+Your public key represents your privacy-preserving identifier within Mangrove and keeps track of your reputation. It is derived cryptographically from your secret key. You need the secret key to access the same public key across different devices.
