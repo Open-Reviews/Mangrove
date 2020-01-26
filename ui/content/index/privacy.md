@@ -1,5 +1,6 @@
 ---
 title: Experience a service that does not track you
+smallTitle: A service that does not track you
 ---
 Requiring registration of users’ name, email, phone number, birthday; tracking users’ behaviour; and storing their most sensitive data is unavoidable? 
 

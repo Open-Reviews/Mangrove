@@ -112,17 +112,26 @@ export default {
       },
       features: [
         {
-          title: complexAttributes.title,
-          content: complexContent,
+          title: this.$vuetify.breakpoint.smAndDown
+            ? complexAttributes.smallTitle
+            : complexAttributes.title,
+          content:
+            (this.$vuetify.breakpoint.smAndDown
+              ? complexAttributes.title + '</br></br>'
+              : '') + complexContent,
           image: require('~/assets/index/BG2_people_1200x703.jpg')
         },
         {
-          title: openAttributes.title,
+          title: this.$vuetify.breakpoint.smAndDown
+            ? openAttributes.smallTitle
+            : openAttributes.title,
           content: openContent,
           image: require('~/assets/index/BG3_stairs_1200x843.jpg')
         },
         {
-          title: privacyAttributes.title,
+          title: this.$vuetify.breakpoint.smAndDown
+            ? privacyAttributes.smallTitle
+            : privacyAttributes.title,
           content: privacyContent,
           image: require('~/assets/index/BG4_cameras_1200x659.jpg')
         }

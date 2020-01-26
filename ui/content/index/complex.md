@@ -1,5 +1,6 @@
 ---
 title: The world is getting more complex. We cannot rely on advertising to navigate it.
+smallTitle: Navigate growing complexity
 ---
 Sharing experiences and insights with each other is part of our human nature. As the world grows more complex, we will need uncensored and genuine sharing on a global scale to make decisions that are beneficial for us.
 

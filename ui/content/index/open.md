@@ -1,5 +1,6 @@
 ---
 title: Don’t let your insights end up in data silos
+smallTitle: End data silos
 ---
 OpenStreetMap, Wikipedia, the Internet Archive: all of them stand for free access to essential information to foster inclusion, free competition, and a civil society.
 
