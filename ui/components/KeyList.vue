@@ -1,5 +1,8 @@
 <template>
   <v-list>
+    <v-alert v-if="copying" type="success">
+      {{ copyText }}
+    </v-alert>
     <v-subheader class="mb-n7"><slot /></v-subheader>
     <template v-for="(key, i) in keys">
       <v-list-item :key="key" class="mt-5">
@@ -70,8 +73,10 @@ export default {
   },
   data() {
     return {
+      copyText: 'Copied to clipboard!',
       secret: undefined,
-      pkDisplay
+      pkDisplay,
+      copying: false
     }
   },
   mounted() {
@@ -84,7 +89,14 @@ export default {
       return this.sk ? this.secret : JSON.stringify(json)
     },
     copy(json) {
-      this.$copyText(this.keyString(json)).catch((e) => console.error(e))
+      this.copying = true
+      this.$copyText(this.keyString(json))
+        .then(() =>
+          setTimeout(() => {
+            this.copying = false
+          }, 2000)
+        )
+        .catch((e) => console.error(e))
     }
   }
 }
