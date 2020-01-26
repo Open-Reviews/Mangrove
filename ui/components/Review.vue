@@ -40,25 +40,16 @@
           contain
         />
       </v-row>
-      <v-expansion-panels v-if="metadata && metadata.length">
-        <v-expansion-panel>
-          <v-expansion-panel-header>
-            Additional information
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <v-simple-table>
-              <template v-slot:default>
-                <tbody>
-                  <tr v-for="kv in metadata" :key="kv[0]">
-                    <td>{{ kv[0] }}</td>
-                    <td>{{ kv[1] }}</td>
-                  </tr>
-                </tbody>
-              </template>
-            </v-simple-table>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-      </v-expansion-panels>
+      <v-simple-table v-if="metadata && metadata.length">
+        <template v-slot:default>
+          <tbody>
+            <tr v-for="kv in metadata" :key="kv[0]">
+              <td width="30">{{ kv[0] }}</td>
+              <td>{{ kv[1] }}</td>
+            </tr>
+          </tbody>
+        </template>
+      </v-simple-table>
     </v-card-text>
     <v-card-actions v-if="!preview" class="my-n7 mx-1">
       <v-tooltip v-for="action in actions" :key="action.icon" top>
@@ -134,6 +125,13 @@ import FlagForm from './FlagForm'
 import { MARESI } from '~/store/scheme-types'
 import { imageUrl, displayName } from '~/utils'
 
+const META_DISPLAY = {
+  age: { label: 'Age', postfix: ' years' },
+  gender: { label: 'Gender' },
+  experience_context: { label: 'Context' },
+  is_affiliated: { label: 'Is affiliated' }
+}
+
 export default {
   name: 'Review',
   components: {
@@ -191,9 +189,17 @@ export default {
       ],
       metadata:
         this.review.payload.metadata &&
-        Object.entries(this.review.payload.metadata).filter((key, _) =>
-          ['client_uri', 'display_name'].some((hidden) => key === hidden)
-        ),
+        Object.entries(this.review.payload.metadata)
+          .filter(
+            ([key, _]) =>
+              !['client_uri', 'display_name', 'family_name', 'given_name'].some(
+                (hidden) => key === hidden
+              )
+          )
+          .map(([k, v]) => [
+            META_DISPLAY[k].label,
+            META_DISPLAY[k].postfix ? v + META_DISPLAY[k].postfix : v
+          ]),
       flagReasons: [
         {
           description: `Violation of the Terms of Use`,

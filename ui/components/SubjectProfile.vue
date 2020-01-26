@@ -150,3 +150,9 @@ export default {
   }
 }
 </script>
+
+<style>
+a {
+  color: black !important;
+}
+</style>

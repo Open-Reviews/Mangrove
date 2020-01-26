@@ -73,11 +73,11 @@ export default {
       themes: {
         light: {
           // Filled stars
-          primary: colors.deepOrange.accent3,
+          primary: colors.deepOrange,
           // Buttons and selected list
           secondary: colors.yellow,
           // Star outlines
-          accent: colors.deepOrange.accent3,
+          accent: colors.deepOrange,
           background: colors.grey.lighten4
         },
         dark: {
