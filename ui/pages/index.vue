@@ -1,16 +1,15 @@
 <template>
   <div class="mt-n3">
-    <v-row align="center" class="mb-1 text-center">
+    <v-row align="center" class="mb-1 text-center white--text">
       <v-img :src="front.image" height="97vh" class="display-3 pa-12">
         <h1
           v-html="front.title"
           :class="isSmall ? 'display-2' : 'display-4'"
-          class="my-5 white--text"
+          class="my-5"
         />
         <h2
           v-text="front.tagline"
           :class="isSmall ? 'headline' : 'display-1'"
-          class="white--text"
         />
         <v-row>
           <v-col />
@@ -27,10 +26,13 @@
           </v-col>
           <v-col />
         </v-row>
-        <v-col class="white--text title">
+        <v-row
+          style="position: absolute; bottom: 15%; left: 43%;"
+          class="display-1"
+        >
           WHY MANGROVE
-          <v-icon color="white">mdi-arrow-down-bold</v-icon>
-        </v-col>
+          <v-icon color="white" x-large>mdi-arrow-down</v-icon>
+        </v-row>
       </v-img>
     </v-row>
     <v-row v-for="(feature, i) in features" :key="i" class="mb-1">
@@ -50,6 +52,18 @@
             </v-card>
           </v-col>
           <v-col v-if="!isSmall && !(i % 2)" cols="6" />
+        </v-row>
+        <v-row v-if="feature.tip" justify="center">
+          <v-btn
+            @click="$vuetify.goTo(0)"
+            large
+            text
+            class="white--text display-2"
+            x-large
+          >
+            {{ feature.tip }}
+            <v-icon x-large class="ml-3">mdi-arrow-up</v-icon>
+          </v-btn>
         </v-row>
       </v-img>
     </v-row>
@@ -133,7 +147,8 @@ export default {
             ? privacyAttributes.smallTitle
             : privacyAttributes.title,
           content: privacyContent,
-          image: require('~/assets/index/BG4_cameras_1200x659.jpg')
+          image: require('~/assets/index/BG4_cameras_1200x659.jpg'),
+          tip: 'TRY IT'
         }
       ]
     }
