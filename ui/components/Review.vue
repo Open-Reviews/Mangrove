@@ -7,7 +7,7 @@
       :style="isMaresi ? '' : 'cursor: pointer'"
     />
     <v-list-item class="mb-n5">
-      <v-list-item-avatar class="mr-2" tile>
+      <v-list-item-avatar class="mr-2 ml-n1" tile>
         <Identicon :seed="payload.iss" />
       </v-list-item-avatar>
       <v-list-item-content>
@@ -60,7 +60,7 @@
         </v-expansion-panel>
       </v-expansion-panels>
     </v-card-text>
-    <v-card-actions v-if="!preview" class="my-n7">
+    <v-card-actions v-if="!preview" class="my-n7 mx-1">
       <v-tooltip v-for="action in actions" :key="action.icon" top>
         <template v-slot:activator="{ on }">
           <v-btn
@@ -68,7 +68,7 @@
             @click="action.action(review.signature)"
             :disabled="action.disabled"
             icon
-            class="mr-4"
+            class="mr-5"
           >
             <v-icon class="mr-1" small>{{ action.icon }}</v-icon>
             {{ action.number }}
@@ -76,7 +76,7 @@
         </template>
         <span>{{ action.tooltip }}</span>
       </v-tooltip>
-      <v-card-text class="ml-n5">
+      <v-card-text class="ml-n6">
         <div
           v-if="maresiSubject.opinion_count"
           @click="requestResponses"

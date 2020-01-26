@@ -1,105 +1,107 @@
 <template>
-  <v-dialog v-model="value" :width="width" persistent>
-    <v-card>
-      <v-card-title>{{ subjectLine }}</v-card-title>
-      <v-divider />
-      <v-card-text>
-        <v-rating v-model="rating" hover class="my-5" large />
-        <v-textarea
-          v-model="opinion"
-          :counter="MAX_OPINION_LENGTH"
-          :maxlength="MAX_OPINION_LENGTH"
-          label="Describe your experience here"
-          auto-grow
-          filled
-        />
-        <ExtraForm
-          :extraHashes="extraHashes"
-          @uploaded="addHashes($event)"
-          @deleted="deleteHash($event)"
-        />
-        <MetaForm />
-        <KeyList :keys="[$store.state.publicKey]" class="my-n4"
-          >Your public key</KeyList
-        >
-
-        <v-list>
-          <v-list-item v-for="tick in ticks" :key="tick.text">
-            <v-list-item-action>
-              <v-checkbox v-model="checkBoxes[tick.ticked]"></v-checkbox>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title class="text-wrap">{{
-                tick.text
-              }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-        <v-dialog v-model="preview" :width="width - 100">
-          <v-card>
-            <v-card-title>Preview</v-card-title>
-            <v-card-text>
-              <Review
-                :review="review"
-                :maresiSubject="subject"
-                :issuer="issuer"
-                preview
-              />
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer />
-              <v-btn @click="preview = false" text>Close</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-card-text>
-
-      <v-divider />
-
-      <v-card-actions>
-        <v-spacer />
-        <v-btn @click.stop="clear" text>
-          Cancel
-        </v-btn>
-        <v-btn @click.stop="previewReview" text>Preview</v-btn>
-        <v-btn
-          @click="submitReview"
-          :disabled="!checkBoxes.termsAgreed || (!rating && !opinion.length)"
-          text
-        >
-          Post publicly
-        </v-btn>
-      </v-card-actions>
-      <v-alert v-if="error" type="error" border="left" elevation="8">
-        Error encountered: {{ error }}
-      </v-alert>
-    </v-card>
-    <v-dialog :value="ratingDialog" :width="width - 200">
+  <div>
+    <v-dialog v-model="value" :width="width" persistent>
       <v-card>
-        <v-card-title>
-          Would you like to leave a rating as well?
-        </v-card-title>
-        <v-rating v-model="rating" hover class="my-2 mx-4" large />
+        <v-card-title>{{ subjectLine }}</v-card-title>
+        <v-divider />
+        <v-card-text>
+          <v-rating v-model="rating" hover class="my-5" large />
+          <v-textarea
+            v-model="opinion"
+            :counter="MAX_OPINION_LENGTH"
+            :maxlength="MAX_OPINION_LENGTH"
+            label="Describe your experience here"
+            auto-grow
+            filled
+          />
+          <ExtraForm
+            :extraHashes="extraHashes"
+            @uploaded="addHashes($event)"
+            @deleted="deleteHash($event)"
+          />
+          <MetaForm />
+          <KeyList :keys="[$store.state.publicKey]" class="my-n4"
+            >Your public key</KeyList
+          >
+
+          <v-list>
+            <v-list-item v-for="tick in ticks" :key="tick.text">
+              <v-list-item-action>
+                <v-checkbox v-model="checkBoxes[tick.ticked]"></v-checkbox>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title class="text-wrap">{{
+                  tick.text
+                }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+          <v-dialog v-model="preview" :width="width - 100">
+            <v-card>
+              <v-card-title>Preview</v-card-title>
+              <v-card-text>
+                <Review
+                  :review="review"
+                  :maresiSubject="subject"
+                  :issuer="issuer"
+                  preview
+                />
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer />
+                <v-btn @click="preview = false" text>Close</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-card-text>
+
+        <v-divider />
+
         <v-card-actions>
           <v-spacer />
+          <v-btn @click.stop="clear" text>
+            Cancel
+          </v-btn>
+          <v-btn @click.stop="previewReview" text>Preview</v-btn>
           <v-btn
-            @click.stop="submitReview"
-            color="secondary"
-            class="black--text"
-            >Submit</v-btn
+            @click="submitReview"
+            :disabled="!checkBoxes.termsAgreed || (!rating && !opinion.length)"
+            text
           >
-          <v-btn
-            @click.stop="
-              dismissedRating = true
-              submitReview()
-            "
-            >Dismiss</v-btn
-          >
+            Post publicly
+          </v-btn>
         </v-card-actions>
+        <v-alert v-if="error" type="error" border="left" elevation="8">
+          Error encountered: {{ error }}
+        </v-alert>
       </v-card>
+      <v-dialog :value="ratingDialog" :width="width - 200">
+        <v-card>
+          <v-card-title>
+            Would you like to leave a rating as well?
+          </v-card-title>
+          <v-rating v-model="rating" hover class="my-2 mx-4" large />
+          <v-card-actions>
+            <v-spacer />
+            <v-btn
+              @click.stop="submitReview"
+              color="secondary"
+              class="black--text"
+              >Submit</v-btn
+            >
+            <v-btn
+              @click.stop="
+                dismissedRating = true
+                submitReview()
+              "
+              >Dismiss</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-dialog>
     <SaveKeyDialog @dismiss="clear" v-if="keyDialog" />
-  </v-dialog>
+  </div>
 </template>
 
 <script>
@@ -227,6 +229,7 @@ export default {
           outcome &&
           get(HAS_IMPORTED_KEY).then((hasImported) => {
             if (!hasImported) {
+              this.$emit('input', false)
               this.keyDialog = true
             } else {
               this.clear()

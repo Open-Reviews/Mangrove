@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <span class="display-2"> Frequently asked questions <br /><br /> </span>
+    <span class="display-1"> Frequently asked questions <br /><br /> </span>
     <v-expansion-panels>
       <v-expansion-panel v-for="qa in qas" :key="qa.q">
         <v-expansion-panel-header>
@@ -13,7 +13,7 @@
     </v-expansion-panels>
     <br />
     <br />
-    <p v-html="extrainfo" class="px-5 title" />
+    <p v-html="extrainfo" class="text-center subtitle-1" />
   </v-container>
 </template>
 
