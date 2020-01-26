@@ -1,30 +1,42 @@
 <template>
   <div class="mt-n3">
     <v-row align="center" class="mb-1 text-center">
-      <v-img :src="front.image" class="display-3 pa-12">
-        <h1 v-html="front.title" class="display-4 my-5 white--text" />
-        <h2 v-text="front.tagline" class="display-1 white--text" />
+      <v-img :src="front.image" height="97vh" class="display-3 pa-12">
+        <h1
+          v-html="front.title"
+          :class="isSmall ? 'display-2' : 'display-4'"
+          class="my-5 white--text"
+        />
+        <h2
+          v-text="front.tagline"
+          :class="isSmall ? 'headline' : 'display-1'"
+          class="white--text"
+        />
         <v-row>
           <v-col />
-          <v-col cols="6">
+          <v-col :cols="isSmall ? 12 : 6">
             <SearchBox no-filter />
             <v-row class="justify-space-around">
               <span
                 v-for="cat in front.subsearch"
                 v-text="cat"
+                :key="cat"
                 class="title white--text"
               />
             </v-row>
           </v-col>
           <v-col />
         </v-row>
-        <v-col class="white--text title">WHY MANGROVE</v-col>
+        <v-col class="white--text title">
+          WHY MANGROVE
+          <v-icon color="white">mdi-arrow-down-bold</v-icon>
+        </v-col>
       </v-img>
     </v-row>
     <v-row v-for="(feature, i) in features" :key="i" class="mb-1">
-      <v-img :src="feature.image" class="align-center">
-        <v-row>
-          <v-col v-if="i % 2" />
+      <v-img :src="feature.image" height="97vh" class="align-center">
+        <v-row :class="{ 'mx-4': isSmall }">
+          <v-col v-if="!isSmall && i % 2" />
           <v-col>
             <v-card max-width="700">
               <v-card-title
@@ -37,7 +49,7 @@
               />
             </v-card>
           </v-col>
-          <v-col v-if="!(i % 2)" cols="6" />
+          <v-col v-if="!isSmall && !(i % 2)" cols="6" />
         </v-row>
       </v-img>
     </v-row>
@@ -87,7 +99,7 @@ export default {
       demoDialog: `Welcome to Mangrove! Please note that this is a <b>demo version</b> of the Mangrove online reviews service. Its purpose is to allow you to test the basic functionality and to <b>give us feedback</b> so that we can find all bugs and release a beta version soon. We highly appreciate feedback on all pages, just use the red button on the right as often as you like. Finally: please <b>donate</b> to help us add more features :)`,
       front: {
         image: require('~/assets/index/BG1_sunset_2000x950.jpg'),
-        tagline: 'Take control of your experiences.',
+        tagline: 'Share with others and make better decisions.',
         title: 'Read reviews. Write reviews.',
         subsearch: [
           'Restaurants',
@@ -115,6 +127,11 @@ export default {
           image: require('~/assets/index/BG4_cameras_1200x659.jpg')
         }
       ]
+    }
+  },
+  computed: {
+    isSmall() {
+      return this.$vuetify.breakpoint.smAndDown
     }
   },
   methods: {

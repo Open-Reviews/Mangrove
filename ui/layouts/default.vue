@@ -19,7 +19,7 @@
         <v-menu bottom left>
           <template v-slot:activator="{ on }">
             <v-btn v-on="on" icon>
-              <v-icon>mdi-dots-vertical</v-icon>
+              <v-icon>mdi-menu</v-icon>
             </v-btn>
           </template>
           <v-list>
