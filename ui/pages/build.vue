@@ -12,7 +12,7 @@
           <v-card-text v-html="section.description" />
           <v-row justify="center">
             <v-card-actions>
-              <v-btn color="yellow" elevation="7" x-large rounded>
+              <v-btn color="yellow" elevation="7" x-large fab>
                 <v-icon x-large>{{ section.icon }}</v-icon>
               </v-btn>
             </v-card-actions>

@@ -60,22 +60,15 @@
       <v-col :class="isSmall || 'text-right'" class="mb-n2">
         <v-divider v-if="isSmall" class="mb-3" />
         <v-btn
-          v-for="social in socials"
-          :key="social.icon"
+          v-for="social in SOCIALS"
+          :key="social.link"
           :href="social.link"
           target="_blank"
           icon
         >
-          <v-icon>{{ social.icon }}</v-icon>
-        </v-btn>
-        <v-btn
-          href="https://matrix.to/#/!NWvCdVEAXYJRnXTudO:matrix.org?via=matrix.org"
-          icon
-          target="_blank"
-          class="ml-n1"
-        >
-          <v-avatar>
-            <v-img :src="riotIcon" max-height="28" contain />
+          <v-icon v-if="social.icon">{{ social.icon }}</v-icon>
+          <v-avatar v-else class="ml-n1">
+            <v-img :src="social.img" max-height="28" contain />
           </v-avatar>
         </v-btn>
       </v-col>
@@ -119,6 +112,8 @@
 </template>
 
 <script>
+import { SOCIALS, GITLAB, OPEN_COLLECTIVE } from '~/store/data'
+
 export default {
   data() {
     return {
@@ -134,17 +129,10 @@ export default {
         { label: 'FAQ', to: 'faq' },
         { label: 'Terms & Privacy', to: 'terms' },
         { label: 'API', href: 'https://api.mangrove.reviews/swagger-ui' },
-        { label: 'Develop', href: 'https://gitlab.com/plantingspace/mangrove' },
-        { label: 'Donations', href: 'https://opencollective.com/mangrove' }
+        { label: 'Develop', href: GITLAB },
+        { label: 'Donations', href: OPEN_COLLECTIVE }
       ],
-      socials: [
-        {
-          icon: 'mdi-mastodon',
-          link: 'https://mas.to/@PlantingSpace'
-        },
-        { icon: 'mdi-twitter', link: 'https://twitter.com/mangroveReviews' }
-      ],
-      riotIcon: require('~/static/icon-riot.svg')
+      SOCIALS
     }
   },
   computed: {
