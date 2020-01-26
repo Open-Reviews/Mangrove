@@ -31,7 +31,13 @@
           class="display-1"
         >
           WHY MANGROVE
-          <v-icon color="white" x-large>mdi-arrow-down</v-icon>
+          <v-img
+            :src="arrow"
+            style="transform: rotate(180deg);"
+            width="40"
+            contain
+            class="ml-5"
+          />
         </v-row>
       </v-img>
     </v-row>
@@ -62,7 +68,7 @@
             x-large
           >
             {{ feature.tip }}
-            <v-icon x-large class="ml-3">mdi-arrow-up</v-icon>
+            <v-img :src="arrow" width="40" contain class="ml-5" />
           </v-btn>
         </v-row>
       </v-img>
@@ -150,7 +156,8 @@ export default {
           image: require('~/assets/index/BG4_cameras_1200x659.jpg'),
           tip: 'TRY IT'
         }
-      ]
+      ],
+      arrow: require('~/assets/index/arrow.png')
     }
   },
   computed: {

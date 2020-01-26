@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <div>
     <span class="text-center">
       <h1 v-text="title" class="display-3 my-5" />
       <br />
@@ -20,7 +20,7 @@
         </v-card>
       </v-col>
     </v-row>
-  </v-container>
+  </div>
 </template>
 
 <script>
