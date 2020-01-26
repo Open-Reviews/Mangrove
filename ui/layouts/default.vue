@@ -54,7 +54,7 @@
           :key="i"
           :to="internal.to"
           :href="internal.href"
-          target="_blank"
+          :target="internal.href ? '_blank' : ''"
           text
         >
           {{ internal.label }}

@@ -78,7 +78,6 @@ export default {
           secondary: colors.yellow,
           // Star outlines
           accent: colors.deepOrange.accent3,
-          anchor: colors.black,
           background: colors.grey.lighten4
         },
         dark: {
@@ -87,7 +86,6 @@ export default {
           background: '#263238',
           // Star outlines
           accent: colors.deepOrange.accent3,
-          anchor: '#689f38',
           // Buttons and selected list
           secondary: colors.yellow
         }

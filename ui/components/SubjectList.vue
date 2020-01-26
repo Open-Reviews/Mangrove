@@ -33,14 +33,14 @@
           </v-list-item-content>
           <v-list-item-avatar
             v-if="subject.image"
-            min-height="10vh"
-            min-width="7vh"
+            min-height="120"
+            min-width="90"
             tile
           >
             <v-img
               :src="subject.image"
-              min-height="10vh"
-              min-width="7vh"
+              min-height="120"
+              min-width="90"
               class="elevation-3"
             />
           </v-list-item-avatar>

@@ -142,7 +142,7 @@ export default {
               : coordinates
         },
         {
-          icon: 'mdi-circle',
+          icon: 'mdi-calendar',
           content: s.scheme === ISBN && s.description
         },
         {
@@ -164,11 +164,11 @@ export default {
             `LEI code <a href=https://search.gleif.org/#/record/${s.lei}>${s.lei}</a>`
         },
         {
-          icon: 'mdi-circle',
+          icon: 'mdi-barcode',
           content: s.isbn && `ISBN ${s.isbn}`
         },
         {
-          icon: 'mdi-circle',
+          icon: 'mdi-text-subject',
           content: s.subjects && `Subjects: ${s.subjects.join(', ')}`
         }
       ].filter((detail) => detail.content)
