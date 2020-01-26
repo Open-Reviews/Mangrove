@@ -13,7 +13,7 @@
         dense
       />
     </v-row>
-    <v-alert v-if="error" type="error" border="left" elevation="8">
+    <v-alert v-if="error && !noFilter" type="error" border="left" elevation="8">
       Error encountered: {{ error }}
     </v-alert>
     <SchemeFilter

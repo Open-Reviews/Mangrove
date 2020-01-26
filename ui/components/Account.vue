@@ -12,7 +12,7 @@
             {{ keyTitle.title }}
           </v-expansion-panel-header>
           <v-expansion-panel-content>
-            <span v-html="keyInfo" />
+            <v-card-text v-html="keyInfo" />
             <v-row justify="space-around">
               <v-btn
                 :href="downloadKeyLink"

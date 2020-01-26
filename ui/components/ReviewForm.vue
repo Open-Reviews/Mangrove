@@ -66,7 +66,8 @@
           <v-btn
             @click="submitReview"
             :disabled="!checkBoxes.termsAgreed || (!rating && !opinion.length)"
-            text
+            class="black--text"
+            color="secondary"
           >
             Post publicly
           </v-btn>

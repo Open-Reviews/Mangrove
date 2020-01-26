@@ -25,7 +25,11 @@
           <v-list-item-title v-else>{{ pkDisplay(key) }}</v-list-item-title>
         </v-list-item-content>
         <v-list-item-action>
-          <v-btn @click="copy(key)" color="secondary" class="black--text">
+          <v-btn
+            @click="copy(key)"
+            :color="sk ? secondary : ''"
+            class="black--text"
+          >
             <v-icon>mdi-content-copy</v-icon>
             Copy
           </v-btn>
