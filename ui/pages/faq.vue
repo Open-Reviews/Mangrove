@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container style="max-width: 1200px">
     <span class="display-1"> Frequently asked questions <br /><br /> </span>
     <v-expansion-panels>
       <v-expansion-panel v-for="qa in qas" :key="qa.q">

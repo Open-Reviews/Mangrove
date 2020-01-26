@@ -1,7 +1,5 @@
 <template>
-  <v-layout>
-    <div v-html="html"></div>
-  </v-layout>
+  <v-container v-html="html" style="max-width: 1200px" />
 </template>
 
 <script>

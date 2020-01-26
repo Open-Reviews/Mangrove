@@ -34,10 +34,7 @@
       </div>
     </v-app-bar>
     <v-content class>
-      <nuxt v-if="$route.path === '/search' || $route.path === '/'" />
-      <v-container v-else style="max-width: 1200px">
-        <nuxt />
-      </v-container>
+      <nuxt />
     </v-content>
     <v-footer
       v-if="$route.path !== '/search'"

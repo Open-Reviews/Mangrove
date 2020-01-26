@@ -1,6 +1,9 @@
 <template>
-  <v-container>
-    <h1 class="display-3 text-center my-12">Contribute to Mangrove</h1>
+  <div>
+    <v-img :src="image" class="white--text d-flex align-end pa-10">
+      <h1 class="display-3">Contribute</h1>
+      <h2 v-text="subtitle" class="display-1" />
+    </v-img>
     <v-container v-for="(item, i) in content" :key="i">
       <v-row v-if="isSmall || i % 2">
         <v-col>
@@ -25,7 +28,7 @@
         </v-col>
       </v-row>
     </v-container>
-  </v-container>
+  </div>
 </template>
 
 <script>
@@ -38,6 +41,9 @@ import { html as donateContent } from '../content/contribute/5-donate.md'
 export default {
   data() {
     return {
+      image: require('~/assets/contribute_rope_2000x701.jpg'),
+      subtitle:
+        'Join the Movement so that more people can share and benefit freely',
       dumpUrl: `${process.env.VUE_APP_API_URL}/request`,
       titleClass: 'display-1',
       content: [
