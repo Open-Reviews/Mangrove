@@ -10,8 +10,11 @@
       class="text-center"
       style="max-width: 1200px"
     >
-      <h3 :class="titleClass" v-text="item.title" />
-      <div v-html="item.content" class="mb-5" />
+      <h3 v-text="item.title" class="display-1 mt-5 font-weight-light" />
+      <div
+        v-html="item.content"
+        class="mb-10 mt-5 headline font-weight-light"
+      />
       <v-btn
         v-if="item.button"
         v-text="item.button.label"
@@ -24,14 +27,14 @@
         :key="icon.icon"
         :href="icon.link"
         fab
-        class="mx-1"
+        class="mx-10"
       >
         <v-icon v-if="icon.icon">{{ icon.icon }}</v-icon>
         <v-avatar v-else>
           <v-img :src="icon.img" max-height="28" contain />
         </v-avatar>
       </v-btn>
-      <v-divider class="mt-5" />
+      <v-divider class="mt-12" />
     </v-container>
   </div>
 </template>
@@ -49,11 +52,6 @@ export default {
     //  Option<icons: [{icon: String, link: String}]>
     // }]
     content: Array
-  },
-  data() {
-    return {
-      titleClass: 'display-1'
-    }
   }
 }
 </script>
