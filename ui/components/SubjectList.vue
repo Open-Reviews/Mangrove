@@ -108,13 +108,13 @@ export default {
             },
             {
               subtitle: 'Companies',
-              description: `add the country or street (please note that company search
+              description: `add the country or street address (company search
                 is based on the open GLEIF database that contains companies with
                 a “Legal Entity Identifier” (LEI)`
             },
             {
               subtitle: 'Books',
-              description: 'try adding or searching by author or ISBN'
+              description: 'try adding the author or searching by ISBN'
             },
             {
               subtitle: 'Websites',
@@ -128,7 +128,7 @@ export default {
             {
               subtitle: 'Restaurants, hotels, local businesses',
               description:
-                '<a href="https://learnosm.org/en/beginner/start-osm/">contribute data points to OpenStreetMap</a>'
+                '<a href="https://learnosm.org/en/beginner/start-osm/">contribute data to OpenStreetMap</a>'
             },
             {
               subtitle: 'Books',
