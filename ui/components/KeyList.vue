@@ -44,7 +44,7 @@
             </template>
             <v-card>
               <v-card-title>
-                Your {{ sk ? 'secret' : 'public' }} key
+                Your {{ sk ? 'private' : 'public' }} key
               </v-card-title>
               <v-card-text>
                 <span v-html="secret" />
