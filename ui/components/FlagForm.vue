@@ -78,9 +78,9 @@ export default {
     return {
       flagReasons: [
         {
-          description: `Violation of the Terms of Use`,
+          description: `Violation of the <a to='/terms'>Terms of Service</a>`,
           items: [
-            'The review contains offensive language that is violent, coarse, sexist, racist, accusatory, or defamatory',
+            'The review contains offensive language that is violent, unlawful, coarse, sexist, racist, accusatory, or defamatory',
             'The review contains personal information that could be used to track, identify, contact or impersonate someone',
             `The review violates someone else's intellectual property, privacy/confidentiality, or personality rights`
           ]
