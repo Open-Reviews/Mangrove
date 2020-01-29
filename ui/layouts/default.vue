@@ -92,12 +92,11 @@
         >
       </v-col>
     </v-footer>
-
     <script type="text/javascript">
       var fby = fby || []
       fby.push([
         'showTab',
-        { id: '15043', position: 'right', color: '#FF1F3A' }
+        { id: '{{ feedbackId }}', position: 'right', color: '#FF1F3A' }
       ])
       ;(function() {
         var f = document.createElement('script')
@@ -113,6 +112,16 @@
 
 <script>
 import { SOCIALS, GITLAB, OPEN_COLLECTIVE } from '~/store/data'
+
+const FEEDBACK_IDS = {
+  '/build': 15051,
+  '/contribute': 15052,
+  '/faq': 15054,
+  '': 15050,
+  '/search': 15049,
+  '/settings': 15053,
+  '/terms': 15055
+}
 
 export default {
   data() {
@@ -144,6 +153,9 @@ export default {
     },
     isSmall() {
       return this.$vuetify.breakpoint.smAndDown
+    },
+    feedbackId() {
+      return FEEDBACK_IDS[this.$route.path] || 15050
     }
   },
   created() {
