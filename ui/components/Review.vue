@@ -40,16 +40,17 @@
           contain
         />
       </v-row>
-      <v-simple-table v-if="metadata && metadata.length">
-        <template v-slot:default>
-          <tbody>
-            <tr v-for="kv in metadata" :key="kv[0]">
-              <td width="30">{{ kv[0] }}</td>
-              <td>{{ kv[1] }}</td>
-            </tr>
-          </tbody>
-        </template>
-      </v-simple-table>
+      <div v-if="metadata && metadata.length">
+        <v-chip
+          v-for="kv in metadata"
+          v-text="kv"
+          :key="kv[0]"
+          outlined
+          class="mr-1 my-1"
+          small
+        >
+        </v-chip>
+      </div>
     </v-card-text>
     <v-card-actions v-if="!preview" class="my-n7 mx-1">
       <v-tooltip v-for="action in actions" :key="action.icon" top>
@@ -196,10 +197,15 @@ export default {
                 (hidden) => key === hidden
               )
           )
-          .map(([k, v]) => [
-            META_DISPLAY[k].label,
-            META_DISPLAY[k].postfix ? v + META_DISPLAY[k].postfix : v
-          ]),
+          .map(
+            ([k, v]) =>
+              META_DISPLAY[k].label +
+              (v === 'true'
+                ? ''
+                : META_DISPLAY[k].postfix
+                ? ': ' + v + META_DISPLAY[k].postfix
+                : ': ' + v)
+          ),
       flagReasons: [
         {
           description: `Violation of the Terms of Use`,

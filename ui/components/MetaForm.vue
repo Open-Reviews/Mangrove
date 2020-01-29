@@ -55,8 +55,8 @@ import { SET_META } from '~/store/mutation-types'
 export default {
   data() {
     return {
-      contexts: ['Business', 'Private', 'Family', 'Couple/Date', 'Friends'],
-      genders: ['Female', 'Male', 'Other'],
+      contexts: ['business', 'private', 'family', 'couple/date', 'friends'],
+      genders: ['female', 'male', 'other'],
       short_text_length: 20,
       is_short_text: (t) =>
         !t || t.length < this.short_text_length || 'Too long',
@@ -106,14 +106,10 @@ export default {
     },
     context: {
       get() {
-        const c = this.$store.state.metadata.experience_context
-        return c && c.charAt(0).toUpperCase() + c.slice(1)
+        return this.$store.state.metadata.experience_context
       },
       set(value) {
-        this.$store.commit(SET_META, [
-          'experience_context',
-          value.toLowerCase()
-        ])
+        this.$store.commit(SET_META, ['experience_context', value])
       }
     }
   }
