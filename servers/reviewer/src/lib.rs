@@ -24,9 +24,9 @@ use self::review::Review;
 use rocket::http::Method;
 use rocket::request::Form;
 use rocket::Rocket;
-use csv::Writer;
 use rocket_contrib::json::Json;
 use rocket_okapi::swagger_ui::{make_swagger_ui, SwaggerUIConfig};
+use csv::Writer;
 use serde::{Deserialize, Serialize};
 use std::collections::{HashSet, BTreeMap};
 
@@ -36,7 +36,7 @@ fn index() -> &'static str {
     "Check out for project information: https://planting.space/mangrove.html"
 }
 
-#[openapi]
+#[openapi(skip)]
 #[put("/submit", format = "application/json", data = "<review>")]
 fn submit_review_json(conn: DbConn, review: Json<Review>) -> Result<String, Error> {
     info!("Review received: {:?}", review);

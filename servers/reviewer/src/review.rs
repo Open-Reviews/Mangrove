@@ -2,7 +2,7 @@ use super::database::{self, DbConn};
 use super::error::Error;
 use super::schema::reviews;
 use isbn::Isbn;
-use ring::signature;
+use ring::signature::{self, UnparsedPublicKey};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
@@ -41,10 +41,8 @@ impl Review {
         let sig_bytes: Vec<u8> = base64_url::decode(&self.signature)?;
         //let msg_bytes = serde_cbor::to_vec(&serde_json::to_value(msg)?)?;
         info!("msg_bytes: {:?}", msg_bytes);
-        let pubkey = untrusted::Input::from(&pubkey_bytes);
-        let msg = untrusted::Input::from(&msg_bytes);
-        let sig = untrusted::Input::from(&sig_bytes);
-        signature::verify(&signature::ECDSA_P256_SHA256_FIXED, pubkey, msg, sig).map_err(Into::into)
+        let pubkey = UnparsedPublicKey::new(&signature::ECDSA_P256_SHA256_FIXED, &pubkey_bytes);
+        Ok(pubkey.verify(msg_bytes, &sig_bytes)?)
     }
 }
 
