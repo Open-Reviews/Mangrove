@@ -26,6 +26,7 @@
         v-for="icon in item.icons"
         :key="icon.icon"
         :href="icon.link"
+        target="_blank"
         fab
         class="mx-10"
       >

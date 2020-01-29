@@ -21,13 +21,16 @@ use self::aggregator::{Issuer, Statistic, Subject};
 use self::database::{DbConn, Query};
 use self::error::Error;
 use self::review::Review;
-use rocket::http::Method;
-use rocket::request::Form;
+use rocket::response::{Responder, Response};
+use rocket::http::{Method, ContentType, Status};
+use rocket::request::{Form, Request};
 use rocket::Rocket;
+use rocket::http::hyper::header::{ContentDisposition, DispositionType, DispositionParam, Charset};
 use rocket_contrib::json::Json;
 use rocket_okapi::swagger_ui::{make_swagger_ui, SwaggerUIConfig};
 use csv::Writer;
 use serde::{Deserialize, Serialize};
+use std::time::SystemTime;
 use std::collections::{HashSet, BTreeMap};
 
 #[openapi(skip)]
@@ -139,10 +142,36 @@ fn get_reviews_json(conn: DbConn, json: Form<Query>) -> Result<Json<Reviews>, Er
     get_reviews(conn, json).map(Json)
 }
 
+#[derive(Debug)]
+struct Csv(String);
+
+impl Responder<'static> for Csv {
+    fn respond_to(self, _: &Request) -> Result<Response<'static>, Status> {
+        let unix_time = SystemTime::now()
+            .duration_since(SystemTime::UNIX_EPOCH)
+            .ok()
+            .map(|t| t.as_secs())
+            .map_or("unknown".into(), |n| n.to_string());
+        Response::build()
+            .header(ContentType::CSV)
+            .header(ContentDisposition {
+                disposition: DispositionType::Attachment,
+                parameters: vec![DispositionParam::Filename(
+                Charset::Iso_8859_1, // The character set for the bytes of the filename
+                None, // The optional language tag
+                format!("mangrove.reviews_{}.csv", unix_time)
+                    .into_bytes() // the actual bytes of the filename
+                )]
+            })
+            .sized_body(std::io::Cursor::new(self.0))
+            .ok()
+    }
+}
+
 /// Csv serde serialization does not support maps...
 #[openapi(skip)]
 #[get("/reviews?<json..>", rank = 2)] //format = "text/csv"
-fn get_reviews_csv(conn: DbConn, json: Form<Query>) -> Result<String, Error> {
+fn get_reviews_csv(conn: DbConn, json: Form<Query>) -> Result<Csv, Error> {
     let out = get_reviews(conn, json)?;
     let mut wtr = Writer::from_writer(vec![]);
     wtr.write_record(&["signature", "iss", "iat", "sub", "rating", "opinion", "extra_hashes", "metadata"])?;
@@ -159,7 +188,7 @@ fn get_reviews_csv(conn: DbConn, json: Form<Query>) -> Result<String, Error> {
             pl.metadata.map_or("none".into(), |m| m.to_string())
         ])?;
     }
-    Ok(String::from_utf8(wtr.into_inner()?)?)
+    Ok(Csv(String::from_utf8(wtr.into_inner()?)?))
 }
 
 #[openapi]
