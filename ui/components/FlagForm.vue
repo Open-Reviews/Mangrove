@@ -20,7 +20,7 @@
           v-for="reason in flagReasons"
           :key="reason.description"
         >
-          <v-subheader v-text="reason.description" class="mt-n5" />
+          <v-subheader v-html="reason.description" class="mt-n5" />
           <v-list-item v-for="item in reason.items" :key="item">
             <v-list-item-action>
               <v-checkbox
@@ -78,9 +78,9 @@ export default {
     return {
       flagReasons: [
         {
-          description: `Violation of the Terms of Use`,
+          description: `Violation of the <a to='/terms'>Terms of Service</a>`,
           items: [
-            'The review contains offensive language that is violent, coarse, sexist, racist, accusatory, or defamatory',
+            'The review contains offensive language that is violent, unlawful, coarse, sexist, racist, accusatory, or defamatory',
             'The review contains personal information that could be used to track, identify, contact or impersonate someone',
             `The review violates someone else's intellectual property, privacy/confidentiality, or personality rights`
           ]
