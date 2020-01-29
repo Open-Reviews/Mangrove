@@ -46,15 +46,17 @@
 </template>
 
 <script>
+import { get } from 'idb-keyval'
 import KeyList from './KeyList'
 import SwitchAccount from './SwitchAccount'
+import { PRIVATE_KEY } from '~/store/indexeddb-types'
 import { html as yourPublicKey } from '~/content/settings/your-public-key.md'
 import { html as yourSecretKey } from '~/content/settings/your-secret-key.md'
 import {
   html as keyInfo,
   attributes as keyTitle
 } from '~/content/settings/key-info.md'
-import { downloadLink, skToJwk, pkDisplay } from '~/utils'
+import { downloadLink, pkDisplay } from '~/utils'
 
 export default {
   components: {
@@ -80,7 +82,7 @@ export default {
   },
   methods: {
     async downloadKeyLink() {
-      const secret = await skToJwk(this.$store.state.keyPair.privateKey)
+      const secret = await get(PRIVATE_KEY)
       return downloadLink(JSON.stringify(secret))
     }
   }

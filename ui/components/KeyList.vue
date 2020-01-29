@@ -4,7 +4,7 @@
       {{ copyText }}
     </v-alert>
     <v-subheader class="mb-n7"><slot /></v-subheader>
-    <template v-for="(key, i) in keys">
+    <template v-for="(key, i) in keyStrings">
       <v-list-item :key="key" class="mt-5">
         <v-list-item-avatar tile>
           <v-icon v-if="sk" large>mdi-key</v-icon>
@@ -47,7 +47,7 @@
                 Your {{ sk ? 'secret' : 'public' }} key
               </v-card-title>
               <v-card-text>
-                <span v-html="secret" />
+                <span v-html="key" />
               </v-card-text>
             </v-card>
           </v-dialog>
@@ -63,8 +63,10 @@
 </template>
 
 <script>
+import { get } from 'idb-keyval'
 import Identicon from './Identicon'
-import { skToJwk, pkDisplay } from '~/utils'
+import { pkDisplay } from '~/utils'
+import { PRIVATE_KEY } from '~/store/indexeddb-types'
 
 export default {
   components: {
@@ -83,18 +85,20 @@ export default {
       copying: false
     }
   },
+  computed: {
+    keyStrings() {
+      return this.keys.map((key) =>
+        this.sk ? this.secret : JSON.stringify(key)
+      )
+    }
+  },
   mounted() {
-    skToJwk(this.$store.state.keyPair.privateKey).then(
-      (s) => (this.secret = JSON.stringify(s))
-    )
+    get(PRIVATE_KEY).then((s) => (this.secret = JSON.stringify(s)))
   },
   methods: {
-    keyString(json) {
-      return this.sk ? this.secret : JSON.stringify(json)
-    },
-    copy(json) {
+    copy(string) {
       this.copying = true
-      this.$copyText(this.keyString(json))
+      this.$copyText(string)
         .then(() =>
           setTimeout(() => {
             this.copying = false
