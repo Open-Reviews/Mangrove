@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row justify="space-between" class="mx-2">
-      <p class="display-1">Your account</p>
+      <p class="display-1">Your identifier</p>
       <SwitchAccount />
     </v-row>
     <v-divider />
@@ -20,7 +20,7 @@
                 color="secondary"
                 class="black--text"
               >
-                Download secret key
+                Download private key
               </v-btn>
               <SwitchAccount />
             </v-row>
@@ -29,12 +29,12 @@
       </v-expansion-panels>
       <v-divider />
       <KeyList sk>
-        Secret key (your password)
+        Private key
       </KeyList>
       <v-card-text v-html="yourSecretKey" />
       <v-divider />
       <KeyList :keys="[$store.state.publicKey]">
-        Public key (your identity)
+        Public key (your identifier)
       </KeyList>
       <v-card-text v-html="yourPublicKey" />
       <KeyList v-if="false" :keys="[$store.state.publicKey]">
@@ -64,7 +64,7 @@ export default {
   data() {
     return {
       hint:
-        'Save the secret key in a secure place accessible across devices, such as a password manager.',
+        'Save the private key in a secure place accessible across devices, such as a password manager.',
       yourPublicKey,
       yourSecretKey,
       keyInfo,
