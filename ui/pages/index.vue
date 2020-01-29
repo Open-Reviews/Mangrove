@@ -27,11 +27,13 @@
           <v-col />
         </v-row>
         <v-row
-          style="position: absolute; bottom: 15%; left: 43%;"
-          class="display-1"
+          style="position: absolute; bottom: 15%; left: 40%;"
+          class="headline"
         >
           WHY MANGROVE
+          <v-icon v-if="isSmall" color="white" x-large>mdi-arrow-down</v-icon>
           <v-img
+            v-else
             :src="arrow"
             style="transform: rotate(180deg);"
             width="40"
