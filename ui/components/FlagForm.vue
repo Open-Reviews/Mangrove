@@ -20,7 +20,7 @@
           v-for="reason in flagReasons"
           :key="reason.description"
         >
-          <v-subheader v-text="reason.description" class="mt-n5" />
+          <v-subheader v-html="reason.description" class="mt-n5" />
           <v-list-item v-for="item in reason.items" :key="item">
             <v-list-item-action>
               <v-checkbox
