@@ -29,7 +29,7 @@
       </v-expansion-panels>
       <v-divider />
       <KeyList sk>
-        Private key (your signature)
+        Private key
       </KeyList>
       <v-card-text v-html="yourSecretKey" />
       <v-divider />
