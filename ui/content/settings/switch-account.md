@@ -1,4 +1,4 @@
-* “Switching account” in Mangrove means to **switch to another pair of secret and public keys**. An “account” is associated with a specific secret key and the public keys that belong to it.
-* If you **used Mangrove on another device or browser** and would like to write reviews with the public key(s) you generated there, you need to **import the respective secret key**. 
-* **This will allow you to access and use the associated public keys, and see your reviews.**
-* Before you switch, don’t forget to **save the current secret key** in a password manager that you can use across devices so that you don’t lose access to it.
+* Switching your identifier in Mangrove means to switch to another pair of cryptographic keys.
+* If you used Mangrove on another device or browser and you would like to continue writing reviews under that previously used identifier, you can do so by importing the corresponding private key here.
+* This allows you to authenticate yourself as the rightful owner of the public key used as your identifier.
+

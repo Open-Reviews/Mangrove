@@ -1,1 +1,1 @@
-Your public key represents your privacy-preserving identifier within Mangrove and keeps track of your reputation. It is derived cryptographically from your secret key. You need the secret key to access the same public key across different devices.
+The public key represents your identifier that will be displayed with each review you write. It allows you to build a reputation to make your opinion count more. You need your private key to access the same public key across different devices.

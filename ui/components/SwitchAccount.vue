@@ -1,24 +1,24 @@
 <template>
   <v-dialog v-model="show" width="600">
     <template v-slot:activator="{ on }">
-      <v-btn v-on="on">Switch account</v-btn>
+      <v-btn v-on="on">Switch identifier</v-btn>
     </template>
     <v-card>
       <v-card-title>
-        Switch account
+        Switch identifier
       </v-card-title>
       <v-card-text>
         <p v-html="switchContent" />
         <v-text-field
           v-model.trim="secretInput"
-          placeholder="Paste your secret key here"
+          placeholder="Paste your private key here"
         />
       </v-card-text>
       <v-card-actions>
         <v-spacer />
         <v-btn :disabled="!secretInput" @click="importSecret">Import</v-btn>
         <v-alert v-if="error" type="warning" border="left" elevation="8">
-          Secret key not valid: {{ error }}
+          Private key not valid: {{ error }}
         </v-alert>
       </v-card-actions>
     </v-card>
