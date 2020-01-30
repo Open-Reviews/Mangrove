@@ -17,8 +17,8 @@ export const state = () => ({
   query: { q: null, geo: null },
   // Object from sub (URI) to subject info, see `middleware/search.js` for details.
   subjects: {},
-  // Array of schemes that should be selected, empty means display all.
-  filters: [],
+  // Scheme that should be selected, null means display all.
+  filter: null,
   // Object from MaReSi to reviews, ensuring only unique ones are stored.
   reviews: {},
   // Object from public keys to information about issuers.
@@ -55,8 +55,8 @@ export const mutations = {
   [t.ADD_ISSUERS](state, newissuers) {
     state.issuers = { ...state.issuers, ...newissuers }
   },
-  [t.SET_FILTERS](state, filters) {
-    state.filters = filters
+  [t.SET_FILTER](state, filter) {
+    state.filter = filter
   },
   [t.ADD_REVIEWS](state, newreviews) {
     if (newreviews) {

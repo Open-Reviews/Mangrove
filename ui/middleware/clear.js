@@ -1,5 +1,5 @@
-import { SET_FILTERS } from '../store/mutation-types'
+import { SET_FILTER } from '../store/mutation-types'
 
 export default function({ store }) {
-  store.commit(SET_FILTERS, [])
+  store.commit(SET_FILTER, null)
 }

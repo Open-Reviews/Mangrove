@@ -9,10 +9,12 @@
           hover
           style="align-items: start"
         >
-          <v-chip small class="ma-3" style="min-width: 100px">
-            <v-avatar><v-icon v-text="icon(subject.scheme)" small/></v-avatar>
-            {{ name(subject.scheme) }}
-          </v-chip>
+          <div style="min-width: 140px">
+            <v-chip class="ma-3">
+              <v-icon v-text="icon(subject.scheme)" small class="mr-1" />
+              {{ name(subject.scheme) }}
+            </v-chip>
+          </div>
           <v-list-item-content>
             <v-list-item-title>{{ subject.title }}</v-list-item-title>
             <v-row align="center" class="ml-auto">
@@ -154,9 +156,6 @@ export default {
     }
   },
   computed: {
-    filters() {
-      return this.$store.state.filters
-    },
     subjects() {
       const selected = this.$store.getters.subject(this.$route.query.sub)
       const all =
@@ -165,13 +164,8 @@ export default {
           : Object.values(this.$store.state.subjects).filter(
               (subject) => subject.scheme !== MARESI
             )
-      const list = this.filters.length
-        ? all.filter((subject) =>
-            this.filters.some((filter) => {
-              const accepted = subject.scheme === filter
-              return accepted
-            })
-          )
+      const list = this.$store.state.filter
+        ? all.filter((subject) => this.$store.state.filter === subject.scheme)
         : all
       const sorted = list.sort(
         (s1, s2) =>
