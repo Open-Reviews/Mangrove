@@ -5,6 +5,7 @@
     </v-card-subtitle>
     <v-card-text>
       <v-row justify="space-around" class="my-n5">
+        <Identicon :seed="$store.state.publicKey" />
         <v-col>
           <v-text-field
             v-model="display_name"
@@ -50,6 +51,7 @@
 </template>
 
 <script>
+import Identicon from './Identicon'
 import { SET_META } from '~/store/mutation-types'
 import {
   AGE,
@@ -61,6 +63,9 @@ import {
 } from '~/store/metadata-types'
 
 export default {
+  components: {
+    Identicon
+  },
   data() {
     return {
       contexts: ['business', 'private', 'family', 'couple/date', 'friends'],

@@ -127,24 +127,28 @@ export const actions = {
     await get(PRIVATE_KEY)
       .then(async (jwk) => {
         if (jwk) {
-          keypair = await jwkToKeypair(jwk)
-          console.log('Loading existing keys from IndexDB:', keypair)
-        } else {
-          await window.crypto.subtle
-            .generateKey(
-              {
-                name: 'ECDSA',
-                namedCurve: 'P-256'
-              },
-              true,
-              ['sign', 'verify']
-            )
-            .then((kp) => {
-              keypair = kp
-              skToJwk(kp.privateKey).then((jwk) => set(PRIVATE_KEY, jwk))
-            })
-            .catch((error) => console.log('Accessing IndexDB failed: ', error))
+          try {
+            keypair = await jwkToKeypair(jwk)
+            console.log('Loading existing keys from IndexDB:', keypair)
+            return
+          } catch (e) {
+            console.log('Bad key in IndexDB:', jwk)
+          }
         }
+        await window.crypto.subtle
+          .generateKey(
+            {
+              name: 'ECDSA',
+              namedCurve: 'P-256'
+            },
+            true,
+            ['sign', 'verify']
+          )
+          .then((kp) => {
+            keypair = kp
+            skToJwk(kp.privateKey).then((jwk) => set(PRIVATE_KEY, jwk))
+          })
+          .catch((error) => console.log('Accessing IndexDB failed: ', error))
       })
       .catch((error) => console.log('Accessing IndexDB failed: ', error))
     await dispatch('setKeypair', keypair)

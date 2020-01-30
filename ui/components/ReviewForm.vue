@@ -20,10 +20,7 @@
             @deleted="deleteHash($event)"
           />
           <MetaForm />
-          <KeyList :keys="[$store.state.publicKey]" class="my-n4"
-            >Your public key</KeyList
-          >
-
+          <span v-if="!savedKey">Returning user? Log in</span>
           <v-list>
             <v-list-item v-for="tick in ticks" :key="tick.text">
               <v-list-item-action>
@@ -109,7 +106,6 @@ import { SUBMIT_ERROR, SET_META } from '../store/mutation-types'
 import { IS_AFFILIATED, RECURRING } from '../store/metadata-types'
 import ExtraForm from './ExtraForm'
 import MetaForm from './MetaForm'
-import KeyList from './KeyList'
 import SaveKeyDialog from './SaveKeyDialog'
 import { HAS_SAVED_KEY } from '~/store/indexeddb-types'
 import { MARESI } from '~/store/scheme-types'
@@ -120,7 +116,6 @@ export default {
   components: {
     ExtraForm,
     MetaForm,
-    KeyList,
     SaveKeyDialog
   },
   props: {
@@ -143,7 +138,8 @@ export default {
       MAX_OPINION_LENGTH,
       dismissedRating: false,
       ratingDialog: false,
-      keyDialog: false
+      keyDialog: false,
+      savedKey: undefined
     }
   },
   computed: {
@@ -192,6 +188,7 @@ export default {
   },
   mounted() {
     this.$store.commit(SUBMIT_ERROR, null)
+    get(HAS_SAVED_KEY).then((flag) => (this.savedKey = flag))
     // Fetch reviews to prepopulate metadata and allow for full preview.
     this.$store.dispatch('saveMyReviews').then(() => {
       const myReviews = Object.values(this.$store.state.reviews).filter(
