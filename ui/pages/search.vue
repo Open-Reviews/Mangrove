@@ -33,7 +33,6 @@
       </v-row>
       <SubjectProfile>
         <SelectionMap
-          v-if="!isBig"
           :selected="selected && selected.coordinates"
           :points="$store.getters.mapPoints"
           @select="selectSubject($event)"
