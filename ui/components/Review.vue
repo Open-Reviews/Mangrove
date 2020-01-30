@@ -21,7 +21,7 @@
           ><b>Flagged as inappropriate. &nbsp;</b>
         </span>
         <v-rating
-          v-else
+          v-else-if="payload.rating"
           :value="(payload.rating + 25) / 25"
           readonly
           dense

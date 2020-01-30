@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card-subtitle>
-      Add some helpful information about yourself (optional)
+      Optionally add or edit additional information
     </v-card-subtitle>
     <v-card-text>
       <v-row justify="space-around" class="my-n5">

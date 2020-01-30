@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import { get, set } from 'idb-keyval'
-import { MARESI, GEO, subToScheme } from '../store/scheme-types'
+import { MARESI, GEO, subToScheme } from './scheme-types'
+import { subsToSubjects } from './apis'
 import { PRIVATE_KEY } from './indexeddb-types'
 import * as t from './mutation-types'
 import { jwkToKeypair, skToJwk } from '~/utils'
@@ -189,6 +190,16 @@ export const actions = {
         commit(t.ADD_REVIEWS, rs.reviews)
       }
       return rs
+    })
+  },
+  async saveMyReviews({ state, dispatch }) {
+    const subs = await dispatch('saveReviews', {
+      iss: state.publicKey
+    }).then((rs) =>
+      Object.values(rs.reviews).map((review) => review.payload.sub)
+    )
+    subsToSubjects(this.$axios, subs).map((promise) => {
+      promise.then((subject) => dispatch('storeWithRating', [subject]))
     })
   },
   bulkSubjects({ commit }, subs) {

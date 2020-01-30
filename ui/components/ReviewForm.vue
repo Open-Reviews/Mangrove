@@ -110,7 +110,7 @@ import ExtraForm from './ExtraForm'
 import MetaForm from './MetaForm'
 import KeyList from './KeyList'
 import SaveKeyDialog from './SaveKeyDialog'
-import { HAS_IMPORTED_KEY } from '~/store/indexeddb-types'
+import { HAS_SAVED_KEY } from '~/store/indexeddb-types'
 import { MARESI } from '~/store/scheme-types'
 import { MAX_OPINION_LENGTH } from '~/utils'
 
@@ -135,7 +135,6 @@ export default {
       opinion: '',
       extraHashes: [],
       review: {},
-      issuer: undefined,
       checkBoxes: {
         termsAgreed: false,
         isAffiliated: false
@@ -185,15 +184,14 @@ export default {
     },
     error() {
       return this.$store.state.errors.submit
+    },
+    issuer() {
+      return this.$store.getters.issuer(this.$store.state.publicKey)
     }
   },
   mounted() {
     this.$store.commit(SUBMIT_ERROR, null)
-    this.$store
-      .dispatch('getIssuer', this.$store.state.publicKey)
-      .then((issuer) => {
-        this.issuer = issuer
-      })
+    this.$store.dispatch('saveMyReviews')
   },
   // Avoid issues with circular dependencies.
   beforeCreate() {
@@ -229,7 +227,7 @@ export default {
       this.$store.dispatch('submitReview', this.payloadStub).then(
         (outcome) =>
           outcome &&
-          get(HAS_IMPORTED_KEY).then((hasImported) => {
+          get(HAS_SAVED_KEY).then((hasImported) => {
             if (!hasImported) {
               this.$emit('input', false)
               this.keyDialog = true

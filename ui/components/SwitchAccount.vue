@@ -27,7 +27,7 @@
 
 <script>
 import { set } from 'idb-keyval'
-import { HAS_IMPORTED_KEY } from '~/store/indexeddb-types'
+import { HAS_SAVED_KEY } from '~/store/indexeddb-types'
 import { jwkToKeypair } from '~/utils'
 import { html as switchContent } from '~/content/settings/switch-account.md'
 
@@ -52,7 +52,7 @@ export default {
       jwkToKeypair(jwk)
         .then((keypair) => {
           this.$store.dispatch('setKeypair', keypair)
-          set(HAS_IMPORTED_KEY, true)
+          set(HAS_SAVED_KEY, true)
           this.error = null
           this.show = false
         })
