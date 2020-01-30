@@ -65,7 +65,7 @@ In addition to that, you can inspect the code and the Mangrove Review Standard t
         },
         {
           q:
-            'What’s a cryptographic key pair and why do I need to store my secret key?',
+            'What’s a cryptographic key pair and why do I need to store my private key?',
           a: `
             Mangrove uses <a href="https://en.wikipedia.org/wiki/Public-key_cryptography" target="_blank">public key cryptography</a> to authenticate a user and to establish a user’s reputation within the system, which allows us to get rid of registrations and logins, and makes storing user’s personal information obsolete.
 

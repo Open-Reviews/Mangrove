@@ -10,13 +10,13 @@
       <v-card-text>
         <p v-html="switchContent" />
         <v-text-field
-          v-model.trim="secretInput"
+          v-model.trim="privateInput"
           placeholder="Paste your private key here"
         />
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn :disabled="!secretInput" @click="importSecret">Import</v-btn>
+        <v-btn :disabled="!privateInput" @click="importPrivate">Import</v-btn>
         <v-alert v-if="error" type="warning" border="left" elevation="8">
           Private key not valid: {{ error }}
         </v-alert>
@@ -35,16 +35,16 @@ export default {
   data() {
     return {
       switchContent,
-      secretInput: null,
+      privateInput: null,
       error: null,
       show: false
     }
   },
   methods: {
-    importSecret() {
+    importPrivate() {
       let jwk
       try {
-        jwk = JSON.parse(this.secretInput)
+        jwk = JSON.parse(this.privateInput)
       } catch (e) {
         this.error = e
         return

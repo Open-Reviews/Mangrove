@@ -80,18 +80,18 @@ export default {
   data() {
     return {
       copyText: 'Copied to clipboard!',
-      secret: undefined,
+      private: undefined,
       pkDisplay,
       copying: false
     }
   },
   computed: {
     keyStrings() {
-      return this.keys.map((key) => (this.sk ? this.secret : key))
+      return this.keys.map((key) => (this.sk ? this.private : key))
     }
   },
   mounted() {
-    get(PRIVATE_KEY).then((s) => (this.secret = JSON.stringify(s)))
+    get(PRIVATE_KEY).then((s) => (this.private = JSON.stringify(s)))
   },
   methods: {
     copy(string) {

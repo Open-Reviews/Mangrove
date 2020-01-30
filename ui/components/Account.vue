@@ -31,7 +31,7 @@
       <KeyList sk>
         Private key
       </KeyList>
-      <v-card-text v-html="yourSecretKey" />
+      <v-card-text v-html="yourPrivateKey" />
       <v-divider />
       <KeyList :keys="[$store.state.publicKey]">
         Public key (your identifier)
@@ -51,7 +51,7 @@ import KeyList from './KeyList'
 import SwitchAccount from './SwitchAccount'
 import { PRIVATE_KEY } from '~/store/indexeddb-types'
 import { html as yourPublicKey } from '~/content/settings/your-public-key.md'
-import { html as yourSecretKey } from '~/content/settings/your-secret-key.md'
+import { html as yourPrivateKey } from '~/content/settings/your-private-key.md'
 import {
   html as keyInfo,
   attributes as keyTitle
@@ -68,22 +68,22 @@ export default {
       hint:
         'Save the private key in a secure place accessible across devices, such as a password manager.',
       yourPublicKey,
-      yourSecretKey,
+      yourPrivateKey,
       keyInfo,
       keyTitle
     }
   },
   computed: {
     downloadKeyName() {
-      return `mangrove.reviews_SecretKey_${pkDisplay(
+      return `mangrove.reviews_PrivateKey_${pkDisplay(
         this.$store.state.publicKey
       )}.json`
     }
   },
   methods: {
     async downloadKeyLink() {
-      const secret = await get(PRIVATE_KEY)
-      return downloadLink(JSON.stringify(secret))
+      const sk = await get(PRIVATE_KEY)
+      return downloadLink(JSON.stringify(sk))
     }
   }
 }
