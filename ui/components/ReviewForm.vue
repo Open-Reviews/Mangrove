@@ -30,9 +30,7 @@
                 <v-checkbox v-model="checkBoxes[tick.ticked]"></v-checkbox>
               </v-list-item-action>
               <v-list-item-content>
-                <v-list-item-title class="text-wrap">{{
-                  tick.text
-                }}</v-list-item-title>
+                <v-list-item-title v-html="tick.text" class="text-wrap" />
               </v-list-item-content>
             </v-list-item>
           </v-list>
@@ -178,7 +176,10 @@ export default {
         },
         {
           ticked: 'termsAgreed',
-          text: 'I agree to the Terms of Service and Privacy Policy*'
+          text: `I agree to the
+            <a href="${process.env.BASE_URL}/terms" target="_blank">
+              Terms of Service and Privacy Policy
+            </a>*`
         }
       ]
     },

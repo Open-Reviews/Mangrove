@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { html } from '../content/Mangrove_Original_Services_ToU.md'
+import { html } from '../content/Mangrove_Original_Services_ToS.md'
 
 export default {
   data() {

@@ -208,24 +208,6 @@ export default {
                 ? ': ' + v + META_DISPLAY[k].postfix
                 : ': ' + v)
           ),
-      flagReasons: [
-        {
-          description: `Violation of the Terms of Use`,
-          items: [
-            'The review contains offensive language that is violent, coarse, sexist, racist, accusatory, or defamatory.',
-            'The review contains personal information that could be used to track, identify, contact or impersonate someone.',
-            `The review violates someone else's intellectual property, privacy/confidentiality, or personality rights.`
-          ]
-        },
-        {
-          description: `Low-quality content`,
-          items: [
-            `The review is marketing or spam`,
-            `The review is on the wrong subject profile`,
-            `The content doesn't mention a buying or service experience and is solely ethical, political or value-laden opinion.`
-          ]
-        }
-      ],
       raw: { json: undefined, cbor: undefined },
       flagSubject: null,
       personalMeta: { is_personal_experience: 'true' },
