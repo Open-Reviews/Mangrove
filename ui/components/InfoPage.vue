@@ -8,7 +8,7 @@
       v-for="(item, i) in content"
       :key="i"
       class="text-center"
-      style="max-width: 1200px"
+      style="max-width: 1000px"
     >
       <h3 v-text="item.title" class="display-1 mt-5 font-weight-light" />
       <div

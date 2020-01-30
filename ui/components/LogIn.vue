@@ -1,22 +1,21 @@
 <template>
   <v-dialog v-model="show" width="600">
     <template v-slot:activator="{ on }">
-      <v-btn v-on="on">Switch identifier</v-btn>
+      <a v-on="on">Log in</a>
     </template>
     <v-card>
       <v-card-title>
-        Switch identifier
+        Log in
       </v-card-title>
       <v-card-text>
-        <p v-html="switchContent" />
         <v-text-field
           v-model.trim="privateInput"
-          placeholder="Paste your private key here"
+          placeholder="Paste your password here"
         />
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn :disabled="!privateInput" @click="importPrivate">Import</v-btn>
+        <v-btn :disabled="!privateInput" @click="importPrivate">Log in</v-btn>
         <v-alert v-if="error" type="warning" border="left" elevation="8">
           Private key not valid: {{ error }}
         </v-alert>
@@ -29,12 +28,10 @@
 import { set } from 'idb-keyval'
 import { HAS_SAVED_KEY } from '~/store/indexeddb-types'
 import { jwkToKeypair } from '~/utils'
-import { html as switchContent } from '~/content/settings/switch-account.md'
 
 export default {
   data() {
     return {
-      switchContent,
       privateInput: null,
       error: null,
       show: false

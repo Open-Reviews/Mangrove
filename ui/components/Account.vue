@@ -2,7 +2,7 @@
   <v-container>
     <v-row justify="space-between" class="mx-2">
       <p class="display-1">Your identifier</p>
-      <SwitchAccount />
+      <LogIn />
     </v-row>
     <v-divider />
     <v-card v-if="$store.state.publicKey" class="my-5">
@@ -22,7 +22,7 @@
               >
                 Download private key
               </v-btn>
-              <SwitchAccount />
+              <LogIn />
             </v-row>
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -48,20 +48,20 @@
 <script>
 import { get } from 'idb-keyval'
 import KeyList from './KeyList'
-import SwitchAccount from './SwitchAccount'
+import LogIn from './LogIn'
 import { PRIVATE_KEY } from '~/store/indexeddb-types'
-import { html as yourPublicKey } from '~/content/settings/your-public-key.md'
-import { html as yourPrivateKey } from '~/content/settings/your-private-key.md'
+import { html as yourPublicKey } from '~/content/account/your-public-key.md'
+import { html as yourPrivateKey } from '~/content/account/your-private-key.md'
 import {
   html as keyInfo,
   attributes as keyTitle
-} from '~/content/settings/key-info.md'
+} from '~/content/account/key-info.md'
 import { downloadLink, pkDisplay } from '~/utils'
 
 export default {
   components: {
     KeyList,
-    SwitchAccount
+    LogIn
   },
   data() {
     return {

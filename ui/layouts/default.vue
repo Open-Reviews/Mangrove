@@ -13,7 +13,7 @@
           :key="item.to"
           text
         />
-        <v-btn text to="/settings"> <v-icon>mdi-account-circle</v-icon></v-btn>
+        <v-btn text to="/account"> <v-icon>mdi-account-circle</v-icon></v-btn>
       </v-toolbar-items>
       <div class="hidden-md-and-up">
         <v-menu bottom left>
@@ -26,8 +26,8 @@
             <v-list-item v-for="item in menu" :to="item.to" :key="item.to">
               <v-list-item-title>{{ item.label }}</v-list-item-title>
             </v-list-item>
-            <v-list-item to="/settings">
-              <v-list-item-title>Settings</v-list-item-title>
+            <v-list-item to="/account">
+              <v-list-item-title>Account</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
@@ -119,7 +119,7 @@ const FEEDBACK_IDS = {
   '/faq': 15054,
   '': 15050,
   '/search': 15049,
-  '/settings': 15053,
+  '/account': 15053,
   '/terms': 15055
 }
 

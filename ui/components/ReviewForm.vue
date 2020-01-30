@@ -2,10 +2,10 @@
   <div>
     <v-dialog v-model="value" :width="width" persistent>
       <v-card>
-        <v-card-title v-html="subjectLine" />
+        <v-card-title v-html="subjectLine" class="justify-center" />
         <v-divider />
+        <v-rating v-model="rating" hover class="my-1 text-center" large />
         <v-card-text>
-          <v-rating v-model="rating" hover class="my-5" large />
           <v-textarea
             v-model="opinion"
             :counter="MAX_OPINION_LENGTH"
@@ -13,15 +13,35 @@
             label="Describe your experience here"
             auto-grow
             filled
+            rows="3"
           />
           <ExtraForm
             :extraHashes="extraHashes"
             @uploaded="addHashes($event)"
             @deleted="deleteHash($event)"
           />
+
+          <v-divider />
+
+          <v-row align="center">
+            <v-col>
+              <UserHeader
+                :pk="$store.state.publicKey"
+                :metadata="$store.state.metadata"
+                :count="issuer && issuer.count"
+              />
+            </v-col>
+            <v-spacer />
+            <div v-if="!savedKey" class="mr-6">
+              Returning reviewer? <LogIn />
+            </div>
+          </v-row>
+
           <MetaForm />
-          <span v-if="!savedKey">Returning user? Log in</span>
-          <v-list>
+
+          <v-divider />
+
+          <v-list class="mb-n3">
             <v-list-item v-for="tick in ticks" :key="tick.text">
               <v-list-item-action>
                 <v-checkbox v-model="checkBoxes[tick.ticked]"></v-checkbox>
@@ -96,7 +116,11 @@
         </v-card>
       </v-dialog>
     </v-dialog>
-    <SaveKeyDialog @dismiss="clear" v-if="keyDialog" />
+    <SaveKeyDialog
+      @dismiss="clear"
+      v-if="keyDialog"
+      :count="issuer && issuer.count"
+    />
   </div>
 </template>
 
@@ -107,6 +131,8 @@ import { IS_AFFILIATED, RECURRING } from '../store/metadata-types'
 import ExtraForm from './ExtraForm'
 import MetaForm from './MetaForm'
 import SaveKeyDialog from './SaveKeyDialog'
+import UserHeader from './UserHeader'
+import LogIn from './LogIn'
 import { HAS_SAVED_KEY } from '~/store/indexeddb-types'
 import { MARESI } from '~/store/scheme-types'
 import { MAX_OPINION_LENGTH } from '~/utils'
@@ -116,7 +142,9 @@ export default {
   components: {
     ExtraForm,
     MetaForm,
-    SaveKeyDialog
+    SaveKeyDialog,
+    LogIn,
+    UserHeader
   },
   props: {
     value: Boolean,

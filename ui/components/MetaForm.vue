@@ -1,17 +1,16 @@
 <template>
   <div>
     <v-card-subtitle>
-      Optionally add or edit additional information
+      Optionally add or edit useful information to publish
     </v-card-subtitle>
     <v-card-text>
       <v-row justify="space-around" class="my-n5">
-        <Identicon :seed="$store.state.publicKey" />
         <v-col>
           <v-text-field
             v-model="display_name"
             :counter="short_text_length"
             :rules="[is_short_text]"
-            label="Display name"
+            label="Nickname"
           />
         </v-col>
         <v-col>
@@ -51,7 +50,6 @@
 </template>
 
 <script>
-import Identicon from './Identicon'
 import { SET_META } from '~/store/mutation-types'
 import {
   AGE,
@@ -63,9 +61,6 @@ import {
 } from '~/store/metadata-types'
 
 export default {
-  components: {
-    Identicon
-  },
   data() {
     return {
       contexts: ['business', 'private', 'family', 'couple/date', 'friends'],

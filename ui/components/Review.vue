@@ -6,15 +6,12 @@
       @click="isMaresi || selectSubject()"
       :style="isMaresi ? '' : 'cursor: pointer'"
     />
-    <v-list-item class="mb-n5">
-      <v-list-item-avatar class="mr-2 ml-auto" tile>
-        <Identicon :seed="payload.iss" />
-      </v-list-item-avatar>
-      <v-list-item-content>
-        <v-list-item-title class="headline">{{ name() }}</v-list-item-title>
-        <v-list-item-subtitle>{{ issuer.count }} reviews </v-list-item-subtitle>
-      </v-list-item-content>
-    </v-list-item>
+    <UserHeader
+      :pk="payload.iss"
+      :metadata="payload.metadata"
+      :count="issuer && issuer.count"
+      class="mb-n5"
+    />
     <v-card-text>
       <v-row v-if="payload.rating !== null" align="center" class="pl-2">
         <span v-if="payload.rating === 0" class="pl-1"
@@ -129,9 +126,9 @@ import {
   GIVEN_NAME,
   IS_PERSONAL_EXPERIENCE
 } from '../store/metadata-types'
-import Identicon from './Identicon'
 import ReviewForm from './ReviewForm'
 import FlagForm from './FlagForm'
+import UserHeader from './UserHeader'
 import { MARESI } from '~/store/scheme-types'
 import { imageUrl, displayName } from '~/utils'
 
@@ -145,9 +142,9 @@ const META_DISPLAY = {
 export default {
   name: 'Review',
   components: {
-    Identicon,
     ReviewForm,
-    FlagForm
+    FlagForm,
+    UserHeader
   },
   props: {
     review: {
@@ -290,9 +287,6 @@ export default {
         null,
         2
       )
-    },
-    name() {
-      return displayName(this.payload.metadata)
     },
     selectSubject() {
       this.$store.dispatch('selectSubject', ['', this.payload.sub])
