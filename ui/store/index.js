@@ -198,7 +198,7 @@ export const actions = {
     }).then((rs) =>
       Object.values(rs.reviews).map((review) => review.payload.sub)
     )
-    subsToSubjects(this.$axios, subs).map((promise) => {
+    return subsToSubjects(this.$axios, subs).map((promise) => {
       promise.then((subject) => dispatch('storeWithRating', [subject]))
     })
   },

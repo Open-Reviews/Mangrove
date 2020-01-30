@@ -201,7 +201,7 @@ export default {
           )
           .map(
             ([k, v]) =>
-              META_DISPLAY[k].label +
+              (META_DISPLAY[k] ? META_DISPLAY[k].label : k) +
               (v === 'true'
                 ? ''
                 : META_DISPLAY[k].postfix

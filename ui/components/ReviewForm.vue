@@ -105,7 +105,7 @@
 
 <script>
 import { get } from 'idb-keyval'
-import { SUBMIT_ERROR } from '../store/mutation-types'
+import { SUBMIT_ERROR, SET_META } from '../store/mutation-types'
 import ExtraForm from './ExtraForm'
 import MetaForm from './MetaForm'
 import KeyList from './KeyList'
@@ -191,7 +191,19 @@ export default {
   },
   mounted() {
     this.$store.commit(SUBMIT_ERROR, null)
-    this.$store.dispatch('saveMyReviews')
+    // Fetch reviews to prepopulate metadata and allow for full preview.
+    this.$store.dispatch('saveMyReviews').then(() => {
+      const newestReview = Object.values(this.$store.state.reviews)
+        .filter(({ payload }) => {
+          return payload.iss === this.$store.state.publicKey
+        })
+        .reduce(function(prev, current) {
+          return prev.payload.iat > current.payload.iat ? prev : current
+        })
+      Object.entries(newestReview.payload.metadata).map(([k, v]) =>
+        this.$store.commit(SET_META, [k, v])
+      )
+    })
   },
   // Avoid issues with circular dependencies.
   beforeCreate() {
