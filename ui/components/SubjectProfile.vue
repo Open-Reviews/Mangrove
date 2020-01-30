@@ -30,25 +30,37 @@
       <v-card-title>
         {{ subject.title }}
       </v-card-title>
-      <v-row align="center" class="mx-4 my-n4">
-        <v-rating :value="subject.quality" half-increments dense class="mr-2" />
-        {{ subject.quality }} ({{ subject.count }})
-      </v-row>
-      <v-card-subtitle class="mb-n3">{{ subject.subtitle }}</v-card-subtitle>
-      <v-list flat>
-        <v-list-item v-for="(detail, i) in details" :key="i" class="my-n6">
-          <v-list-item-icon class="mr-4">
-            <v-icon v-text="detail.icon" />
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title
-              v-html="detail.content"
-              class="text-wrap"
-              align="start"
-            />
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
+      <v-card-subtitle
+        >{{ subject.subtitle }}
+        <v-row align="center" class="ml-auto">
+          <v-rating
+            :value="subject.quality"
+            half-increments
+            dense
+            class="mr-2"
+            readonly
+          />
+          {{ subject.quality && subject.quality.toFixed(1) }} ({{
+            subject.count
+          }})
+        </v-row>
+      </v-card-subtitle>
+      <v-list-item-content>
+        <v-list flat>
+          <v-list-item v-for="(detail, i) in details" :key="i" class="my-n6">
+            <v-list-item-icon class="mr-4">
+              <v-icon v-text="detail.icon" />
+            </v-list-item-icon>
+            <v-card-text>
+              <v-list-item-title
+                v-html="detail.content"
+                class="text-wrap"
+                align="start"
+              />
+            </v-card-text>
+          </v-list-item>
+        </v-list>
+      </v-list-item-content>
       <v-card-actions class="justify-center">
         <v-btn @click.stop="reviewForm = true" color="#ffeb3b"
           >Write a review</v-btn

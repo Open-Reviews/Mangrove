@@ -18,13 +18,19 @@
             <v-row align="center" class="ml-auto">
               <v-rating
                 :value="subject.quality"
+                :background-color="
+                  subject.quality ? 'primary' : 'grey lighten-2'
+                "
                 readonly
                 half-increments
                 dense
                 class="mr-2"
               />
-              {{ subject.quality }}
-              ({{ subject.count }})
+              {{ subject.quality && subject.quality.toFixed(1) }}
+              <span
+                :class="subject.quality ? 'ml-1' : 'grey--text text--lighten-2'"
+                >({{ subject.count }})</span
+              >
             </v-row>
             <v-list-item-subtitle class="text--primary">{{
               subject.subtitle

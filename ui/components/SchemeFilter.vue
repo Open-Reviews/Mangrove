@@ -14,7 +14,7 @@
 
 <script>
 import { SET_FILTERS } from '../store/mutation-types'
-import { GEO, LEI, HTTPS, ISBN } from '../store/scheme-types'
+import { GEO, LEI, HTTPS, ISBN, ICONS } from '~/store/scheme-types'
 
 export default {
   data() {
@@ -35,6 +35,11 @@ export default {
       set(value) {
         this.$store.commit(SET_FILTERS, value)
       }
+    }
+  },
+  methods: {
+    icon(uri) {
+      return ICONS[uri]
     }
   }
 }

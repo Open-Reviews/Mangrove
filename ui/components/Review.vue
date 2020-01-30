@@ -7,7 +7,7 @@
       :style="isMaresi ? '' : 'cursor: pointer'"
     />
     <v-list-item class="mb-n5">
-      <v-list-item-avatar class="mr-2 ml-n1" tile>
+      <v-list-item-avatar class="mr-2 ml-auto" tile>
         <Identicon :seed="payload.iss" />
       </v-list-item-avatar>
       <v-list-item-content>
@@ -26,11 +26,13 @@
           readonly
           dense
           class="mr-2"
+          color="blue"
+          background-color="blue"
         />
         Reviewed {{ new Date(payload.iat * 1000).toDateString() }}
       </v-row>
       {{ payload.opinion }}
-      <v-row v-if="payload.extra_hashes" class="mx-n1">
+      <v-row v-if="payload.extra_hashes" class="mx-auto">
         <v-img
           v-for="hash in payload.extra_hashes"
           :key="hash"
@@ -52,7 +54,7 @@
         </v-chip>
       </div>
     </v-card-text>
-    <v-card-actions v-if="!preview" class="my-n7 mx-1">
+    <v-card-actions v-if="!preview" class="my-n7 mx-auto">
       <v-tooltip v-for="action in actions" :key="action.icon" top>
         <template v-slot:activator="{ on }">
           <v-btn
