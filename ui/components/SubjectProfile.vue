@@ -121,7 +121,7 @@ export default {
           content: s.website && `<a href=${s.website}>${s.website}</a>`
         },
         {
-          icon: 'mdi-clock-outline',
+          icon: 'mdi-clock',
           content: s.openingHours
         },
         {
