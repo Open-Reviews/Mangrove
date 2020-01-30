@@ -12,7 +12,7 @@ base64-url = "1.1"
 url = "2.1.0"
 isbn = "0.2.0"
 ring = "0.16.9"
-biscuit = "0.4.2"
+biscuit = { git = "https://github.com/plantingspace/biscuit" }
 diesel = { version = "1.0.0", features = ["postgres", "serde_json"] }
 xmltree = "0.8.0"
 reqwest = "0.9.24"

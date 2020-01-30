@@ -101,8 +101,8 @@ dependencies = [
 
 [[package]]
 name = "biscuit"
-version = "0.4.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
+version = "0.5.0"
+source = "git+https://github.com/plantingspace/biscuit#356feef910286a8e90db3118c0bb65c4919d59c2"
 dependencies = [
  "chrono 0.4.10 (registry+https://github.com/rust-lang/crates.io-index)",
  "data-encoding 2.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1589,7 +1589,7 @@ name = "reviewer"
 version = "0.1.0"
 dependencies = [
  "base64-url 1.1.12 (registry+https://github.com/rust-lang/crates.io-index)",
- "biscuit 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "biscuit 0.5.0 (git+https://github.com/plantingspace/biscuit)",
  "csv 1.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "diesel 1.4.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "dotenv 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -2587,7 +2587,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum base64 0.10.1 (registry+https://github.com/rust-lang/crates.io-index)" = "0b25d992356d2eb0ed82172f5248873db5560c4721f564b13cb5193bda5e668e"
 "checksum base64 0.9.3 (registry+https://github.com/rust-lang/crates.io-index)" = "489d6c0ed21b11d038c31b6ceccca973e65d73ba3bd8ecb9a2babf5546164643"
 "checksum base64-url 1.1.12 (registry+https://github.com/rust-lang/crates.io-index)" = "0712f87ec36b99963b78fdba579268cbd713a22be7cdaf4abf635933b92253ab"
-"checksum biscuit 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)" = "359ca61641a4d4afcb8a1eefa59d17e84808fd9dc10dcc753a7b8def542bbb8c"
+"checksum biscuit 0.5.0 (git+https://github.com/plantingspace/biscuit)" = "<none>"
 "checksum bitflags 1.2.1 (registry+https://github.com/rust-lang/crates.io-index)" = "cf1de2fe8c75bc145a2f577add951f8134889b4795d47466a54a5c846d691693"
 "checksum bstr 0.2.10 (registry+https://github.com/rust-lang/crates.io-index)" = "fe8a65814ca90dfc9705af76bb6ba3c6e2534489a72270e797e603783bb4990b"
 "checksum bumpalo 3.1.2 (registry+https://github.com/rust-lang/crates.io-index)" = "5fb8038c1ddc0a5f73787b130f4cc75151e96ed33e417fde765eb5a81e3532f4"

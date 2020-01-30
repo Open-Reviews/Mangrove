@@ -62,6 +62,12 @@ impl From<ring::error::Unspecified> for Error {
     }
 }
 
+impl From<biscuit::errors::Error> for Error {
+    fn from(error: biscuit::errors::Error) -> Self {
+        Error::Incorrect(format!("Incorrect JWT: {}", error))
+    }
+}
+
 impl From<diesel::result::Error> for Error {
     fn from(error: diesel::result::Error) -> Self {
         Error::Internal(format!("Database error: {}", error))

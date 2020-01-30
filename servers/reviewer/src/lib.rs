@@ -20,7 +20,7 @@ extern crate rocket_okapi;
 use self::aggregator::{Issuer, Statistic, Subject};
 use self::database::{DbConn, Query};
 use self::error::Error;
-use self::review::Review;
+use self::review::{Review, Payload};
 use rocket::response::{Responder, Response};
 use rocket::http::{Method, ContentType, Status};
 use rocket::request::{Form, Request};
@@ -28,6 +28,7 @@ use rocket::Rocket;
 use rocket::http::hyper::header::{ContentDisposition, DispositionType, DispositionParam, Charset};
 use rocket_contrib::json::Json;
 use rocket_okapi::swagger_ui::{make_swagger_ui, SwaggerUIConfig};
+use biscuit::{JWT, jwk::JWKSet};
 use csv::Writer;
 use serde::{Deserialize, Serialize};
 use std::time::SystemTime;
@@ -37,6 +38,25 @@ use std::collections::{HashSet, BTreeMap};
 #[get("/")]
 fn index() -> &'static str {
     "Check out for project information: https://planting.space/mangrove.html"
+}
+
+#[openapi(skip)]
+#[put("/submit", format = "application/jwt", data = "<jwt_review>")]
+fn submit_review_jwt(conn: DbConn, jwt_review: String) -> Result<String, Error> {
+    info!("Review received: {:?}", jwt_review);
+    let encoded_token = JWT::<Payload, biscuit::Empty>::new_encoded(&jwt_review);
+    let header = encoded_token.unverified_header()?;
+    let encoded_public_jwk = header
+        .registered
+        .web_key
+        .ok_or_else(|| Error::Incorrect("No public key found in header.".into()))?;
+    let public_jwks: JWKSet<biscuit::Empty> = JWKSet {
+        keys: vec![serde_json::from_str(&encoded_public_jwk)?]
+    };
+    println!("jwks: {:?}", public_jwks.keys[0].algorithm);
+    let decoded = encoded_token.decode_with_jwks(&public_jwks)?;
+    println!("payload: {:?}", decoded.payload());
+    Ok("true".into())
 }
 
 #[openapi(skip)]
@@ -258,6 +278,7 @@ pub fn rocket() -> Rocket {
             "/",
             routes_with_openapi![
                 index,
+                submit_review_jwt,
                 submit_review_json,
                 submit_review_cbor,
                 get_reviews_json,

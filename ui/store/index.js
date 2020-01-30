@@ -3,11 +3,10 @@ import { get, set } from 'idb-keyval'
 import { MARESI, GEO, subToScheme } from '../store/scheme-types'
 import { PRIVATE_KEY } from './indexeddb-types'
 import * as t from './mutation-types'
-import { jwkToKeypair, skToJwk } from '~/utils'
+import { jwkToKeypair, skToJwk, keyToPem } from '~/utils'
 const base64url = require('base64-url')
+const jwt = require('jsonwebtoken')
 const cbor = require('borc')
-
-const clientUri = 'https://mangrove.reviews'
 
 export const state = () => ({
   keyPair: null,
@@ -111,6 +110,7 @@ export const getters = {
 export const actions = {
   setKeypair({ commit }, keypair) {
     commit(t.SET_KEYPAIR, keypair)
+    skToJwk(keypair.privateKey).then((jwk) => set(PRIVATE_KEY, jwk))
     window.crypto.subtle
       .exportKey('raw', keypair.publicKey)
       .then((exported) =>
@@ -139,7 +139,6 @@ export const actions = {
             )
             .then((kp) => {
               keypair = kp
-              skToJwk(kp.privateKey).then((jwk) => set(PRIVATE_KEY, jwk))
             })
             .catch((error) => console.log('Accessing IndexDB failed: ', error))
         }
@@ -229,7 +228,7 @@ export const actions = {
         }
       })
   },
-  reviewContent({ state }, stubClaim) {
+  async reviewContent({ state }, stubClaim) {
     // Assumes stubClaim contains at least `sub`
     // Add mandatory fields.
     const payload = {
@@ -245,43 +244,55 @@ export const actions = {
     const meta = { ...stubClaim.metadata, ...state.metadata }
     // Remove empty metadata fields.
     Object.keys(meta).forEach((key) => meta[key] == null && delete meta[key])
-    meta.client_uri = clientUri
+    meta.client_uri = process.env.BASE_URL
     // Always at least `client_uri` present.
     payload.metadata = meta
     console.log('payload: ', JSON.stringify(payload))
     const encoded = cbor.encode(payload)
     console.log('msg: ', base64url.encode(encoded))
-    return window.crypto.subtle
-      .sign(
-        {
-          name: 'ECDSA',
-          hash: { name: 'SHA-256' }
-        },
-        state.keyPair.privateKey,
-        encoded
-      )
-      .then((signed) => {
-        console.log('sig: ', new Uint8Array(signed))
-        return {
-          signature: base64url.encode(new Uint8Array(signed)),
-          encodedPayload: base64url.encode(encoded),
-          payload
+    const signed = await window.crypto.subtle.sign(
+      {
+        name: 'ECDSA',
+        hash: { name: 'SHA-256' }
+      },
+      state.keyPair.privateKey,
+      encoded
+    )
+    console.log('sig: ', new Uint8Array(signed))
+    const privateJwk = await crypto.subtle.exportKey(
+      'jwk',
+      state.keyPair.publicKey
+    )
+    privateJwk.kid = state.publicKey
+    privateJwk.alg = 'ES256'
+    console.log('privateJwk: ', privateJwk)
+    return {
+      jwt: jwt.sign(payload, await keyToPem(state.keyPair.privateKey), {
+        algorithm: 'ES256',
+        header: {
+          jwk: JSON.stringify(privateJwk),
+          kid: state.publicKey
         }
-      })
+      }),
+      signature: base64url.encode(new Uint8Array(signed)),
+      encodedPayload: base64url.encode(encoded),
+      payload
+    }
   },
   submitReview({ getters, commit, dispatch }, reviewStub) {
     return dispatch('reviewContent', reviewStub).then(
-      ({ signature, encodedPayload, payload }) => {
+      ({ jwt, signature, encodedPayload, payload }) => {
         if (!getters.isUnique(payload)) {
           commit(t.SUBMIT_ERROR, 'You have already submitted this review.')
           return false
         }
-        const review = { signature, payload: encodedPayload }
+        console.log('jwt: ', jwt)
+        const review = { signature, payload }
         console.log('Mangrove review: ', review)
         return this.$axios
-          .put(`${process.env.VUE_APP_API_URL}/submit`, review, {
+          .put(`${process.env.VUE_APP_API_URL}/submit`, jwt, {
             headers: {
-              'Content-Type': 'application/cbor'
+              'Content-Type': 'application/jwt'
             }
           })
           .then(() => {

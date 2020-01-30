@@ -81,3 +81,14 @@ export function skToJwk(keypair) {
     return s
   })
 }
+
+function u8aToString(buf) {
+  return String.fromCharCode.apply(null, new Uint8Array(buf))
+}
+
+export async function keyToPem(key) {
+  const exported = await window.crypto.subtle.exportKey('pkcs8', key)
+  const exportedAsString = u8aToString(exported)
+  const exportedAsBase64 = window.btoa(exportedAsString)
+  return `-----BEGIN PRIVATE KEY-----\n${exportedAsBase64}\n-----END PRIVATE KEY-----`
+}
