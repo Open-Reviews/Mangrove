@@ -15,11 +15,9 @@
           <v-col />
           <v-col :cols="isSmall ? 12 : 6">
             <SearchBox no-filter />
-            <v-row class="justify-space-around">
+            <v-row class="justify-space-around mt-n8">
               <span
-                v-for="cat in front.subsearch"
-                v-text="cat"
-                :key="cat"
+                v-text="front.subsearch.join(' ᐧ ')"
                 class="title white--text"
               />
             </v-row>
