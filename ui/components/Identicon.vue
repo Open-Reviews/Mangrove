@@ -1,5 +1,5 @@
 <template>
-  <div v-html="identicon" />
+  <v-avatar v-html="identicon" />
 </template>
 
 <script>

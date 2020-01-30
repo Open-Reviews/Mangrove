@@ -27,7 +27,7 @@
         <v-list-item-action>
           <v-btn
             @click="copy(key)"
-            :color="sk ? secondary : ''"
+            :color="sk ? 'secondary' : ''"
             class="black--text"
           >
             <v-icon>mdi-content-copy</v-icon>
@@ -87,9 +87,7 @@ export default {
   },
   computed: {
     keyStrings() {
-      return this.keys.map((key) =>
-        this.sk ? this.secret : JSON.stringify(key)
-      )
+      return this.keys.map((key) => (this.sk ? this.secret : key))
     }
   },
   mounted() {
