@@ -1,8 +1,10 @@
 <template>
   <div>
-    <div v-if="noReviewsMessage" class="text-center">
-      {{ noReviewsMessage }}
-    </div>
+    <div
+      v-if="noReviewsMessage"
+      v-html="noReviewsMessage"
+      class="text-center"
+    />
     <ReviewListBase :listArgs="opinionated" />
     <v-row
       v-if="opinionless.length && !showOpinionless && notMaresi"
@@ -93,7 +95,7 @@ export default {
       } else if (this.rootSub) {
         return 'Be the first to review!'
       } else {
-        return 'No reviews yet'
+        return `No reviews yet. <a href="${process.env.BASE_URL}">Leave your first review</a>`
       }
     }
   },

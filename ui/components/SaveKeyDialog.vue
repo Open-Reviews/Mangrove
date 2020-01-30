@@ -51,11 +51,10 @@ export default {
   },
   computed: {
     countString() {
-      const actualCount = this.count + 1
-      if (actualCount === 1) {
+      if (this.count === 1) {
         return '1 review'
       } else {
-        return `${actualCount} reviews`
+        return `${this.count} reviews`
       }
     },
     submittedContent() {

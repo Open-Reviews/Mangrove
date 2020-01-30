@@ -116,7 +116,11 @@ export default {
   },
   data() {
     return {
-      demoDialog: `Welcome to Mangrove! Please note that this is a <b>demo version</b> of the Mangrove online reviews service. Its purpose is to allow you to test the basic functionality and to <b>give us feedback</b> so that we can find all bugs and release a beta version soon. We highly appreciate feedback on all pages, just use the red button on the right as often as you like. Finally: please <b>donate</b> to help us add more features :)`,
+      demoDialog: `Welcome to Mangrove!
+        Please note that this is a <b>demo version</b> of the Mangrove online reviews service.
+        Its purpose is to allow you to test the basic functionality and to <b>give us feedback</b> so that we can find all bugs and release a beta version soon.
+        We highly appreciate feedback on all pages, just use the red button on the right as often as you like.
+        Finally: please <a href="https://opencollective.com/mangrove" target="_blank">donate</a> to help us add more features :)`,
       front: {
         image: require('~/assets/index/BG1_sunset_2000x950.jpg'),
         tagline: 'Share with others and make better decisions.',

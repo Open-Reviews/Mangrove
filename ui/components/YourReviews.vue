@@ -1,10 +1,10 @@
 <template>
-  <v-container>
-    <p class="display-1">Your reviews</p>
+  <div>
+    <h1 class="display-1">Your reviews</h1>
     <v-divider />
     <SchemeFilter />
     <ReviewList :rootIss="$store.state.publicKey" />
-  </v-container>
+  </div>
 </template>
 
 <script>
