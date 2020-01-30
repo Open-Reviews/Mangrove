@@ -2,7 +2,7 @@
   <div>
     <v-dialog v-model="value" :width="width" persistent>
       <v-card>
-        <v-card-title>{{ subjectLine }}</v-card-title>
+        <v-card-title v-html="subjectLine" />
         <v-divider />
         <v-card-text>
           <v-rating v-model="rating" hover class="my-5" large />
@@ -149,8 +149,8 @@ export default {
   computed: {
     subjectLine() {
       return this.subject.scheme === MARESI
-        ? `Comment on ${this.subject.title}'s review`
-        : `Review ${this.subject.title}`
+        ? `Comment on <span class="blue--text">&nbsp;${this.subject.title}</span>'s review`
+        : this.subject.title
     },
     payloadStub() {
       const stub = {
