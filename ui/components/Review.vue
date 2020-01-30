@@ -122,6 +122,13 @@
 </template>
 
 <script>
+import {
+  CLIENT_ID,
+  NICKNAME,
+  FAMILY_NAME,
+  GIVEN_NAME,
+  IS_PERSONAL_EXPERIENCE
+} from '../store/metadata-types'
 import Identicon from './Identicon'
 import ReviewForm from './ReviewForm'
 import FlagForm from './FlagForm'
@@ -143,7 +150,12 @@ export default {
     FlagForm
   },
   props: {
-    review: Object,
+    review: {
+      type: Object,
+      default: () => {
+        return { signature: null, payload: null }
+      }
+    },
     issuer: Object,
     maresiSubject: {
       type: Object,
@@ -195,7 +207,7 @@ export default {
         Object.entries(this.review.payload.metadata)
           .filter(
             ([key, _]) =>
-              !['client_uri', 'display_name', 'family_name', 'given_name'].some(
+              ![CLIENT_ID, NICKNAME, FAMILY_NAME, GIVEN_NAME].some(
                 (hidden) => key === hidden
               )
           )
@@ -204,13 +216,13 @@ export default {
               (META_DISPLAY[k] ? META_DISPLAY[k].label : k) +
               (v === 'true'
                 ? ''
-                : META_DISPLAY[k].postfix
+                : META_DISPLAY[k] && META_DISPLAY[k].postfix
                 ? ': ' + v + META_DISPLAY[k].postfix
                 : ': ' + v)
           ),
       raw: { json: undefined, cbor: undefined },
       flagSubject: null,
-      personalMeta: { is_personal_experience: 'true' },
+      personalMeta: { [IS_PERSONAL_EXPERIENCE]: 'true' },
       responseDialog: false
     }
   },

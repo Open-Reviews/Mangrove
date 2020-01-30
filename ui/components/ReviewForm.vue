@@ -106,6 +106,7 @@
 <script>
 import { get } from 'idb-keyval'
 import { SUBMIT_ERROR, SET_META } from '../store/mutation-types'
+import { IS_AFFILIATED, RECURRING } from '../store/metadata-types'
 import ExtraForm from './ExtraForm'
 import MetaForm from './MetaForm'
 import KeyList from './KeyList'
@@ -157,7 +158,7 @@ export default {
         opinion: this.opinion,
         extra_hashes: this.extraHashes,
         metadata: {
-          is_affiliated: this.checkBoxes.isAffiliated ? `true` : null
+          [IS_AFFILIATED]: this.checkBoxes.isAffiliated ? `true` : null
         }
       }
       if (this.rating) {
@@ -193,15 +194,20 @@ export default {
     this.$store.commit(SUBMIT_ERROR, null)
     // Fetch reviews to prepopulate metadata and allow for full preview.
     this.$store.dispatch('saveMyReviews').then(() => {
-      const newestReview = Object.values(this.$store.state.reviews)
-        .filter(({ payload }) => {
+      const myReviews = Object.values(this.$store.state.reviews).filter(
+        ({ payload }) => {
           return payload.iss === this.$store.state.publicKey
-        })
-        .reduce(function(prev, current) {
-          return prev.payload.iat > current.payload.iat ? prev : current
-        })
-      Object.entries(newestReview.payload.metadata).map(([k, v]) =>
-        this.$store.commit(SET_META, [k, v])
+        }
+      )
+      if (!myReviews.length) {
+        return
+      }
+      const newestReview = myReviews.reduce(function(prev, current) {
+        return prev.payload.iat > current.payload.iat ? prev : current
+      })
+      Object.entries(newestReview.payload.metadata).map(
+        ([k, v]) =>
+          RECURRING.includes(k) && this.$store.commit(SET_META, [k, v])
       )
     })
   },

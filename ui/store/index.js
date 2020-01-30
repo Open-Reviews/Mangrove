@@ -4,6 +4,7 @@ import { MARESI, GEO, subToScheme } from './scheme-types'
 import { subsToSubjects } from './apis'
 import { PRIVATE_KEY } from './indexeddb-types'
 import * as t from './mutation-types'
+import { CLIENT_ID } from './metadata-types'
 import { jwkToKeypair, skToJwk } from '~/utils'
 const base64url = require('base64-url')
 const cbor = require('borc')
@@ -256,8 +257,8 @@ export const actions = {
     const meta = { ...stubClaim.metadata, ...state.metadata }
     // Remove empty metadata fields.
     Object.keys(meta).forEach((key) => meta[key] == null && delete meta[key])
-    meta.client_uri = clientUri
-    // Always at least `client_uri` present.
+    meta[CLIENT_ID] = clientUri
+    // Always at least `client_id` present.
     payload.metadata = meta
     console.log('payload: ', JSON.stringify(payload))
     const encoded = cbor.encode(payload)
