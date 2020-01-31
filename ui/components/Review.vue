@@ -171,7 +171,9 @@ export default {
           icon: 'mdi-thumb-up',
           tooltip: 'This is useful',
           action: this.useful,
-          number: this.maresiSubject.positive_count,
+          number:
+            this.maresiSubject.positive_count -
+            this.maresiSubject.confirmed_count,
           disabled: this.review.payload.iss === this.$store.state.publicKey
         },
         {
@@ -263,7 +265,10 @@ export default {
       claim.rating = 100
       this.$store
         .dispatch('submitReview', claim)
-        .then((result) => result || this.disableMarking())
+        .then(
+          (result) =>
+            (result && this.actions[0].number++) || this.disableMarking()
+        )
     },
     confirm(signature) {
       const claim = this.payloadSub(signature)
@@ -271,7 +276,10 @@ export default {
       claim.metadata = this.personalMeta
       this.$store
         .dispatch('submitReview', claim)
-        .then((result) => result || this.disableMarking())
+        .then(
+          (result) =>
+            (result && this.actions[1].number++) || this.disableMarking()
+        )
     },
     showFlag(review) {
       this.flagSubject = this.subjectWithTitle

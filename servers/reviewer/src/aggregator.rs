@@ -30,7 +30,7 @@ pub struct Subject {
     /// URI uniquely identifying the subject.
     pub sub: String,
     /// Aggregate number representing quality of the subject.
-    pub quality: Option<usize>,
+    pub quality: Option<i16>,
     /// Number of reviews given to this subject.
     pub count: usize,
     /// Number of reviews which included an opinion.
@@ -47,42 +47,38 @@ impl Statistic for Subject {
             sub: Some(sub.clone()),
             ..Default::default()
         })?;
-        let mut positive = relevant
-            .iter()
-            .filter(|review| review.payload.rating.unwrap_or(0) > MAX_RATING / 2);
-        let positive_count = positive.by_ref().count();
-        let confirmed_count = positive
-            .filter(|review| {
-                review
-                    .payload
-                    .metadata
-                    .as_ref()
-                    .map_or(false, |m| m.get("is_personal_experience").is_some())
-            })
-            .count();
-        let rated_count = relevant
-            .iter()
-            .filter(|review| review.payload.rating.is_some())
-            .count();
-        let quality = if rated_count == 0 {
-            None
-        } else {
-            Some(
-                relevant
-                    .iter()
-                    .map(|review| review.payload.rating.unwrap_or(0) as usize)
-                    .sum::<usize>()
-                    / rated_count,
-            )
+        let mut count = 0;
+        let mut rated_count = 0;
+        let mut rating_total = 0;
+        let mut opinion_count = 0;
+        let mut positive_count = 0;
+        let mut confirmed_count = 0;
+        for review in relevant {
+            count += 1;
+            if let Some(rating) = review.payload.rating {
+                rated_count += 1;
+                rating_total += rating;
+                if rating > MAX_RATING / 2 {
+                    positive_count += 1;
+                    if let Some(metadata) = review.payload.metadata {
+                        if metadata.get("is_personal_experience").is_some() {
+                            confirmed_count += 1;
+                        }
+                    }
+                }
+            }
+            if review.payload.opinion.is_some() {
+                opinion_count += 1;
+            }
+        }
+        let quality = match rated_count {
+            0 => None,
+            _ => Some(rating_total / rated_count)
         };
-        let opinion_count = relevant
-            .iter()
-            .filter(|review| review.payload.opinion.is_some())
-            .count();
         Ok(Subject {
             sub,
             quality,
-            count: relevant.len(),
+            count,
             opinion_count,
             positive_count,
             confirmed_count,
