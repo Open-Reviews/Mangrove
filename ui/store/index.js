@@ -203,9 +203,11 @@ export const actions = {
     }).then((rs) =>
       Object.values(rs.reviews).map((review) => review.payload.sub)
     )
-    return subsToSubjects(this.$axios, subs).map((promise) => {
-      promise.then((subject) => dispatch('storeWithRating', [subject]))
-    })
+    return Promise.all(
+      subsToSubjects(this.$axios, subs).map((promise) =>
+        promise.then((subject) => dispatch('storeWithRating', [subject]))
+      )
+    )
   },
   bulkSubjects({ commit }, subs) {
     return this.$axios

@@ -214,7 +214,9 @@ export default {
       return this.$store.getters.issuer(this.$store.state.publicKey)
     }
   },
-  mounted() {
+  beforeCreate() {
+    // Avoid issues with circular dependencies.
+    this.$options.components.Review = require('./Review').default
     this.$store.commit(SUBMIT_ERROR, null)
     get(HAS_SAVED_KEY).then((flag) => (this.savedKey = flag))
     // Fetch reviews to prepopulate metadata and allow for full preview.
@@ -235,10 +237,6 @@ export default {
           RECURRING.includes(k) && this.$store.commit(SET_META, [k, v])
       )
     })
-  },
-  // Avoid issues with circular dependencies.
-  beforeCreate() {
-    this.$options.components.Review = require('./Review').default
   },
   methods: {
     deleteHash(index) {

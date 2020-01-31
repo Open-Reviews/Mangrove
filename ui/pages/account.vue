@@ -1,6 +1,6 @@
 <template>
   <v-container :style="`max-width: ${hasLeftReview ? 1300 : 800}px`">
-    <v-row>
+    <v-row v-if="hasLeftReview !== undefined">
       <v-col>
         <h1 class="display-1">Your account</h1>
         <v-divider class="mb-2" />
