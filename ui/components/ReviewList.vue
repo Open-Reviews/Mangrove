@@ -34,7 +34,7 @@
 
 <script>
 import { downloadLink, pkDisplay, displayName } from '../utils'
-import { MARESI } from '../store/scheme-types'
+import { MARESI, subPath } from '../store/scheme-types'
 import ReviewListBase from './ReviewListBase'
 
 export default {
@@ -116,7 +116,12 @@ export default {
         return
       }
       if (sub.startsWith(MARESI)) {
-        return `Your comment on ${displayName(metadata)}'s review`
+        const originalReview = this.$store.state.reviews[subPath(MARESI, sub)]
+        if (originalReview && originalReview.payload.metadata) {
+          return `Your comment on ${displayName(
+            originalReview.payload.metadata
+          )}'s review`
+        }
       } else {
         const subject = this.$store.getters.subject(sub)
         return subject && `Your review of ${subject.title}, ${subject.subtitle}`
