@@ -8,8 +8,7 @@
       <v-card-subtitle>
         Thank you for flagging up inappropriate reviews.
         <b>
-          Reviews that violate the
-          <n-link to="/terms">Terms of Service</n-link>
+          Reviews that violate the Terms of Service
         </b>
         will be removed from the dataset. <b>Low-quality reviews</b>
         will remain in the dataset, but will have a reduced influence on the
@@ -81,9 +80,9 @@ export default {
     return {
       flagReasons: [
         {
-          description: `Violation of the
+          description: `Violation of the 
             <a href="${process.env.BASE_URL}/terms" target="_blank">
-              Terms of Service
+               Terms of Service
             </a>`,
           items: [
             'The review contains offensive language that is violent, unlawful, coarse, sexist, racist, accusatory, or defamatory',
