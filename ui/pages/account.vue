@@ -25,9 +25,9 @@
           </div>
           <div v-else>
             <v-card-text>
-              If you would like to use this account in the future, please copy
-              and save your password in a password manager or download it to
-              your files.
+              You wrote [xx] review[s] with this account. You can build up your reputation to make your opinion count more by using                this same account for your future reviews, and by receiving Likes and Confirmations from other users.   
+              </b>
+              To always be able to access this account, please copy and save the password below, ideally in a password manager, or                 download it to your files.
               <KeyList sk>
                 Your cryptographically generated password:
               </KeyList>
