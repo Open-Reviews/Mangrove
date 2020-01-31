@@ -11,5 +11,5 @@ Throughout the user interface we have chosen more traditional terms to represent
 * Login = the process of importing a previously generated private key, together with the public key that was derived from it, and all reviews linked to that public key
 * Avatar = a visual representation of the public key  
 
-<br/><br/>
+<br/>
 Public-key cryptography uses pairs of keys: public keys which may be disseminated widely, and private keys which are known only to the owner. Both are generated in your browser when you access Mangrove, and are stored locally in a temporary storage (IndexedDB). 
