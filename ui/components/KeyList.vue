@@ -11,47 +11,31 @@
           <Identicon :seed="key" v-else />
         </v-list-item-avatar>
         <v-list-item-content>
-          <v-list-item-title v-if="sk">
-            <v-text-field
-              id="password"
-              value="Press copy or view"
-              required
-              class="full-width mr-5"
-              type="password"
-              name="password"
-              autocomplete="password"
-            />
-          </v-list-item-title>
-          <v-list-item-title v-else>{{ pkDisplay(key) }}</v-list-item-title>
+          <v-text-field
+            :id="sk ? 'password' : ''"
+            :value="key"
+            :type="!sk || showPrivate ? 'text' : 'password'"
+            :name="sk ? 'password' : ''"
+            :autocomplete="sk ? 'password' : ''"
+            @click:append="() => (showPrivate = !showPrivate)"
+            :append-icon="appendIcon"
+            required
+            class="full-width mr-5"
+          />
         </v-list-item-content>
-        <v-list-item-action>
-          <v-btn
-            @click="copy(key)"
-            :color="sk ? secondary : ''"
-            class="black--text"
-          >
-            <v-icon>mdi-content-copy</v-icon>
-            Copy
+        <v-list-item-action v-if="sk">
+          <v-btn :href="downloadKeyLink" :download="downloadKeyName">
+            <v-icon class="mr-1">mdi-folder-download-outline</v-icon>
+            Download
           </v-btn>
         </v-list-item-action>
         <v-list-item-action>
-          <v-dialog>
-            <template v-slot:activator="{ on }">
-              <v-btn v-on="on">
-                <v-icon>mdi-eye</v-icon>
-                View
-              </v-btn>
-            </template>
-            <v-card>
-              <v-card-title>
-                Your {{ sk ? 'private' : 'public' }} key
-              </v-card-title>
-              <v-card-text>
-                <span v-html="key" />
-              </v-card-text>
-            </v-card>
-          </v-dialog>
+          <v-btn @click="copy(key)" color="secondary" class="black--text">
+            <v-icon small class="mr-1">mdi-content-copy</v-icon>
+            Copy
+          </v-btn>
         </v-list-item-action>
+
         <v-list-item-action v-if="i">
           <v-btn>
             Set default
@@ -65,7 +49,7 @@
 <script>
 import { get } from 'idb-keyval'
 import Identicon from './Identicon'
-import { pkDisplay } from '~/utils'
+import { downloadLink, pkDisplay } from '~/utils'
 import { PRIVATE_KEY } from '~/store/indexeddb-types'
 
 export default {
@@ -80,20 +64,29 @@ export default {
   data() {
     return {
       copyText: 'Copied to clipboard!',
-      secret: undefined,
-      pkDisplay,
-      copying: false
+      copying: false,
+      showPrivate: false,
+      private: undefined
     }
   },
   computed: {
     keyStrings() {
-      return this.keys.map((key) =>
-        this.sk ? this.secret : JSON.stringify(key)
-      )
+      return this.keys.map((key) => (this.sk ? this.private : key))
+    },
+    appendIcon() {
+      return this.sk ? (this.showPrivate ? 'mdi-eye-off' : 'mdi-eye') : ''
+    },
+    downloadKeyName() {
+      return `mangrove.reviews_PrivateKey_${pkDisplay(
+        this.$store.state.publicKey
+      )}.json`
+    },
+    downloadKeyLink() {
+      return downloadLink(this.private)
     }
   },
   mounted() {
-    get(PRIVATE_KEY).then((s) => (this.secret = JSON.stringify(s)))
+    get(PRIVATE_KEY).then((s) => (this.private = JSON.stringify(s)))
   },
   methods: {
     copy(string) {

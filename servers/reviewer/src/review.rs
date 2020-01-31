@@ -273,8 +273,8 @@ fn check_flag(key: &str, value: serde_json::Value) -> Result<(), Error> {
 
 fn check_metadata(key: &str, value: serde_json::Value) -> Result<(), Error> {
     match key {
-        "client_uri" => check_uri(key, value),
-        "display_name" => check_short_string(key, value),
+        "client_id" => check_uri(key, value),
+        "nickname" => check_short_string(key, value),
         "age" => match value.as_u64() {
             Some(n) if n <= 200 => Ok(()),
             _ => Err(Error::Incorrect("Provided age is incorrect.".into())),

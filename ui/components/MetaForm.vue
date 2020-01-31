@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card-subtitle>
-      Add some helpful information about yourself (optional)
+      Optionally add or edit useful information to publish
     </v-card-subtitle>
     <v-card-text>
       <v-row justify="space-around" class="my-n5">
@@ -10,7 +10,7 @@
             v-model="display_name"
             :counter="short_text_length"
             :rules="[is_short_text]"
-            label="Display name"
+            label="Nickname"
           />
         </v-col>
         <v-col>
@@ -51,6 +51,14 @@
 
 <script>
 import { SET_META } from '~/store/mutation-types'
+import {
+  AGE,
+  NICKNAME,
+  FAMILY_NAME,
+  GIVEN_NAME,
+  GENDER,
+  EXPERIENCE_CONTEXT
+} from '~/store/metadata-types'
 
 export default {
   data() {
@@ -66,50 +74,50 @@ export default {
   computed: {
     display_name: {
       get() {
-        return this.$store.state.metadata.display_name
+        return this.$store.state.metadata[NICKNAME]
       },
       set(value) {
-        this.$store.commit(SET_META, ['display_name', value])
+        this.$store.commit(SET_META, [NICKNAME, value])
       }
     },
     age: {
       get() {
-        return this.$store.state.metadata.age
+        return this.$store.state.metadata[AGE]
       },
       set(value) {
-        this.$store.commit(SET_META, ['age', parseInt(value, 10)])
+        this.$store.commit(SET_META, [AGE, parseInt(value, 10)])
       }
     },
     family_name: {
       get() {
-        return this.$store.state.metadata.family_name
+        return this.$store.state.metadata[FAMILY_NAME]
       },
       set(value) {
-        this.$store.commit(SET_META, ['family_name', value])
+        this.$store.commit(SET_META, [FAMILY_NAME, value])
       }
     },
     given_name: {
       get() {
-        return this.$store.state.metadata.given_name
+        return this.$store.state.metadata[GIVEN_NAME]
       },
       set(value) {
-        this.$store.commit(SET_META, ['given_name', value])
+        this.$store.commit(SET_META, [GIVEN_NAME, value])
       }
     },
     gender: {
       get() {
-        return this.$store.state.metadata.gender
+        return this.$store.state.metadata[GENDER]
       },
       set(value) {
-        this.$store.commit(SET_META, ['gender', value])
+        this.$store.commit(SET_META, [GENDER, value])
       }
     },
     context: {
       get() {
-        return this.$store.state.metadata.experience_context
+        return this.$store.state.metadata[EXPERIENCE_CONTEXT]
       },
       set(value) {
-        this.$store.commit(SET_META, ['experience_context', value])
+        this.$store.commit(SET_META, [EXPERIENCE_CONTEXT, value])
       }
     }
   }

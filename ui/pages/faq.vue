@@ -53,6 +53,18 @@ In addition to that, you can inspect the code and the Mangrove Review Standard t
           `
         },
         {
+          q: 'What databases does Mangrove use?',
+          a: `
+            <ul>
+              <li><b>Places on the map: <a href="https://openstreetmap.org" target="_blank">OpenStreetMap</a>.</b>
+OpenStreetMap is built by a community of mappers that contribute and maintain data about roads, trails, cafés, railway stations, and much more, all over the world. OpenStreetMap's community is diverse, passionate, and growing every day. Contributors include enthusiast mappers, GIS professionals, engineers running the OSM servers, humanitarians mapping disaster-affected areas, and many more.</li>
+              <li><b>Companies: <a href="https://www.gleif.org/en" target="_blank">GLEIF’s Legal Entity Identifier</a>.</b> GLEIF is a supra-national not-for-profit organization established by the Financial Stability Board to support the implementation and use of the Legal Entity Identifier (LEI). It connects to key reference information that enables clear and unique identification of legal entities participating in financial transactions. Each LEI contains information about an entity’s ownership structure and answers the questions of ‘who is who’ and ‘who owns whom’.</li>
+              <li><b>Books: Internet Archive’s <a href="https://openlibrary.org" target="_blank">Open Library</a>.</b> Open Library is an open, editable library catalog, building towards a web page for every book ever published.</li>
+            </ul
+            Read more about the databases and tools used by Mangrove, as well as the principles guiding the design choices, in the Mangrove Review Standard in our <a href="https://gitlab.com/plantingspace/mangrove" target="_blank">GitLab repository</a>.
+          `
+        },
+        {
           q: 'How does Mangrove protect the privacy of users?',
           a: `
             <ul>
@@ -65,7 +77,7 @@ In addition to that, you can inspect the code and the Mangrove Review Standard t
         },
         {
           q:
-            'What’s a cryptographic key pair and why do I need to store my secret key?',
+            'What’s a cryptographic key pair and why do I need to store my private key?',
           a: `
             Mangrove uses <a href="https://en.wikipedia.org/wiki/Public-key_cryptography" target="_blank">public key cryptography</a> to authenticate a user and to establish a user’s reputation within the system, which allows us to get rid of registrations and logins, and makes storing user’s personal information obsolete.
 
@@ -103,15 +115,13 @@ If you are an individual user and have enjoyed sharing and gaining insights thro
           `
         },
         {
-          q: 'What databases does Mangrove use?',
+          q: 'How can I contact you?',
           a: `
             <ul>
-              <li><b>Places on the map: <a href="https://openstreetmap.org" target="_blank">OpenStreetMap</a>.</b>
-OpenStreetMap is built by a community of mappers that contribute and maintain data about roads, trails, cafés, railway stations, and much more, all over the world. OpenStreetMap's community is diverse, passionate, and growing every day. Contributors include enthusiast mappers, GIS professionals, engineers running the OSM servers, humanitarians mapping disaster-affected areas, and many more.</li>
-              <li><b>Companies: <a href="https://www.gleif.org/en" target="_blank">GLEIF’s Legal Entity Identifier</a>.</b> GLEIF is a supra-national not-for-profit organization established by the Financial Stability Board to support the implementation and use of the Legal Entity Identifier (LEI). It connects to key reference information that enables clear and unique identification of legal entities participating in financial transactions. Each LEI contains information about an entity’s ownership structure and answers the questions of ‘who is who’ and ‘who owns whom’.</li>
-              <li><b>Books: Internet Archive’s <a href="https://openlibrary.org" target="_blank">Open Library</a>.</b> Open Library is an open, editable library catalog, building towards a web page for every book ever published.</li>
-            </ul
-            Read more about the databases and tools used by Mangrove, as well as the principles guiding the design choices, in the Mangrove Review Standard in our <a href="https://gitlab.com/plantingspace/mangrove" target="_blank">GitLab repository</a>.
+              <li>For general inquiries and feedback, please email us at hello@planting.space</li>
+              <li>To discuss with us live you can also join our chat on <a href="https://matrix.to/#/!NWvCdVEAXYJRnXTudO:matrix.org?via=matrix.org">Riot</a>.</li>
+              <li>To suggest a new feature or an edit, you can make a pull request to our <a href="https://gitlab.com/plantingspace/mangrove" target="_blank">GitLab repository</a>.</li>
+            </ul>
           `
         }
       ],

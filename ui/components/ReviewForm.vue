@@ -2,10 +2,10 @@
   <div>
     <v-dialog v-model="value" :width="width" persistent>
       <v-card>
-        <v-card-title>{{ subjectLine }}</v-card-title>
+        <v-card-title v-html="subjectLine" class="justify-center" />
         <v-divider />
+        <v-rating v-model="rating" hover class="my-1 text-center" large />
         <v-card-text>
-          <v-rating v-model="rating" hover class="my-5" large />
           <v-textarea
             v-model="opinion"
             :counter="MAX_OPINION_LENGTH"
@@ -13,26 +13,41 @@
             label="Describe your experience here"
             auto-grow
             filled
+            rows="3"
           />
           <ExtraForm
             :extraHashes="extraHashes"
             @uploaded="addHashes($event)"
             @deleted="deleteHash($event)"
           />
-          <MetaForm />
-          <KeyList :keys="[$store.state.publicKey]" class="my-n4"
-            >Your public key</KeyList
-          >
 
-          <v-list>
+          <v-divider />
+
+          <v-row align="center">
+            <v-col>
+              <UserHeader
+                :pk="$store.state.publicKey"
+                :metadata="$store.state.metadata"
+                :count="issuer && issuer.count"
+              />
+            </v-col>
+            <v-spacer />
+            <div v-if="!savedKey" class="mr-6">
+              Returning reviewer? <LogInDialog />
+            </div>
+          </v-row>
+
+          <MetaForm />
+
+          <v-divider />
+
+          <v-list class="mb-n3">
             <v-list-item v-for="tick in ticks" :key="tick.text">
               <v-list-item-action>
                 <v-checkbox v-model="checkBoxes[tick.ticked]"></v-checkbox>
               </v-list-item-action>
               <v-list-item-content>
-                <v-list-item-title class="text-wrap">{{
-                  tick.text
-                }}</v-list-item-title>
+                <v-list-item-title v-html="tick.text" class="text-wrap" />
               </v-list-item-content>
             </v-list-item>
           </v-list>
@@ -101,18 +116,24 @@
         </v-card>
       </v-dialog>
     </v-dialog>
-    <SaveKeyDialog @dismiss="clear" v-if="keyDialog" />
+    <SaveKeyDialog
+      @dismiss="clear"
+      v-if="keyDialog"
+      :count="issuer && issuer.count"
+    />
   </div>
 </template>
 
 <script>
 import { get } from 'idb-keyval'
-import { SUBMIT_ERROR } from '../store/mutation-types'
+import { SUBMIT_ERROR, SET_META } from '../store/mutation-types'
+import { IS_AFFILIATED, RECURRING } from '../store/metadata-types'
 import ExtraForm from './ExtraForm'
 import MetaForm from './MetaForm'
-import KeyList from './KeyList'
 import SaveKeyDialog from './SaveKeyDialog'
-import { HAS_IMPORTED_KEY } from '~/store/indexeddb-types'
+import UserHeader from './UserHeader'
+import LogInDialog from './LogInDialog'
+import { HAS_SAVED_KEY } from '~/store/indexeddb-types'
 import { MARESI } from '~/store/scheme-types'
 import { MAX_OPINION_LENGTH } from '~/utils'
 
@@ -121,8 +142,9 @@ export default {
   components: {
     ExtraForm,
     MetaForm,
-    KeyList,
-    SaveKeyDialog
+    SaveKeyDialog,
+    LogInDialog,
+    UserHeader
   },
   props: {
     value: Boolean,
@@ -137,7 +159,6 @@ export default {
       opinion: '',
       extraHashes: [],
       review: {},
-      issuer: undefined,
       checkBoxes: {
         termsAgreed: false,
         isAffiliated: false
@@ -145,14 +166,15 @@ export default {
       MAX_OPINION_LENGTH,
       dismissedRating: false,
       ratingDialog: false,
-      keyDialog: false
+      keyDialog: false,
+      savedKey: undefined
     }
   },
   computed: {
     subjectLine() {
       return this.subject.scheme === MARESI
-        ? `Comment on ${this.subject.title}'s review`
-        : `Review ${this.subject.title}`
+        ? `Comment on <span class="blue--text">&nbsp;${this.subject.title}</span>'s review`
+        : this.subject.title
     },
     payloadStub() {
       const stub = {
@@ -160,7 +182,7 @@ export default {
         opinion: this.opinion,
         extra_hashes: this.extraHashes,
         metadata: {
-          is_affiliated: this.checkBoxes.isAffiliated ? `true` : null
+          [IS_AFFILIATED]: this.checkBoxes.isAffiliated ? `true` : null
         }
       }
       if (this.rating) {
@@ -178,25 +200,43 @@ export default {
         },
         {
           ticked: 'termsAgreed',
-          text: 'I agree to the Terms of Service and Privacy Policy*'
+          text: `I agree to the
+            <a href="${process.env.BASE_URL}/terms" target="_blank">
+              Terms of Service and Privacy Policy
+            </a>*`
         }
       ]
     },
     error() {
       return this.$store.state.errors.submit
+    },
+    issuer() {
+      return this.$store.getters.issuer(this.$store.state.publicKey)
     }
   },
-  mounted() {
-    this.$store.commit(SUBMIT_ERROR, null)
-    this.$store
-      .dispatch('getIssuer', this.$store.state.publicKey)
-      .then((issuer) => {
-        this.issuer = issuer
-      })
-  },
-  // Avoid issues with circular dependencies.
   beforeCreate() {
+    // Avoid issues with circular dependencies.
     this.$options.components.Review = require('./Review').default
+    this.$store.commit(SUBMIT_ERROR, null)
+    get(HAS_SAVED_KEY).then((flag) => (this.savedKey = flag))
+    // Fetch reviews to prepopulate metadata and allow for full preview.
+    this.$store.dispatch('saveMyReviews').then(() => {
+      const myReviews = Object.values(this.$store.state.reviews).filter(
+        ({ payload }) => {
+          return payload.iss === this.$store.state.publicKey
+        }
+      )
+      if (!myReviews.length) {
+        return
+      }
+      const newestReview = myReviews.reduce(function(prev, current) {
+        return prev.payload.iat > current.payload.iat ? prev : current
+      })
+      Object.entries(newestReview.payload.metadata).map(
+        ([k, v]) =>
+          RECURRING.includes(k) && this.$store.commit(SET_META, [k, v])
+      )
+    })
   },
   methods: {
     deleteHash(index) {
@@ -228,7 +268,7 @@ export default {
       this.$store.dispatch('submitReview', this.payloadStub).then(
         (outcome) =>
           outcome &&
-          get(HAS_IMPORTED_KEY).then((hasImported) => {
+          get(HAS_SAVED_KEY).then((hasImported) => {
             if (!hasImported) {
               this.$emit('input', false)
               this.keyDialog = true

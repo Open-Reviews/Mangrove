@@ -1,8 +1,10 @@
 <template>
   <div>
-    <div v-if="noReviewsMessage" class="text-center">
-      {{ noReviewsMessage }}
-    </div>
+    <div
+      v-if="noReviewsMessage"
+      v-html="noReviewsMessage"
+      class="text-center"
+    />
     <ReviewListBase :listArgs="opinionated" />
     <v-row
       v-if="opinionless.length && !showOpinionless && notMaresi"
@@ -53,9 +55,6 @@ export default {
     }
   },
   computed: {
-    filters() {
-      return this.$store.state.filters
-    },
     reviews() {
       // TODO: Return generator to improve performance.
       return Object.values(this.$store.state.reviews)
@@ -64,8 +63,8 @@ export default {
           const isSelected =
             payload.sub === this.rootSub || payload.iss === this.rootIss
           const isFiltered =
-            !this.filters.length ||
-            this.filters.some((filter) => payload.sub.startsWith(filter))
+            !this.$store.state.filter ||
+            payload.sub.startsWith(this.$store.state.filter)
           return isSelected && isFiltered
         })
         .sort((r1, r2) => r2.payload.iat - r1.payload.iat)
@@ -96,7 +95,7 @@ export default {
       } else if (this.rootSub) {
         return 'Be the first to review!'
       } else {
-        return 'No reviews yet'
+        return `No reviews yet. <a href="${process.env.BASE_URL}">Leave your first review</a>`
       }
     }
   },

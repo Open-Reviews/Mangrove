@@ -1,1 +1,0 @@
-The public key represents your identifier that will be displayed with each review you write. It allows you to build a reputation to make your opinion count more. You need your private key to access the same public key across different devices.

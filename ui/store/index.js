@@ -1,8 +1,10 @@
 import Vue from 'vue'
 import { get, set } from 'idb-keyval'
-import { MARESI, GEO, subToScheme } from '../store/scheme-types'
+import { MARESI, GEO, subToScheme } from './scheme-types'
+import { subsToSubjects } from './apis'
 import { PRIVATE_KEY } from './indexeddb-types'
 import * as t from './mutation-types'
+import { CLIENT_ID } from './metadata-types'
 import { jwkToKeypair, skToJwk, keyToPem } from '~/utils'
 const base64url = require('base64-url')
 const jwt = require('jsonwebtoken')
@@ -16,8 +18,8 @@ export const state = () => ({
   query: { q: null, geo: null },
   // Object from sub (URI) to subject info, see `middleware/search.js` for details.
   subjects: {},
-  // Array of schemes that should be selected, empty means display all.
-  filters: [],
+  // Scheme that should be selected, null means display all.
+  filter: null,
   // Object from MaReSi to reviews, ensuring only unique ones are stored.
   reviews: {},
   // Object from public keys to information about issuers.
@@ -54,8 +56,8 @@ export const mutations = {
   [t.ADD_ISSUERS](state, newissuers) {
     state.issuers = { ...state.issuers, ...newissuers }
   },
-  [t.SET_FILTERS](state, filters) {
-    state.filters = filters
+  [t.SET_FILTER](state, filter) {
+    state.filter = filter
   },
   [t.ADD_REVIEWS](state, newreviews) {
     if (newreviews) {
@@ -125,8 +127,13 @@ export const actions = {
     await get(PRIVATE_KEY)
       .then(async (jwk) => {
         if (jwk) {
-          keypair = await jwkToKeypair(jwk)
-          console.log('Loading existing keys from IndexDB:', keypair)
+          try {
+            keypair = await jwkToKeypair(jwk)
+            console.log('Loading existing keys from IndexDB:', keypair)
+            return
+          } catch (e) {
+            console.log('Bad key in IndexDB:', jwk)
+          }
         } else {
           await window.crypto.subtle
             .generateKey(
@@ -142,6 +149,20 @@ export const actions = {
             })
             .catch((error) => console.log('Accessing IndexDB failed: ', error))
         }
+        await window.crypto.subtle
+          .generateKey(
+            {
+              name: 'ECDSA',
+              namedCurve: 'P-256'
+            },
+            true,
+            ['sign', 'verify']
+          )
+          .then((kp) => {
+            keypair = kp
+            skToJwk(kp.privateKey).then((jwk) => set(PRIVATE_KEY, jwk))
+          })
+          .catch((error) => console.log('Accessing IndexDB failed: ', error))
       })
       .catch((error) => console.log('Accessing IndexDB failed: ', error))
     await dispatch('setKeypair', keypair)
@@ -189,6 +210,18 @@ export const actions = {
       }
       return rs
     })
+  },
+  async saveMyReviews({ state, dispatch }) {
+    const subs = await dispatch('saveReviews', {
+      iss: state.publicKey
+    }).then((rs) =>
+      Object.values(rs.reviews).map((review) => review.payload.sub)
+    )
+    return Promise.all(
+      subsToSubjects(this.$axios, subs).map((promise) =>
+        promise.then((subject) => dispatch('storeWithRating', [subject]))
+      )
+    )
   },
   bulkSubjects({ commit }, subs) {
     return this.$axios
@@ -244,8 +277,8 @@ export const actions = {
     const meta = { ...stubClaim.metadata, ...state.metadata }
     // Remove empty metadata fields.
     Object.keys(meta).forEach((key) => meta[key] == null && delete meta[key])
-    meta.client_uri = process.env.BASE_URL
-    // Always at least `client_uri` present.
+    // Always at least `client_id` present.
+    meta[CLIENT_ID] = process.env.BASE_URL
     payload.metadata = meta
     console.log('payload: ', JSON.stringify(payload))
     const encoded = cbor.encode(payload)

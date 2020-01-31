@@ -1,4 +1,4 @@
-# Mangrove Review Standard (MaReSt) v0.1.0
+# Mangrove Review Standard (MaReSt) v0.1.1
 
 The mission of the Mangrove initiative is to create a public space on the Internet where people can freely share insights with each other and make better decisions based on open data. Mangrove contributes to the Open and Privacy movements by proposing an alternative architecture that is characterized by a **separation of data and products**, and that **respects the right to privacy**:
 
@@ -46,7 +46,7 @@ In JSON format:
         "rating": 75,
         "opinion": "Great for finding new sites.",
         "metadata": {
-            "display_name":"john123"
+            "nickname":"john123"
         }
     }
 }
@@ -142,8 +142,6 @@ Value corresponding to the `sub` key MUST be of Major type 3 (a text string) and
 These fields are meant to represent additional data about the reviewer, circumstances of leaving the review or any other data which may be useful for review Users and analysis algorithms. Mangrove Review MAY include any of the fields.
 
 The key `metadata` contains a map of key/value pairs, where each key SHOULD be equal to one of following keys and have value as described:
-- `client_uri` MUST be a correct URI corresponding to the resource the review originates from: website or app.
-- `display_name` MUST be a user specified name to be displayed of length less than 20.
 - `age` MUST be of Major type 0 (an unsigned integer) which SHOULD be the age of the reviewer of at most 200.
 - `experience_context` SHOULD be one of common contexts in which the reviewer primarily had experience with the subject:
   - `business`
@@ -156,11 +154,13 @@ The key `metadata` contains a map of key/value pairs, where each key SHOULD be e
 - `issuer_index` MUST be of Major type 0 (an unsigned integer) which SHOULD be a unique index used by the reviewer, usually indicating a ranking in a list. MUST be at most the [JavaScript safe integer](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER): 9007199254740991.
 
 Fields based on [OpenID Standard Claims](https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims):
+- `nickname` MUST be a user specified name to be displayed of length less than 20.
 - `preferred_username` MUST be a name of account used for this review of length less than 20. 
 - `birthdate` SHOULD be the date of birth of the reviewer.
 - `family_name` SHOULD be the last name of the reviewer of length less than 20.
 - `given_name` SHOULD be the first name of the reviewer of length less than 20.
 - `gender` SHOULD be the gender of the reviewer of length less than 20.
+- `client_id` MUST be a correct URI corresponding to the resource the review originates from: website or app.
 
 Flag fields can be added to indicate particular review property, when present their value MUST be equal to `true`:
 - `is_generated` SHOULD be present if the review has been left by a review generating bot.

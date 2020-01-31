@@ -6,31 +6,30 @@
       @click="isMaresi || selectSubject()"
       :style="isMaresi ? '' : 'cursor: pointer'"
     />
-    <v-list-item class="mb-n5">
-      <v-list-item-avatar class="mr-2 ml-n1" tile>
-        <Identicon :seed="payload.iss" />
-      </v-list-item-avatar>
-      <v-list-item-content>
-        <v-list-item-title class="headline">{{ name() }}</v-list-item-title>
-        <v-list-item-subtitle>{{ issuer.count }} reviews </v-list-item-subtitle>
-      </v-list-item-content>
-    </v-list-item>
+    <UserHeader
+      :pk="payload.iss"
+      :metadata="payload.metadata"
+      :count="issuer && issuer.count"
+      class="mb-n5"
+    />
     <v-card-text>
       <v-row v-if="payload.rating !== null" align="center" class="pl-2">
         <span v-if="payload.rating === 0" class="pl-1"
           ><b>Flagged as inappropriate. &nbsp;</b>
         </span>
         <v-rating
-          v-else
+          v-else-if="payload.rating"
           :value="(payload.rating + 25) / 25"
           readonly
           dense
           class="mr-2"
+          color="blue"
+          background-color="blue"
         />
         Reviewed {{ new Date(payload.iat * 1000).toDateString() }}
       </v-row>
       {{ payload.opinion }}
-      <v-row v-if="payload.extra_hashes" class="mx-n1">
+      <v-row v-if="payload.extra_hashes" class="mx-auto">
         <v-img
           v-for="hash in payload.extra_hashes"
           :key="hash"
@@ -52,7 +51,7 @@
         </v-chip>
       </div>
     </v-card-text>
-    <v-card-actions v-if="!preview" class="my-n7 mx-1">
+    <v-card-actions v-if="!preview" class="my-n7 mx-auto">
       <v-tooltip v-for="action in actions" :key="action.icon" top>
         <template v-slot:activator="{ on }">
           <v-btn
@@ -120,9 +119,16 @@
 </template>
 
 <script>
-import Identicon from './Identicon'
+import {
+  CLIENT_ID,
+  NICKNAME,
+  FAMILY_NAME,
+  GIVEN_NAME,
+  IS_PERSONAL_EXPERIENCE
+} from '../store/metadata-types'
 import ReviewForm from './ReviewForm'
 import FlagForm from './FlagForm'
+import UserHeader from './UserHeader'
 import { MARESI } from '~/store/scheme-types'
 import { imageUrl, displayName } from '~/utils'
 
@@ -136,12 +142,17 @@ const META_DISPLAY = {
 export default {
   name: 'Review',
   components: {
-    Identicon,
     ReviewForm,
-    FlagForm
+    FlagForm,
+    UserHeader
   },
   props: {
-    review: Object,
+    review: {
+      type: Object,
+      default: () => {
+        return { signature: null, payload: null }
+      }
+    },
     issuer: Object,
     maresiSubject: {
       type: Object,
@@ -193,40 +204,22 @@ export default {
         Object.entries(this.review.payload.metadata)
           .filter(
             ([key, _]) =>
-              !['client_uri', 'display_name', 'family_name', 'given_name'].some(
+              ![CLIENT_ID, NICKNAME, FAMILY_NAME, GIVEN_NAME].some(
                 (hidden) => key === hidden
               )
           )
           .map(
             ([k, v]) =>
-              META_DISPLAY[k].label +
+              (META_DISPLAY[k] ? META_DISPLAY[k].label : k) +
               (v === 'true'
                 ? ''
-                : META_DISPLAY[k].postfix
+                : META_DISPLAY[k] && META_DISPLAY[k].postfix
                 ? ': ' + v + META_DISPLAY[k].postfix
                 : ': ' + v)
           ),
-      flagReasons: [
-        {
-          description: `Violation of the Terms of Use`,
-          items: [
-            'The review contains offensive language that is violent, coarse, sexist, racist, accusatory, or defamatory.',
-            'The review contains personal information that could be used to track, identify, contact or impersonate someone.',
-            `The review violates someone else's intellectual property, privacy/confidentiality, or personality rights.`
-          ]
-        },
-        {
-          description: `Low-quality content`,
-          items: [
-            `The review is marketing or spam`,
-            `The review is on the wrong subject profile`,
-            `The content doesn't mention a buying or service experience and is solely ethical, political or value-laden opinion.`
-          ]
-        }
-      ],
       raw: { json: undefined, cbor: undefined },
       flagSubject: null,
-      personalMeta: { is_personal_experience: 'true' },
+      personalMeta: { [IS_PERSONAL_EXPERIENCE]: 'true' },
       responseDialog: false
     }
   },
@@ -294,9 +287,6 @@ export default {
         null,
         2
       )
-    },
-    name() {
-      return displayName(this.payload.metadata)
     },
     selectSubject() {
       this.$store.dispatch('selectSubject', ['', this.payload.sub])

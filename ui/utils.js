@@ -38,12 +38,12 @@ export function isMobile() {
   return navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i)
 }
 
-const SECRET_KEY_METADATA = 'Mangrove secret key'
+const PRIVATE_KEY_METADATA = 'Mangrove private key'
 
 export async function jwkToKeypair(jwk) {
-  if (!jwk || jwk.metadata !== SECRET_KEY_METADATA) {
+  if (!jwk || jwk.metadata !== PRIVATE_KEY_METADATA) {
     throw new Error(
-      `does not contain the required metadata field "${SECRET_KEY_METADATA}"`
+      `does not contain the required metadata field "${PRIVATE_KEY_METADATA}"`
     )
   }
   const sk = await crypto.subtle.importKey(
@@ -77,7 +77,7 @@ export async function jwkToKeypair(jwk) {
 
 export function skToJwk(keypair) {
   return crypto.subtle.exportKey('jwk', keypair).then((s) => {
-    s.metadata = SECRET_KEY_METADATA
+    s.metadata = PRIVATE_KEY_METADATA
     return s
   })
 }
