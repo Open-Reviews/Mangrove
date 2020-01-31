@@ -12,4 +12,6 @@ Throughout the user interface we have chosen more traditional terms to represent
 * Avatar = a visual representation of the public key  
 
 <br/>
-Public-key cryptography uses pairs of keys: public keys which may be disseminated widely, and private keys which are known only to the owner. Both are generated in your browser when you access Mangrove, and are stored locally in a temporary storage (IndexedDB). 
+Public-key cryptography uses pairs of keys: public keys which may be disseminated widely, and private keys which are known only to the owner. Both are generated in your browser when you access Mangrove, and are stored locally in a temporary storage (IndexedDB).   
+<br/>
+Find below the generated keys for your current session.
