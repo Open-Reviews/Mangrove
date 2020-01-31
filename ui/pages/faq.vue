@@ -1,10 +1,10 @@
 <template>
-  <v-container style="max-width: 1200px">
+  <v-container style="max-width: 1000px">
     <span class="display-1"> Frequently asked questions <br /><br /> </span>
     <v-expansion-panels>
       <v-expansion-panel v-for="qa in qas" :key="qa.q">
         <v-expansion-panel-header>
-          <span class="title">{{ qa.q }}</span>
+          <span class="title font-weight-light">{{ qa.q }}</span>
         </v-expansion-panel-header>
         <v-expansion-panel-content
           ><span v-html="qa.a"
