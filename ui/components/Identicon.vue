@@ -1,5 +1,7 @@
 <template>
-  <v-avatar v-html="identicon" tile />
+  <v-avatar tile>
+    <div v-html="identicon" />
+  </v-avatar>
 </template>
 
 <script>
@@ -8,7 +10,7 @@ export default {
   props: ['seed'],
   computed: {
     identicon() {
-      return jdenticon.toSvg(this.seed, 55)
+      return jdenticon.toSvg(this.seed, 60)
     }
   }
 }

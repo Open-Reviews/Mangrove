@@ -21,11 +21,12 @@ export default {
   props: {
     pk: String,
     metadata: Object,
-    count: { type: Number, default: () => 0 }
+    count: { type: Number, default: () => 0 },
+    placeholder: { type: String, default: () => undefined }
   },
   computed: {
     name() {
-      return displayName(this.metadata)
+      return displayName(this.metadata, this.placeholder)
     }
   }
 }
