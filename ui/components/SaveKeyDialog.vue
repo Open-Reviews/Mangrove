@@ -58,8 +58,7 @@ export default {
       }
     },
     submittedContent() {
-      return `You have left ${this.countString} with this account.
-        If you would like to use it in the future, please go to Account to save your password.`
+      return `You have left ${this.countString} with this account. Build your reputation and make your opinion count more by using the same account again in the future. Go to Account to save your password.`
     }
   },
   methods: {
