@@ -1,1 +1,1 @@
-Your private key is used to create a digital signature to authenticate you so that no one else can write reviews with your identifier.  **Save your private key** ideally in a password manager to be able to import it easily to a new device and be in full control of it.
+The **private key** is used to create a digital signature to authenticate you so that no one else can write reviews with your public key.
