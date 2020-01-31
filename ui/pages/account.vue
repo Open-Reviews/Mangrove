@@ -23,7 +23,7 @@
             </v-card-actions>
             <v-divider class="my-8" />
           </div>
-          <div v-if="hasLeftReview">
+          <div v-else>
             <v-card-text>
               If you would like to use this account in the future, please copy
               and save your password in a password manager or download it to
