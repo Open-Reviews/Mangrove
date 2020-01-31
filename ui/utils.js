@@ -22,13 +22,13 @@ export function displayName(meta) {
     const realName = [meta.given_name, meta.family_name]
       .filter((n) => n)
       .join(' ')
-    if (meta.display_name) {
-      return `${meta.display_name} (${realName})`
+    if (meta.nickname) {
+      return `${meta.nickname} (${realName})`
     } else {
       return realName
     }
-  } else if (meta.display_name) {
-    return meta.display_name
+  } else if (meta.nickname) {
+    return meta.nickname
   } else {
     return 'Anonymous'
   }

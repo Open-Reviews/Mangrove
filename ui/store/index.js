@@ -67,7 +67,7 @@ export const mutations = {
     }
   },
   [t.SET_META](state, [key, value]) {
-    state.metadata[key] = value === '' ? null : value
+    Vue.set(state.metadata, key, value === '' ? null : value)
   },
   [t.SEARCH_ERROR](state, error) {
     state.errors.search = error

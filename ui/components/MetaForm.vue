@@ -7,7 +7,7 @@
       <v-row justify="space-around" class="my-n5">
         <v-col>
           <v-text-field
-            v-model="display_name"
+            v-model="nickname"
             :counter="short_text_length"
             :rules="[is_short_text]"
             label="Nickname"
@@ -72,7 +72,7 @@ export default {
     }
   },
   computed: {
-    display_name: {
+    [NICKNAME]: {
       get() {
         return this.$store.state.metadata[NICKNAME]
       },
@@ -80,7 +80,7 @@ export default {
         this.$store.commit(SET_META, [NICKNAME, value])
       }
     },
-    age: {
+    [AGE]: {
       get() {
         return this.$store.state.metadata[AGE]
       },
@@ -88,7 +88,7 @@ export default {
         this.$store.commit(SET_META, [AGE, parseInt(value, 10)])
       }
     },
-    family_name: {
+    [FAMILY_NAME]: {
       get() {
         return this.$store.state.metadata[FAMILY_NAME]
       },
@@ -96,7 +96,7 @@ export default {
         this.$store.commit(SET_META, [FAMILY_NAME, value])
       }
     },
-    given_name: {
+    [GIVEN_NAME]: {
       get() {
         return this.$store.state.metadata[GIVEN_NAME]
       },
@@ -104,7 +104,7 @@ export default {
         this.$store.commit(SET_META, [GIVEN_NAME, value])
       }
     },
-    gender: {
+    [GENDER]: {
       get() {
         return this.$store.state.metadata[GENDER]
       },
