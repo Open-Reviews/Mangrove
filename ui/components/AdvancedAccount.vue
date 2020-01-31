@@ -18,22 +18,26 @@
             </v-btn>
             <LogIn />
           </v-row>
+          <v-divider />
+          <KeyList :keys="[$store.state.publicKey]">
+            Public key
+          </KeyList>
+          <v-card-text v-html="yourPublicKey" />
+          <KeyList v-if="false" :keys="[$store.state.publicKey]">
+            Other public keys
+          </KeyList>
+
+          <v-divider />
+          <KeyList sk>
+            Private key
+          </KeyList>
+          <v-card-text v-html="yourPrivateKey" />
+
+          <v-divider />
+          <v-card-text v-html="switchPrivateKey" />
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
-    <v-divider />
-    <KeyList sk>
-      Private key
-    </KeyList>
-    <v-card-text v-html="yourPrivateKey" />
-    <v-divider />
-    <KeyList :keys="[$store.state.publicKey]">
-      Public key (your identifier)
-    </KeyList>
-    <v-card-text v-html="yourPublicKey" />
-    <KeyList v-if="false" :keys="[$store.state.publicKey]">
-      Other public keys
-    </KeyList>
   </v-card>
 </template>
 
@@ -42,6 +46,7 @@ import { get } from 'idb-keyval'
 import KeyList from './KeyList'
 import LogIn from './LogIn'
 import { PRIVATE_KEY } from '~/store/indexeddb-types'
+import { html as switchPrivateKey } from '~/content/account/switch-private-key.md'
 import { html as yourPublicKey } from '~/content/account/your-public-key.md'
 import { html as yourPrivateKey } from '~/content/account/your-private-key.md'
 import {
@@ -62,7 +67,8 @@ export default {
       yourPublicKey,
       yourPrivateKey,
       keyInfo,
-      keyTitle
+      keyTitle,
+      switchPrivateKey
     }
   },
   computed: {

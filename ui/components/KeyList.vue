@@ -11,18 +11,15 @@
           <Identicon :seed="key" v-else />
         </v-list-item-avatar>
         <v-list-item-content>
-          <v-list-item-title v-if="sk">
-            <v-text-field
-              id="password"
-              value="Press copy or view"
-              required
-              class="full-width mr-5"
-              type="password"
-              name="password"
-              autocomplete="password"
-            />
-          </v-list-item-title>
-          <v-list-item-title v-else>{{ pkDisplay(key) }}</v-list-item-title>
+          <v-text-field
+            :id="sk ? 'password' : ''"
+            :value="key"
+            :type="sk ? 'password' : ''"
+            :name="sk ? 'password' : ''"
+            :autocomplete="sk ? 'password' : ''"
+            required
+            class="full-width mr-5"
+          />
         </v-list-item-content>
         <v-list-item-action>
           <v-btn
