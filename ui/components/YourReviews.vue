@@ -15,9 +15,6 @@ export default {
   components: {
     SchemeFilter,
     ReviewList
-  },
-  mounted() {
-    this.$store.dispatch('saveMyReviews')
   }
 }
 </script>

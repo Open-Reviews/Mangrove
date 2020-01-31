@@ -14,41 +14,28 @@
           <v-text-field
             :id="sk ? 'password' : ''"
             :value="key"
-            :type="sk ? 'password' : ''"
+            :type="!sk || showPrivate ? 'text' : 'password'"
             :name="sk ? 'password' : ''"
             :autocomplete="sk ? 'password' : ''"
+            @click:append="() => (showPrivate = !showPrivate)"
+            :append-icon="appendIcon"
             required
             class="full-width mr-5"
           />
         </v-list-item-content>
-        <v-list-item-action>
-          <v-btn
-            @click="copy(key)"
-            :color="sk ? 'secondary' : ''"
-            class="black--text"
-          >
-            <v-icon>mdi-content-copy</v-icon>
-            Copy
+        <v-list-item-action v-if="sk">
+          <v-btn :href="downloadKeyLink" :download="downloadKeyName">
+            <v-icon class="mr-1">mdi-folder-download-outline</v-icon>
+            Download
           </v-btn>
         </v-list-item-action>
         <v-list-item-action>
-          <v-dialog>
-            <template v-slot:activator="{ on }">
-              <v-btn v-on="on">
-                <v-icon>mdi-eye</v-icon>
-                View
-              </v-btn>
-            </template>
-            <v-card>
-              <v-card-title>
-                Your {{ sk ? 'private' : 'public' }} key
-              </v-card-title>
-              <v-card-text>
-                <span v-html="key" />
-              </v-card-text>
-            </v-card>
-          </v-dialog>
+          <v-btn @click="copy(key)" color="secondary" class="black--text">
+            <v-icon small class="mr-1">mdi-content-copy</v-icon>
+            Copy
+          </v-btn>
         </v-list-item-action>
+
         <v-list-item-action v-if="i">
           <v-btn>
             Set default
@@ -62,7 +49,7 @@
 <script>
 import { get } from 'idb-keyval'
 import Identicon from './Identicon'
-import { pkDisplay } from '~/utils'
+import { downloadLink, pkDisplay } from '~/utils'
 import { PRIVATE_KEY } from '~/store/indexeddb-types'
 
 export default {
@@ -77,14 +64,25 @@ export default {
   data() {
     return {
       copyText: 'Copied to clipboard!',
-      private: undefined,
-      pkDisplay,
-      copying: false
+      copying: false,
+      showPrivate: false,
+      private: undefined
     }
   },
   computed: {
     keyStrings() {
       return this.keys.map((key) => (this.sk ? this.private : key))
+    },
+    appendIcon() {
+      return this.sk ? (this.showPrivate ? 'mdi-eye-off' : 'mdi-eye') : ''
+    },
+    downloadKeyName() {
+      return `mangrove.reviews_PrivateKey_${pkDisplay(
+        this.$store.state.publicKey
+      )}.json`
+    },
+    downloadKeyLink() {
+      return downloadLink(this.private)
     }
   },
   mounted() {

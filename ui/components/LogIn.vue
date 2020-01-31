@@ -1,27 +1,20 @@
 <template>
-  <v-dialog v-model="show" width="600">
-    <template v-slot:activator="{ on }">
-      <v-btn v-on="on">Log in</v-btn>
-    </template>
-    <v-card>
-      <v-card-title>
-        Log in
-      </v-card-title>
-      <v-card-text>
+  <v-list class="mt-n6">
+    <v-list-item>
+      <v-list-item-content>
         <v-text-field
           v-model.trim="privateInput"
           placeholder="Paste your password here"
         />
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer />
+      </v-list-item-content>
+      <v-list-item-action>
         <v-btn :disabled="!privateInput" @click="importPrivate">Log in</v-btn>
-        <v-alert v-if="error" type="warning" border="left" elevation="8">
-          Private key not valid: {{ error }}
-        </v-alert>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+      </v-list-item-action>
+    </v-list-item>
+    <v-alert v-if="error" type="warning" border="left" elevation="8">
+      Private key not valid: {{ error }}
+    </v-alert>
+  </v-list>
 </template>
 
 <script>

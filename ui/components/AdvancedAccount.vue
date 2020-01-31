@@ -7,20 +7,9 @@
         </v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-card-text v-html="keyInfo" />
-          <v-row justify="space-around">
-            <v-btn
-              :href="downloadKeyLink()"
-              :download="downloadKeyName"
-              color="secondary"
-              class="black--text"
-            >
-              Download private key
-            </v-btn>
-            <LogIn />
-          </v-row>
           <v-divider />
           <KeyList :keys="[$store.state.publicKey]">
-            Public key
+            {{ publicTitle.title }}
           </KeyList>
           <v-card-text v-html="yourPublicKey" />
           <KeyList v-if="false" :keys="[$store.state.publicKey]">
@@ -29,12 +18,16 @@
 
           <v-divider />
           <KeyList sk>
-            Private key
+            {{ privateTitle.title }}
           </KeyList>
           <v-card-text v-html="yourPrivateKey" />
 
           <v-divider />
+          <v-card-subtitle>
+            {{ switchTitle.title }}
+          </v-card-subtitle>
           <v-card-text v-html="switchPrivateKey" />
+          <LogIn />
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -46,9 +39,18 @@ import { get } from 'idb-keyval'
 import KeyList from './KeyList'
 import LogIn from './LogIn'
 import { PRIVATE_KEY } from '~/store/indexeddb-types'
-import { html as switchPrivateKey } from '~/content/account/switch-private-key.md'
-import { html as yourPublicKey } from '~/content/account/your-public-key.md'
-import { html as yourPrivateKey } from '~/content/account/your-private-key.md'
+import {
+  html as switchPrivateKey,
+  attributes as switchTitle
+} from '~/content/account/switch-private-key.md'
+import {
+  html as yourPublicKey,
+  attributes as publicTitle
+} from '~/content/account/your-public-key.md'
+import {
+  html as yourPrivateKey,
+  attributes as privateTitle
+} from '~/content/account/your-private-key.md'
 import {
   html as keyInfo,
   attributes as keyTitle
@@ -64,11 +66,15 @@ export default {
     return {
       hint:
         'Save the private key in a secure place accessible across devices, such as a password manager.',
+      publicTitle,
       yourPublicKey,
+      privateTitle,
       yourPrivateKey,
-      keyInfo,
       keyTitle,
-      switchPrivateKey
+      keyInfo,
+      switchTitle,
+      switchPrivateKey,
+      downloadKeyLink: undefined
     }
   },
   computed: {
@@ -78,11 +84,9 @@ export default {
       )}.json`
     }
   },
-  methods: {
-    async downloadKeyLink() {
-      const sk = await get(PRIVATE_KEY)
-      return downloadLink(JSON.stringify(sk))
-    }
+  async mounted() {
+    const sk = await get(PRIVATE_KEY)
+    this.downloadKeyLink = downloadLink(JSON.stringify(sk))
   }
 }
 </script>

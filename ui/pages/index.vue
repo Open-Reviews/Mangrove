@@ -95,7 +95,7 @@
 </template>
 
 <script>
-import { DISMISS_ALPHA_WARNING } from '../store/mutation-types'
+import { DISMISS_ALPHA_WARNING, SET_FILTER } from '../store/mutation-types'
 import SearchBox from '../components/SearchBox'
 import {
   html as complexContent,
@@ -169,12 +169,14 @@ export default {
       return this.$vuetify.breakpoint.smAndDown
     }
   },
+  mounted() {
+    this.$store.commit(SET_FILTER, null)
+  },
   methods: {
     dismissAlphaWarning() {
       this.$store.commit(DISMISS_ALPHA_WARNING)
     }
-  },
-  middleware: 'clear'
+  }
 }
 </script>
 

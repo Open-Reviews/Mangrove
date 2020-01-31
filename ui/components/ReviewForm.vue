@@ -33,7 +33,7 @@
             </v-col>
             <v-spacer />
             <div v-if="!savedKey" class="mr-6">
-              Returning reviewer? <LogIn />
+              Returning reviewer? <LogInDialog />
             </div>
           </v-row>
 
@@ -132,7 +132,7 @@ import ExtraForm from './ExtraForm'
 import MetaForm from './MetaForm'
 import SaveKeyDialog from './SaveKeyDialog'
 import UserHeader from './UserHeader'
-import LogIn from './LogIn'
+import LogInDialog from './LogInDialog'
 import { HAS_SAVED_KEY } from '~/store/indexeddb-types'
 import { MARESI } from '~/store/scheme-types'
 import { MAX_OPINION_LENGTH } from '~/utils'
@@ -143,7 +143,7 @@ export default {
     ExtraForm,
     MetaForm,
     SaveKeyDialog,
-    LogIn,
+    LogInDialog,
     UserHeader
   },
   props: {
