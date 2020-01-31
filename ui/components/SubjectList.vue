@@ -57,7 +57,7 @@
       </template>
     </v-list>
     <div v-else-if="$store.state.isSearching" v-html="searchingContent" />
-    <div v-else v-html="missingContent" />
+    <div v-else v-html="missingContent" class="text-center my-3" />
     <div v-if="showAdvice" class="mx-12">
       <v-expansion-panels class="elevation-0 mt-1">
         <v-expansion-panel>
@@ -104,7 +104,7 @@ export default {
   data() {
     return {
       searchingContent: `Results loading...`,
-      missingContent: `No review subjects found.`,
+      missingContent: `No results found.`,
       adviceContent: [
         {
           title: 'Try making your search more specific:',
