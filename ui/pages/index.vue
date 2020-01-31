@@ -75,16 +75,11 @@
     </v-row>
     <v-dialog v-model="$store.state.alphaWarning" max-width="500">
       <v-card>
-        <v-card-title>
-          This is a DEMO version
-        </v-card-title>
-
-        <v-card-text v-html="demoDialog" />
-
-        <v-divider></v-divider>
-
+        <v-card-title v-text="demoAttributes.title" />
+        <v-card-text v-html="demoContent" />
+        <v-divider />
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-btn @click="dismissAlphaWarning" text>
             Ok, got it
           </v-btn>
@@ -97,6 +92,10 @@
 <script>
 import { DISMISS_ALPHA_WARNING, SET_FILTER } from '../store/mutation-types'
 import SearchBox from '../components/SearchBox'
+import {
+  html as demoContent,
+  attributes as demoAttributes
+} from '~/content/index/demo.md'
 import {
   html as complexContent,
   attributes as complexAttributes
@@ -116,11 +115,8 @@ export default {
   },
   data() {
     return {
-      demoDialog: `Welcome to Mangrove!
-        Please note that this is a <b>demo version</b> of the Mangrove online reviews service.
-        Its purpose is to allow you to test the basic functionality and to <b>give us feedback</b> so that we can find all bugs and release a beta version soon.
-        We highly appreciate feedback on all pages, just use the red button on the right as often as you like.
-        Finally: please <a href="https://opencollective.com/mangrove" target="_blank">donate</a> to help us add more features :)`,
+      demoContent,
+      demoAttributes,
       front: {
         image: require('~/assets/index/BG1_sunset_2000x950.jpg'),
         tagline: 'Share with others and make better decisions.',
