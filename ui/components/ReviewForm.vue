@@ -15,11 +15,7 @@
             filled
             rows="3"
           />
-          <ExtraForm
-            :extraHashes="extraHashes"
-            @uploaded="addHashes($event)"
-            @deleted="deleteHash($event)"
-          />
+          <ExtraForm v-model="extraHashes" />
 
           <v-row align="center">
             <v-col>
@@ -219,7 +215,6 @@ export default {
   beforeCreate() {
     // Avoid issues with circular dependencies.
     this.$options.components.Review = require('./Review').default
-    this.$store.commit(SUBMIT_ERROR, null)
     // Fetch reviews to prepopulate metadata and allow for full preview.
     this.$store.dispatch('saveMyReviews').then(() => {
       const myReviews = Object.values(this.$store.state.reviews).filter(
@@ -239,17 +234,10 @@ export default {
       )
     })
   },
+  mounted() {
+    this.$store.commit(SUBMIT_ERROR, null)
+  },
   methods: {
-    deleteHash(index) {
-      this.extraHashes.splice(index, 1)
-    },
-    addHashes(hashes) {
-      hashes.map((hash) => {
-        if (!this.extraHashes.includes(hash)) {
-          this.extraHashes.push(hash)
-        }
-      })
-    },
     previewReview() {
       this.$store.dispatch('reviewContent', this.payloadStub).then((review) => {
         this.review = review
@@ -280,8 +268,8 @@ export default {
       )
     },
     clear() {
-      Object.assign(this.$data, this.$options.data())
       this.$emit('input', false)
+      Object.assign(this.$data, this.$options.data())
     }
   }
 }
