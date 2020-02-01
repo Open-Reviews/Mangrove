@@ -40,7 +40,7 @@
       v-if="$route.path !== '/search'"
       :class="isSmall ? 'text-center' : ''"
       :color="$vuetify.theme.themes[oppositeTheme].background"
-      :dark="theme === 'light'"
+      dark
       app
       absolute
       padless
@@ -167,7 +167,7 @@ export default {
 <style>
 .v-card__text,
 .v-card__title {
-  word-break: normal;
+  word-break: normal !important;
 }
 .v-btn {
   text-transform: none !important;
