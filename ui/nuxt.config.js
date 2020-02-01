@@ -6,7 +6,7 @@ export default {
    ** Headers of the page
    */
   head: {
-    titleTemplate: '%s - ' + process.env.npm_package_name,
+    titleTemplate: 'Mangrove Reviews',
     title: process.env.npm_package_name || '',
     meta: [
       { charset: 'utf-8' },
