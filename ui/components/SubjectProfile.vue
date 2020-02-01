@@ -12,7 +12,7 @@
               :src="image"
               max-height="400"
               max-width="7vw"
-              class="elevation-3"
+              class="elevation-3 mr-2"
             />
             <v-btn v-on="on" v-if="images.length > 5" text>More</v-btn>
           </v-row>

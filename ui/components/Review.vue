@@ -36,6 +36,7 @@
           :src="imageUrl(hash)"
           max-height="80"
           max-width="80"
+          class="mr-1"
           contain
         />
       </v-row>
