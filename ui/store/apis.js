@@ -175,7 +175,7 @@ export function olDocToSubject(doc) {
       subjects: doc.subject
     }
     if (doc.cover_i) {
-      subject.image = `http://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg`
+      subject.image = `https://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg`
     }
     return subject
   }
