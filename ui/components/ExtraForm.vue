@@ -145,6 +145,7 @@ export default {
       // Wait for upload and hashing.
       Promise.all([this.upload(formData), hashFiles(files)])
         .then(([hashes, expectedBuffers]) => {
+          const newValue = this.value
           // Make sure all returned file hashes are as expected.
           for (let i = 0; i < hashes.length; i++) {
             const expected = base64url.encode(
@@ -156,9 +157,10 @@ export default {
             files[i].name = expected
             this.$set(this.hashToFile, expected, files[i])
             if (!this.value.includes(expected)) {
-              this.$emit('input', this.value.concat(expected))
+              newValue.push(expected)
             }
           }
+          this.$emit('input', newValue)
         })
         .catch((err) => {
           console.log('Error from upload: ', err)
