@@ -1,11 +1,11 @@
 <template>
-  <v-container :style="`max-width: ${hasLeftReview ? 1300 : 800}px`">
+  <v-container :style="`max-width: ${reviewCount ? 1300 : 800}px`">
     <v-row>
       <v-col>
         <h1 class="display-1">Your account</h1>
         <v-divider class="mb-2" />
         <v-card>
-          <div v-if="!hasLeftReview">
+          <div v-if="!reviewCount">
             <v-card-title class="justify-center">
               New here?
             </v-card-title>
@@ -25,9 +25,22 @@
           </div>
           <div v-else>
             <v-card-text>
-              If you would like to use this account in the future, please copy
-              and save your password in a password manager or download it to
-              your files.
+              Congratulations,
+              <b>
+                you wrote {{ reviewCount }} review{{
+                  reviewCount > 1 ? 's' : ''
+                }}
+              </b>
+              with this account.
+              <br />
+              You can build your reputation by using the same account for your
+              future reviews, and by receiving Likes and Confirmations from
+              other users.
+              <br />
+              <br />
+              To always be able to access this account, please copy and save the
+              password below in your password manager, or download it to your
+              files.
               <KeyList sk>
                 Your cryptographically generated password:
               </KeyList>
@@ -36,7 +49,7 @@
         </v-card>
         <AdvancedAccount />
       </v-col>
-      <v-col v-if="hasLeftReview">
+      <v-col v-if="reviewCount">
         <YourReviews />
       </v-col>
     </v-row>
@@ -57,7 +70,7 @@ export default {
     KeyList
   },
   computed: {
-    hasLeftReview() {
+    reviewCount() {
       const me = this.$store.getters.issuer(this.$store.state.publicKey)
       return me && me.count
     }
