@@ -38,7 +38,16 @@
     <v-row v-for="(feature, i) in features" :key="i" class="mb-1">
       <v-img :src="feature.image" height="97vh" class="align-center">
         <v-row :class="{ 'mx-4': isSmall }">
-          <v-card max-width="700">
+          <v-card
+            :style="
+              !isSmall
+                ? i % 2
+                  ? 'right: 100px; margin-left: auto'
+                  : 'left: 100px'
+                : ''
+            "
+            max-width="700"
+          >
             <v-card-title
               v-text="feature.title"
               class="display-1 font-weight-light"
@@ -175,7 +184,5 @@ export default {
 <style scoped>
 .v-card {
   display: block;
-  margin-left: auto;
-  margin-right: auto;
 }
 </style>
