@@ -15,27 +15,27 @@
             filled
             rows="3"
           />
-          <ExtraForm
-            :extraHashes="extraHashes"
-            @uploaded="addHashes($event)"
-            @deleted="deleteHash($event)"
-          />
-
-          <v-divider />
+          <ExtraForm v-model="extraHashes" />
 
           <v-row align="center">
             <v-col>
               <UserHeader
                 :pk="$store.state.publicKey"
                 :metadata="$store.state.metadata"
-                :count="issuer && issuer.count"
+                :count="hasReviewed"
+                placeholder="[Add a name below]"
               />
             </v-col>
-            <v-spacer />
-            <div v-if="!savedKey" class="mr-6">
-              Returning reviewer? <LogInDialog />
-            </div>
+            <v-col v-if="!hasReviewed" class="mr-6">
+              <div class="mb-1">
+                <b>New here?</b> Post your first review to create an account
+                with the posted information
+              </div>
+              <b>Returning reviewer?</b> <LogInDialog text />
+            </v-col>
           </v-row>
+
+          <v-divider />
 
           <MetaForm />
 
@@ -116,11 +116,7 @@
         </v-card>
       </v-dialog>
     </v-dialog>
-    <SaveKeyDialog
-      @dismiss="clear"
-      v-if="keyDialog"
-      :count="issuer && issuer.count"
-    />
+    <SaveKeyDialog @dismiss="clear" v-if="keyDialog" :count="hasReviewed" />
   </div>
 </template>
 
@@ -152,7 +148,7 @@ export default {
   },
   data() {
     return {
-      width: 700,
+      width: 800,
       dialog: false,
       preview: false,
       rating: null,
@@ -166,8 +162,7 @@ export default {
       MAX_OPINION_LENGTH,
       dismissedRating: false,
       ratingDialog: false,
-      keyDialog: false,
-      savedKey: undefined
+      keyDialog: false
     }
   },
   computed: {
@@ -212,13 +207,14 @@ export default {
     },
     issuer() {
       return this.$store.getters.issuer(this.$store.state.publicKey)
+    },
+    hasReviewed() {
+      return this.issuer && this.issuer.count
     }
   },
   beforeCreate() {
     // Avoid issues with circular dependencies.
     this.$options.components.Review = require('./Review').default
-    this.$store.commit(SUBMIT_ERROR, null)
-    get(HAS_SAVED_KEY).then((flag) => (this.savedKey = flag))
     // Fetch reviews to prepopulate metadata and allow for full preview.
     this.$store.dispatch('saveMyReviews').then(() => {
       const myReviews = Object.values(this.$store.state.reviews).filter(
@@ -238,17 +234,10 @@ export default {
       )
     })
   },
+  mounted() {
+    this.$store.commit(SUBMIT_ERROR, null)
+  },
   methods: {
-    deleteHash(index) {
-      this.extraHashes.splice(index, 1)
-    },
-    addHashes(hashes) {
-      hashes.map((hash) => {
-        if (!this.extraHashes.includes(hash)) {
-          this.extraHashes.push(hash)
-        }
-      })
-    },
     previewReview() {
       this.$store.dispatch('reviewContent', this.payloadStub).then((review) => {
         this.review = review
@@ -279,8 +268,8 @@ export default {
       )
     },
     clear() {
-      Object.assign(this.$data, this.$options.data())
       this.$emit('input', false)
+      Object.assign(this.$data, this.$options.data())
     }
   }
 }

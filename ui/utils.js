@@ -14,9 +14,9 @@ export function pkDisplay(pk) {
   return pk.slice(0, 10) + '...' + pk.slice(-10)
 }
 
-export function displayName(meta) {
+export function displayName(meta, placeholder = 'Anonymous') {
   if (!meta) {
-    return 'Anonymous'
+    return placeholder
   }
   if (meta.given_name || meta.family_name) {
     const realName = [meta.given_name, meta.family_name]
@@ -30,7 +30,7 @@ export function displayName(meta) {
   } else if (meta.nickname) {
     return meta.nickname
   } else {
-    return 'Anonymous'
+    return placeholder
   }
 }
 

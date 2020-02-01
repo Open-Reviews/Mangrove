@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-n3">
+  <div>
     <v-row align="center" class="mb-1 text-center white--text">
       <v-img :src="front.image" height="97vh" class="display-3 pa-12">
         <h1

@@ -23,30 +23,45 @@
             class="full-width mr-5"
           />
         </v-list-item-content>
-        <v-list-item-action v-if="sk">
-          <v-btn :href="downloadKeyLink" :download="downloadKeyName">
-            <v-icon class="mr-1">mdi-folder-download-outline</v-icon>
-            Download
-          </v-btn>
-        </v-list-item-action>
-        <v-list-item-action>
-          <v-btn @click="copy(key)" color="secondary" class="black--text">
-            <v-icon small class="mr-1">mdi-content-copy</v-icon>
-            Copy
-          </v-btn>
-        </v-list-item-action>
-
-        <v-list-item-action v-if="i">
-          <v-btn>
-            Set default
-          </v-btn>
-        </v-list-item-action>
+        <template v-if="$vuetify.breakpoint.mdAndUp">
+          <v-list-item-action v-if="sk">
+            <v-btn :href="downloadKeyLink" :download="downloadKeyName">
+              <v-icon class="mr-1">mdi-folder-download-outline</v-icon>
+              Download
+            </v-btn>
+          </v-list-item-action>
+          <v-list-item-action>
+            <v-btn @click="copy(key)" color="secondary" class="black--text">
+              <v-icon small class="mr-1">mdi-content-copy</v-icon>
+              Copy
+            </v-btn>
+          </v-list-item-action>
+          <v-list-item-action v-if="i">
+            <v-btn>
+              Set default
+            </v-btn>
+          </v-list-item-action>
+        </template>
       </v-list-item>
+      <v-row :key="key" v-if="$vuetify.breakpoint.smAndDown" justify="center">
+        <v-btn v-if="sk" :href="downloadKeyLink" :download="downloadKeyName">
+          <v-icon class="mr-1">mdi-folder-download-outline</v-icon>
+          Download
+        </v-btn>
+        <v-btn @click="copy(key)" color="secondary" class="black--text">
+          <v-icon small class="mr-1">mdi-content-copy</v-icon>
+          Copy
+        </v-btn>
+        <v-btn v-if="i">
+          Set default
+        </v-btn>
+      </v-row>
     </template>
   </v-list>
 </template>
 
 <script>
+// TODO: fix ugly button repetition.
 import { get } from 'idb-keyval'
 import Identicon from './Identicon'
 import { downloadLink, pkDisplay } from '~/utils'

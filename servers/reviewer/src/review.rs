@@ -99,7 +99,7 @@ fn check_timestamp(iat: Duration) -> Result<(), Error> {
     let unix_time = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .expect("SystemTime is not before UNIX EPOCH.");
-    if unix_time < iat {
+    if unix_time <= iat {
         Err(Error::Incorrect("Claim from the future.".into()))
     } else if iat < MANGROVE_EPOCH {
         Err(Error::Incorrect("Claim too old (`iat` indicates date lower than year 2020).".into()))

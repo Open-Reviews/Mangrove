@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card-subtitle>
-      Optionally add or edit useful information to publish
+      Add <b>optional</b> useful information to publish
     </v-card-subtitle>
     <v-card-text>
       <v-row justify="space-around" class="my-n5">
