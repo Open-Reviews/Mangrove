@@ -28,7 +28,7 @@ use rocket::Rocket;
 use rocket::http::hyper::header::{ContentDisposition, DispositionType, DispositionParam, Charset};
 use rocket_contrib::json::Json;
 use rocket_okapi::swagger_ui::{make_swagger_ui, SwaggerUIConfig};
-use biscuit::{JWT, jwk::JWKSet};
+use biscuit::{JWT, jws::Secret, jwa::SignatureAlgorithm};
 use csv::Writer;
 use serde::{Deserialize, Serialize};
 use std::time::SystemTime;
@@ -46,6 +46,7 @@ fn submit_review_jwt(conn: DbConn, jwt_review: String) -> Result<String, Error> 
     info!("Review received: {:?}", jwt_review);
     let encoded_token = JWT::<Payload, biscuit::Empty>::new_encoded(&jwt_review);
     let header = encoded_token.unverified_header()?;
+    /*
     let encoded_public_jwk = header
         .registered
         .web_key
@@ -53,8 +54,17 @@ fn submit_review_jwt(conn: DbConn, jwt_review: String) -> Result<String, Error> 
     let public_jwks: JWKSet<biscuit::Empty> = JWKSet {
         keys: vec![serde_json::from_str(&encoded_public_jwk)?]
     };
-    println!("jwks: {:?}", public_jwks.keys[0].algorithm);
     let decoded = encoded_token.decode_with_jwks(&public_jwks)?;
+    */
+    let encoded_pk = header
+        .registered
+        .key_id
+        .ok_or_else(|| Error::Incorrect("No public key found in header.".into()))?;
+    let pk_bytes: Vec<u8> = base64_url::decode(&encoded_pk)?;
+    let decoded = encoded_token.into_decoded(
+        &Secret::PublicKey(pk_bytes),
+        SignatureAlgorithm::ES256
+    )?;
     println!("payload: {:?}", decoded.payload());
     Ok("true".into())
 }
