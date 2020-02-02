@@ -1,6 +1,6 @@
 The aim of the Mangrove project is to create an **open data ecosystem for online reviews** to displace proprietary services and make this valuable source of insight freely accessible. This will allow for more open innovation and competition based on technological merit instead of access to restricted data.   
 
-**We are taking three steps to make this happen:**
+**We are taking three steps to make this happen:**  
 (1) Building a robust infrastructure to enable the **creation of a reliable and useful open dataset** for online reviews globally.  
 
 (2) Providing **open-source tools** that allow anyone to easily integrate the Open Review layer into their products and services.   
