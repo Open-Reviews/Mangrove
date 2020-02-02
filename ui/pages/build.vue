@@ -8,6 +8,7 @@
 </template>
 
 <script>
+import { html as introContent } from '../content/build/intro.md'
 import {
   html as integrateContent,
   attributes as integrateTitle
@@ -33,6 +34,9 @@ export default {
         'Build a new business, or enrich your product or service with open reviews',
       image: require('~/assets/build_leaf_2000x400.jpg'),
       content: [
+        {
+          content: introContent
+        },
         {
           title: integrateTitle.title,
           content: integrateContent,
