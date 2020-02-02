@@ -1,11 +1,10 @@
 import {
-  EMPTY_SUBJECTS,
   SEARCH_ERROR,
   SET_QUERY,
   START_SEARCH,
   STOP_SEARCH
 } from '~/store/mutation-types'
-import { HTTPS, MARESI } from '~/store/scheme-types'
+import { HTTPS } from '~/store/scheme-types'
 import {
   subsToSubjects,
   leiToSubject,
@@ -50,14 +49,12 @@ export default function({ store, $axios, route }) {
   // Stop it only once display is complete.
   store.commit(START_SEARCH)
   store.commit(SET_QUERY, { q: query, geo: route.query.geo })
-  // Do not empty too ealy so that search message has time to render.
-  store.commit(EMPTY_SUBJECTS)
   const queries = Promise.all([
     searchUrl($axios, query)
-      .then((subjects) => store.dispatch('storeWithRating', subjects))
+      .then((subjects) => store.dispatch('storeResults', subjects))
       .catch((error) => console.log('Not a website: ', error)),
     searchGeo($axios, query, route.query.geo)
-      .then((subjects) => store.dispatch('storeWithRating', subjects))
+      .then((subjects) => store.dispatch('storeResults', subjects))
       .catch((error) => {
         store.commit(
           SEARCH_ERROR,
@@ -67,7 +64,7 @@ export default function({ store, $axios, route }) {
         console.log('Nominatim error: ', error)
       }),
     searchIsbn($axios, query)
-      .then((subjects) => store.dispatch('storeWithRating', subjects))
+      .then((subjects) => store.dispatch('storeResults', subjects))
       .catch((error) => {
         store.commit(
           SEARCH_ERROR,
@@ -77,7 +74,7 @@ export default function({ store, $axios, route }) {
         console.log('OpenLibrary error: ', error)
       }),
     searchLei($axios, query)
-      .then((subjects) => store.dispatch('storeWithRating', subjects))
+      .then((subjects) => store.dispatch('storeResults', subjects))
       .catch((error) => {
         store.commit(
           SEARCH_ERROR,
@@ -91,19 +88,12 @@ export default function({ store, $axios, route }) {
       .then((rs) => {
         if (!rs) throw new Error('empty response')
         if (!rs.reviews.length) return
-        subsToSubjects(
+        return subsToSubjects(
           $axios,
           rs.reviews.map((review) => review.payload.sub)
         )
       })
-      .then(
-        (allSubjects) =>
-          allSubjects &&
-          store.dispatch(
-            'storeWithRating',
-            allSubjects.filter(({ scheme }) => scheme !== MARESI)
-          )
-      )
+      .then((subjects) => subjects && store.dispatch('storeResults', subjects))
       .catch((error) => {
         if (error.response) {
           store.commit(SEARCH_ERROR, `Error: ${JSON.stringify(error.response)}`)
