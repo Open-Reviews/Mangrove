@@ -15,7 +15,10 @@ export const state = () => ({
   publicKey: null,
   alphaWarning: true,
   isSearching: false,
+  // Current query - gets out of line with URL only when changed.
   query: { q: null, geo: null },
+  // A list of URIs which are retrieved for the current search term.
+  searchResults: [],
   // Object from sub (URI) to subject info, see `middleware/search.js` for details.
   subjects: {},
   // Scheme that should be selected, null means display all.
@@ -40,18 +43,20 @@ export const mutations = {
   },
   [t.START_SEARCH](state) {
     state.isSearching = true
+    state.searchResults = []
   },
   [t.STOP_SEARCH](state) {
     state.isSearching = false
+  },
+  [t.ADD_RESULTS](state, newresults) {
+    // Ensure results are unique and avoid Set reactivity issues.
+    state.searchResults = [...new Set([...state.searchResults, ...newresults])]
   },
   [t.SET_QUERY](state, query) {
     state.query = query
   },
   [t.ADD_SUBJECTS](state, newsubjects) {
     state.subjects = { ...state.subjects, ...newsubjects }
-  },
-  [t.EMPTY_SUBJECTS](state) {
-    state.subjects = {}
   },
   [t.ADD_ISSUERS](state, newissuers) {
     state.issuers = { ...state.issuers, ...newissuers }
@@ -129,7 +134,6 @@ export const actions = {
         if (jwk) {
           try {
             keypair = await jwkToKeypair(jwk)
-            console.log('Loading existing keys from IndexDB:', keypair)
             return
           } catch (e) {
             console.log('Bad key in IndexDB:', jwk)
@@ -211,17 +215,24 @@ export const actions = {
       return rs
     })
   },
-  async saveMyReviews({ state, dispatch }) {
-    const subs = await dispatch('saveReviews', {
+  saveMyReviews({ state, dispatch }) {
+    dispatch('saveReviews', {
       iss: state.publicKey
-    }).then((rs) =>
-      Object.values(rs.reviews).map((review) => review.payload.sub)
-    )
-    return Promise.all(
-      subsToSubjects(this.$axios, subs).map((promise) =>
-        promise.then((subject) => dispatch('storeWithRating', [subject]))
+    })
+      .then(
+        (rs) =>
+          rs && Object.values(rs.reviews).map((review) => review.payload.sub)
       )
-    )
+      .then(
+        (subs) =>
+          subs &&
+          subs.length &&
+          Promise.all(
+            subsToSubjects(this.$axios, subs).map((promise) =>
+              promise.then((subject) => dispatch('storeWithRating', [subject]))
+            )
+          )
+      )
   },
   bulkSubjects({ commit }, subs) {
     return this.$axios
@@ -260,6 +271,16 @@ export const actions = {
           commit(t.ADD_SUBJECTS, subjects)
         }
       })
+  },
+  storeResults({ dispatch, commit }, subjects) {
+    dispatch('storeWithRating', subjects).then(() =>
+      commit(
+        t.ADD_RESULTS,
+        subjects
+          .filter(({ scheme }) => scheme !== MARESI)
+          .map((subject) => subject.sub)
+      )
+    )
   },
   async reviewContent({ state }, stubClaim) {
     // Assumes stubClaim contains at least `sub`

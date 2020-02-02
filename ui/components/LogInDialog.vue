@@ -1,5 +1,5 @@
 <template>
-  <v-dialog width="600">
+  <v-dialog v-model="dialog" width="600">
     <template v-slot:activator="{ on }">
       <a v-if="text" v-on="on">Log in</a>
       <v-btn v-else v-on="on">Log in</v-btn>
@@ -8,7 +8,7 @@
       <v-card-title>
         Log in
       </v-card-title>
-      <LogIn />
+      <LogIn @success="dialog = false" />
     </v-card>
   </v-dialog>
 </template>
@@ -22,6 +22,11 @@ export default {
   },
   props: {
     text: Boolean
+  },
+  data() {
+    return {
+      dialog: false
+    }
   }
 }
 </script>

@@ -8,13 +8,14 @@
       v-for="(item, i) in content"
       :key="i"
       class="text-center"
-      style="max-width: 1000px"
+      style="max-width: 1100px"
     >
-      <h3 v-text="item.title" class="display-1 mt-5 font-weight-light" />
-      <div
-        v-html="item.content"
-        class="mb-10 mt-5 headline font-weight-light"
+      <h3
+        v-if="item.title"
+        v-text="item.title"
+        class="display-1 mt-5 font-weight-light"
       />
+      <div v-html="item.content" class="mb-10 mt-5 title font-weight-light" />
       <v-btn
         v-if="item.button"
         v-text="item.button.label"

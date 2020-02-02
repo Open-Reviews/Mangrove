@@ -12,7 +12,7 @@
               :src="image"
               max-height="400"
               max-width="7vw"
-              class="elevation-3"
+              class="elevation-3 mr-2"
             />
             <v-btn v-on="on" v-if="images.length > 5" text>More</v-btn>
           </v-row>
@@ -35,6 +35,7 @@
         <v-row align="center" class="ml-auto">
           <v-rating
             :value="subject.quality"
+            :background-color="subject.quality ? 'primary' : 'grey lighten-2'"
             half-increments
             dense
             class="mr-2"
@@ -145,25 +146,22 @@ export default {
       ].filter((detail) => detail.content)
     },
     images() {
-      const images = [].concat
-        .apply(
-          [],
-          Object.values(this.$store.state.reviews)
-            .filter(({ payload }) => payload.sub === this.$route.query.sub)
-            .map(({ payload }) => payload.extra_hashes)
-            .filter((eh) => eh)
-        )
-        .map((eh) => imageUrl(eh))
+      const images = new Set()
+      Object.values(this.$store.state.reviews)
+        .filter(({ payload }) => payload.sub === this.$route.query.sub)
+        .map(({ payload }) => payload.extra_hashes)
+        .filter(Boolean)
+        .map((ehs) => ehs.map((eh) => images.add(imageUrl(eh))))
       if (this.subject.image) {
-        images.push(this.subject.image)
+        images.add(this.subject.image)
       }
-      return images.slice(0, 4)
+      return [...images].slice(0, 4)
     }
   }
 }
 </script>
 
-<style>
+<style scoped>
 a {
   color: black !important;
 }

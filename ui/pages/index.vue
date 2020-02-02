@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-row align="center" class="mb-1 text-center white--text">
+    <v-row class="mb-1 text-center white--text">
       <v-img :src="front.image" height="97vh" class="display-3 pa-12">
         <h1
           v-html="front.title"
@@ -25,51 +25,56 @@
           <v-col />
         </v-row>
         <v-row
-          style="position: absolute; bottom: 15%; left: 40%;"
           class="headline"
+          style="position: absolute; bottom: 100px; margin-left: auto; margin-right: auto; width: 330px; left: 0; right: 0;"
+          align="center"
         >
-          WHY MANGROVE
-          <v-icon v-if="isSmall" color="white" x-large>mdi-arrow-down</v-icon>
-          <v-img
-            v-else
-            :src="arrow"
-            style="transform: rotate(180deg);"
-            width="40"
-            contain
-            class="ml-5"
-          />
+          <div class="ml-12">WHY MANGROVE</div>
+          <v-icon v-if="isSmall" color="white">mdi-arrow-down</v-icon>
+          <v-img v-else :src="arrow" max-height="10vh" contain class="ml-n12" />
         </v-row>
       </v-img>
     </v-row>
     <v-row v-for="(feature, i) in features" :key="i" class="mb-1">
       <v-img :src="feature.image" height="97vh" class="align-center">
         <v-row :class="{ 'mx-4': isSmall }">
-          <v-col v-if="!isSmall && i % 2" />
-          <v-col>
-            <v-card max-width="700">
-              <v-card-title
-                v-text="feature.title"
-                class="display-1 font-weight-light"
-              />
-              <v-card-text
-                v-html="feature.content"
-                class="subtitle-1 font-weight-light"
-              />
-            </v-card>
-          </v-col>
-          <v-col v-if="!isSmall && !(i % 2)" cols="6" />
+          <v-card
+            :style="
+              !isSmall
+                ? i % 2
+                  ? 'right: 100px; margin-left: auto'
+                  : 'left: 100px'
+                : ''
+            "
+            max-width="700"
+          >
+            <v-card-title
+              v-text="feature.title"
+              class="display-1 font-weight-light"
+            />
+            <v-card-text
+              v-html="feature.content"
+              class="subtitle-1 font-weight-light"
+            />
+          </v-card>
         </v-row>
         <v-row v-if="feature.tip" justify="center">
-          <v-btn
+          <a
             @click="$vuetify.goTo(0)"
-            large
-            text
             class="white--text display-2"
-            x-large
+            style="position: absolute; bottom: 5px;"
           >
-            {{ feature.tip }}
-            <v-img :src="arrow" width="40" contain class="ml-5" />
-          </v-btn>
+            <v-row align="center">
+              {{ feature.tip }}
+              <v-img
+                :src="arrow"
+                max-height="10vh"
+                contain
+                style="transform: rotate(180deg);"
+                class="ml-n10"
+              />
+            </v-row>
+          </a>
         </v-row>
       </v-img>
     </v-row>
@@ -179,7 +184,5 @@ export default {
 <style scoped>
 .v-card {
   display: block;
-  margin-left: auto;
-  margin-right: auto;
 }
 </style>

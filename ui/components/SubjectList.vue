@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import { NAMES, MARESI, ICONS } from '~/store/scheme-types'
+import { NAMES, ICONS } from '~/store/scheme-types'
 export default {
   data() {
     return {
@@ -161,9 +161,9 @@ export default {
       const all =
         !this.$route.query.q && selected
           ? [selected]
-          : Object.values(this.$store.state.subjects).filter(
-              (subject) => subject.scheme !== MARESI
-            )
+          : this.$store.state.searchResults
+              .map((uri) => this.$store.state.subjects[uri])
+              .filter(Boolean)
       const list = this.$store.state.filter
         ? all.filter((subject) => this.$store.state.filter === subject.scheme)
         : all

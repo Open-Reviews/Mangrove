@@ -4,7 +4,7 @@
       <v-list-item-content>
         <v-text-field
           v-model.trim="privateInput"
-          placeholder="Paste your password here"
+          label="Paste your password here"
         />
       </v-list-item-content>
       <v-list-item-action>
@@ -26,8 +26,7 @@ export default {
   data() {
     return {
       privateInput: null,
-      error: null,
-      show: false
+      error: null
     }
   },
   methods: {
@@ -44,7 +43,7 @@ export default {
           this.$store.dispatch('setKeypair', keypair)
           set(HAS_SAVED_KEY, true)
           this.error = null
-          this.show = false
+          this.$emit('success')
         })
         .catch((error) => (this.error = error))
     }

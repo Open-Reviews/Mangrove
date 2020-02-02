@@ -25,10 +25,14 @@
         >
       </template>
     </v-file-input>
+    <v-alert v-if="isMobileFirefox" type="warning" elevation="8" border="left">
+      Image upload may not work on Firefox Mobile.
+    </v-alert>
   </div>
 </template>
 
 <script>
+import { isMobileFirefox } from '~/utils'
 const base64url = require('base64-url')
 
 function dataURIToBlob(dataURI) {
@@ -83,9 +87,10 @@ export default {
       // Workaround to get individual file uploading work,
       // but keep the parent component as the source of truth.
       hashToFile: {},
-      maxHeight: 600,
-      maxWidth: 600,
-      fileUrl: (file) => URL.createObjectURL(file)
+      maxHeight: 1000,
+      maxWidth: 1000,
+      fileUrl: (file) => URL.createObjectURL(file),
+      isMobileFirefox: isMobileFirefox()
     }
   },
   computed: {
@@ -145,6 +150,7 @@ export default {
       // Wait for upload and hashing.
       Promise.all([this.upload(formData), hashFiles(files)])
         .then(([hashes, expectedBuffers]) => {
+          const newValue = this.value
           // Make sure all returned file hashes are as expected.
           for (let i = 0; i < hashes.length; i++) {
             const expected = base64url.encode(
@@ -156,9 +162,10 @@ export default {
             files[i].name = expected
             this.$set(this.hashToFile, expected, files[i])
             if (!this.value.includes(expected)) {
-              this.$emit('input', this.value.concat(expected))
+              newValue.push(expected)
             }
           }
+          this.$emit('input', newValue)
         })
         .catch((err) => {
           console.log('Error from upload: ', err)
