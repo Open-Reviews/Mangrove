@@ -87,8 +87,8 @@ export default {
       // Workaround to get individual file uploading work,
       // but keep the parent component as the source of truth.
       hashToFile: {},
-      maxHeight: 600,
-      maxWidth: 600,
+      maxHeight: 1000,
+      maxWidth: 1000,
       fileUrl: (file) => URL.createObjectURL(file),
       isMobileFirefox: isMobileFirefox()
     }

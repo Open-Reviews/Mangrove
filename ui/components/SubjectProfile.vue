@@ -35,6 +35,7 @@
         <v-row align="center" class="ml-auto">
           <v-rating
             :value="subject.quality"
+            :background-color="subject.quality ? 'primary' : 'grey lighten-2'"
             half-increments
             dense
             class="mr-2"
