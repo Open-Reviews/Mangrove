@@ -31,8 +31,8 @@ export default {
     return {
       title: 'Build on Mangrove',
       subtitle:
-        'Build a new business, or enrich your product or service with open reviews',
-      image: require('~/assets/build_leaf_2000x400.jpg'),
+        'Build a business, or enrich your product or service with open reviews',
+      image: require('~/assets/build_leaf_2000x190.jpg'),
       content: [
         {
           content: introContent

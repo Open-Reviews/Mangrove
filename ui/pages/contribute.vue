@@ -33,10 +33,10 @@ export default {
   },
   data() {
     return {
-      image: require('~/assets/contribute_rope_2000x400.jpg'),
+      image: require('~/assets/contribute_rope_2000x190.jpg'),
       title: 'Contribute',
       subtitle:
-        'Join the Movement so that more people can share and benefit freely',
+        'Join the Ecosystem so that more people can share and benefit freely',
       dumpUrl: `${process.env.VUE_APP_API_URL}/request`,
       content: [
         {
