@@ -197,17 +197,24 @@ export const actions = {
       return rs
     })
   },
-  async saveMyReviews({ state, dispatch }) {
-    const subs = await dispatch('saveReviews', {
+  saveMyReviews({ state, dispatch }) {
+    dispatch('saveReviews', {
       iss: state.publicKey
-    }).then((rs) =>
-      Object.values(rs.reviews).map((review) => review.payload.sub)
-    )
-    return Promise.all(
-      subsToSubjects(this.$axios, subs).map((promise) =>
-        promise.then((subject) => dispatch('storeWithRating', [subject]))
+    })
+      .then(
+        (rs) =>
+          rs && Object.values(rs.reviews).map((review) => review.payload.sub)
       )
-    )
+      .then(
+        (subs) =>
+          subs &&
+          subs.length &&
+          Promise.all(
+            subsToSubjects(this.$axios, subs).map((promise) =>
+              promise.then((subject) => dispatch('storeWithRating', [subject]))
+            )
+          )
+      )
   },
   bulkSubjects({ commit }, subs) {
     return this.$axios
