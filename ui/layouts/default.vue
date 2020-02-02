@@ -139,7 +139,7 @@ export default {
         { label: 'Terms & Privacy', to: 'terms' },
         { label: 'API', href: 'https://api.mangrove.reviews/swagger-ui' },
         { label: 'Develop', href: GITLAB },
-        { label: 'Donations', href: OPEN_COLLECTIVE }
+        { label: 'Donate', href: OPEN_COLLECTIVE }
       ],
       SOCIALS
     }
