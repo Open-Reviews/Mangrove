@@ -39,7 +39,7 @@ export function isMobile() {
 }
 
 export function isMobileFirefox() {
-  return navigator.userAgent.match(/Mozilla.*Android/i)
+  return navigator.userAgent.match(/(Mozilla.*Android)/i)
 }
 
 const PRIVATE_KEY_METADATA = 'Mangrove private key'

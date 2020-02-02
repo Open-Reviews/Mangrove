@@ -90,7 +90,7 @@ export default {
       maxHeight: 600,
       maxWidth: 600,
       fileUrl: (file) => URL.createObjectURL(file),
-      isMobileFirefox
+      isMobileFirefox: isMobileFirefox()
     }
   },
   computed: {

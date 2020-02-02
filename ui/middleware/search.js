@@ -89,17 +89,20 @@ export default function({ store, $axios, route }) {
     store
       .dispatch('getReviews', { q: query })
       .then((rs) => {
-        console.log('Response: ', rs.reviews)
-        return subsToSubjects(
+        if (!rs) throw new Error('empty response')
+        if (!rs.reviews.length) return
+        subsToSubjects(
           $axios,
           rs.reviews.map((review) => review.payload.sub)
         )
       })
-      .then((allSubjects) =>
-        store.dispatch(
-          'storeWithRating',
-          allSubjects.filter(({ scheme }) => scheme !== MARESI)
-        )
+      .then(
+        (allSubjects) =>
+          allSubjects &&
+          store.dispatch(
+            'storeWithRating',
+            allSubjects.filter(({ scheme }) => scheme !== MARESI)
+          )
       )
       .catch((error) => {
         if (error.response) {
