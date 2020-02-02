@@ -10,7 +10,7 @@ export default {
   props: ['seed'],
   computed: {
     identicon() {
-      return jdenticon.toSvg(this.seed, 60)
+      return jdenticon.toSvg(this.seed, 50)
     }
   }
 }
