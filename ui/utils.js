@@ -38,6 +38,10 @@ export function isMobile() {
   return navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i)
 }
 
+export function isMobileFirefox() {
+  return navigator.userAgent.match(/Mozilla.*Android/i)
+}
+
 const PRIVATE_KEY_METADATA = 'Mangrove private key'
 
 export async function jwkToKeypair(jwk) {

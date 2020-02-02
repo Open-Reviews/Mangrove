@@ -25,10 +25,14 @@
         >
       </template>
     </v-file-input>
+    <v-alert v-if="isMobileFirefox" type="warning" elevation="8" border="left">
+      Image upload may not work on Firefox Mobile.
+    </v-alert>
   </div>
 </template>
 
 <script>
+import { isMobileFirefox } from '~/utils'
 const base64url = require('base64-url')
 
 function dataURIToBlob(dataURI) {
@@ -85,7 +89,8 @@ export default {
       hashToFile: {},
       maxHeight: 600,
       maxWidth: 600,
-      fileUrl: (file) => URL.createObjectURL(file)
+      fileUrl: (file) => URL.createObjectURL(file),
+      isMobileFirefox
     }
   },
   computed: {
