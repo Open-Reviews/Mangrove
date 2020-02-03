@@ -29,11 +29,11 @@
         Reviewed {{ new Date(payload.iat * 1000).toDateString() }}
       </v-row>
       {{ payload.opinion }}
-      <v-row v-if="payload.extra_hashes" class="mx-auto">
+      <v-row v-if="payload.images" class="mx-auto">
         <v-img
-          v-for="hash in payload.extra_hashes"
-          :key="hash"
-          :src="imageUrl(hash)"
+          v-for="img in payload.images"
+          :key="img.src"
+          :src="img.src"
           max-height="80"
           max-width="80"
           class="mr-1"

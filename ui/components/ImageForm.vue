@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { isMobileFirefox } from '~/utils'
+import { isMobileFirefox, imageUrl } from '~/utils'
 const base64url = require('base64-url')
 
 function dataURIToBlob(dataURI) {
@@ -86,7 +86,7 @@ export default {
       uploadError: null,
       // Workaround to get individual file uploading work,
       // but keep the parent component as the source of truth.
-      hashToFile: {},
+      urlToFile: {},
       maxHeight: 1000,
       maxWidth: 1000,
       fileUrl: (file) => URL.createObjectURL(file),
@@ -95,7 +95,7 @@ export default {
   },
   computed: {
     uploadedFiles() {
-      return this.value.map((hash) => this.hashToFile[hash])
+      return this.value.map(({ src }) => this.urlToFile[src])
     }
   },
   mounted() {
@@ -160,9 +160,10 @@ export default {
               throw new Error('Server return unexpected hashes.')
             }
             files[i].name = expected
-            this.$set(this.hashToFile, expected, files[i])
-            if (!this.value.includes(expected)) {
-              newValue.push(expected)
+            const src = imageUrl(expected)
+            this.$set(this.urlToFile, src, files[i])
+            if (!this.value.some((img) => img.src === src)) {
+              newValue.push({ src })
             }
           }
           this.$emit('input', newValue)

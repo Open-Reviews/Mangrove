@@ -8,7 +8,6 @@ use url::Url;
 use once_cell::sync::Lazy;
 use std::borrow::Cow;
 use std::collections::BTreeMap;
-use std::env;
 use std::time::Duration;
 use std::str::FromStr;
 
@@ -175,7 +174,7 @@ fn check_timestamp(iat: Duration) -> Result<(), Error> {
     }
 }
 
-const MAX_RATING: Rating = 100;
+pub const MAX_RATING: Rating = 100;
 
 fn check_rating(rating: Rating) -> Result<(), Error> {
     if rating < 0 || rating > MAX_RATING {
@@ -296,12 +295,14 @@ fn check_sub(conn: &DbConn, uri: &str) -> Result<(), Error> {
 }
 
 fn check_image(img: &Image) -> Result<(), Error> {
-    if let Some(l) = img.label {
+    if let Some(l) = &img.label {
         if l.len() > 50 {
             return Err(Error::Incorrect(format!("Image label is too long: {}", l)))
         }
     }
-    let exists = reqwest::get(&img.src)?.text()?.parse()?;
+    let query = format!("{}/exists", img.src);
+    info!("Checking the file: {}", query);
+    let exists = reqwest::get(&query)?.text()?.parse()?;
     if exists {
         Ok(())
     } else {

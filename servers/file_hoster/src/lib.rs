@@ -23,6 +23,7 @@ const FILES: &str = "files";
 const BUCKET: &str = "files.mangrove.network";
 
 lazy_static! {
+    /*
     static ref STORE: &'static Path = {
         fs::create_dir("/tmp/files").or_else(|e| match e.kind() {
             io::ErrorKind::AlreadyExists => Ok(()),
@@ -30,7 +31,8 @@ lazy_static! {
         }).expect("Access to tmp is missing.");
         Path::new("/tmp")
     };
-    //static ref STORE: S3Client = S3Client::new(Default::default());
+    */
+    static ref STORE: S3Client = S3Client::new(Default::default());
 }
 
 /// Compute base64url encoded SHA256 of the file.
@@ -47,7 +49,7 @@ trait HashingStore {
 
     // Return true if file is known, otherwise false.
     // Move file to permanent storage if currently in temporary.
-    fn persist(&self, file: &PathBuf) -> bool;
+    fn persist(&self, file: String) -> bool;
 }
 
 /// Works by using the root Path for temporary files and FILES subfolder for permanent files.
@@ -64,8 +66,9 @@ impl HashingStore for &Path {
         Ok(hash)
     }
 
-    fn persist(&self, file: &PathBuf) -> bool {
+    fn persist(&self, hash: String) -> bool {
         let files = self.join(FILES);
+        let file: PathBuf = hash.into();
         if files.join(&file).exists() {
             true
         } else if self.join(&file).exists() {
@@ -101,10 +104,10 @@ impl HashingStore for S3Client {
         Ok(hash)
     }
 
-    fn persist(&self, file: &PathBuf) -> bool {
+    fn persist(&self, key: String) -> bool {
         self.delete_object_tagging(DeleteObjectTaggingRequest {
             bucket: BUCKET.into(),
-            key: file.to_string_lossy().into(),
+            key,
             version_id: None,
         })
         .sync()
@@ -154,9 +157,9 @@ fn index() -> &'static str {
     "Check out for project information: https://planting.space/mangrove.html"
 }
 
-#[get("/exists/<file..>")]
-fn exists(file: PathBuf) -> String {
-    STORE.persist(&file).to_string()
+#[get("/<hash>/exists")]
+fn exists(hash: String) -> String {
+    STORE.persist(hash).to_string()
 }
 
 pub fn rocket() -> Rocket {

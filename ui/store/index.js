@@ -286,8 +286,8 @@ export const actions = {
     // Add field only if it is not empty.
     if (stubClaim.rating != null) payload.rating = stubClaim.rating
     if (stubClaim.opinion) payload.opinion = stubClaim.opinion
-    if (stubClaim.extra_hashes && stubClaim.extra_hashes.length)
-      payload.extra_hashes = stubClaim.extra_hashes
+    if (stubClaim.images && stubClaim.images.length)
+      payload.images = stubClaim.images
     const meta = { ...stubClaim.metadata, ...state.metadata }
     // Remove empty metadata fields.
     Object.keys(meta).forEach((key) => meta[key] == null && delete meta[key])

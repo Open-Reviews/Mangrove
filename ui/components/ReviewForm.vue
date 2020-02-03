@@ -15,7 +15,7 @@
             filled
             rows="3"
           />
-          <ExtraForm v-model="extraHashes" />
+          <ImageForm v-model="images" />
 
           <v-row align="center">
             <v-col>
@@ -124,7 +124,7 @@
 import { get } from 'idb-keyval'
 import { SUBMIT_ERROR, SET_META } from '../store/mutation-types'
 import { IS_AFFILIATED, RECURRING } from '../store/metadata-types'
-import ExtraForm from './ExtraForm'
+import ImageForm from './ImageForm'
 import MetaForm from './MetaForm'
 import SaveKeyDialog from './SaveKeyDialog'
 import UserHeader from './UserHeader'
@@ -136,7 +136,7 @@ import { MAX_OPINION_LENGTH } from '~/utils'
 export default {
   name: 'ReviewForm',
   components: {
-    ExtraForm,
+    ImageForm,
     MetaForm,
     SaveKeyDialog,
     LogInDialog,
@@ -153,7 +153,7 @@ export default {
       preview: false,
       rating: null,
       opinion: '',
-      extraHashes: [],
+      images: [],
       review: {},
       checkBoxes: {
         termsAgreed: false,
@@ -175,7 +175,7 @@ export default {
       const stub = {
         sub: this.subject.sub,
         opinion: this.opinion,
-        extra_hashes: this.extraHashes,
+        images: this.images,
         metadata: {
           [IS_AFFILIATED]: this.checkBoxes.isAffiliated ? `true` : null
         }

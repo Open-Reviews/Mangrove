@@ -7,7 +7,7 @@
           <v-row align="center" class="mx-4 pt-4">
             <v-img
               v-on="on"
-              v-for="image in images"
+              v-for="image in images.slice(0, 4)"
               :key="image"
               :src="image"
               max-height="400"
@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import { imageUrl, isMobile } from '../utils'
+import { isMobile } from '../utils'
 import { GEO, LEI, ISBN } from '../store/scheme-types'
 import ReviewForm from './ReviewForm'
 import ReviewList from './ReviewList'
@@ -149,13 +149,13 @@ export default {
       const images = new Set()
       Object.values(this.$store.state.reviews)
         .filter(({ payload }) => payload.sub === this.$route.query.sub)
-        .map(({ payload }) => payload.extra_hashes)
+        .map(({ payload }) => payload.images)
         .filter(Boolean)
-        .map((ehs) => ehs.map((eh) => images.add(imageUrl(eh))))
+        .map((imgs) => imgs.map((img) => images.add(img.src)))
       if (this.subject.image) {
         images.add(this.subject.image)
       }
-      return [...images].slice(0, 4)
+      return [...images]
     }
   }
 }
