@@ -322,11 +322,7 @@ export const actions = {
       }
       console.log('Mangrove review: ', review)
       return this.$axios
-        .put(`${process.env.VUE_APP_API_URL}/submit`, review.jwt, {
-          headers: {
-            'Content-Type': 'application/jwt'
-          }
-        })
+        .put(`${process.env.VUE_APP_API_URL}/submit/${review.jwt}`)
         .then(() => {
           commit(t.SUBMIT_ERROR, null)
           // Add review so that its immediately visible.

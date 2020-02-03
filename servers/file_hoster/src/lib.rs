@@ -20,7 +20,7 @@ use std::io::{self, Read};
 use std::path::{Path, PathBuf};
 
 const FILES: &str = "files";
-const BUCKET: &str = "files.mangrove.network";
+const BUCKET: &str = "files.mangrove.reviews";
 
 lazy_static! {
     /*

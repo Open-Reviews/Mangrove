@@ -41,8 +41,8 @@ fn index() -> &'static str {
 }
 
 
-#[openapi(skip)]
-#[put("/submit", format = "application/jwt", data = "<jwt_review>")]
+#[openapi]
+#[put("/submit/<jwt_review>")]
 fn submit_review_jwt(conn: DbConn, jwt_review: String) -> Result<String, Error> {
     info!("Review received: {:?}", jwt_review);
     let review = Review::from_str(&jwt_review)?;
