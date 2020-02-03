@@ -10,8 +10,9 @@ export function downloadLink(data) {
   )}`
 }
 
-export function pkDisplay(pk) {
-  return pk.slice(0, 10) + '...' + pk.slice(-10)
+export function pemDisplay(pk) {
+  const hex = pk.split('\n')[1]
+  return hex.slice(0, 10) + '...' + hex.slice(-10)
 }
 
 export function displayName(meta, placeholder = 'Anonymous') {
@@ -90,9 +91,16 @@ function u8aToString(buf) {
   return String.fromCharCode.apply(null, new Uint8Array(buf))
 }
 
-export async function keyToPem(key) {
+export async function privateToPem(key) {
   const exported = await window.crypto.subtle.exportKey('pkcs8', key)
   const exportedAsString = u8aToString(exported)
   const exportedAsBase64 = window.btoa(exportedAsString)
   return `-----BEGIN PRIVATE KEY-----\n${exportedAsBase64}\n-----END PRIVATE KEY-----`
+}
+
+export async function publicToPem(key) {
+  const exported = await window.crypto.subtle.exportKey('spki', key)
+  const exportedAsString = u8aToString(exported)
+  const exportedAsBase64 = window.btoa(exportedAsString)
+  return `-----BEGIN PUBLIC KEY-----\n${exportedAsBase64}\n-----END PUBLIC KEY-----`
 }

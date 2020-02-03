@@ -5,7 +5,7 @@ import { subsToSubjects } from './apis'
 import { PRIVATE_KEY } from './indexeddb-types'
 import * as t from './mutation-types'
 import { CLIENT_ID } from './metadata-types'
-import { jwkToKeypair, skToJwk, keyToPem } from '~/utils'
+import { jwkToKeypair, skToJwk, publicToPem, privateToPem } from '~/utils'
 const base64url = require('base64-url')
 const jwt = require('jsonwebtoken')
 const cbor = require('borc')
@@ -118,11 +118,7 @@ export const actions = {
   setKeypair({ commit }, keypair) {
     commit(t.SET_KEYPAIR, keypair)
     skToJwk(keypair.privateKey).then((jwk) => set(PRIVATE_KEY, jwk))
-    window.crypto.subtle
-      .exportKey('raw', keypair.publicKey)
-      .then((exported) =>
-        commit(t.SET_PK, base64url.encode(new Uint8Array(exported)))
-      )
+    publicToPem(keypair.publicKey).then((pem) => commit(t.SET_PK, pem))
   },
   // Storage in IndexedDB is done as jwk instead CryptoKey due to two issues:
   // https://bugzilla.mozilla.org/show_bug.cgi?id=1048931
@@ -217,7 +213,7 @@ export const actions = {
   },
   saveMyReviews({ state, dispatch }) {
     dispatch('saveReviews', {
-      iss: state.publicKey
+      pem: state.publicKey
     })
       .then(
         (rs) =>
@@ -286,7 +282,6 @@ export const actions = {
     // Assumes stubClaim contains at least `sub`
     // Add mandatory fields.
     const payload = {
-      iss: state.publicKey,
       iat: Math.floor(Date.now() / 1000),
       sub: stubClaim.sub
     }
@@ -317,15 +312,14 @@ export const actions = {
       'jwk',
       state.keyPair.publicKey
     )
-    privateJwk.kid = state.publicKey
     privateJwk.alg = 'ES256'
-    console.log('privateJwk: ', privateJwk)
+    console.log('public pem: ', await publicToPem(state.keyPair.publicKey))
     return {
-      jwt: jwt.sign(payload, await keyToPem(state.keyPair.privateKey), {
+      jwt: jwt.sign(payload, await privateToPem(state.keyPair.privateKey), {
         algorithm: 'ES256',
         header: {
           jwk: JSON.stringify(privateJwk),
-          kid: state.publicKey
+          pem: state.publicKey
         }
       }),
       signature: base64url.encode(new Uint8Array(signed)),

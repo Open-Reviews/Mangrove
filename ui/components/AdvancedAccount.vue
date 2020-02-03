@@ -35,10 +35,8 @@
 </template>
 
 <script>
-import { get } from 'idb-keyval'
 import KeyList from './KeyList'
 import LogIn from './LogIn'
-import { PRIVATE_KEY } from '~/store/indexeddb-types'
 import {
   html as switchPrivateKey,
   attributes as switchTitle
@@ -55,7 +53,6 @@ import {
   html as keyInfo,
   attributes as keyTitle
 } from '~/content/account/key-info.md'
-import { downloadLink, pkDisplay } from '~/utils'
 
 export default {
   components: {
@@ -73,20 +70,8 @@ export default {
       keyTitle,
       keyInfo,
       switchTitle,
-      switchPrivateKey,
-      downloadKeyLink: undefined
+      switchPrivateKey
     }
-  },
-  computed: {
-    downloadKeyName() {
-      return `mangrove.reviews_PrivateKey_${pkDisplay(
-        this.$store.state.publicKey
-      )}.json`
-    }
-  },
-  async mounted() {
-    const sk = await get(PRIVATE_KEY)
-    this.downloadKeyLink = downloadLink(JSON.stringify(sk))
   }
 }
 </script>

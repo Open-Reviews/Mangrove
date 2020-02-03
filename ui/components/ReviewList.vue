@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { downloadLink, pkDisplay, displayName } from '../utils'
+import { downloadLink, pemDisplay, displayName } from '../utils'
 import { MARESI, subPath } from '../store/scheme-types'
 import ReviewListBase from './ReviewListBase'
 
@@ -44,7 +44,7 @@ export default {
   },
   props: {
     rootSub: String,
-    rootIss: {
+    rootPk: {
       type: String,
       default: () => ''
     }
@@ -58,10 +58,10 @@ export default {
     reviews() {
       // TODO: Return generator to improve performance.
       return Object.values(this.$store.state.reviews)
-        .filter(({ payload }) => {
+        .filter(({ payload, header }) => {
           // Pick only ones for selected subject or issuer.
           const isSelected =
-            payload.sub === this.rootSub || payload.iss === this.rootIss
+            payload.sub === this.rootSub || header.pem === this.rootPk
           const isFiltered =
             !this.$store.state.filter ||
             payload.sub.startsWith(this.$store.state.filter)
@@ -87,7 +87,7 @@ export default {
       return this.notMaresi && downloadLink(this.reviews)
     },
     downloadName() {
-      return `mangrove.reviews_${this.rootSub || pkDisplay(this.rootIss)}.json`
+      return `mangrove.reviews_${this.rootSub || pemDisplay(this.rootPk)}.json`
     },
     noReviewsMessage() {
       if (!this.download || this.reviews.length) {
@@ -103,7 +103,7 @@ export default {
     reviewToArg(review) {
       return {
         review,
-        issuer: this.$store.getters.issuer(review.payload.iss),
+        issuer: this.$store.getters.issuer(review.header.pem),
         maresiSubject: this.$store.getters.subject(
           `${MARESI}:${review.signature}`
         ),
@@ -112,7 +112,7 @@ export default {
       }
     },
     subjectTitle({ sub, metadata }) {
-      if (!this.rootIss) {
+      if (!this.rootPk) {
         return
       }
       if (sub.startsWith(MARESI)) {

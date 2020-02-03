@@ -55,19 +55,20 @@ impl Statistic for Subject {
         let mut confirmed_count = 0;
         for review in relevant {
             count += 1;
-            if let Some(rating) = review.payload.rating {
+            let mangrove = review.payload.private;
+            if let Some(rating) = mangrove.rating {
                 rated_count += 1;
                 rating_total += rating;
                 if rating > MAX_RATING / 2 {
                     positive_count += 1;
-                    if let Some(metadata) = review.payload.metadata {
+                    if let Some(metadata) = mangrove.metadata {
                         if metadata.get("is_personal_experience").is_some() {
                             confirmed_count += 1;
                         }
                     }
                 }
             }
-            if review.payload.opinion.is_some() {
+            if mangrove.opinion.is_some() {
                 opinion_count += 1;
             }
         }

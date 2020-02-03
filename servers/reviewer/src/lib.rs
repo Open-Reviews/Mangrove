@@ -20,7 +20,7 @@ extern crate rocket_okapi;
 use self::aggregator::{Issuer, Statistic, Subject};
 use self::database::{DbConn, Query};
 use self::error::Error;
-use self::review::{Review, Payload};
+use self::review::{Review, OldReview};
 use rocket::response::{Responder, Response};
 use rocket::http::{Method, ContentType, Status};
 use rocket::request::{Form, Request};
@@ -32,6 +32,7 @@ use biscuit::{JWT, jws::Secret, jwa::SignatureAlgorithm};
 use csv::Writer;
 use serde::{Deserialize, Serialize};
 use std::time::SystemTime;
+use std::str::FromStr;
 use std::collections::{HashSet, BTreeMap};
 
 #[openapi(skip)]
@@ -40,38 +41,25 @@ fn index() -> &'static str {
     "Check out for project information: https://planting.space/mangrove.html"
 }
 
+
 #[openapi(skip)]
 #[put("/submit", format = "application/jwt", data = "<jwt_review>")]
 fn submit_review_jwt(conn: DbConn, jwt_review: String) -> Result<String, Error> {
     info!("Review received: {:?}", jwt_review);
-    let encoded_token = JWT::<Payload, biscuit::Empty>::new_encoded(&jwt_review);
-    let header = encoded_token.unverified_header()?;
-    /*
-    let encoded_public_jwk = header
-        .registered
-        .web_key
-        .ok_or_else(|| Error::Incorrect("No public key found in header.".into()))?;
-    let public_jwks: JWKSet<biscuit::Empty> = JWKSet {
-        keys: vec![serde_json::from_str(&encoded_public_jwk)?]
-    };
-    let decoded = encoded_token.decode_with_jwks(&public_jwks)?;
-    */
-    let encoded_pk = header
-        .registered
-        .key_id
-        .ok_or_else(|| Error::Incorrect("No public key found in header.".into()))?;
-    let pk_bytes: Vec<u8> = base64_url::decode(&encoded_pk)?;
-    let decoded = encoded_token.into_decoded(
-        &Secret::PublicKey(pk_bytes),
-        SignatureAlgorithm::ES256
-    )?;
-    println!("payload: {:?}", decoded.payload());
+
+    let review = MangroveJWT::from_str(&jwt_review)?;
+
+    review.payload.check(&conn)?;
+
+    conn.insert(review)?;
+
+    println!("payload: {:?}", review.payload);
     Ok("true".into())
 }
 
 #[openapi(skip)]
 #[put("/submit", format = "application/json", data = "<review>")]
-fn submit_review_json(conn: DbConn, review: Json<Review>) -> Result<String, Error> {
+fn submit_review_json(conn: DbConn, review: Json<OldReview>) -> Result<String, Error> {
     info!("Review received: {:?}", review);
     // Put into a `serde_cbor::Value` to make sure CBOR is canonical.
     let cbor_value = serde_cbor::value::to_value(&review.payload).unwrap();
@@ -101,7 +89,7 @@ pub struct CborReview {
 fn submit_review_cbor(conn: DbConn, creview: Json<CborReview>) -> Result<String, Error> {
     info!("CBOR review received: {:?}", creview);
     let payload_bytes = base64_url::decode(&creview.payload)?;
-    let review = Review {
+    let review = OldReview {
         signature: creview.into_inner().signature,
         payload: serde_cbor::from_slice(&payload_bytes)?
     };
@@ -139,7 +127,7 @@ fn get_reviews(conn: DbConn, json: Form<Query>) -> Result<Reviews, Error> {
                 &conn,
                 reviews
                     .iter()
-                    .map(|review| review.payload.iss.clone())
+                    .map(|review| review.header.private.pem.clone())
                     // Deduplicate before computing Issuers.
                     .collect::<HashSet<_>>()
                     .into_iter(),

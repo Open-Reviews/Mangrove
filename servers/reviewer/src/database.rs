@@ -17,7 +17,7 @@ pub struct Query {
     /// Return review with this `signature` value.
     pub signature: Option<String>,
     /// Return reviews by this issuer.
-    pub iss: Option<String>,
+    pub pem: Option<String>,
     /// Return reviews issued at this time.
     pub iat: Option<i64>,
     /// Return reviews with timestamp greater than this.

@@ -2,14 +2,17 @@ use super::database::{self, DbConn};
 use super::error::Error;
 use super::schema::reviews;
 use isbn::Isbn;
+use biscuit::{JWT, ClaimsSet, CompactPart, jws::{Secret, Header}, jwa::SignatureAlgorithm};
 use ring::signature::{self, UnparsedPublicKey};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
+use pem::parse;
+use url::Url;
 use std::borrow::Cow;
 use std::collections::BTreeMap;
 use std::env;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
-use url::Url;
+use std::str::FromStr;
 
 pub type Rating = i16;
 
@@ -22,20 +25,166 @@ struct ExtraHashes(Vec<String>);
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 struct Metadata(BTreeMap<String, serde_json::Value>);
 
-/// Mangrove Review used for submission or retrieval from the database.
 #[derive(
-    Debug, PartialEq, Serialize, Deserialize, Identifiable, Insertable, Queryable, JsonSchema,
+    Debug, PartialEq, Serialize, Identifiable, Insertable, Queryable
 )]
 #[primary_key(signature)]
 pub struct Review {
-    /// ECDSA signature of the `payload` by the review issuer.
+    pub jwt: String,
     pub signature: String,
-    /// Primary content of the review.
+    pub pem: String,
     #[diesel(embed)]
-    pub payload: Payload
+    pub payload: ClaimsSet<MangrovePayload>
+}
+
+impl FromStr for Review {
+    type Err = biscuit::errors::Error;
+
+    fn from_str(jwt_review: &str) -> Result<Self, Self::Err> {
+        let encoded_token = JWT::<MangrovePayload, MangroveHeader>::new_encoded(&jwt_review);
+        let signature = match encoded_token {
+            JWT::Encoded(ref compact) => compact
+                .part::<Vec<u8>>(2)?
+                .to_base64()?
+                .unwrap(),
+            _ => panic!("The token is compact since it was just received as String.")
+        };
+        let header = encoded_token.unverified_header()?;
+        /*
+        let encoded_public_jwk = header
+            .registered
+            .web_key
+            .ok_or_else(|| Error::Incorrect("No public key found in header.".into()))?;
+        let public_jwks: JWKSet<biscuit::Empty> = JWKSet {
+            keys: vec![serde_json::from_str(&encoded_public_jwk)?]
+        };
+        let decoded = encoded_token.decode_with_jwks(&public_jwks)?;
+        */
+
+        let pem = header.private.pem;
+        let pem_contents = parse(pem.as_bytes()).unwrap().contents;
+
+        println!("pem: {:?}", pem_contents);
+        let parsed_pem = der_parser::parse_der(&pem_contents).unwrap();
+
+        println!("pk pem: {:?}", parsed_pem.1.as_sequence().unwrap()[1].as_slice());
+        let decoded = encoded_token.into_decoded(
+            &Secret::PublicKey(parsed_pem.0.to_vec()),
+            SignatureAlgorithm::ES256
+        )?;
+
+        let review = match decoded {
+            JWT::Decoded { header, payload } => Review {
+            jwt: jwt_review.into(),
+            signature,
+            pem,
+            payload
+        },
+        _ => panic!("Into_decoded succeded above, so decoded is present.")
+        };
+        Ok(review)
+    }
 }
 
 impl Review {
+    fn validate_unique(&self, conn: &DbConn) -> Result<(), Error> {
+        let similar = conn.filter(database::Query {
+            pem: Some(self.pem.clone()),
+            sub: Some(serde_json::to_string(self.payload.registered.subject)),
+            rating: self.payload.private.rating,
+            opinion: self.payload.private.opinion.clone(),
+            ..Default::default()
+        })?;
+        if similar.is_empty() {
+            Ok(())
+        } else {
+            Err(Error::Incorrect(
+                "Duplicate entry found in the database, please submit reviews with differing rating or opinion.".into()
+            ))
+        }
+    }
+
+    pub fn validate(&self, conn: &DbConn) -> Result<bool, Error> {
+}
+
+/// JWT header fields specific to a Mangrove Review.
+#[derive(
+    Debug, PartialEq, Serialize, Deserialize
+)]
+pub struct MangroveHeader {
+    /// PEM encoded public key of the issuer.
+    pub pem: String
+}
+
+/// JWT payload fields specific to a Mangrove Review,
+/// they contains the primary content of the review.
+#[derive(
+    Debug, PartialEq, Serialize, Deserialize
+)]
+pub struct MangrovePayload {
+    /// Rating in range [0, 100] indicating how likely
+    /// the issuer is to recommend the subject.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rating: Option<Rating>,
+    /// Text of an opinion that the issuer had about the subject.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub opinion: Option<String>,
+    /// Hashes referring to additional data,
+    /// such as pictures available at https://files.mangrove.reviews/<hash>
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub extra_hashes: Option<serde_json::Value>,
+    /// Any data relating to the issuer or circumstances of leaving review.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<serde_json::Value>,
+}
+
+impl MangrovePayload {
+
+
+    /// Check the Review roughly in order of complexity of checks.
+    pub fn validate(&self, conn: &DbConn) -> Result<bool, Error> {
+        let extra_hashes: Option<ExtraHashes> = match self.extra_hashes {
+            Some(ref v) => serde_json::from_value(v.clone())?,
+            None => None,
+        };
+        let metadata: Option<Metadata> = match self.metadata {
+            Some(ref v) => serde_json::from_value(v.clone())?,
+            None => None,
+        };
+        if self.rating.is_none() && self.opinion.is_none() {
+            return Err(Error::Incorrect(
+                "Review must contain either a rating or a review.".into(),
+            ));
+        }
+        self.rating.map_or(Ok(()), check_rating)?;
+        self.opinion
+            .as_ref()
+            .map_or(Ok(()), |s| check_opinion(&s))?;
+        metadata.map_or(Ok(()), |m| {
+            m.0.into_iter().map(|(k, v)| check_metadata(&k, v)).collect()
+        })?;
+        self.check_unique(conn)?;
+        extra_hashes.map_or(Ok(()), |e| {
+            e.0.iter().map(|h| check_extrahash(&h)).collect()
+        })?;
+        check_sub(conn, &self.sub)?;
+        Ok(true)
+    }
+}
+
+
+/// Mangrove Review used for submission or retrieval from the database.
+#[derive(
+    Debug, PartialEq, Serialize, Deserialize, JsonSchema,
+)]
+pub struct OldReview {
+    /// ECDSA signature of the `payload` by the review issuer.
+    pub signature: String,
+    /// Primary content of the review.
+    pub payload: Payload
+}
+
+impl OldReview {
     pub fn check_signature(&self, msg_bytes: &[u8]) -> Result<(), Error> {
         let pubkey_bytes: Vec<u8> = base64_url::decode(&self.payload.iss)?;
         let sig_bytes: Vec<u8> = base64_url::decode(&self.signature)?;
@@ -92,6 +241,10 @@ impl Payload {
         }
     }
 }
+
+
+
+
 
 const MANGROVE_EPOCH: Duration = Duration::from_secs(1_577_836_800);
 

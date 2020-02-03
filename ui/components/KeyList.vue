@@ -64,7 +64,7 @@
 // TODO: fix ugly button repetition.
 import { get } from 'idb-keyval'
 import Identicon from './Identicon'
-import { downloadLink, pkDisplay } from '~/utils'
+import { downloadLink, pemDisplay } from '~/utils'
 import { PRIVATE_KEY } from '~/store/indexeddb-types'
 
 export default {
@@ -92,7 +92,7 @@ export default {
       return this.sk ? (this.showPrivate ? 'mdi-eye-off' : 'mdi-eye') : ''
     },
     downloadKeyName() {
-      return `mangrove.reviews_PrivateKey_${pkDisplay(
+      return `mangrove.reviews_PrivateKey_${pemDisplay(
         this.$store.state.publicKey
       )}.json`
     },
