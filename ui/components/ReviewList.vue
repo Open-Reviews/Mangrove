@@ -58,10 +58,9 @@ export default {
     reviews() {
       // TODO: Return generator to improve performance.
       return Object.values(this.$store.state.reviews)
-        .filter(({ payload, header }) => {
+        .filter(({ payload, kid }) => {
           // Pick only ones for selected subject or issuer.
-          const isSelected =
-            payload.sub === this.rootSub || header.pem === this.rootPk
+          const isSelected = payload.sub === this.rootSub || kid === this.rootPk
           const isFiltered =
             !this.$store.state.filter ||
             payload.sub.startsWith(this.$store.state.filter)
@@ -103,7 +102,7 @@ export default {
     reviewToArg(review) {
       return {
         review,
-        issuer: this.$store.getters.issuer(review.header.pem),
+        issuer: this.$store.getters.issuer(review.kid),
         maresiSubject: this.$store.getters.subject(
           `${MARESI}:${review.signature}`
         ),

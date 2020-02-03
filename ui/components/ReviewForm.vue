@@ -218,8 +218,8 @@ export default {
     // Fetch reviews to prepopulate metadata and allow for full preview.
     this.$store.dispatch('saveMyReviews').then(() => {
       const myReviews = Object.values(this.$store.state.reviews).filter(
-        ({ header }) => {
-          return header.pem === this.$store.state.publicKey
+        ({ kid }) => {
+          return kid === this.$store.state.publicKey
         }
       )
       if (!myReviews.length) {

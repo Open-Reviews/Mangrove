@@ -1,7 +1,8 @@
 table! {
     reviews (signature) {
         signature -> Text,
-        iss -> Text,
+        jwt -> Text,
+        kid -> Text,
         iat -> Int8,
         sub -> Text,
         rating -> Nullable<Int2>,

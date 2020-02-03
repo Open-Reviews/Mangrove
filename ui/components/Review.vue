@@ -7,7 +7,7 @@
       :style="isMaresi ? '' : 'cursor: pointer'"
     />
     <UserHeader
-      :pk="header.pem"
+      :pk="review.kid"
       :metadata="payload.metadata"
       :count="issuer && issuer.count"
       class="mb-n5"
@@ -175,14 +175,14 @@ export default {
           number:
             this.maresiSubject.positive_count -
             this.maresiSubject.confirmed_count,
-          disabled: this.review.header.pem === this.$store.state.publicKey
+          disabled: this.review.kid === this.$store.state.publicKey
         },
         {
           icon: 'mdi-certificate',
           tooltip: 'Confirm this experience',
           action: this.confirm,
           number: this.maresiSubject.confirmed_count,
-          disabled: this.review.header.pem === this.$store.state.publicKey
+          disabled: this.review.kid === this.$store.state.publicKey
         },
         {
           icon: 'mdi-comment-text-multiple',

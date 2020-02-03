@@ -5,6 +5,7 @@ use isbn::Isbn;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use url::Url;
+use once_cell::sync::Lazy;
 use std::borrow::Cow;
 use std::collections::BTreeMap;
 use std::env;
@@ -28,22 +29,25 @@ struct Metadata(BTreeMap<String, serde_json::Value>);
 )]
 #[primary_key(signature)]
 pub struct Review {
+    /// JWT signature by the review issuer.
+    pub signature: String,
     /// Review in JWT format.
     pub jwt: String,
     /// Public key of the reviewer in PEM format.
     pub kid: String,
-    /// JWT signature by the review issuer.
-    pub signature: String,
     /// Primary content of the review.
     #[diesel(embed)]
     pub payload: Payload
 }
 
-const JWT_VALIDATION: jsonwebtoken::Validation = jsonwebtoken::Validation {
-    leeway: 5,
-    algorithms: vec![jsonwebtoken::Algorithm::ES256],
-    ..Default::default()
-};
+static JWT_VALIDATION: Lazy<jsonwebtoken::Validation> = Lazy::new(|| {
+    jsonwebtoken::Validation {
+        leeway: 5,
+        validate_exp: false,
+        algorithms: vec![jsonwebtoken::Algorithm::ES256],
+        ..Default::default()
+    }
+});
 
 impl FromStr for Review {
     type Err = Error;
@@ -72,10 +76,10 @@ impl FromStr for Review {
 impl Review {
     fn validate_unique(&self, conn: &DbConn) -> Result<(), Error> {
         let similar = conn.filter(database::Query {
-            kid: Some(self.kid),
-            sub: Some(self.payload.sub),
+            kid: Some(self.kid.clone()),
+            sub: Some(self.payload.sub.clone()),
             rating: self.payload.rating,
-            opinion: self.payload.opinion,
+            opinion: self.payload.opinion.clone(),
             ..Default::default()
         })?;
         if similar.is_empty() {
@@ -375,7 +379,6 @@ fn check_metadata(key: &str, value: serde_json::Value) -> Result<(), Error> {
         )),
     }
 }
-
 
 #[cfg(test)]
 mod tests {

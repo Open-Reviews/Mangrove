@@ -45,14 +45,10 @@ fn index() -> &'static str {
 #[put("/submit", format = "application/jwt", data = "<jwt_review>")]
 fn submit_review_jwt(conn: DbConn, jwt_review: String) -> Result<String, Error> {
     info!("Review received: {:?}", jwt_review);
-
     let review = Review::from_str(&jwt_review)?;
-
-    review.payload.check(&conn)?;
-
+    review.validate(&conn)?;
+    println!("Inserting review: {:?}", review);
     conn.insert(review)?;
-
-    println!("payload: {:?}", review.payload);
     Ok("true".into())
 }
 
@@ -79,7 +75,7 @@ fn get_reviews(conn: DbConn, json: Form<Query>) -> Result<Reviews, Error> {
                 &conn,
                 reviews
                     .iter()
-                    .map(|review| review.kid)
+                    .map(|review| review.kid.clone())
                     // Deduplicate before computing Issuers.
                     .collect::<HashSet<_>>()
                     .into_iter(),
@@ -144,12 +140,12 @@ impl Responder<'static> for Csv {
 fn get_reviews_csv(conn: DbConn, json: Form<Query>) -> Result<Csv, Error> {
     let out = get_reviews(conn, json)?;
     let mut wtr = Writer::from_writer(vec![]);
-    wtr.write_record(&["signature", "iss", "iat", "sub", "rating", "opinion", "extra_hashes", "metadata"])?;
+    wtr.write_record(&["signature", "pem", "iat", "sub", "rating", "opinion", "extra_hashes", "metadata"])?;
     for review in out.reviews {
         let pl = review.payload;
         wtr.write_record(&[
             review.signature,
-            pl.iss,
+            review.kid,
             pl.iat.to_string(),
             pl.sub,
             pl.rating.map_or("none".into(), |r| r.to_string()),
@@ -169,9 +165,9 @@ fn get_subject(conn: DbConn, sub: String) -> Result<Json<Subject>, Error> {
 
 /// Get information on issuers that have left reviews fulfilling the `Query`.
 #[openapi]
-#[get("/issuer/<iss>")]
-fn get_issuer(conn: DbConn, iss: String) -> Result<Json<Issuer>, Error> {
-    Issuer::compute(&conn, iss).map(Json)
+#[get("/issuer/<pem>")]
+fn get_issuer(conn: DbConn, pem: String) -> Result<Json<Issuer>, Error> {
+    Issuer::compute(&conn, pem).map(Json)
 }
 
 /// Query allowing for retrieval of information about multiple subjects or issuers.
@@ -180,7 +176,7 @@ struct BatchQuery {
     /// List of subject URIs to get information about.
     subs: Option<Vec<String>>,
     /// List of issuer public keys to get information about.
-    isss: Option<Vec<String>>,
+    pems: Option<Vec<String>>,
 }
 
 type Subjects = BTreeMap<String, Subject>;
@@ -203,7 +199,7 @@ fn batch(conn: DbConn, json: Json<BatchQuery>) -> Result<Json<BatchReturn>, Erro
         Some(subs) => Some(Subject::compute_bulk(&conn, subs.iter().cloned())?),
         None => None,
     };
-    let issuers = match query.isss {
+    let issuers = match query.pems {
         Some(subs) => Some(Issuer::compute_bulk(&conn, subs.into_iter())?),
         None => None,
     };

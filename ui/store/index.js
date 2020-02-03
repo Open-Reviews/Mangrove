@@ -89,8 +89,8 @@ export const getters = {
   subject: (state) => (sub) => {
     return state.subjects[sub] || console.log('not present in subjects', sub)
   },
-  issuer: (state) => (iss) => {
-    return state.issuers[iss] || console.log('not present in issuers', iss)
+  issuer: (state) => (kid) => {
+    return state.issuers[kid] || console.log('not present in issuers', kid)
   },
   isUnique: (state) => (newPayload) => {
     return (
@@ -213,7 +213,7 @@ export const actions = {
   },
   saveMyReviews({ state, dispatch }) {
     dispatch('saveReviews', {
-      pem: state.publicKey
+      kid: state.publicKey
     })
       .then(
         (rs) =>
@@ -319,7 +319,7 @@ export const actions = {
         algorithm: 'ES256',
         header: {
           jwk: JSON.stringify(privateJwk),
-          pem: state.publicKey
+          kid: state.publicKey
         }
       }),
       signature: base64url.encode(new Uint8Array(signed)),
