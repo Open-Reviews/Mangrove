@@ -6,9 +6,7 @@ import { PRIVATE_KEY } from './indexeddb-types'
 import * as t from './mutation-types'
 import { CLIENT_ID } from './metadata-types'
 import { jwkToKeypair, skToJwk, publicToPem, privateToPem } from '~/utils'
-const base64url = require('base64-url')
-const jwt = require('jsonwebtoken')
-const cbor = require('borc')
+const jsonwebtoken = require('jsonwebtoken')
 
 export const state = () => ({
   keyPair: null,
@@ -296,80 +294,65 @@ export const actions = {
     // Always at least `client_id` present.
     meta[CLIENT_ID] = process.env.BASE_URL
     payload.metadata = meta
-    console.log('payload: ', JSON.stringify(payload))
-    const encoded = cbor.encode(payload)
-    console.log('msg: ', base64url.encode(encoded))
-    const signed = await window.crypto.subtle.sign(
+    const jwt = jsonwebtoken.sign(
+      payload,
+      await privateToPem(state.keyPair.privateKey),
       {
-        name: 'ECDSA',
-        hash: { name: 'SHA-256' }
-      },
-      state.keyPair.privateKey,
-      encoded
-    )
-    console.log('sig: ', new Uint8Array(signed))
-    const privateJwk = await crypto.subtle.exportKey(
-      'jwk',
-      state.keyPair.publicKey
-    )
-    privateJwk.alg = 'ES256'
-    console.log('public pem: ', await publicToPem(state.keyPair.publicKey))
-    return {
-      jwt: jwt.sign(payload, await privateToPem(state.keyPair.privateKey), {
         algorithm: 'ES256',
         header: {
-          jwk: JSON.stringify(privateJwk),
+          jwk: JSON.stringify(
+            await crypto.subtle.exportKey('jwk', state.keyPair.publicKey)
+          ),
           kid: state.publicKey
         }
-      }),
-      signature: base64url.encode(new Uint8Array(signed)),
-      encodedPayload: base64url.encode(encoded),
-      payload
+      }
+    )
+    return {
+      jwt,
+      kid: state.publicKey,
+      payload,
+      signature: jwt.split('.')[2]
     }
   },
   submitReview({ getters, commit, dispatch }, reviewStub) {
-    return dispatch('reviewContent', reviewStub).then(
-      ({ jwt, signature, encodedPayload, payload }) => {
-        if (!getters.isUnique(payload)) {
-          commit(t.SUBMIT_ERROR, 'You have already submitted this review.')
-          return false
-        }
-        console.log('jwt: ', jwt)
-        const review = { signature, payload }
-        console.log('Mangrove review: ', review)
-        return this.$axios
-          .put(`${process.env.VUE_APP_API_URL}/submit`, jwt, {
-            headers: {
-              'Content-Type': 'application/jwt'
-            }
-          })
-          .then(() => {
-            commit(t.SUBMIT_ERROR, null)
-            // Add review so that its immediately visible.
-            return dispatch('getSubject', `${MARESI}:${signature}`)
-          })
-          .then(() => {
-            commit(t.ADD_REVIEWS, [{ signature, payload }])
-            return true
-          })
-          .catch((error) => {
-            if (error.response) {
-              console.log(error.response.status)
-              console.log(error.response.headers)
-              commit(t.SUBMIT_ERROR, error.response.data)
-            } else if (error.request) {
-              console.log(error.request)
-              commit(t.SUBMIT_ERROR, 'Mangrove Server not reachable.')
-            } else {
-              commit(
-                t.SUBMIT_ERROR,
-                `Internal client error, please report: ${error.message}`
-              )
-            }
-            return false
-          })
+    return dispatch('reviewContent', reviewStub).then((review) => {
+      if (!getters.isUnique(review.payload)) {
+        commit(t.SUBMIT_ERROR, 'You have already submitted this review.')
+        return false
       }
-    )
+      console.log('Mangrove review: ', review)
+      return this.$axios
+        .put(`${process.env.VUE_APP_API_URL}/submit`, review.jwt, {
+          headers: {
+            'Content-Type': 'application/jwt'
+          }
+        })
+        .then(() => {
+          commit(t.SUBMIT_ERROR, null)
+          // Add review so that its immediately visible.
+          return dispatch('getSubject', `${MARESI}:${review.signature}`)
+        })
+        .then(() => {
+          commit(t.ADD_REVIEWS, [review])
+          return true
+        })
+        .catch((error) => {
+          if (error.response) {
+            console.log(error.response.status)
+            console.log(error.response.headers)
+            commit(t.SUBMIT_ERROR, error.response.data)
+          } else if (error.request) {
+            console.log(error.request)
+            commit(t.SUBMIT_ERROR, 'Mangrove Server not reachable.')
+          } else {
+            commit(
+              t.SUBMIT_ERROR,
+              `Internal client error, please report: ${error.message}`
+            )
+          }
+          return false
+        })
+    })
   },
   // Adjust the route and save reviews for the given subject locally.
   selectSubject({ commit, dispatch }, [oldQuery, sub]) {

@@ -11,8 +11,10 @@ export function downloadLink(data) {
 }
 
 export function pemDisplay(pk) {
-  const hex = pk.split('\n')[1]
-  return hex.slice(0, 10) + '...' + hex.slice(-10)
+  const matches = pk.match(
+    /-----BEGIN PUBLIC KEY-----(.{10}).*(.{10})-----END PUBLIC KEY-----/
+  )
+  return matches[1] + '...' + matches[2]
 }
 
 export function displayName(meta, placeholder = 'Anonymous') {
@@ -102,5 +104,6 @@ export async function publicToPem(key) {
   const exported = await window.crypto.subtle.exportKey('spki', key)
   const exportedAsString = u8aToString(exported)
   const exportedAsBase64 = window.btoa(exportedAsString)
-  return `-----BEGIN PUBLIC KEY-----\n${exportedAsBase64}\n-----END PUBLIC KEY-----`
+  // Do not add new lines so that its copyable from plain string representation.
+  return `-----BEGIN PUBLIC KEY-----${exportedAsBase64}-----END PUBLIC KEY-----`
 }

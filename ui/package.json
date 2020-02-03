@@ -14,8 +14,7 @@
   "dependencies": {
     "@nuxtjs/axios": "^5.3.6",
     "@nuxtjs/dotenv": "^1.4.0",
-    "base64-url": "^2.3.2",
-    "borc": "^2.1.1",
+    "base64-url": "^2.3.3",
     "frontmatter-markdown-loader": "^3.1.0",
     "idb-keyval": "^3.2.0",
     "jdenticon": "^2.2.0",

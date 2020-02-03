@@ -140,7 +140,7 @@ impl Responder<'static> for Csv {
 fn get_reviews_csv(conn: DbConn, json: Form<Query>) -> Result<Csv, Error> {
     let out = get_reviews(conn, json)?;
     let mut wtr = Writer::from_writer(vec![]);
-    wtr.write_record(&["signature", "pem", "iat", "sub", "rating", "opinion", "extra_hashes", "metadata"])?;
+    wtr.write_record(&["signature", "pem", "iat", "sub", "rating", "opinion", "images", "metadata"])?;
     for review in out.reviews {
         let pl = review.payload;
         wtr.write_record(&[
@@ -150,7 +150,7 @@ fn get_reviews_csv(conn: DbConn, json: Form<Query>) -> Result<Csv, Error> {
             pl.sub,
             pl.rating.map_or("none".into(), |r| r.to_string()),
             pl.opinion.unwrap_or("none".into()),
-            pl.extra_hashes.map_or("none".into(), |eh| eh.to_string()),
+            pl.images.map_or("none".into(), |eh| eh.to_string()),
             pl.metadata.map_or("none".into(), |m| m.to_string())
         ])?;
     }

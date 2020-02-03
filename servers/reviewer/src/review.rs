@@ -12,17 +12,6 @@ use std::env;
 use std::time::Duration;
 use std::str::FromStr;
 
-pub type Rating = i16;
-
-pub const MAX_RATING: Rating = 100;
-const MAX_REVIEW_LENGTH: usize = 500;
-
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
-struct ExtraHashes(Vec<String>);
-
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
-struct Metadata(BTreeMap<String, serde_json::Value>);
-
 /// Mangrove Review used for submission or retrieval from the database.
 #[derive(
     Debug, PartialEq, Serialize, Deserialize, Identifiable, Insertable, Queryable, JsonSchema,
@@ -56,7 +45,9 @@ impl FromStr for Review {
         // Do not put it up due to generic names.
         use jsonwebtoken::{decode_header, decode, DecodingKey};
 
-        let kid = decode_header(&jwt_review)?.kid.unwrap();
+        let kid = decode_header(&jwt_review)?
+            .kid
+            .ok_or_else(|| Error::Incorrect("kid is missing from header".into()))?;
 
         let decoded = decode::<Payload>(
             &jwt_review, &DecodingKey::from_ec_pem(kid.as_bytes())?,
@@ -67,7 +58,11 @@ impl FromStr for Review {
             jwt: jwt_review.into(),
             kid,
             // Use the JWT structure to find signature.
-            signature: jwt_review.split('.').nth(2).unwrap().into(),
+            signature: jwt_review
+                .split('.')
+                .nth(2)
+                .expect("Assuming jsonwebtoken does validation when decoding above.")
+                .into(),
             payload: decoded.claims
         })
     }
@@ -97,28 +92,6 @@ impl Review {
     }
 }
 
-/// JWT payload fields specific to a Mangrove Review,
-/// they contains the primary content of the review.
-#[derive(
-    Debug, PartialEq, Serialize, Deserialize
-)]
-pub struct MangrovePayload {
-    /// Rating in range [0, 100] indicating how likely
-    /// the issuer is to recommend the subject.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub rating: Option<Rating>,
-    /// Text of an opinion that the issuer had about the subject.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub opinion: Option<String>,
-    /// Hashes referring to additional data,
-    /// such as pictures available at https://files.mangrove.reviews/<hash>
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub extra_hashes: Option<serde_json::Value>,
-    /// Any data relating to the issuer or circumstances of leaving review.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<serde_json::Value>,
-}
-
 /// Primary content of the review, this is what gets serialized for signing.
 #[derive(
     Debug, PartialEq, Serialize, Deserialize, Insertable, Queryable, JsonSchema,
@@ -140,16 +113,30 @@ pub struct Payload {
     /// Hashes referring to additional data,
     /// such as pictures available at https://files.mangrove.reviews/<hash>
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub extra_hashes: Option<serde_json::Value>,
+    pub images: Option<serde_json::Value>,
     /// Any data relating to the issuer or circumstances of leaving review.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<serde_json::Value>,
 }
 
+pub type Rating = i16;
+
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+struct Images(Vec<Image>);
+
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+struct Image {
+    src: String,
+    label: Option<String>
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+struct Metadata(BTreeMap<String, serde_json::Value>);
+
 impl Payload {
     /// Check the Review roughly in order of complexity of checks.
     pub fn validate(&self, conn: &DbConn) -> Result<bool, Error> {
-        let extra_hashes: Option<ExtraHashes> = match self.extra_hashes {
+        let images: Option<Images> = match self.images {
             Some(ref v) => serde_json::from_value(v.clone())?,
             None => None,
         };
@@ -170,8 +157,8 @@ impl Payload {
         metadata.map_or(Ok(()), |m| {
             m.0.into_iter().map(|(k, v)| check_metadata(&k, v)).collect()
         })?;
-        extra_hashes.map_or(Ok(()), |e| {
-            e.0.iter().map(|h| check_extrahash(&h)).collect()
+        images.map_or(Ok(()), |e| {
+            e.0.iter().map(|img| check_image(img)).collect()
         })?;
         check_sub(conn, &self.sub)?;
         Ok(true)
@@ -188,6 +175,8 @@ fn check_timestamp(iat: Duration) -> Result<(), Error> {
     }
 }
 
+const MAX_RATING: Rating = 100;
+
 fn check_rating(rating: Rating) -> Result<(), Error> {
     if rating < 0 || rating > MAX_RATING {
         Err(Error::Incorrect("Rating out of range.".into()))
@@ -195,6 +184,8 @@ fn check_rating(rating: Rating) -> Result<(), Error> {
         Ok(())
     }
 }
+
+const MAX_REVIEW_LENGTH: usize = 500;
 
 fn check_opinion(opinion: &str) -> Result<(), Error> {
     if opinion.len() <= MAX_REVIEW_LENGTH {
@@ -304,20 +295,19 @@ fn check_sub(conn: &DbConn, uri: &str) -> Result<(), Error> {
     }
 }
 
-fn check_extrahash(hash: &str) -> Result<(), Error> {
-    let query = format!(
-        "{}{}",
-        env::var::<String>("FILES_URL".into()).expect("FILES_URL env variable must be specified."),
-        hash
-    );
-    info!("Checking the file: {}", query);
-    let exists = reqwest::get(&query)?.text()?.parse()?;
+fn check_image(img: &Image) -> Result<(), Error> {
+    if let Some(l) = img.label {
+        if l.len() > 50 {
+            return Err(Error::Incorrect(format!("Image label is too long: {}", l)))
+        }
+    }
+    let exists = reqwest::get(&img.src)?.text()?.parse()?;
     if exists {
         Ok(())
     } else {
         Err(Error::Incorrect(format!(
-            "No file with such hash has been uploaded: {:?}",
-            hash
+            "No file can be found online: {:?}",
+            img.src
         )))
     }
 }
