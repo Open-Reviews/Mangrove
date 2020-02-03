@@ -2,16 +2,13 @@ use super::database::{self, DbConn};
 use super::error::Error;
 use super::schema::reviews;
 use isbn::Isbn;
-use biscuit::{JWT, ClaimsSet, CompactPart, jws::{Secret, Header}, jwa::SignatureAlgorithm};
-use ring::signature::{self, UnparsedPublicKey};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
-use pem::parse;
 use url::Url;
 use std::borrow::Cow;
 use std::collections::BTreeMap;
 use std::env;
-use std::time::{Duration, SystemTime, UNIX_EPOCH};
+use std::time::Duration;
 use std::str::FromStr;
 
 pub type Rating = i16;
@@ -25,74 +22,60 @@ struct ExtraHashes(Vec<String>);
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 struct Metadata(BTreeMap<String, serde_json::Value>);
 
+/// Mangrove Review used for submission or retrieval from the database.
 #[derive(
-    Debug, PartialEq, Serialize, Identifiable, Insertable, Queryable
+    Debug, PartialEq, Serialize, Deserialize, Identifiable, Insertable, Queryable, JsonSchema,
 )]
 #[primary_key(signature)]
 pub struct Review {
+    /// Review in JWT format.
     pub jwt: String,
+    /// Public key of the reviewer in PEM format.
+    pub kid: String,
+    /// JWT signature by the review issuer.
     pub signature: String,
-    pub pem: String,
+    /// Primary content of the review.
     #[diesel(embed)]
-    pub payload: ClaimsSet<MangrovePayload>
+    pub payload: Payload
 }
 
+const JWT_VALIDATION: jsonwebtoken::Validation = jsonwebtoken::Validation {
+    leeway: 5,
+    algorithms: vec![jsonwebtoken::Algorithm::ES256],
+    ..Default::default()
+};
+
 impl FromStr for Review {
-    type Err = biscuit::errors::Error;
+    type Err = Error;
 
     fn from_str(jwt_review: &str) -> Result<Self, Self::Err> {
-        let encoded_token = JWT::<MangrovePayload, MangroveHeader>::new_encoded(&jwt_review);
-        let signature = match encoded_token {
-            JWT::Encoded(ref compact) => compact
-                .part::<Vec<u8>>(2)?
-                .to_base64()?
-                .unwrap(),
-            _ => panic!("The token is compact since it was just received as String.")
-        };
-        let header = encoded_token.unverified_header()?;
-        /*
-        let encoded_public_jwk = header
-            .registered
-            .web_key
-            .ok_or_else(|| Error::Incorrect("No public key found in header.".into()))?;
-        let public_jwks: JWKSet<biscuit::Empty> = JWKSet {
-            keys: vec![serde_json::from_str(&encoded_public_jwk)?]
-        };
-        let decoded = encoded_token.decode_with_jwks(&public_jwks)?;
-        */
+        // Do not put it up due to generic names.
+        use jsonwebtoken::{decode_header, decode, DecodingKey};
 
-        let pem = header.private.pem;
-        let pem_contents = parse(pem.as_bytes()).unwrap().contents;
+        let kid = decode_header(&jwt_review)?.kid.unwrap();
 
-        println!("pem: {:?}", pem_contents);
-        let parsed_pem = der_parser::parse_der(&pem_contents).unwrap();
-
-        println!("pk pem: {:?}", parsed_pem.1.as_sequence().unwrap()[1].as_slice());
-        let decoded = encoded_token.into_decoded(
-            &Secret::PublicKey(parsed_pem.0.to_vec()),
-            SignatureAlgorithm::ES256
+        let decoded = decode::<Payload>(
+            &jwt_review, &DecodingKey::from_ec_pem(kid.as_bytes())?,
+            &JWT_VALIDATION
         )?;
 
-        let review = match decoded {
-            JWT::Decoded { header, payload } => Review {
+        Ok(Review{
             jwt: jwt_review.into(),
-            signature,
-            pem,
-            payload
-        },
-        _ => panic!("Into_decoded succeded above, so decoded is present.")
-        };
-        Ok(review)
+            kid,
+            // Use the JWT structure to find signature.
+            signature: jwt_review.split('.').nth(2).unwrap().into(),
+            payload: decoded.claims
+        })
     }
 }
 
 impl Review {
     fn validate_unique(&self, conn: &DbConn) -> Result<(), Error> {
         let similar = conn.filter(database::Query {
-            pem: Some(self.pem.clone()),
-            sub: Some(serde_json::to_string(self.payload.registered.subject)),
-            rating: self.payload.private.rating,
-            opinion: self.payload.private.opinion.clone(),
+            kid: Some(self.kid),
+            sub: Some(self.payload.sub),
+            rating: self.payload.rating,
+            opinion: self.payload.opinion,
             ..Default::default()
         })?;
         if similar.is_empty() {
@@ -105,15 +88,9 @@ impl Review {
     }
 
     pub fn validate(&self, conn: &DbConn) -> Result<bool, Error> {
-}
-
-/// JWT header fields specific to a Mangrove Review.
-#[derive(
-    Debug, PartialEq, Serialize, Deserialize
-)]
-pub struct MangroveHeader {
-    /// PEM encoded public key of the issuer.
-    pub pem: String
+        self.validate_unique(conn)?;
+        self.payload.validate(conn)
+    }
 }
 
 /// JWT payload fields specific to a Mangrove Review,
@@ -138,71 +115,13 @@ pub struct MangrovePayload {
     pub metadata: Option<serde_json::Value>,
 }
 
-impl MangrovePayload {
-
-
-    /// Check the Review roughly in order of complexity of checks.
-    pub fn validate(&self, conn: &DbConn) -> Result<bool, Error> {
-        let extra_hashes: Option<ExtraHashes> = match self.extra_hashes {
-            Some(ref v) => serde_json::from_value(v.clone())?,
-            None => None,
-        };
-        let metadata: Option<Metadata> = match self.metadata {
-            Some(ref v) => serde_json::from_value(v.clone())?,
-            None => None,
-        };
-        if self.rating.is_none() && self.opinion.is_none() {
-            return Err(Error::Incorrect(
-                "Review must contain either a rating or a review.".into(),
-            ));
-        }
-        self.rating.map_or(Ok(()), check_rating)?;
-        self.opinion
-            .as_ref()
-            .map_or(Ok(()), |s| check_opinion(&s))?;
-        metadata.map_or(Ok(()), |m| {
-            m.0.into_iter().map(|(k, v)| check_metadata(&k, v)).collect()
-        })?;
-        self.check_unique(conn)?;
-        extra_hashes.map_or(Ok(()), |e| {
-            e.0.iter().map(|h| check_extrahash(&h)).collect()
-        })?;
-        check_sub(conn, &self.sub)?;
-        Ok(true)
-    }
-}
-
-
-/// Mangrove Review used for submission or retrieval from the database.
-#[derive(
-    Debug, PartialEq, Serialize, Deserialize, JsonSchema,
-)]
-pub struct OldReview {
-    /// ECDSA signature of the `payload` by the review issuer.
-    pub signature: String,
-    /// Primary content of the review.
-    pub payload: Payload
-}
-
-impl OldReview {
-    pub fn check_signature(&self, msg_bytes: &[u8]) -> Result<(), Error> {
-        let pubkey_bytes: Vec<u8> = base64_url::decode(&self.payload.iss)?;
-        let sig_bytes: Vec<u8> = base64_url::decode(&self.signature)?;
-        //let msg_bytes = serde_cbor::to_vec(&serde_json::to_value(msg)?)?;
-        info!("msg_bytes: {:?}", msg_bytes);
-        let pubkey = UnparsedPublicKey::new(&signature::ECDSA_P256_SHA256_FIXED, &pubkey_bytes);
-        Ok(pubkey.verify(msg_bytes, &sig_bytes)?)
-    }
-}
-
 /// Primary content of the review, this is what gets serialized for signing.
 #[derive(
     Debug, PartialEq, Serialize, Deserialize, Insertable, Queryable, JsonSchema,
 )]
+
 #[table_name = "reviews"]
 pub struct Payload {
-    /// Public key of the issuer of the review.
-    pub iss: String,
     /// Unix Time at which the review was signed.
     pub iat: i64,
     /// URI of the subject that is being reviewed.
@@ -224,37 +143,41 @@ pub struct Payload {
 }
 
 impl Payload {
-    fn check_unique(&self, conn: &DbConn) -> Result<(), Error> {
-        let similar = conn.filter(database::Query {
-            iss: Some(self.iss.clone()),
-            sub: Some(self.sub.clone()),
-            rating: self.rating,
-            opinion: self.opinion.clone(),
-            ..Default::default()
-        })?;
-        if similar.is_empty() {
-            Ok(())
-        } else {
-            Err(Error::Incorrect(
-                "Duplicate entry found in the database, please submit reviews with differing rating or opinion.".into()
-            ))
+    /// Check the Review roughly in order of complexity of checks.
+    pub fn validate(&self, conn: &DbConn) -> Result<bool, Error> {
+        let extra_hashes: Option<ExtraHashes> = match self.extra_hashes {
+            Some(ref v) => serde_json::from_value(v.clone())?,
+            None => None,
+        };
+        let metadata: Option<Metadata> = match self.metadata {
+            Some(ref v) => serde_json::from_value(v.clone())?,
+            None => None,
+        };
+        check_timestamp(Duration::from_secs(self.iat as u64))?;
+        if self.rating.is_none() && self.opinion.is_none() {
+            return Err(Error::Incorrect(
+                "Review must contain either a rating or a review.".into(),
+            ));
         }
+        self.rating.map_or(Ok(()), check_rating)?;
+        self.opinion
+            .as_ref()
+            .map_or(Ok(()), |s| check_opinion(&s))?;
+        metadata.map_or(Ok(()), |m| {
+            m.0.into_iter().map(|(k, v)| check_metadata(&k, v)).collect()
+        })?;
+        extra_hashes.map_or(Ok(()), |e| {
+            e.0.iter().map(|h| check_extrahash(&h)).collect()
+        })?;
+        check_sub(conn, &self.sub)?;
+        Ok(true)
     }
 }
-
-
-
-
 
 const MANGROVE_EPOCH: Duration = Duration::from_secs(1_577_836_800);
 
 fn check_timestamp(iat: Duration) -> Result<(), Error> {
-    let unix_time = SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .expect("SystemTime is not before UNIX EPOCH.");
-    if unix_time <= iat {
-        Err(Error::Incorrect("Claim from the future.".into()))
-    } else if iat < MANGROVE_EPOCH {
+    if iat < MANGROVE_EPOCH {
         Err(Error::Incorrect("Claim too old (`iat` indicates date lower than year 2020).".into()))
     } else {
         Ok(())
@@ -453,38 +376,6 @@ fn check_metadata(key: &str, value: serde_json::Value) -> Result<(), Error> {
     }
 }
 
-impl Payload {
-    /// Check the Review roughly in order of complexity of checks.
-    pub fn check(&self, conn: &DbConn) -> Result<bool, Error> {
-        let extra_hashes: Option<ExtraHashes> = match self.extra_hashes {
-            Some(ref v) => serde_json::from_value(v.clone())?,
-            None => None,
-        };
-        let metadata: Option<Metadata> = match self.metadata {
-            Some(ref v) => serde_json::from_value(v.clone())?,
-            None => None,
-        };
-        check_timestamp(Duration::from_secs(self.iat as u64))?;
-        if self.rating.is_none() && self.opinion.is_none() {
-            return Err(Error::Incorrect(
-                "Review must contain either a rating or a review.".into(),
-            ));
-        }
-        self.rating.map_or(Ok(()), check_rating)?;
-        self.opinion
-            .as_ref()
-            .map_or(Ok(()), |s| check_opinion(&s))?;
-        metadata.map_or(Ok(()), |m| {
-            m.0.into_iter().map(|(k, v)| check_metadata(&k, v)).collect()
-        })?;
-        self.check_unique(conn)?;
-        extra_hashes.map_or(Ok(()), |e| {
-            e.0.iter().map(|h| check_extrahash(&h)).collect()
-        })?;
-        check_sub(conn, &self.sub)?;
-        Ok(true)
-    }
-}
 
 #[cfg(test)]
 mod tests {

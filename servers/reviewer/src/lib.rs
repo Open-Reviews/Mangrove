@@ -20,7 +20,7 @@ extern crate rocket_okapi;
 use self::aggregator::{Issuer, Statistic, Subject};
 use self::database::{DbConn, Query};
 use self::error::Error;
-use self::review::{Review, OldReview};
+use self::review::Review;
 use rocket::response::{Responder, Response};
 use rocket::http::{Method, ContentType, Status};
 use rocket::request::{Form, Request};
@@ -28,7 +28,6 @@ use rocket::Rocket;
 use rocket::http::hyper::header::{ContentDisposition, DispositionType, DispositionParam, Charset};
 use rocket_contrib::json::Json;
 use rocket_okapi::swagger_ui::{make_swagger_ui, SwaggerUIConfig};
-use biscuit::{JWT, jws::Secret, jwa::SignatureAlgorithm};
 use csv::Writer;
 use serde::{Deserialize, Serialize};
 use std::time::SystemTime;
@@ -47,60 +46,13 @@ fn index() -> &'static str {
 fn submit_review_jwt(conn: DbConn, jwt_review: String) -> Result<String, Error> {
     info!("Review received: {:?}", jwt_review);
 
-    let review = MangroveJWT::from_str(&jwt_review)?;
+    let review = Review::from_str(&jwt_review)?;
 
     review.payload.check(&conn)?;
 
     conn.insert(review)?;
 
     println!("payload: {:?}", review.payload);
-    Ok("true".into())
-}
-
-#[openapi(skip)]
-#[put("/submit", format = "application/json", data = "<review>")]
-fn submit_review_json(conn: DbConn, review: Json<OldReview>) -> Result<String, Error> {
-    info!("Review received: {:?}", review);
-    // Put into a `serde_cbor::Value` to make sure CBOR is canonical.
-    let cbor_value = serde_cbor::value::to_value(&review.payload).unwrap();
-    review.check_signature(&serde_cbor::to_vec(&cbor_value)?).map_err(|e| {
-        info!("{:?}", e);
-        e
-    })?;
-    review.payload.check(&conn)?;
-    conn.insert(review.into_inner())?;
-    info!("Review checked and inserted.");
-    Ok("true".into())
-}
-
-/// Just like `Review`, but with `payload` encoded as CBOR instead of JSON.
-#[derive(Debug, Deserialize, JsonSchema)]
-pub struct CborReview {
-    /// ECDSA signature of the `payload` by the review issuer.
-    pub signature: String,
-    /// CBOR base64url encoded payload.
-    pub payload: String
-}
-
-/// Submit a review with payload encoded in CBOR,
-/// useful for clients that do not have access to Canonical CBOR implementation.
-#[openapi(skip)]
-#[put("/submit", format = "application/cbor", data = "<creview>")]
-fn submit_review_cbor(conn: DbConn, creview: Json<CborReview>) -> Result<String, Error> {
-    info!("CBOR review received: {:?}", creview);
-    let payload_bytes = base64_url::decode(&creview.payload)?;
-    let review = OldReview {
-        signature: creview.into_inner().signature,
-        payload: serde_cbor::from_slice(&payload_bytes)?
-    };
-    review.check_signature(&payload_bytes).map_err(|e| {
-        info!("{:?}", e);
-        e
-    })?;
-    info!("Review decoded: {:?}", review);
-    review.payload.check(&conn)?;
-    conn.insert(review)?;
-    info!("Review checked and inserted.");
     Ok("true".into())
 }
 
@@ -127,7 +79,7 @@ fn get_reviews(conn: DbConn, json: Form<Query>) -> Result<Reviews, Error> {
                 &conn,
                 reviews
                     .iter()
-                    .map(|review| review.header.private.pem.clone())
+                    .map(|review| review.kid)
                     // Deduplicate before computing Issuers.
                     .collect::<HashSet<_>>()
                     .into_iter(),
@@ -277,8 +229,6 @@ pub fn rocket() -> Rocket {
             routes_with_openapi![
                 index,
                 submit_review_jwt,
-                submit_review_json,
-                submit_review_cbor,
                 get_reviews_json,
                 get_reviews_csv,
                 get_subject,
@@ -299,39 +249,6 @@ pub fn rocket() -> Rocket {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    fn check_signature_cbor(data: &str) {
-        let creview: Json<CborReview> = Json(serde_json::from_str(data).unwrap());
-        
-        let payload_bytes = base64_url::decode(&creview.payload).unwrap();
-        //println!("{:?}", serde_cbor::from_slice::<review::Payload>(&payload_bytes).unwrap());
-        let review = Review {
-            signature: creview.into_inner().signature,
-            payload: serde_cbor::from_slice(&payload_bytes).unwrap()
-        };
-        println!("{:?}", review);
-        review.check_signature(&payload_bytes).map_err(|e| {
-            e
-        }).unwrap();
-    }
-
-    #[test]
-    fn test_js() {
-        check_signature_cbor(r#"
-            {
-                "signature": "_FK0VsBTZmMlBca6qIg1eow_4LU1PODyZ2v1FRCNARwZlcCS330GO62_7DYjSRwrARBwyVWHSzVlKEcne9Ro0Q",
-                "payload": "pWNpc3N4V0JCbUVLWmNpR01vblRfRzBDbWlNNEhkZk02bzBrdHVoM3hJRmFkdmMxVFZnQTBaSlVOSVM2Z28wcFg4andTVW9yYkRmdjI3VF9NOU05d2xkTUZrNnQwMGNpYXQaXg82ZGNzdWJ4KWdlbzo_cT00Ny4xNjkxNTc2LDguNTE0NTcyKEp1YW5pdG9zKSZ1PTMwZnJhdGluZxhLaG1ldGFkYXRhoWpjbGllbnRfdXJpeBhodHRwczovL21hbmdyb3ZlLnJldmlld3M"
-            }"#
-        )
-    }
-
-    #[test]
-    fn test_julia() {
-        check_signature_cbor(r#"
-            {"signature":"9tK0nToEjPstvi3plrTa2EusKcPgIdSc_RF8fFXwUKBGhO5XjjJ43mDY_sp0FOvd","payload":"pWdvcGluaW9ueKVUaGlzIGRvbWFpbiBoYXMgYmVlbiByYW5rZWQgMSBvZiAxMCBtaWxsaW9uIHdpdGggT3BlbiBQYWdlUmFuayAxMC4wLgoKU291cmNlOiBodHRwczovL3d3dy5kb21jb3AuY29tL29wZW5wYWdlcmFuay93aGF0LWlzLW9wZW5wYWdlcmFuaywgcmV0cmlldmVkIG9uIDI5IE5vdmVtYmVyIDIwMTljc3VieBxodHRwczovL2ZvbnRzLmdvb2dsZWFwaXMuY29tY2lhdDqh8KTVY2lzc3hAUVpRQmVJN29ISHFaNU5jaWtNNmdaYks0WkFWMHJINDdxRUI4MUFWdVl0dTRDaG9yV19vYUdlSUphRFh6cUN1d2htZXRhZGF0YaNsZGlzcGxheV9uYW1lbE1hbmdyb3ZlIEJvdGtkYXRhX3NvdXJjZXg4aHR0cHM6Ly93d3cuZG9tY29wLmNvbS9vcGVucGFnZXJhbmsvd2hhdC1pcy1vcGVucGFnZXJhbmtsaXNfZ2VuZXJhdGVk9Q"}
-        "#
-        )
-    }
 
     #[test]
     #[ignore]

@@ -3,7 +3,6 @@ use rocket_okapi::gen::OpenApiGenerator;
 use rocket_okapi::response::OpenApiResponder;
 use rocket_okapi::util::add_schema_response;
 use rocket_okapi::Result as ApiResult;
-use base64_url::base64;
 use std::fmt::Debug;
 
 #[derive(Debug, Responder)]
@@ -26,15 +25,9 @@ impl<'r> OpenApiResponder<'r> for Error {
     }
 }
 
-impl From<base64::DecodeError> for Error {
-    fn from(error: base64::DecodeError) -> Self {
-        Error::Incorrect(format!("Incorrect base64url encoding: {}", error))
-    }
-}
-
-impl From<serde_cbor::error::Error> for Error {
-    fn from(error: serde_cbor::error::Error) -> Self {
-        Error::Incorrect(format!("Incorrect CBOR encoding: {}", error))
+impl From<jsonwebtoken::errors::Error> for Error {
+    fn from(error: jsonwebtoken::errors::Error) -> Self {
+        Error::Incorrect(format!("Incorrect JWT: {}", error))
     }
 }
 
@@ -53,18 +46,6 @@ impl From<csv::IntoInnerError<csv::Writer<Vec<u8>>>> for Error {
 impl From<std::string::FromUtf8Error> for Error {
     fn from(error: std::string::FromUtf8Error) -> Self {
         Error::Internal(format!("Could not encode CSV as Utf8: {}", error))
-    }
-}
-
-impl From<ring::error::Unspecified> for Error {
-    fn from(error: ring::error::Unspecified) -> Self {
-        Error::Incorrect(format!("Incorrect signature: {}", error))
-    }
-}
-
-impl From<biscuit::errors::Error> for Error {
-    fn from(error: biscuit::errors::Error) -> Self {
-        Error::Incorrect(format!("Incorrect JWT: {}", error))
     }
 }
 

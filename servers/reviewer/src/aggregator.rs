@@ -55,20 +55,19 @@ impl Statistic for Subject {
         let mut confirmed_count = 0;
         for review in relevant {
             count += 1;
-            let mangrove = review.payload.private;
-            if let Some(rating) = mangrove.rating {
+            if let Some(rating) = review.payload.rating {
                 rated_count += 1;
                 rating_total += rating;
                 if rating > MAX_RATING / 2 {
                     positive_count += 1;
-                    if let Some(metadata) = mangrove.metadata {
+                    if let Some(metadata) = review.payload.metadata {
                         if metadata.get("is_personal_experience").is_some() {
                             confirmed_count += 1;
                         }
                     }
                 }
             }
-            if mangrove.opinion.is_some() {
+            if review.payload.opinion.is_some() {
                 opinion_count += 1;
             }
         }
@@ -95,11 +94,11 @@ pub struct Issuer {
 }
 
 impl Statistic for Issuer {
-    fn compute(conn: &DbConn, iss: String) -> Result<Self, Error> {
+    fn compute(conn: &DbConn, kid: String) -> Result<Self, Error> {
         // TODO: Optimize it by counting closer to DB.
         let count = conn
             .filter(Query {
-                iss: Some(iss),
+                kid: Some(kid),
                 ..Default::default()
             })?
             .len();

@@ -16,8 +16,8 @@ pub struct Query {
     pub q: Option<String>,
     /// Return review with this `signature` value.
     pub signature: Option<String>,
-    /// Return reviews by this issuer.
-    pub pem: Option<String>,
+    /// Return reviews by issuer with the following PEM public key.
+    pub kid: Option<String>,
     /// Return reviews issued at this time.
     pub iat: Option<i64>,
     /// Return reviews with timestamp greater than this.
@@ -52,8 +52,8 @@ impl DbConn {
         if let Some(s) = &query.signature {
             f = Box::new(f.and(signature.eq(s)))
         }
-        if let Some(s) = &query.iss {
-            f = Box::new(f.and(iss.eq(s)))
+        if let Some(s) = &query.kid {
+            f = Box::new(f.and(kid.eq(s)))
         }
         if let Some(s) = &query.iat {
             f = Box::new(f.and(iat.eq(s)))
@@ -77,7 +77,7 @@ impl DbConn {
                 f = Box::new(f.and(sub.like(pattern.clone()).or(opinion.like(pattern))))
             }
         }
-        Ok(reviews.filter(f).select((signature, (iss, iat, sub, rating, opinion, extra_hashes, metadata))).load::<Review>(&self.0)?)
+        Ok(reviews.filter(f).select((signature, (kid, iat, sub, rating, opinion, extra_hashes, metadata))).load::<Review>(&self.0)?)
     }
 
     pub fn select(&self, sig: &str) -> Result<Review, Error> {
@@ -85,7 +85,7 @@ impl DbConn {
 
         schema::reviews::table
             .filter(signature.eq(sig))
-            .select((signature, (iss, iat, sub, rating, opinion, extra_hashes, metadata)))
+            .select((signature, (kid, iat, sub, rating, opinion, extra_hashes, metadata)))
             .load::<Review>(&self.0)?
             .into_iter()
             .next()
