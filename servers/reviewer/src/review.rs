@@ -251,7 +251,7 @@ fn check_url(id: &str) -> Result<(), url::ParseError> {
 }
 
 fn check_lei(id: &str) -> Result<(), Error> {
-    if reqwest::get(&format!("https://api.gleif.org/api/v1/lei-records/{}", id))?
+    if reqwest::blocking::get(&format!("https://api.gleif.org/api/v1/lei-records/{}", id))?
         .status()
         .is_success()
     {
@@ -300,9 +300,8 @@ fn check_image(img: &Image) -> Result<(), Error> {
             return Err(Error::Incorrect(format!("Image label is too long: {}", l)))
         }
     }
-    let query = format!("{}/exists", img.src);
-    info!("Checking the file: {}", query);
-    let exists = reqwest::get(&query)?.text()?.parse()?;
+    info!("Checking the file: {}", img.src);
+    let exists = reqwest::blocking::get(&img.src)?.status().is_success();
     if exists {
         Ok(())
     } else {

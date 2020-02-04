@@ -93,23 +93,19 @@
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item>
         </v-list>
-        <v-dialog
-          :value="raw.json"
-          @click:outside="raw.json = null"
-          width="600"
-        >
+        <v-dialog :value="raw.jwt" @click:outside="raw.jwt = null" width="600">
           <v-card>
             <v-card-title>
               Raw Mangrove Review
             </v-card-title>
             <v-card-subtitle>
-              JSON
+              <a src="https://jwt.io/" target="_blank">JWT</a>
             </v-card-subtitle>
-            <v-card-text v-html="raw.json" />
+            <v-card-text v-html="raw.jwt" />
             <v-card-subtitle>
-              CBOR
+              Review data
             </v-card-subtitle>
-            <v-card-text v-html="raw.cbor" />
+            <v-card-text v-html="raw.data" />
           </v-card>
         </v-dialog>
         <FlagForm v-model="flagSubject" />
@@ -151,7 +147,7 @@ export default {
     review: {
       type: Object,
       default: () => {
-        return { signature: null, payload: null }
+        return { signature: null, payload: null, jwt: null, kid: null }
       }
     },
     issuer: Object,
@@ -220,7 +216,7 @@ export default {
                 ? ': ' + v + META_DISPLAY[k].postfix
                 : ': ' + v)
           ),
-      raw: { json: undefined, cbor: undefined },
+      raw: { data: undefined, jwt: undefined },
       flagSubject: null,
       personalMeta: { [IS_PERSONAL_EXPERIENCE]: 'true' },
       responseDialog: false
@@ -286,13 +282,13 @@ export default {
       this.flagSubject = this.subjectWithTitle
     },
     showRaw(review) {
-      this.raw.json = JSON.stringify(
-        { signature: review.signature, payload: review.payload },
-        null,
-        2
-      )
-      this.raw.cbor = JSON.stringify(
-        { signature: review.signature, payload: review.encodedPayload },
+      this.raw.jwt = review.jwt
+      this.raw.data = JSON.stringify(
+        {
+          header: { kid: review.kid },
+          payload: review.payload,
+          signature: review.signature
+        },
         null,
         2
       )
