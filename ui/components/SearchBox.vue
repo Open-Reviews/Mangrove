@@ -6,6 +6,8 @@
         v-model.trim="query"
         :placeholder="placeholder"
         @click:append="search"
+        @focus="$emit('focus', true)"
+        @blur="$emit('focus', false)"
         append-icon="mdi-magnify"
         filled
         outlined

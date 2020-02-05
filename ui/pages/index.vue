@@ -14,7 +14,7 @@
         <v-row>
           <v-col />
           <v-col :cols="isSmall ? 12 : 6">
-            <SearchBox no-filter />
+            <SearchBox @focus="focus = $event" no-filter />
             <v-row class="justify-space-around mt-n8">
               <span
                 v-text="front.subsearch.join(' ᐧ ')"
@@ -25,13 +25,13 @@
           <v-col />
         </v-row>
         <v-row
+          v-if="!isSmall || (isSmall && !focus)"
           class="headline"
           style="position: absolute; bottom: 100px; margin-left: auto; margin-right: auto; width: 330px; left: 0; right: 0;"
           align="center"
         >
           <div class="ml-12">WHY MANGROVE</div>
-          <v-icon v-if="isSmall" color="white">mdi-arrow-down</v-icon>
-          <v-img v-else :src="arrow" max-height="10vh" contain class="ml-n12" />
+          <v-img :src="arrow" max-height="10vh" contain class="ml-n12" />
         </v-row>
       </v-img>
     </v-row>
@@ -162,7 +162,8 @@ export default {
           tip: 'TRY IT'
         }
       ],
-      arrow: require('~/assets/index/arrow.png')
+      arrow: require('~/assets/index/arrow.png'),
+      focus: false
     }
   },
   computed: {
