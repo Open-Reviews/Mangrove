@@ -39,3 +39,7 @@ export function subToScheme(sub) {
 export function subPath(scheme, sub) {
   return sub.replace(new RegExp(`^(${scheme}:)`), '')
 }
+
+export function geoUri(lat, lon, name) {
+  return `${GEO}:${lat},${lon}?q=${name}&u=30`
+}

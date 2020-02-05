@@ -1,4 +1,4 @@
-import { GEO, LEI, ISBN, subToScheme, subPath } from './scheme-types'
+import { GEO, LEI, ISBN, subToScheme, subPath, geoUri } from './scheme-types'
 
 export function leiToSubject(axios, lei) {
   return entityLookup(axios, lei)
@@ -111,7 +111,7 @@ export function searchGeo(axios, q, viewbox) {
                 extratags.cuisine.slice(1).replace(/;/g, ', ')
             }
             return {
-              sub: `${GEO}:?q=${lat},${lon}(${title})&u=30`,
+              sub: geoUri(lat, lon, title),
               scheme: GEO,
               title,
               subtitle: typeString,
@@ -190,11 +190,11 @@ export function subsToSubjects(axios, subs) {
         if (scheme === LEI) {
           subject = await leiToSubject(axios, subPath(LEI, sub))
         } else if (scheme === GEO) {
-          const splitQuery = new URL(sub).searchParams.get('q').split(',')
-          const coordinates = [splitQuery[0], splitQuery[1].split('(')[0]]
+          const uri = new URL(sub)
+          const coordinates = uri.pathname.split(',')
           const subjects = await searchGeo(
             axios,
-            splitQuery[1].split('(')[1],
+            uri.searchParams.get('q'),
             coordinates
           )
           subject = subjects[0]

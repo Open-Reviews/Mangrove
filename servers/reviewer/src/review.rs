@@ -194,12 +194,25 @@ fn check_opinion(opinion: &str) -> Result<(), Error> {
     }
 }
 
-/// Check the q= query field content.
-fn check_geo_q(q: Cow<str>) -> Result<(), Error> {
-    let mut elements = q.split('(');
-    let mut coords = elements
-        .next()
-        .ok_or_else(|| Error::Incorrect("No coordinates specified.".into()))?
+fn check_geo_param(param: (Cow<str>, Cow<str>)) -> Result<(), Error> {
+    match param.0.as_ref() {
+        "q" => if param.1.len() > 100 {
+            Err(Error::Incorrect("Place name too long.".into()))
+        } else {
+            Ok(())
+        },
+        "u" => match param.1.parse::<f32>() {
+            Ok(n) if 0. < n && n < 40_000_000. => Ok(()),
+            _ => Err(Error::Incorrect("Uncertainty incorrect.".into())),
+        },
+        _ => Err(Error::Incorrect("Query field unknown.".into())),
+    }
+}
+
+/// Check if `geo` URI is correct.
+fn check_place(geo: &Url) -> Result<(), Error> {
+    let mut coords = geo
+        .path()
         .split(',')
         .map(|c| c.parse());
     let lat: f32 = coords
@@ -214,30 +227,6 @@ fn check_geo_q(q: Cow<str>) -> Result<(), Error> {
     if -180. > lon || lon > 180. {
         return Err(Error::Incorrect("Longitude out of range.".into()));
     }
-    if elements
-        .next()
-        .ok_or_else(|| Error::Incorrect("No name found.".into()))?
-        .ends_with(')')
-    {
-        Ok(())
-    } else {
-        Err(Error::Incorrect("Name must be inside parenthesis.".into()))
-    }
-}
-
-fn check_geo_param(param: (Cow<str>, Cow<str>)) -> Result<(), Error> {
-    match param.0.as_ref() {
-        "q" => check_geo_q(param.1),
-        "u" => match param.1.parse::<f32>() {
-            Ok(n) if 0. < n && n < 2000. => Ok(()),
-            _ => Err(Error::Incorrect("Uncertainty incorrect.".into())),
-        },
-        _ => Err(Error::Incorrect("Query field unknown.".into())),
-    }
-}
-
-/// Check if `geo` URI is correct.
-fn check_place(geo: &Url) -> Result<(), Error> {
     let mut pairs = geo.query_pairs().peekable();
     if pairs.peek().is_some() {
         pairs.map(check_geo_param).collect()

@@ -121,10 +121,10 @@ Value corresponding to the `sub` key MUST be of Major type 3 (a text string) and
     - MUST comply with [URL specification](https://url.spec.whatwg.org/) and is no longer than 100 letters.
 - `geo`: for this scheme, the `sub`:
     - Refers to a business location or physical point of interest being reviewed - a place.
-    - MUST comply with [URI for Geographic Locations specification](https://tools.ietf.org/html/rfc5870), however using URL encoding - including parameters as query string - which is currently more widely used.
+    - MUST comply with [URI for Geographic Locations specification](https://tools.ietf.org/html/rfc5870), however using URL encoding - including parameters as query string - which is currently more [widely used](https://developers.google.com/maps/documentation/urls/android-intents#location_search).
     - Query string for this URI (content following `?`):
-        - MUST contain a field `q=` for which the value is a commonly used name of the selected place with [URI compliant percent encoding](https://tools.ietf.org/html/rfc3986).
-        - MAY contain a field `u=` for which the value indicates an approximate radius of the place in meters.
+        - MUST contain a field `q=` for which the value is a commonly used name of the selected place with [URI compliant percent encoding](https://tools.ietf.org/html/rfc3986) which SHOULD not be longer than 100 letters.
+        - MAY contain a field `u=` for which the value indicates an approximate radius of the place in meters which SHOULD not be greater than 40000000.
 - `urn:lei`: for this scheme, the `sub`:
     -  Refers to a legal entity being reviewed.
     -  Scheme MUST be followed by a valid LEI according to [ISO 17442](https://www.gleif.org/en/about-lei/iso-17442-the-lei-code-structure) which is equal to one of registered legal entity identifiers in [GLEIF database](https://www.gleif.org/en/).
