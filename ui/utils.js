@@ -1,3 +1,5 @@
+const jwkToPem = require('jwk-to-pem')
+
 export const MAX_OPINION_LENGTH = 500
 
 export function imageUrl(hash) {
@@ -94,10 +96,16 @@ function u8aToString(buf) {
 }
 
 export async function privateToPem(key) {
-  const exported = await window.crypto.subtle.exportKey('pkcs8', key)
-  const exportedAsString = u8aToString(exported)
-  const exportedAsBase64 = window.btoa(exportedAsString)
-  return `-----BEGIN PRIVATE KEY-----\n${exportedAsBase64}\n-----END PRIVATE KEY-----`
+  try {
+    const exported = await window.crypto.subtle.exportKey('pkcs8', key)
+    const exportedAsString = u8aToString(exported)
+    const exportedAsBase64 = window.btoa(exportedAsString)
+    return `-----BEGIN PRIVATE KEY-----\n${exportedAsBase64}\n-----END PRIVATE KEY-----`
+  } catch {
+    // Workaround for Firefox webcrypto not working.
+    const exported = await window.crypto.subtle.exportKey('jwk', key)
+    return jwkToPem(exported, { private: true })
+  }
 }
 
 export async function publicToPem(key) {
