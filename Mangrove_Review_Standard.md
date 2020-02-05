@@ -1,4 +1,4 @@
-# Mangrove Review Standard (MaReSt) v0.1.1
+# Mangrove Review Standard (MaReSt) v0.2.0
 
 The mission of the Mangrove initiative is to create a public space on the Internet where people can freely share insights with each other and make better decisions based on open data. Mangrove contributes to the Open and Privacy movements by proposing an alternative architecture that is characterized by a **separation of data and products**, and that **respects the right to privacy**:
 
@@ -14,6 +14,8 @@ The standard was developed based on a set of [principles](#principles-of-the-dat
 
 **Mangrove review** ("Review"): a statement by a reviewer about an subject, whereby the review is provided according to the MaReSt, and contains, among other things, either a rating (a number between 1 and 100) for the subject, or an opinion (a piece of text describing the experience) about the subject, or both.
 
+**Mangrove version**: a version number of the Mangrove Review Standard following the [Semantic Versioning 2.0.0 rules](https://semver.org/).
+
 **Subject**: something that is being reviewed in Mangrove. This can be: a place on a map (e.g., restaurant, hotel, touristic site), a website, or a company.
 
 **Mangrove reviewer** ("Reviewer"): a person or organization who contributes to the Mangrove open dataset by writing a review. A contributor can write a review directly on the Mangrove website, or indirectly through the websites of third-party services or applications that integrate with Mangrove.
@@ -28,38 +30,48 @@ The standard was developed based on a set of [principles](#principles-of-the-dat
 
 ### Changes currently being considered
 
-- using compressed ECDSA public keys
-- use CBOR tagging rather than encoding bytes as base64url
+- Addition of another claim with an object for structured review content beyond rating.
+- Removal of `kid` header field once JWK format has more adoption.
+- Additional metadata fields: proof-of-purchase, identity token, useful information about the subject.
 
 ## Mangrove Review Example
 
-In JSON format:
+As encoded [JSON Web Token](https://jwt.io/):
+```
+eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ii0tLS0tQkVHSU4gUFVCTElDIEtFWS0tLS0tTUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJemowREFRY0RRZ0FFcDc4Zms1eUNqYmlZYXZ5UjZGQ2xxcTlBRkJUaXpBSG1ZdU9rcTR3cy9aYmdleG41SVQ2bi83NGt2YlZ0UGxNc3A5Z2luTysxMVZ4ZUorbVFJQ1pZamc9PS0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLSIsImp3ayI6IntcImNydlwiOlwiUC0yNTZcIixcImV4dFwiOnRydWUsXCJrZXlfb3BzXCI6W1widmVyaWZ5XCJdLFwia3R5XCI6XCJFQ1wiLFwieFwiOlwicDc4Zms1eUNqYmlZYXZ5UjZGQ2xxcTlBRkJUaXpBSG1ZdU9rcTR3c19aWVwiLFwieVwiOlwiNEhzWi1TRS1wXy0tSkwyMWJUNVRMS2ZZSXB6dnRkVmNYaWZwa0NBbVdJNFwifSJ9.eyJpYXQiOjE1ODA5MTAwMjIsInN1YiI6Imh0dHBzOi8vbWFuZ3JvdmUucmV2aWV3cyIsInJhdGluZyI6NzUsIm9waW5pb24iOiJHcmVhdCB3ZWJzaXRlIGZvciByZXZpZXdzLiIsIm1ldGFkYXRhIjp7Im5pY2tuYW1lIjoiam9objEyMyIsImNsaWVudF9pZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCJ9fQ.7xQtIlHuDdCVioyztj8i3zJ8dk3oCSfKr6VCR5RtBn6sBcqvpfyvs13PlKGJoamKzx8xUgQTQJjRPv5s91-VLQ
+```
+
+### As decoded JSON
+
+Header:
 ```json
 {
-    "signature":
-        "ZnQ-uqIhcyUaEwGpS2wXK5Y4aBq4wZaKlnFP1aEuCHsilA1dbNAvbaNSSwShfkuyPPLQlvuj6pN09tZ-ZC71dg",
-    "payload": {
-        "iss":
-            "BBmEKZciGMonT_G0CmiM4HdfM6o0ktuh3xIFadvc1TVgA0ZJUNIS6go0pX8jwSUorbDfv27T_M9M9wldMFk6t00",
-        "iat": 1570562109,
-        "sub": "https://google.com",
-        "rating": 75,
-        "opinion": "Great for finding new sites.",
-        "metadata": {
-            "nickname":"john123"
-        }
-    }
+  "alg": "ES256",
+  "typ": "JWT",
+  "kid": "-----BEGIN PUBLIC KEY-----MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEp78fk5yCjbiYavyR6FClqq9AFBTizAHmYuOkq4ws/Zbgexn5IT6n/74kvbVtPlMsp9ginO+11VxeJ+mQICZYjg==-----END PUBLIC KEY-----",
+  "jwk": "{\"crv\":\"P-256\",\"ext\":true,\"key_ops\":[\"verify\"],\"kty\":\"EC\",\"x\":\"p78fk5yCjbiYavyR6FClqq9AFBTizAHmYuOkq4ws_ZY\",\"y\":\"4HsZ-SE-p_--JL21bT5TLKfYIpzvtdVcXifpkCAmWI4\"}"
 }
 ```
 
-As Canonical CBOR:
-```
-TODO
+Payload (JWT Claims Set):
+```json
+{
+  "iat": 1580910261,
+  "sub": "https://www.openstreetmap.org",
+  "rating": 75,
+  "opinion": "Great global map data!",
+  "metadata": {
+    "nickname": "john123",
+    "client_id": "https://mangrove.reviews"
+  }
+}
 ```
 
-## Mangrove Creation and Verification
+Try decoding the token yourself using the [Debugger](https://jwt.io/): just paste in the token and use the `kid` from header to verify signature.
 
-JavaScript and Rust sample implementations are work in progress and will be published soon.
+## Mangrove Review creation and verification
+
+Mangrove Reviews are meant to be easily constructed and verified using any existing [JWT libraries](https://jwt.io/). Dedicated JavaScript and Rust libraries are in the works as well.
 
 ## Mangrove Review Format (MaReFo)
 
@@ -69,80 +81,84 @@ In particular, for a Mangrove Review to be compatible with original servers all 
 
 ---
 
-Mangrove Review (Review) MUST consist of key/value pairs. Review fields MAY be shared in a number of different ways, with the most common being:
-- JSON
-- CBOR
-- HTTP method query fields
+Mangrove Review (Review) MUST be compliant with the [JSON Web Token (JWT) standard](https://tools.ietf.org/html/rfc7519) and encoded as [JSON Web Signature (JWS)](https://www.rfc-editor.org/rfc/rfc7515.html). This format definition specifies name/value pairs which are expected in the JWT header (JOSE Header) as well as in the JWT Claims Set.
 
-Each Review MUST be representable as [Canonical CBOR](https://tools.ietf.org/html/rfc7049), and in particular Major type 5 (a map of pairs of data items). This means that each key and value MUST be one of the major CBOR types. All review keys MUST be of Major type 3 (a text string).
+The JWT signature type SHOULD be `ES256` (ECDSA on P-256 with SHA-256 digest).
 
-Review MUST include the following keys and corresponding values:
-- `payload`
-    - The content of the review along with any metadata.
-    - MUST be a Major type 5 (a map of pairs of data items) with keys and values described in [Review payload section](#review-payload).
-- `signature`
-    - MUST be a Major type 3 (a text string) signature represented in base64url encoding.
-    - MUST be a valid ES256 (ECDSA on P-256 with SHA-256 digest) signature of [Canonical CBOR](https://tools.ietf.org/html/rfc7049) encoded review payload, corresponding to its `iss` public key value.
+### Mangrove Review Header
 
-### Review payload
+Review header MUST be compliant with [JSON Web Signature (JWS) Header format](https://www.rfc-editor.org/rfc/rfc7515.html#section-4) and MUST contain the following parameters:
+- `alg`: SHOULD be equal to `"ES256"`
+- `typ`: SHOULD be equal to `"JWT"`
+- `jwk`
+  - Public key of the reviewer or service used by reviewer.
+  - MUST be in [JSON Web Key (JWK) format](https://www.rfc-editor.org/rfc/rfc7517.html) encoded as string
+  - MUST contain parameter `"key_ops": ["verify"]`
+  - SHOULD contain parameters: `"crv": "P-256"`, `"kty" :"EC"`
+- `kid`
+  - Public key of the reviewer or service used by reviewer.
+  - MUST be in PEM format as specified in RFCs [1421](https://tools.ietf.org/html/rfc1421) to [1424](https://tools.ietf.org/html/rfc1424)
 
-Review payload MUST include the following keys and corresponding values:
-- `iss`
-    - The public key corresponding to the private key of the reviewer (issuer).
-    - MUST be a Major type 3 (a text string) of length `130`.
-    - MUST correspond to an ECDSA public key in base64url encoding.
+Both `jwk` and `kid` parameters MUST be public keys which lead to successful verification of the JWT signature.
+
+### Mangrove Review Claims Set
+
+Review payload MUST include the following claims :
 - `iat`
-    - Unix time at the moment the review was left (issued at).
-    - MUST be of Major type 0 (an unsigned integer) and MUST NOT be greater than current Unix time.
+  - Unix time at the moment the review was left (issued at).
+  - Specified in the [JWT RFC section 4.1.1](https://tools.ietf.org/html/rfc7519#section-4.1.1).
 - `sub`
-    - Unique reviewed subject identifier in the form of URI.
-    - MUST be a Major type 3 (a text string) representing a [valid URI](https://tools.ietf.org/html/rfc3986). SHOULD comply with one of supported URI schemes (see Mangrove Core URI Schemes).
+  - Unique reviewed subject identifier in the form of [URI](https://tools.ietf.org/html/rfc3986).
+  - SHOULD comply with one of supported URI schemes (see [Mangrove Core URI Schemes](#mangrove-core-uri-schemes)).
 
-Review MUST include either `rating` or `opinion` key, which means it MAY omit one of them. These keys, when included, MUST have values as follows:
+Review MUST include either `rating` or `opinion` claim, which means it MAY omit one of them. These claims, when included, MUST have values as follows:
 - `rating`
     - Number indicating how likely the reviewer is to recommend the subject.
-    - MUST be a Major type 0 (an unsigned integer) in the range from `1` to `100`.
+    - MUST be an integer in the range from `1` to `100`.
 - `opinion`
     - Opinion of the reviewer about the subject. 
-    - MUST be a Major type 3 (a text string) with length less than or equal to `500`.
+    - MUST be a string with length less than or equal to `500`.
+
+Each new Review issued by the reviewer SHOULD differ in at least the `sub`, `rating` or `opinion` claims.
 
 Review MAY include any of the following keys and values:
-- `extra_hashes`
-    - References to additional data, such as pictures or audio which are relevant to the review.
-    - MUST be a Major type 4 (an array of data items) with each item being a Major type 3 (a text string) of length 64.  Length of the array SHOULD NOT exceed 5 items.
-    - Each item MUST be a SHA-256 represented as base64url string, of a file stored on a publicly accessible server or decentralized network.
-- `metadata` MUST be of Major type 5 (a map of pairs of data items) with keys being Major type 3 (a text string). Each key SHOULD be equal to one of Core Metadata Keys (see Mangrove Core Metadata Field Standards). Each value corresponding to a Core Metadata Key MUST comply with the corresponding Core Metadata Field Standard.
+- `images`
+    - Information about attached pictures which are relevant to the review.
+    - MUST be an array with each item being an object. Length of the array SHOULD NOT exceed 5 items.
+    - Each item MUST include an `src` field with URL of an image stored on a publicly accessible server or decentralized network.
+    - Each item MAY include an `label` field with description text for the image with length of at most `50`.
+- `metadata` MUST be an object with keys being strings. Each key SHOULD be equal to one of Core Metadata Keys (see [Mangrove Core Metadata Field Standards](#mangrove-core-metadata-field-standards-macomes)). Each value corresponding to a Core Metadata Key MUST comply with the corresponding Core Metadata Field Standard.
 
 ## Mangrove Core URI Schemes
 
-Value corresponding to the `sub` key MUST be of Major type 3 (a text string) and comply with one of Core URI Schemes:
-- `http`/`https`: for this scheme, the `sub`:
+Value of the `sub` claim MUST comply with one of Core URI Schemes:
+- `https`
     - Refers to a Website that is being reviewed.
     - MUST comply with [URL specification](https://url.spec.whatwg.org/) and is no longer than 100 letters.
-- `geo`: for this scheme, the `sub`:
+- `geo`
     - Refers to a business location or physical point of interest being reviewed - a place.
     - MUST comply with [URI for Geographic Locations specification](https://tools.ietf.org/html/rfc5870), however using URL encoding - including parameters as query string - which is currently more [widely used](https://developers.google.com/maps/documentation/urls/android-intents#location_search).
     - Query string for this URI (content following `?`):
         - MUST contain a field `q=` for which the value is a commonly used name of the selected place with [URI compliant percent encoding](https://tools.ietf.org/html/rfc3986) which SHOULD not be longer than 100 letters.
         - MAY contain a field `u=` for which the value indicates an approximate radius of the place in meters which SHOULD not be greater than 40000000.
-- `urn:lei`: for this scheme, the `sub`:
+- `urn:lei`
     -  Refers to a legal entity being reviewed.
     -  Scheme MUST be followed by a valid LEI according to [ISO 17442](https://www.gleif.org/en/about-lei/iso-17442-the-lei-code-structure) which is equal to one of registered legal entity identifiers in [GLEIF database](https://www.gleif.org/en/).
     -  GLEIF data is open and accessible for [download](https://www.gleif.org/en/lei-data/gleif-golden-copy/download-the-golden-copy#/) or access via [API](https://documenter.getpostman.com/view/7679680/SVYrrxuU?version=latest).
-- `urn:isbn`: for this scheme, the `sub`:
+- `urn:isbn`
     - Refers to a book being reviewed.
     - Scheme MUST be followed by a valid ISBN according to [ISO 2108:2017](https://www.iso.org/standard/65483.html) which is equal to one of numbers assigned by [ The International ISBN Agency](https://www.isbn-international.org/).
     - ISBN data can be accessed via [Open Library](https://openlibrary.org/dev/docs/api/books) or [ISBNdb](https://isbndb.com/).
-- `urn:maresi`: for this scheme, the `sub`:
+- `urn:maresi`
     - Refers to another Mangrove Review that is to be reviewed, indicating its helpfulness or accuracy.
-    - Scheme SHOULD be followed by `signature` field of the Review that is to be reviewed (one of Mangrove Reviews in the current database).
+    - Scheme SHOULD be followed JWT signature of the Review that is to be reviewed (one of Mangrove Reviews in the current database).
 
 ## Mangrove Core Metadata Field Standards (MaCoMes)
 
 These fields are meant to represent additional data about the reviewer, circumstances of leaving the review or any other data which may be useful for review Users and analysis algorithms. Mangrove Review MAY include any of the fields.
 
 The key `metadata` contains a map of key/value pairs, where each key SHOULD be equal to one of following keys and have value as described:
-- `age` MUST be of Major type 0 (an unsigned integer) which SHOULD be the age of the reviewer of at most 200.
+- `age` MUST be an unsigned integer which SHOULD be the age of the reviewer of at most 200.
 - `experience_context` SHOULD be one of common contexts in which the reviewer primarily had experience with the subject:
   - `business`
   - `family` for experiences involving the whole family, typically with children
@@ -151,7 +167,7 @@ The key `metadata` contains a map of key/value pairs, where each key SHOULD be e
   - `solo` for experiences made alone 
 - `openid` SHOULD be the openID associated with the reviewer of length less than 20.
 - `data_source` MUST be a correct URL of the data source if the information does not originate from the reviewer.
-- `issuer_index` MUST be of Major type 0 (an unsigned integer) which SHOULD be a unique index used by the reviewer, usually indicating a ranking in a list. MUST be at most the [JavaScript safe integer](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER): 9007199254740991.
+- `reviewer_index` MUST be an unsigned integer which SHOULD be a unique index used by the reviewer, usually indicating a ranking in a list. MUST be at most the [JavaScript safe integer](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER): 9007199254740991.
 
 Fields based on [OpenID Standard Claims](https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims):
 - `nickname` MUST be a user specified name to be displayed of length less than 20.
@@ -166,9 +182,6 @@ Flag fields can be added to indicate particular review property, when present th
 - `is_generated` SHOULD be present if the review has been left by a review generating bot.
 - `is_affiliated` SHOULD be present if the review has been left by a reviewer affiliated with the subject, such as business owner or employee.
 - `is_personal_experience` SHOULD be present if the review has been left by a reviewer who had direct experience with the subject of the review and is not based on a third party account.
-
-
-Additional fields to be added, including items such as proof-of-purchase, identity token, useful information about the subject, circumstances of the experience.
 
 ## Principles of the data format specification
 
@@ -216,8 +229,7 @@ An additional format will be established that will allow to link additional publ
 ### 4. Standards reuse
 
 Where possible and practical, existing standards should be leveraged. Mangrove leverages:
-- Canonical CBOR for encoding payload before signing for transmission
-- [JSON Web Token (JWT)](https://tools.ietf.org/html/rfc7519) format for the overall review (CBOR based encoding is used as in CWT to be more in line with FIDO2 developments)
+- [JSON Web Token (JWT)](https://tools.ietf.org/html/rfc7519) format for the overall review
 - URI for uniquely identifying subjects which are being reviewed and certain metadata
 - [URI for Geographic Locations specification / 'geo' URI](https://tools.ietf.org/html/rfc5870) for reviewing of places
 - URL for referring websites
