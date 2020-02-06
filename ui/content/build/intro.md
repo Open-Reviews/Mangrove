@@ -1,8 +1,13 @@
-The aim of the Mangrove project is to **create an open data ecosystem for online reviews** to displace proprietary services and data silos. Making this valuable source of insight freely accessible will **drive open innovation and competition based on technological merit** instead of access to restricted data.   
+---
+image: build_ecosystem.png
+---
 
-**We are taking three steps to make this happen:**  
-(1) Building robust infrastructure to enable the collaborative **creation of a useful open dataset**.  
-(2) Providing **open-source tools** that allow anyone to easily integrate a reviews layer into their products and services.   
-(3) Supporting organisations and individuals in becoming part of the ecosystem and making it jointly successful.
+Our aim is to create an open data ecosystem for reviews of places, companies, websites, books, and more. We provide open-source infrastructure that enables any application or website to integrate a reviews layer, and to benefit from a shared data pool that reaches far beyond their own user base.
+
+Mangrove provides
+* A [technical standard](https://gitlab.com/plantingspace/mangrove/-/blob/master/Mangrove_Review_Standard.md) to ensure interoperability
+* An open-source [API](https://api.mangrove.reviews/swagger-ui/index.html)
+* An aggregation algorithm to clean and filter the data
+* A downloadable open dataset licensed under [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/)
 
 Mangrove is a non-profit service hosted and supported by a community of businesses, developers and interested parties around the world.
