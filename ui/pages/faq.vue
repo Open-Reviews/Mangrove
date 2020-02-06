@@ -123,13 +123,13 @@ If you are an individual user and have enjoyed sharing and gaining insights thro
           a: `
             <ul>
               <li>For general inquiries and feedback, please email us at hello@planting.space</li>
-              <li>To discuss with us live you can also join our chat on <a href="https://matrix.to/#/!NWvCdVEAXYJRnXTudO:matrix.org?via=matrix.org">Riot</a>.</li>
+              <li>To discuss with us live you can also join our chat on <a href="https://riot.im/app/#/room/#mangrove:matrix.org">Riot</a>.</li>
               <li>To suggest a new feature or an edit, you can make a pull request to our <a href="https://gitlab.com/plantingspace/mangrove" target="_blank">GitLab repository</a>.</li>
             </ul>
           `
         }
       ],
-      extrainfo: `Not found what you were looking for? Contact us at hello(at)planting(dot)space, or discuss with us in our <a href="https://matrix.to/#/!NWvCdVEAXYJRnXTudO:matrix.org?via=matrix.org">Riot chat</a>.`
+      extrainfo: `Not found what you were looking for? Contact us at hello(at)planting(dot)space, or discuss with us in our <a href="https://riot.im/app/#/room/#mangrove:matrix.org">Riot chat</a>.`
     }
   }
 }

@@ -6,7 +6,7 @@ export const SOCIALS = [
   { icon: 'mdi-twitter', link: 'https://twitter.com/mangroveReviews' },
   {
     img: require('~/static/icon-riot.svg'),
-    link: 'https://matrix.to/#/!NWvCdVEAXYJRnXTudO:matrix.org?via=matrix.org'
+    link: 'https://riot.im/app/#/room/#mangrove:matrix.org'
   }
 ]
 
