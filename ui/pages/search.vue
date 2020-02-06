@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import { SEARCH_ERROR } from '~/store/mutation-types'
 import { GEO } from '~/store/scheme-types'
 import SearchBox from '~/components/SearchBox'
 import SubjectList from '~/components/SubjectList'
@@ -70,6 +71,9 @@ export default {
     selected() {
       return this.$store.getters.subject(this.$route.query.sub)
     }
+  },
+  destroyed() {
+    this.$store.commit(SEARCH_ERROR, null)
   },
   methods: {
     selectSubject(sub) {

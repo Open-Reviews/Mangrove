@@ -41,6 +41,7 @@ export const mutations = {
   },
   [t.START_SEARCH](state) {
     state.isSearching = true
+    state.errors.search = null
     state.searchResults = []
   },
   [t.STOP_SEARCH](state) {
