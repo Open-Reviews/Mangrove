@@ -22,14 +22,14 @@
           class="mb-2 mt-5 title font-weight-light"
         />
         <v-col v-if="item.image" cols="6"><v-img :src="item.image"/></v-col>
-        <v-btn
-          v-if="item.button"
-          v-text="item.button.label"
-          :href="item.button.link"
-          color="secondary"
-          class="black--text"
-        />
       </v-row>
+      <v-btn
+        v-if="item.button"
+        v-text="item.button.label"
+        :href="item.button.link"
+        color="secondary"
+        class="black--text"
+      />
       <v-btn
         v-for="icon in item.icons"
         :key="icon.icon"
