@@ -45,5 +45,6 @@ production:
   - yarn generate
   - aws s3 rm s3://$S3_BUCKET --recursive
   - aws s3 cp --recursive ./dist s3://$S3_BUCKET
+  - aws cloudfront create-invalidation --distribution-id E3R6KTTYJH0XRG --paths "/*"
   only:
   - master
