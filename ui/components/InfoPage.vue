@@ -21,7 +21,7 @@
           :class="item.image ? 'text-left' : ''"
           class="mb-2 mt-5 title font-weight-light"
         />
-        <v-col v-if="item.image" cols="6">
+        <v-col v-if="item.image" cols="5">
           <v-dialog max-width="80vw" max-height="90vh">
             <template v-slot:activator="{ on }">
               <v-img v-on="on" :src="item.image" />
