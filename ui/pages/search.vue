@@ -4,6 +4,7 @@
       :cols="isBig ? 5 : ''"
       v-if="isBig || !viewProfile"
       class="scrollable noscroll mr-n3"
+      style="background: white"
     >
       <v-row class="px-10">
         <SearchBox />
@@ -100,7 +101,7 @@ export default {
 
 <style scoped>
 .scrollable {
-  height: 100vh;
+  height: 95vh;
 }
 .noscroll {
   overflow-y: scroll;

@@ -1,7 +1,11 @@
 <template>
   <div>
     <v-row class="mb-1 text-center white--text">
-      <v-img :src="front.image" height="100vh" class="display-3 pa-12">
+      <v-img
+        :src="front.image"
+        :height="isSmall && focus ? '150vh' : '100vh'"
+        class="display-3 pa-12"
+      >
         <h1
           v-html="front.title"
           :class="isSmall ? 'display-2' : 'display-4'"

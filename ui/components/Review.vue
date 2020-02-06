@@ -78,7 +78,7 @@
         </div>
       </v-card-text>
       <v-spacer />
-      <v-menu offset-y>
+      <v-menu offset-y close-on-click>
         <template v-slot:activator="{ on }">
           <v-btn v-on="on" icon>
             <v-icon>mdi-dots-vertical</v-icon>
@@ -93,24 +93,24 @@
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item>
         </v-list>
-        <v-dialog :value="raw.jwt" @click:outside="raw.jwt = null" width="600">
-          <v-card>
-            <v-card-title>
-              Raw Mangrove Review
-            </v-card-title>
-            <v-card-subtitle>
-              <a src="https://jwt.io/" target="_blank">JWT</a>
-            </v-card-subtitle>
-            <v-card-text v-html="raw.jwt" />
-            <v-card-subtitle>
-              Review data
-            </v-card-subtitle>
-            <v-card-text v-html="raw.data" />
-          </v-card>
-        </v-dialog>
-        <FlagForm v-model="flagSubject" />
       </v-menu>
     </v-card-actions>
+    <v-dialog :value="raw.jwt" @click:outside="raw.jwt = null" width="600">
+      <v-card>
+        <v-card-title>
+          Raw Mangrove Review
+        </v-card-title>
+        <v-card-subtitle>
+          <a src="https://jwt.io/" target="_blank">JWT</a>
+        </v-card-subtitle>
+        <v-card-text v-html="raw.jwt" />
+        <v-card-subtitle>
+          Review data
+        </v-card-subtitle>
+        <v-card-text v-html="raw.data" />
+      </v-card>
+    </v-dialog>
+    <FlagForm v-model="flagSubject" />
     <ReviewForm v-model="responseDialog" :subject="subjectWithTitle" />
   </v-card>
 </template>
