@@ -7,23 +7,29 @@
     <v-container
       v-for="(item, i) in content"
       :key="i"
+      :style="item.image ? 'max-width: 1400px' : 'max-width: 1100px'"
       class="text-center"
-      style="max-width: 1100px"
     >
       <h3
         v-if="item.title"
         v-text="item.title"
         class="display-1 mt-5 font-weight-light"
       />
-      <v-col v-html="item.content" class="mb-10 mt-5 title font-weight-light" />
-      <v-col v-if="item.image"><v-img :src="item.image"/></v-col>
-      <v-btn
-        v-if="item.button"
-        v-text="item.button.label"
-        :href="item.button.link"
-        color="secondary"
-        class="black--text"
-      />
+      <v-row align="center">
+        <v-col
+          v-html="item.content"
+          :class="item.image ? 'text-left' : ''"
+          class="mb-2 mt-5 title font-weight-light"
+        />
+        <v-col v-if="item.image" cols="6"><v-img :src="item.image"/></v-col>
+        <v-btn
+          v-if="item.button"
+          v-text="item.button.label"
+          :href="item.button.link"
+          color="secondary"
+          class="black--text"
+        />
+      </v-row>
       <v-btn
         v-for="icon in item.icons"
         :key="icon.icon"

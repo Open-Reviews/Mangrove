@@ -175,4 +175,8 @@ export default {
 .v-btn {
   text-transform: none !important;
 }
+.v-application p {
+  margin-bottom: 0em;
+  margin-top: 1em;
+}
 </style>

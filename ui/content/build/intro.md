@@ -1,9 +1,9 @@
 Our aim is to create an open data ecosystem for reviews of places, companies, websites, books, and more. We provide open-source infrastructure that enables any application or website to integrate a reviews layer, and to benefit from a shared data pool that reaches far beyond their own user base.
 
-Mangrove provides
+Mangrove provides  
 * A [technical standard](https://gitlab.com/plantingspace/mangrove/-/blob/master/Mangrove_Review_Standard.md) to ensure interoperability
 * An open-source [API](https://api.mangrove.reviews/swagger-ui/index.html)
 * An aggregation algorithm to clean and filter the data
-* A downloadable open dataset licensed under [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/)
+* A downloadable open dataset licensed under [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/)  
 
 Mangrove is a non-profit service hosted and supported by a community of businesses, developers and interested parties around the world.
