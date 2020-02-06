@@ -53,7 +53,7 @@ export default {
           icons: [
             {
               icon: 'mdi-api',
-              link: `${process.env.VUE_APP_API_URL}/swagger-ui`
+              link: `https://app.swaggerhub.com/apis/keorn/Mangrove_Server/0.1.0`
             }
           ]
         },
