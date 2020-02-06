@@ -63,6 +63,7 @@
           v-for="social in socials"
           :key="social.link"
           :href="social.link"
+          rel="me"
           target="_blank"
           icon
         >

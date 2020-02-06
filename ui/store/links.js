@@ -1,7 +1,7 @@
 export const LINKS = {
   Mastodon: {
     icon: 'mdi-mastodon',
-    link: 'https://mas.to/@PlantingSpace'
+    link: 'https://mas.to/@mangroveReviews'
   },
   Twitter: {
     icon: 'mdi-twitter',
