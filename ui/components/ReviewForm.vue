@@ -4,8 +4,13 @@
       <v-card>
         <v-card-title v-html="subjectLine" class="justify-center" />
         <v-divider />
-        <v-alert type="warning" elevation="8" border="left">
-          Image upload and review submission may not work on Firefox Mobile.
+        <v-alert
+          v-if="isMobileFirefox"
+          type="warning"
+          elevation="8"
+          border="left"
+        >
+          Image upload may not work on Firefox Mobile.
         </v-alert>
         <v-rating v-model="rating" hover class="my-1 text-center" large />
         <v-card-text>
