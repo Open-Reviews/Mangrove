@@ -25,9 +25,6 @@
         >
       </template>
     </v-file-input>
-    <v-alert v-if="isMobileFirefox" type="warning" elevation="8" border="left">
-      Image upload may not work on Firefox Mobile.
-    </v-alert>
   </div>
 </template>
 

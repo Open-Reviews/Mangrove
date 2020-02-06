@@ -15,7 +15,8 @@
         v-text="item.title"
         class="display-1 mt-5 font-weight-light"
       />
-      <div v-html="item.content" class="mb-10 mt-5 title font-weight-light" />
+      <v-col v-html="item.content" class="mb-10 mt-5 title font-weight-light" />
+      <v-col v-if="item.image"><v-img :src="item.image"/></v-col>
       <v-btn
         v-if="item.button"
         v-text="item.button.label"

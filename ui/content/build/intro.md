@@ -1,7 +1,3 @@
----
-image: build_ecosystem.png
----
-
 Our aim is to create an open data ecosystem for reviews of places, companies, websites, books, and more. We provide open-source infrastructure that enables any application or website to integrate a reviews layer, and to benefit from a shared data pool that reaches far beyond their own user base.
 
 Mangrove provides

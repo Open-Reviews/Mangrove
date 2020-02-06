@@ -60,7 +60,7 @@
       <v-col :class="isSmall || 'text-right'" class="mb-n2">
         <v-divider v-if="isSmall" class="mb-3" />
         <v-btn
-          v-for="social in SOCIALS"
+          v-for="social in socials"
           :key="social.link"
           :href="social.link"
           target="_blank"
@@ -111,7 +111,7 @@
 </template>
 
 <script>
-import { SOCIALS, GITLAB, OPEN_COLLECTIVE } from '~/store/data'
+import { LINKS } from '~/store/links'
 
 const FEEDBACK_IDS = {
   '/build': 15051,
@@ -138,10 +138,13 @@ export default {
         { label: 'FAQ', to: 'faq' },
         { label: 'Terms & Privacy', to: 'terms' },
         { label: 'API', href: 'https://api.mangrove.reviews/swagger-ui' },
-        { label: 'Develop', href: GITLAB },
-        { label: 'Donate', href: OPEN_COLLECTIVE }
+        {
+          label: 'Develop',
+          href: LINKS.Gitlab.link
+        },
+        { label: 'Donate', href: LINKS.OpenCollective.link }
       ],
-      SOCIALS
+      socials: ['Mastodon', 'Twitter', 'Riot'].map((wanted) => LINKS[wanted])
     }
   },
   computed: {

@@ -25,7 +25,7 @@ import {
   attributes as donateTitle
 } from '../content/contribute/donate.md'
 import InfoPage from '~/components/InfoPage'
-import { SOCIALS, GITLAB, OPEN_COLLECTIVE } from '~/store/data'
+import { LINKS } from '~/store/links'
 
 export default {
   components: {
@@ -42,7 +42,7 @@ export default {
         {
           title: donateTitle.title,
           content: donateContent,
-          button: { label: 'Donate', link: OPEN_COLLECTIVE }
+          button: { label: 'Donate', link: LINKS.OpenCollective.link }
         },
         {
           title: integrateTitle.title,
@@ -51,17 +51,12 @@ export default {
         {
           title: spreadTitle.title,
           content: spreadContent,
-          icons: SOCIALS
+          icons: [LINKS.Mastodon, LINKS.Twitter]
         },
         {
           title: codeTitle.title,
           content: codeContent,
-          icons: [
-            {
-              icon: 'mdi-gitlab',
-              link: GITLAB
-            }
-          ]
+          icons: [LINKS.Gitlab, LINKS.Riot]
         }
       ]
     }

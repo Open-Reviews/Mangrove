@@ -22,6 +22,7 @@ import {
   attributes as embedTitle
 } from '../content/build/embed.md'
 import InfoPage from '~/components/InfoPage'
+import { LINKS } from '~/store/links'
 
 export default {
   components: {
@@ -32,10 +33,19 @@ export default {
       title: 'Build on Mangrove',
       subtitle:
         'Build a business, or enrich your product or service with open reviews',
-      image: require('~/assets/build_leaf_2000x190.jpg'),
+      image: require('~/assets/build/leaf_2000x190.jpg'),
       content: [
         {
-          content: introContent
+          content: introContent,
+          image: require('~/assets/build/ecosystem.png'),
+          icons: [
+            {
+              icon: 'mdi-email-outline',
+              link:
+                'mailto:hello@planting.space?subject=Missing Review Subject on Mangrove'
+            },
+            LINKS.Riot
+          ]
         },
         {
           title: integrateTitle.title,
