@@ -1,6 +1,6 @@
 # Mangrove
 
-[Learn more about the project.](https://planting.space/mangrove.html)
+[See the Demo and learn more about the project.](https://mangrove.reviews)
 
 > Work in progress!
 
