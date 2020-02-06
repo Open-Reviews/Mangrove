@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { isMobileFirefox, imageUrl } from '~/utils'
+import { imageUrl } from '~/utils'
 const base64url = require('base64-url')
 
 function dataURIToBlob(dataURI) {
@@ -89,8 +89,7 @@ export default {
       urlToFile: {},
       maxHeight: 1000,
       maxWidth: 1000,
-      fileUrl: (file) => URL.createObjectURL(file),
-      isMobileFirefox: isMobileFirefox()
+      fileUrl: (file) => URL.createObjectURL(file)
     }
   },
   computed: {

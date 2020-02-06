@@ -4,6 +4,9 @@
       <v-card>
         <v-card-title v-html="subjectLine" class="justify-center" />
         <v-divider />
+        <v-alert type="warning" elevation="8" border="left">
+          Image upload and review submission may not work on Firefox Mobile.
+        </v-alert>
         <v-rating v-model="rating" hover class="my-1 text-center" large />
         <v-card-text>
           <v-textarea
@@ -131,7 +134,7 @@ import UserHeader from './UserHeader'
 import LogInDialog from './LogInDialog'
 import { HAS_SAVED_KEY } from '~/store/indexeddb-types'
 import { MARESI } from '~/store/scheme-types'
-import { MAX_OPINION_LENGTH } from '~/utils'
+import { MAX_OPINION_LENGTH, isMobileFirefox } from '~/utils'
 
 export default {
   name: 'ReviewForm',
@@ -162,7 +165,8 @@ export default {
       MAX_OPINION_LENGTH,
       dismissedRating: false,
       ratingDialog: false,
-      keyDialog: false
+      keyDialog: false,
+      isMobileFirefox: isMobileFirefox()
     }
   },
   computed: {
