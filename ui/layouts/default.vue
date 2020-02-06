@@ -1,6 +1,6 @@
 <template>
   <v-app :style="{ background: $vuetify.theme.themes[theme].background }">
-    <v-app-bar app dense color="background">
+    <v-app-bar :hide-on-scroll="isSmall" app dense color="background">
       <router-link to="/">
         <v-img src="mangrove.png" max-width="220" contain />
       </router-link>

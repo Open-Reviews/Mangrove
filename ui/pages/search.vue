@@ -14,7 +14,6 @@
         :points="$store.getters.mapPoints"
         @select="selectSubject($event)"
         @search="geoSearch($event)"
-        class="mt-2"
       />
       <v-row>
         <SubjectList @selected="viewProfile = true" />
@@ -101,7 +100,7 @@ export default {
 
 <style scoped>
 .scrollable {
-  height: 95vh;
+  height: 100vh;
 }
 .noscroll {
   overflow-y: scroll;

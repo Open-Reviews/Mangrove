@@ -20,7 +20,7 @@
     </v-alert>
     <SchemeFilter
       v-if="!noFilter"
-      :class="{ 'my-n6': $vuetify.breakpoint.smAndDown }"
+      :class="{ 'mt-n6': $vuetify.breakpoint.smAndDown }"
     />
   </v-container>
 </template>

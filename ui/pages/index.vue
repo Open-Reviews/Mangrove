@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-row class="mb-1 text-center white--text">
-      <v-img :src="front.image" height="97vh" class="display-3 pa-12">
+      <v-img :src="front.image" height="100vh" class="display-3 pa-12">
         <h1
           v-html="front.title"
           :class="isSmall ? 'display-2' : 'display-4'"
@@ -36,7 +36,7 @@
       </v-img>
     </v-row>
     <v-row v-for="(feature, i) in features" :key="i" class="mb-1">
-      <v-img :src="feature.image" height="97vh" class="align-center">
+      <v-img :src="feature.image" height="100vh" class="align-center">
         <v-row :class="{ 'mx-4': isSmall }">
           <v-card
             :style="
