@@ -86,8 +86,7 @@ export default function({ store, $axios, route }) {
     store
       .dispatch('getReviews', { q: query })
       .then((rs) => {
-        if (!rs) throw new Error('empty response')
-        if (!rs.reviews.length) return
+        if (!rs || !rs.reviews.length) return
         return subsToSubjects(
           $axios,
           rs.reviews.map((review) => review.payload.sub)

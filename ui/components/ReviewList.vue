@@ -123,7 +123,12 @@ export default {
         }
       } else {
         const subject = this.$store.getters.subject(sub)
-        return subject && `Your review of ${subject.title}, ${subject.subtitle}`
+        return (
+          subject &&
+          `Your review of ${[subject.title, subject.subtitle]
+            .filter(Boolean)
+            .join(', ')}`
+        )
       }
     }
   }
