@@ -85,8 +85,8 @@ export default {
           return isReturned
         })
         .sort((r1, r2) => r2.payload.iat - r1.payload.iat)
-      counts.null = rs.length
-      if (!this.$store.state.filter) {
+      if (rs.length && !this.$store.state.filter) {
+        counts.null = rs.length
         this.$emit('counted', counts)
       }
       return rs
