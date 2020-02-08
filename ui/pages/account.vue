@@ -50,29 +50,41 @@
         <AdvancedAccount />
       </v-col>
       <v-col v-if="reviewCount">
-        <YourReviews />
+        <h1 class="display-1">Your reviews</h1>
+        <v-divider />
+        <SchemeFilter :counts="counts" comments />
+        <ReviewList
+          :rootPk="$store.state.publicKey"
+          @counted="counts = $event"
+        />
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
+import SchemeFilter from '~/components/SchemeFilter'
+import ReviewList from '~/components/ReviewList'
 import LogInDialog from '~/components/LogInDialog'
 import KeyList from '~/components/KeyList'
 import AdvancedAccount from '~/components/AdvancedAccount'
-import YourReviews from '~/components/YourReviews'
 
 export default {
   components: {
     AdvancedAccount,
-    YourReviews,
     LogInDialog,
-    KeyList
+    KeyList,
+    SchemeFilter,
+    ReviewList
+  },
+  data() {
+    return {
+      counts: undefined
+    }
   },
   computed: {
     reviewCount() {
-      const me = this.$store.getters.issuer(this.$store.state.publicKey)
-      return me && me.count
+      return this.counts === undefined || this.counts.null
     }
   },
   middleware: 'account'

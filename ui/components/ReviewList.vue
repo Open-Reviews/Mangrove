@@ -7,14 +7,27 @@
     />
     <ReviewListBase :listArgs="opinionated" />
     <v-row
-      v-if="opinionless.length && !showOpinionless && notMaresi"
+      v-if="
+        rootSub && opinionless.ratings.length && !showOpinionless && notMaresi
+      "
       justify="center"
     >
       <span @click="showOpinionless = true" style="cursor: pointer"
         >Show reviews without a description</span
       >
     </v-row>
-    <ReviewListBase v-if="showOpinionless" :listArgs="opinionless" />
+    <v-container v-if="rootPk && opinionless">
+      <span
+        v-if="rootPk && v !== 0"
+        v-for="[k, v] in Object.entries(opinionless.other)"
+      >
+        {{ k }}: {{ v }}
+      </span>
+    </v-container>
+    <ReviewListBase
+      v-if="showOpinionless || rootPk"
+      :listArgs="opinionless.ratings"
+    />
     <v-row v-if="reviews.length && notMaresi" justify="center">
       <v-tooltip top>
         <template v-slot:activator="{ on }">
@@ -35,6 +48,7 @@
 <script>
 import { downloadLink, pemDisplay, displayName } from '../utils'
 import { MARESI, subPath, subToScheme } from '../store/scheme-types'
+import { IS_PERSONAL_EXPERIENCE } from '../store/metadata-types'
 import ReviewListBase from './ReviewListBase'
 
 export default {
@@ -81,9 +95,26 @@ export default {
       return this.reviews.filter((r) => r.payload.opinion).map(this.reviewToArg)
     },
     opinionless() {
-      return this.reviews
-        .filter((r) => !r.payload.opinion)
+      let Flags = 0
+      let Likes = 0
+      let Confirmations = 0
+      const ratings = this.reviews
+        .filter(({ payload }) => {
+          if (payload.opinion) {
+            return false
+          }
+          if (payload.rating === 0) {
+            Flags++
+            return false
+          }
+          if (payload.rating === 100) {
+            payload.metadata[IS_PERSONAL_EXPERIENCE] ? Confirmations++ : Likes++
+            return false
+          }
+          return true
+        })
         .map(this.reviewToArg)
+      return { ratings, other: { Flags, Likes, Confirmations } }
     },
     notMaresi() {
       return (

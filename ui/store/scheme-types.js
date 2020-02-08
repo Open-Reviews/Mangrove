@@ -9,7 +9,7 @@ export const NAMES = {
   [GEO]: 'Place',
   [LEI]: 'Company',
   [ISBN]: 'Book',
-  [MARESI]: 'Comment'
+  [MARESI]: 'Reaction'
 }
 
 export function pluralName(scheme) {

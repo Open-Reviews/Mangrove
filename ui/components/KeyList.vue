@@ -92,9 +92,12 @@ export default {
       return this.sk ? (this.showPrivate ? 'mdi-eye-off' : 'mdi-eye') : ''
     },
     downloadKeyName() {
-      return `mangrove.reviews_PrivateKey_${pemDisplay(
-        this.$store.state.publicKey
-      )}.json`
+      return (
+        this.$store.state.publicKey &&
+        `mangrove.reviews_PrivateKey_${pemDisplay(
+          this.$store.state.publicKey
+        )}.json`
+      )
     },
     downloadKeyLink() {
       return downloadLink(this.private)
