@@ -138,7 +138,10 @@ export default {
         { label: 'About', href: 'https://planting.space/mangrove.html' },
         { label: 'FAQ', to: 'faq' },
         { label: 'Terms & Privacy', to: 'terms' },
-        { label: 'API', href: 'https://app.swaggerhub.com/apis/keorn/Mangrove_Server/0.1.0' },
+        {
+          label: 'API',
+          href: 'https://app.swaggerhub.com/apis/keorn/Mangrove_Server/0.1.0'
+        },
         {
           label: 'Develop',
           href: LINKS.Gitlab.link
