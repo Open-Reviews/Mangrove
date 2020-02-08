@@ -163,31 +163,6 @@ export default {
   },
   data() {
     return {
-      actions: [
-        {
-          icon: 'mdi-thumb-up',
-          tooltip: 'This is useful',
-          action: this.useful,
-          number:
-            this.maresiSubject.positive_count -
-            this.maresiSubject.confirmed_count,
-          disabled: this.review.kid === this.$store.state.publicKey
-        },
-        {
-          icon: 'mdi-certificate',
-          tooltip: 'Confirm this experience',
-          action: this.confirm,
-          number: this.maresiSubject.confirmed_count,
-          disabled: this.review.kid === this.$store.state.publicKey
-        },
-        {
-          icon: 'mdi-comment-text-multiple',
-          tooltip: 'Write a comment',
-          action: this.respond,
-          number: this.maresiSubject.opinion_count,
-          disabled: false
-        }
-      ],
       menu: [
         {
           title: 'Flag as inappropriate',
@@ -223,6 +198,33 @@ export default {
     }
   },
   computed: {
+    actions() {
+      return [
+        {
+          icon: 'mdi-thumb-up',
+          tooltip: 'This is useful',
+          action: this.useful,
+          number:
+            this.maresiSubject.positive_count -
+            this.maresiSubject.confirmed_count,
+          disabled: this.review.kid === this.$store.state.publicKey
+        },
+        {
+          icon: 'mdi-certificate',
+          tooltip: 'Confirm this experience',
+          action: this.confirm,
+          number: this.maresiSubject.confirmed_count,
+          disabled: this.review.kid === this.$store.state.publicKey
+        },
+        {
+          icon: 'mdi-comment-text-multiple',
+          tooltip: 'Write a comment',
+          action: this.respond,
+          number: this.maresiSubject.opinion_count,
+          disabled: false
+        }
+      ]
+    },
     payload() {
       return this.review.payload
     },
