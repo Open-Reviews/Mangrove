@@ -29,7 +29,7 @@
           <v-col />
         </v-row>
         <v-row
-          v-if="!isSmall || (isSmall && !focus)"
+          v-if="!isSmall || ($vuetify.breakpoint.sm && !focus)"
           class="headline"
           style="position: absolute; bottom: 100px; margin-left: auto; margin-right: auto; width: 330px; left: 0; right: 0;"
           align="center"
