@@ -28,7 +28,7 @@
         />
         Reviewed {{ new Date(payload.iat * 1000).toDateString() }}
       </v-row>
-      {{ payload.opinion }}
+      <span v-html="formattedOpinion" />
       <v-row v-if="payload.images" class="mx-auto">
         <v-img
           v-for="img in payload.images"
@@ -235,6 +235,19 @@ export default {
     },
     isMaresi() {
       return this.payload.sub.startsWith(MARESI)
+    },
+    // Makes links clickable.
+    formattedOpinion() {
+      return (this.payload.opinion || '').replace(
+        /([^\S]|^)(((https?:\/\/)|(www\.))(\S+))/gi,
+        function(match, space, url) {
+          let hyperlink = url
+          if (!hyperlink.match('^https?://')) {
+            hyperlink = 'http://' + hyperlink
+          }
+          return space + '<a href="' + hyperlink + '">' + url + '</a>'
+        }
+      )
     }
   },
   methods: {
