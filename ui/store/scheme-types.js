@@ -9,7 +9,11 @@ export const NAMES = {
   [GEO]: 'Place',
   [LEI]: 'Company',
   [ISBN]: 'Book',
-  [MARESI]: 'Review'
+  [MARESI]: 'Comment'
+}
+
+export function pluralName(scheme) {
+  return scheme === LEI ? 'Companies' : NAMES[scheme] + 's'
 }
 
 export const ICONS = {
@@ -17,7 +21,7 @@ export const ICONS = {
   [GEO]: 'mdi-map-marker',
   [LEI]: 'mdi-domain',
   [ISBN]: 'mdi-book-open-page-variant',
-  [MARESI]: 'Review'
+  [MARESI]: 'mdi-comment-text-multiple'
 }
 
 export function subToScheme(sub) {
@@ -42,4 +46,17 @@ export function subPath(scheme, sub) {
 
 export function geoUri(lat, lon, name) {
   return `${GEO}:${lat},${lon}?q=${name}&u=30`
+}
+
+const ERRORS = {
+  [GEO]: `Places search: the OpenStreetMap server could not be reached.
+  Please try again in a few minutes.`,
+  [ISBN]: `Books search: the Open Library server could not be reached.
+          Please try again in a few minutes.`,
+  [LEI]: `Company search: The GLEIF server for company data could not be reached.
+        Please try again in a few minutes.`
+}
+
+export function errorString(str) {
+  return ERRORS[str] || str
 }

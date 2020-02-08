@@ -15,9 +15,6 @@
         dense
       />
     </v-row>
-    <v-alert v-if="error && !noFilter" type="error" border="left" elevation="8">
-      Error encountered: {{ error }}
-    </v-alert>
     <SchemeFilter
       v-if="!noFilter"
       :class="{ 'mt-n6': $vuetify.breakpoint.smAndDown }"
@@ -46,9 +43,6 @@ export default {
     }
   },
   computed: {
-    error() {
-      return this.$store.state.errors.search
-    },
     placeholder() {
       return this.placeholders[this.placeholderIndex]
     }

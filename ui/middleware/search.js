@@ -4,7 +4,7 @@ import {
   START_SEARCH,
   STOP_SEARCH
 } from '~/store/mutation-types'
-import { HTTPS } from '~/store/scheme-types'
+import { HTTPS, GEO, ISBN, LEI } from '~/store/scheme-types'
 import {
   subsToSubjects,
   leiToSubject,
@@ -56,31 +56,19 @@ export default function({ store, $axios, route }) {
     searchGeo($axios, query, route.query.geo)
       .then((subjects) => store.dispatch('storeResults', subjects))
       .catch((error) => {
-        store.commit(
-          SEARCH_ERROR,
-          `Places search: the OpenStreetMap server could not be reached.
-          Please try again in a few minutes.`
-        )
+        store.commit(SEARCH_ERROR, GEO)
         console.log('Nominatim error: ', error)
       }),
     searchIsbn($axios, query)
       .then((subjects) => store.dispatch('storeResults', subjects))
       .catch((error) => {
-        store.commit(
-          SEARCH_ERROR,
-          `Books search: the Open Library server could not be reached.
-          Please try again in a few minutes.`
-        )
+        store.commit(SEARCH_ERROR, ISBN)
         console.log('OpenLibrary error: ', error)
       }),
     searchLei($axios, query)
       .then((subjects) => store.dispatch('storeResults', subjects))
       .catch((error) => {
-        store.commit(
-          SEARCH_ERROR,
-          `Company search: The GLEIF server for company data could not be reached.
-        Please try again in a few minutes.`
-        )
+        store.commit(SEARCH_ERROR, LEI)
         console.log('GLEIF error: ', error)
       }),
     store

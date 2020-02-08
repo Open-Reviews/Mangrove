@@ -254,7 +254,11 @@ export default {
       })
     },
     submitReview() {
-      if (!this.dismissedRating && !this.rating) {
+      if (
+        !this.dismissedRating &&
+        !this.rating &&
+        this.subject.scheme !== MARESI
+      ) {
         this.ratingDialog = true
         return
       }

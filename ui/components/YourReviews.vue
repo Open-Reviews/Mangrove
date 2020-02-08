@@ -2,7 +2,7 @@
   <div>
     <h1 class="display-1">Your reviews</h1>
     <v-divider />
-    <SchemeFilter />
+    <SchemeFilter comments />
     <ReviewList :rootPk="$store.state.publicKey" />
   </div>
 </template>
