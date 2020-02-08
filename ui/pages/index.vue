@@ -18,7 +18,7 @@
         <v-row>
           <v-col />
           <v-col :cols="isSmall ? 12 : 6">
-            <SearchBox @focus="focus = $event" no-filter />
+            <SearchBox @focus="focus = $event" />
             <v-row class="justify-space-around mt-n8">
               <span
                 v-text="front.subsearch.join(' ᐧ ')"

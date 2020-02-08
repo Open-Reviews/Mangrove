@@ -15,18 +15,11 @@
         dense
       />
     </v-row>
-    <SchemeFilter
-      v-if="!noFilter"
-      :class="{ 'mt-n6': $vuetify.breakpoint.smAndDown }"
-    />
   </v-container>
 </template>
 
 <script>
-import SchemeFilter from './SchemeFilter'
-
 export default {
-  components: { SchemeFilter },
   props: {
     noFilter: Boolean
   },

@@ -7,13 +7,13 @@
             :value="box.scheme"
             :class="{ 'body-2': $vuetify.breakpoint.smAndDown }"
             :outlined="filter !== box.scheme"
-            :disabled="error === box.scheme"
+            :disabled="error === box.scheme || (comments && !box.count)"
             v-on="error && on"
           >
             <v-avatar v-if="box.icon"
               ><v-icon v-text="box.icon" small
             /></v-avatar>
-            {{ box.label }}
+            {{ box.label }} {{ box.count }}
           </v-chip>
         </template>
         <span>{{ errorMessage }}</span>
@@ -29,8 +29,7 @@ import { ICONS, pluralName, errorString, MARESI } from '~/store/scheme-types'
 export default {
   props: {
     comments: Boolean,
-    count: { type: Number, default: () => null },
-    schemeCounts: {
+    counts: {
       type: Object,
       default: () => {
         return {}
@@ -39,14 +38,16 @@ export default {
   },
   computed: {
     boxes() {
-      const obj = [{ var: null, label: 'All', icon: null, count: this.count }]
+      const obj = [
+        { var: null, label: 'All', icon: null, count: this.counts.null }
+      ]
       for (const [scheme, icon] of Object.entries(ICONS)) {
         if (this.comments || scheme !== MARESI)
           obj.push({
             scheme,
             icon,
             label: pluralName(scheme),
-            count: this.schemeCounts[scheme]
+            count: this.counts[scheme]
           })
       }
       return obj

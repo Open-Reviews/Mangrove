@@ -2,8 +2,8 @@
   <div>
     <h1 class="display-1">Your reviews</h1>
     <v-divider />
-    <SchemeFilter comments />
-    <ReviewList :rootPk="$store.state.publicKey" />
+    <SchemeFilter :counts="counts" comments />
+    <ReviewList :rootPk="$store.state.publicKey" @counted="counts = $event" />
   </div>
 </template>
 
@@ -15,6 +15,11 @@ export default {
   components: {
     SchemeFilter,
     ReviewList
+  },
+  data() {
+    return {
+      counts: undefined
+    }
   }
 }
 </script>

@@ -8,6 +8,7 @@
     >
       <v-row class="px-10">
         <SearchBox />
+        <SchemeFilter class="mt-n6" />
       </v-row>
       <SelectionMap
         v-if="!isBig"
@@ -51,13 +52,15 @@ import SearchBox from '~/components/SearchBox'
 import SubjectList from '~/components/SubjectList'
 import SubjectProfile from '~/components/SubjectProfile'
 import SelectionMap from '~/components/SelectionMap'
+import SchemeFilter from '~/components/SchemeFilter'
 
 export default {
   components: {
     SearchBox,
     SubjectList,
     SubjectProfile,
-    SelectionMap
+    SelectionMap,
+    SchemeFilter
   },
   data() {
     return {
