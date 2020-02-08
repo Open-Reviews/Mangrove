@@ -1,8 +1,15 @@
 <template>
   <v-app :style="{ background: $vuetify.theme.themes[theme].background }">
     <v-app-bar app dense scroll-off-screen color="background">
-      <router-link to="/">
-        <v-img src="mangrove.png" max-width="220" contain />
+      <router-link to="/" style="text-decoration: none">
+        <v-row align="center">
+          <v-avatar class="mx-2">
+            <canvas id="canvas" />
+          </v-avatar>
+          <span class="black--text headline">
+            MANGROVE
+          </span>
+        </v-row>
       </router-link>
       <v-spacer />
       <v-toolbar-items class="mr-n4 hidden-sm-and-down">
@@ -112,6 +119,7 @@
 </template>
 
 <script>
+import tree from 'ps-trees'
 import { LINKS } from '~/store/links'
 
 const FEEDBACK_IDS = {
@@ -164,6 +172,9 @@ export default {
     feedbackId() {
       return FEEDBACK_IDS[this.$route.path] || 15050
     }
+  },
+  mounted() {
+    tree(document.getElementById('canvas'), 'Mangrove')
   },
   created() {
     this.$store.dispatch('generateKeypair')
