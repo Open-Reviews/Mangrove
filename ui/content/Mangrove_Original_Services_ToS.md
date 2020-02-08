@@ -12,6 +12,45 @@ These **Terms of Service** **tell you about** the services that the Mangrove ini
 
 We also include other important notices and disclaimers, so please read these Terms of Service in their entirety.
 
+<br />
+
+- [Terms of Service and Privacy Policy](#terms-of-service-and-privacy-policy)
+- [Human-readable summary of the Terms of Service](#human-readable-summary-of-the-terms-of-service)
+- [Terms of Service](#terms-of-service)
+  - [<span style="text-decoration:underline;">1. Our Services</span>](#1-our-services)
+  - [<span style="text-decoration:underline;">2. Privacy Policy</span>](#2-privacy-policy)
+    - [Principles](#principles)
+    - [Information You Share](#information-you-share)
+    - [Your identifier in Mangrove](#your-identifier-in-mangrove)
+  - [<span style="text-decoration:underline;">3. Content We Host</span>](#3-content-we-host)
+  - [<span style="text-decoration:underline;">4. Refraining from Certain Activities</span>](#4-refraining-from-certain-activities)
+    - [Harassing and Abusing Others](#harassing-and-abusing-others)
+    - [Engaging in False Statements, Impersonation, or Fraud](#engaging-in-false-statements-impersonation-or-fraud)
+    - [Misusing Our Services for Other Illegal Purposes](#misusing-our-services-for-other-illegal-purposes)
+    - [Violating the Privacy of Others](#violating-the-privacy-of-others)
+    - [Committing Infringement](#committing-infringement)
+    - [Engaging in Disruptive and Illegal Misuse of Facilities](#engaging-in-disruptive-and-illegal-misuse-of-facilities)
+    - [Paid contributions without disclosure](#paid-contributions-without-disclosure)
+  - [<span style="text-decoration:underline;">5. Censorship Protection, Conditions for Deletion, and Removal</span>](#5-censorship-protection-conditions-for-deletion-and-removal)
+    - [Conditions for Deletion](#conditions-for-deletion)
+    - [Removal of Harmful Content](#removal-of-harmful-content)
+  - [<span style="text-decoration:underline;">6. Private Key Security</span>](#6-private-key-security)
+  - [<span style="text-decoration:underline;">7. Trademarks</span>](#7-trademarks)
+  - [<span style="text-decoration:underline;">8. Licensing of Content </span>](#8-licensing-of-content)
+    - [Text and non-text media to which you hold the copyrights](#text-and-non-text-media-to-which-you-hold-the-copyrights)
+    - [Attribution](#attribution)
+    - [No revocation of license](#no-revocation-of-license)
+    - [Re-use](#re-use)
+    - [Modifications or additions to material that you re-use](#modifications-or-additions-to-material-that-you-re-use)
+  - [<span style="text-decoration:underline;">9. Third-party Websites and Resources</span>](#9-third-party-websites-and-resources)
+  - [<span style="text-decoration:underline;">10. Management of the Database</span>](#10-management-of-the-database)
+  - [<span style="text-decoration:underline;">11. Termination</span>](#11-termination)
+  - [<span style="text-decoration:underline;">12. Disputes and Jurisdiction</span>](#12-disputes-and-jurisdiction)
+  - [<span style="text-decoration:underline;">13. Disclaimers</span>](#13-disclaimers)
+  - [<span style="text-decoration:underline;">14. Limitation on Liability</span>](#14-limitation-on-liability)
+  - [<span style="text-decoration:underline;">15. Modifications to these Terms of Service</span>](#15-modifications-to-these-terms-of-service)
+  - [<span style="text-decoration:underline;">16. Other Terms</span>](#16-other-terms)
+  - [<span style="text-decoration:underline;">Thank You!</span>](#thank-you)
 
 # Human-readable summary of the Terms of Service
 
