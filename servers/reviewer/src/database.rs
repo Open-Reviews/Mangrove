@@ -12,21 +12,21 @@ pub struct DbConn(diesel::PgConnection);
 /// Review fulfills the query if all conditions are satisfied (intersection).
 #[derive(Default, Debug, FromForm, JsonSchema)]
 pub struct Query {
-    /// Search for reviews with this string in `sub` and `opinion` fields.
+    /// Search for reviews that have this string in `sub` or `opinion` field.
     pub q: Option<String>,
-    /// Return review with this `signature` value.
+    /// Review with this `signature` value.
     pub signature: Option<String>,
-    /// Return reviews by issuer with the following PEM public key.
+    /// Reviews by issuer with the following PEM public key.
     pub kid: Option<String>,
-    /// Return reviews issued at this time.
+    /// Reviews issued at this UNIX time.
     pub iat: Option<i64>,
-    /// Return reviews with timestamp greater than this.
+    /// Reviews with UNIX timestamp greater than this.
     pub gt_iat: Option<i64>,
-    /// Return reviews with the given subject.
+    /// Reviews of the given subject URI.
     pub sub: Option<String>,
-    /// Return reviews with the given rating.
+    /// Reviews with the given rating.
     pub rating: Option<i16>,
-    /// Return reviews with the given opinion.
+    /// Reviews with the given opinion.
     pub opinion: Option<String>,
     /// Include aggregate information about review issuers.
     pub issuers: Option<bool>,
