@@ -1,5 +1,5 @@
 {
-  "name": "mangrove-js",
+  "name": "mangrove-reviews-js",
   "version": "0.1.0",
   "description": "JS library for submission and retrieval of Mangrove reviews.",
   "main": "index.js",

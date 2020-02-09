@@ -10,7 +10,7 @@ import {
   getIssuer,
   batchAggregate,
   getReviews
-} from 'mangrove-js'
+} from 'mangrove-reviews-js'
 import { MARESI, GEO, subToScheme } from './scheme-types'
 import { subsToSubjects } from './apis'
 import { PRIVATE_KEY } from './indexeddb-types'
