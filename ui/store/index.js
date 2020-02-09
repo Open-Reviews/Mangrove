@@ -1,11 +1,21 @@
 import Vue from 'vue'
 import { get, set } from 'idb-keyval'
+import {
+  generateKeypair,
+  jwkToKeypair,
+  keypairToJwk,
+  publicToPem,
+  privateToPem,
+  getSubject,
+  getIssuer,
+  batchAggregate,
+  getReviews
+} from 'mangrove-js'
 import { MARESI, GEO, subToScheme } from './scheme-types'
 import { subsToSubjects } from './apis'
 import { PRIVATE_KEY } from './indexeddb-types'
 import * as t from './mutation-types'
 import { CLIENT_ID } from './metadata-types'
-import { jwkToKeypair, skToJwk, publicToPem, privateToPem } from '~/utils'
 const jsonwebtoken = require('jsonwebtoken')
 
 export const state = () => ({
@@ -116,7 +126,7 @@ export const getters = {
 export const actions = {
   setKeypair({ commit }, keypair) {
     commit(t.SET_KEYPAIR, keypair)
-    skToJwk(keypair.privateKey).then((jwk) => set(PRIVATE_KEY, jwk))
+    keypairToJwk(keypair).then((jwk) => set(PRIVATE_KEY, jwk))
     publicToPem(keypair.publicKey).then((pem) => commit(t.SET_PK, pem))
   },
   // Storage in IndexedDB is done as jwk instead CryptoKey due to two issues:
@@ -134,32 +144,16 @@ export const actions = {
             console.log('Bad key in IndexDB:', jwk)
           }
         } else {
-          await window.crypto.subtle
-            .generateKey(
-              {
-                name: 'ECDSA',
-                namedCurve: 'P-256'
-              },
-              true,
-              ['sign', 'verify']
-            )
+          await generateKeypair()
             .then((kp) => {
               keypair = kp
             })
             .catch((error) => console.log('Accessing IndexDB failed: ', error))
         }
-        await window.crypto.subtle
-          .generateKey(
-            {
-              name: 'ECDSA',
-              namedCurve: 'P-256'
-            },
-            true,
-            ['sign', 'verify']
-          )
+        await generateKeypair()
           .then((kp) => {
             keypair = kp
-            skToJwk(kp.privateKey).then((jwk) => set(PRIVATE_KEY, jwk))
+            keypairToJwk(kp).then((jwk) => set(PRIVATE_KEY, jwk))
           })
           .catch((error) => console.log('Accessing IndexDB failed: ', error))
       })
@@ -167,17 +161,11 @@ export const actions = {
     await dispatch('setKeypair', keypair)
   },
   // Fetch reviews mathing params from the server.
-  getReviews({ commit }, params) {
-    return this.$axios
-      .get(`${process.env.VUE_APP_API_URL}/reviews`, {
-        params,
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
+  getReviews({ commit }, query) {
+    return getReviews(query, process.env.VUE_APP_API_URL)
       .then((response) => {
         commit(t.REQUEST_ERROR, null)
-        return response.data
+        return response
       })
       .catch((error) => {
         if (error.response) {
@@ -230,11 +218,10 @@ export const actions = {
       )
   },
   bulkSubjects({ commit }, subs) {
-    return this.$axios
-      .post(`${process.env.VUE_APP_API_URL}/batch`, { subs })
+    return batchAggregate({ subs }, process.env.VUE_APP_API_URL)
       .then((response) => {
         commit(t.REQUEST_ERROR, null)
-        return response.data.subjects
+        return response.subjects
       })
       .catch((error) => {
         if (error.response) {
@@ -365,21 +352,17 @@ export const actions = {
   getIssuer({ getters, commit }, pubkey) {
     return (
       getters.issuer(pubkey) ||
-      this.$axios
-        .get(`${process.env.VUE_APP_API_URL}/issuer/${pubkey}`)
-        .then(({ data }) => {
-          commit(t.ADD_ISSUERS, { [pubkey]: data })
-          return data
-        })
+      getIssuer(pubkey, process.env.VUE_APP_API_URL).then((issuer) => {
+        commit(t.ADD_ISSUERS, { [pubkey]: issuer })
+        return issuer
+      })
     )
   },
   getSubject({ commit }, subject) {
-    return this.$axios
-      .get(`${process.env.VUE_APP_API_URL}/subject/${subject}`)
-      .then(({ data }) => {
-        data.scheme = subToScheme(data.sub)
-        commit(t.ADD_SUBJECTS, { [data.sub]: data })
-        return data
-      })
+    getSubject(subject, process.env.VUE_APP_API_URL).then((subject) => {
+      subject.scheme = subToScheme(subject.sub)
+      commit(t.ADD_SUBJECTS, { [subject.sub]: subject })
+      return subject
+    })
   }
 }

@@ -163,7 +163,7 @@ fn get_subject(conn: DbConn, sub: String) -> Result<Json<Subject>, Error> {
     Subject::compute(&conn, sub).map(Json)
 }
 
-/// Get information on issuers that have left reviews fulfilling the `Query`.
+/// Get information on issuer with given public key.
 #[openapi]
 #[get("/issuer/<pem>")]
 fn get_issuer(conn: DbConn, pem: String) -> Result<Json<Issuer>, Error> {
