@@ -1,20 +1,26 @@
 <template>
   <v-row justify="space-around" class="ma-auto">
     <v-chip-group v-model="filter" column>
-      <v-tooltip v-for="box in boxes" :key="box.var" bottom>
+      <v-tooltip
+        v-for="box in boxes"
+        :key="box.var"
+        :disabled="error !== box.scheme"
+        bottom
+      >
         <template v-slot:activator="{ on }">
-          <v-chip
-            :value="box.scheme"
-            :class="{ 'body-2': $vuetify.breakpoint.smAndDown }"
-            :outlined="filter !== box.scheme"
-            :disabled="error === box.scheme || (comments && !box.count)"
-            v-on="error && on"
-          >
-            <v-avatar v-if="box.icon"
-              ><v-icon v-text="box.icon" small
-            /></v-avatar>
-            {{ box.label }} {{ box.count }}
-          </v-chip>
+          <div v-on="on">
+            <v-chip
+              :value="box.scheme"
+              :class="{ 'body-2': $vuetify.breakpoint.smAndDown }"
+              :outlined="filter !== box.scheme"
+              :disabled="error === box.scheme || (comments && !box.count)"
+            >
+              <v-avatar v-if="box.icon"
+                ><v-icon v-text="box.icon" small
+              /></v-avatar>
+              {{ box.label }} {{ box.count }}
+            </v-chip>
+          </div>
         </template>
         <span>{{ errorMessage }}</span>
       </v-tooltip>
