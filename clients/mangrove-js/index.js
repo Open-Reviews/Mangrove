@@ -70,14 +70,16 @@ function generateKeypair() {
 const PRIVATE_KEY_METADATA = 'Mangrove private key'
 
 async function jwkToKeypair(jwk) {
-  if (!jwk || jwk.metadata !== PRIVATE_KEY_METADATA) {
+  // Do not mutate the argument.
+  let key = { ...jwk }
+  if (!key || key.metadata !== PRIVATE_KEY_METADATA) {
     throw new Error(
       `does not contain the required metadata field "${PRIVATE_KEY_METADATA}"`
     )
   }
   const sk = await crypto.subtle.importKey(
     'jwk',
-    jwk,
+    key,
     {
       name: 'ECDSA',
       namedCurve: 'P-256'
@@ -85,15 +87,15 @@ async function jwkToKeypair(jwk) {
     true,
     ['sign']
   )
-  delete jwk.d
-  delete jwk.dp
-  delete jwk.dq
-  delete jwk.q
-  delete jwk.qi
-  jwk.key_ops = ['verify']
+  delete key.d
+  delete key.dp
+  delete key.dq
+  delete key.q
+  delete key.qi
+  key.key_ops = ['verify']
   const pk = await crypto.subtle.importKey(
     'jwk',
-    jwk,
+    key,
     {
       name: 'ECDSA',
       namedCurve: 'P-256'
