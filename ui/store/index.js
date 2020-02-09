@@ -5,7 +5,8 @@ import {
   jwkToKeypair,
   keypairToJwk,
   publicToPem,
-  privateToPem,
+  signReview,
+  submitReview,
   getSubject,
   getIssuer,
   batchAggregate,
@@ -16,7 +17,6 @@ import { subsToSubjects } from './apis'
 import { PRIVATE_KEY } from './indexeddb-types'
 import * as t from './mutation-types'
 import { CLIENT_ID } from './metadata-types'
-const jsonwebtoken = require('jsonwebtoken')
 
 export const state = () => ({
   keyPair: null,
@@ -264,37 +264,14 @@ export const actions = {
       )
     )
   },
-  async reviewContent({ state }, stubClaim) {
-    // Assumes stubClaim contains at least `sub`
-    // Add mandatory fields.
-    const payload = {
-      iat: Math.floor(Date.now() / 1000),
-      sub: stubClaim.sub
+  async reviewContent({ state }, payload) {
+    if (payload.metadata) {
+      payload.metadata = { ...payload.metadata, ...state.metadata }
+    } else {
+      payload.metadata = state.metadata
     }
-    // Add field only if it is not empty.
-    if (stubClaim.rating != null) payload.rating = stubClaim.rating
-    if (stubClaim.opinion) payload.opinion = stubClaim.opinion
-    if (stubClaim.images && stubClaim.images.length)
-      payload.images = stubClaim.images
-    const meta = { ...stubClaim.metadata, ...state.metadata }
-    // Remove empty metadata fields.
-    Object.keys(meta).forEach((key) => meta[key] == null && delete meta[key])
-    // Always at least `client_id` present.
-    meta[CLIENT_ID] = process.env.BASE_URL
-    payload.metadata = meta
-    const jwt = jsonwebtoken.sign(
-      payload,
-      await privateToPem(state.keyPair.privateKey),
-      {
-        algorithm: 'ES256',
-        header: {
-          jwk: JSON.stringify(
-            await crypto.subtle.exportKey('jwk', state.keyPair.publicKey)
-          ),
-          kid: state.publicKey
-        }
-      }
-    )
+    payload.metadata[CLIENT_ID] = process.env.BASE_URL
+    const jwt = await signReview(state.keyPair, payload)
     return {
       jwt,
       kid: state.publicKey,
@@ -309,8 +286,7 @@ export const actions = {
         return false
       }
       console.log('Mangrove review: ', review)
-      return this.$axios
-        .put(`${process.env.VUE_APP_API_URL}/submit/${review.jwt}`)
+      return submitReview(review.jwt, process.env.VUE_APP_API_URL)
         .then(() => {
           commit(t.SUBMIT_ERROR, null)
           // Add review so that its immediately visible.

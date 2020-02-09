@@ -18,7 +18,6 @@
     "frontmatter-markdown-loader": "^3.1.0",
     "idb-keyval": "^3.2.0",
     "jdenticon": "^2.2.0",
-    "jsonwebtoken": "^8.5.1",
     "mangrove-reviews-js": "file:../clients/mangrove-reviews-js",
     "nuxt": "^2.0.0",
     "nuxt-clipboard2": "^0.2.1",

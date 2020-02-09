@@ -147,13 +147,20 @@ export default {
     review: {
       type: Object,
       default: () => {
-        return { signature: null, payload: null, jwt: null, kid: null }
+        return {
+          signature: null,
+          payload: { metadata: null, sub: '' },
+          jwt: null,
+          kid: null
+        }
       }
     },
     issuer: Object,
     maresiSubject: {
       type: Object,
-      default: () => {}
+      default: () => {
+        return {}
+      }
     },
     preview: Boolean,
     subjectTitle: {

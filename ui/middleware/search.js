@@ -97,7 +97,7 @@ export default function({ store, $axios, route }) {
   // Select a subject even if queries take a long time to resolve.
   Promise.race([
     queries,
-    new Promise((resolve) => setTimeout(resolve, 2000))
+    new Promise((resolve) => setTimeout(resolve, 3000))
   ]).then(() => {
     store.commit(STOP_SEARCH)
   })
