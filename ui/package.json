@@ -19,7 +19,7 @@
     "idb-keyval": "^3.2.0",
     "jdenticon": "^2.2.0",
     "jsonwebtoken": "^8.5.1",
-    "mangrove-js": "file:./../clients/mangrove-js",
+    "mangrove-js": "file:../clients/mangrove-js",
     "nuxt": "^2.0.0",
     "nuxt-clipboard2": "^0.2.1",
     "ol": "^6.1.1",

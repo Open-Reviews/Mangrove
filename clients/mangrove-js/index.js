@@ -52,7 +52,7 @@ function getIssuer(pem, api = ORIGINAL_API) {
 
 function batchAggregate(query, api = ORIGINAL_API) {
   if (!query.pems && !query.subs) { return null }
-  axios.post(`${api}/batch`, { pems, subs }).then(({ data }) => data)
+  return axios.post(`${api}/batch`, query).then(({ data }) => data)
 }
 
 function generateKeypair() {

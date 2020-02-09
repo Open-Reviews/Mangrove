@@ -19,8 +19,8 @@
 
 <script>
 import { set } from 'idb-keyval'
+import { jwkToKeypair } from 'mangrove-js'
 import { HAS_SAVED_KEY } from '~/store/indexeddb-types'
-import { jwkToKeypair } from '~/utils'
 
 export default {
   data() {
