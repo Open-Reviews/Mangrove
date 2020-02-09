@@ -1,6 +1,6 @@
 {
   "name": "mangrove-reviews-js",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "JS library for submission and retrieval of Mangrove reviews.",
   "main": "index.js",
   "repository": "https://gitlab.com/plantingspace/mangrove",
