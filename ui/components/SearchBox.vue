@@ -19,6 +19,28 @@
 </template>
 
 <script>
+import { GEO } from '~/store/scheme-types'
+
+const LAT_BOX = 0.1
+const LON_BOX = 0.1
+
+function getLocation() {
+  if (!navigator.geolocation) return
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        console.log('GOT LOCATION')
+        const lat = position.coords.latitude
+        const lon = position.coords.longitude
+        resolve(
+          [lon - LON_BOX, lat - LAT_BOX, lon + LON_BOX, lat + LAT_BOX].join(',')
+        )
+      },
+      (error) => console.log('No location: ', error)
+    )
+  })
+}
+
 export default {
   props: {
     noFilter: Boolean
@@ -47,9 +69,12 @@ export default {
     this.query = this.$route.query.q
   },
   methods: {
-    search() {
+    async search() {
       if (this.query && this.query.length > 0) {
-        this.$router.push({ path: 'search', query: { q: this.query } })
+        const query = { q: this.query }
+        const box = await getLocation()
+        if (box) query[GEO] = box
+        this.$router.push({ path: 'search', query })
       }
     },
     nextPlaceholder() {
