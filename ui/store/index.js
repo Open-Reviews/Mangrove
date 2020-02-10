@@ -16,7 +16,7 @@ import { MARESI, GEO, subToScheme } from './scheme-types'
 import { subsToSubjects } from './apis'
 import { PRIVATE_KEY } from './indexeddb-types'
 import * as t from './mutation-types'
-import { CLIENT_ID } from './metadata-types'
+import { CLIENT_ID, RECURRING } from './metadata-types'
 
 export const state = () => ({
   keyPair: null,
@@ -198,24 +198,22 @@ export const actions = {
       return rs
     })
   },
-  saveMyReviews({ state, dispatch }) {
-    dispatch('saveReviews', {
-      kid: state.publicKey
-    })
-      .then(
-        (rs) =>
-          rs && Object.values(rs.reviews).map((review) => review.payload.sub)
+  async saveMyReviews({ state, dispatch }, metadata = false) {
+    const rs = await dispatch('saveReviews', { kid: state.publicKey })
+    if (!rs || !rs.length) return
+    const subs = Object.values(rs.reviews).map((review) => review.payload.sub)
+    subsToSubjects(this.$axios, subs).map((promise) =>
+      promise.then((subject) => dispatch('storeWithRating', [subject]))
+    )
+    if (metadata) {
+      const newestReview = rs.reduce(function(prev, current) {
+        return prev.payload.iat > current.payload.iat ? prev : current
+      })
+      Object.entries(newestReview.payload.metadata).map(
+        ([k, v]) =>
+          RECURRING.includes(k) && this.$store.commit(t.SET_META, [k, v])
       )
-      .then(
-        (subs) =>
-          subs &&
-          subs.length &&
-          Promise.all(
-            subsToSubjects(this.$axios, subs).map((promise) =>
-              promise.then((subject) => dispatch('storeWithRating', [subject]))
-            )
-          )
-      )
+    }
   },
   bulkSubjects({ commit }, subs) {
     return batchAggregate({ subs }, process.env.VUE_APP_API_URL)

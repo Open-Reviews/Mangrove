@@ -44,6 +44,7 @@ export default {
           set(HAS_SAVED_KEY, true)
           this.error = null
           this.$emit('success')
+          this.$store.dispatch('saveMyReviews', true)
         })
         .catch((error) => (this.error = error))
     }

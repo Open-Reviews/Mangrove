@@ -130,8 +130,8 @@
 
 <script>
 import { get } from 'idb-keyval'
-import { SUBMIT_ERROR, SET_META } from '../store/mutation-types'
-import { IS_AFFILIATED, RECURRING } from '../store/metadata-types'
+import { SUBMIT_ERROR } from '../store/mutation-types'
+import { IS_AFFILIATED } from '../store/metadata-types'
 import ImageForm from './ImageForm'
 import MetaForm from './MetaForm'
 import SaveKeyDialog from './SaveKeyDialog'
@@ -225,23 +225,7 @@ export default {
     // Avoid issues with circular dependencies.
     this.$options.components.Review = require('./Review').default
     // Fetch reviews to prepopulate metadata and allow for full preview.
-    this.$store.dispatch('saveMyReviews').then(() => {
-      const myReviews = Object.values(this.$store.state.reviews).filter(
-        ({ kid }) => {
-          return kid === this.$store.state.publicKey
-        }
-      )
-      if (!myReviews.length) {
-        return
-      }
-      const newestReview = myReviews.reduce(function(prev, current) {
-        return prev.payload.iat > current.payload.iat ? prev : current
-      })
-      Object.entries(newestReview.payload.metadata).map(
-        ([k, v]) =>
-          RECURRING.includes(k) && this.$store.commit(SET_META, [k, v])
-      )
-    })
+    this.$store.dispatch('saveMyReviews', true)
   },
   mounted() {
     this.$store.commit(SUBMIT_ERROR, null)
