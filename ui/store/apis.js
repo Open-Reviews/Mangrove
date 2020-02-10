@@ -89,7 +89,8 @@ export function searchGeo(axios, q, viewbox) {
               address.address26 ||
               address.address29 ||
               address.address100 ||
-              address.suburb
+              address.suburb ||
+              address.city
             const addressString = [
               [address.street || address.road, address.house_number]
                 .filter(Boolean)
@@ -102,7 +103,9 @@ export function searchGeo(axios, q, viewbox) {
               .join(', ')
             // Capitalize.
             let typeString =
-              type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' ')
+              type === 'administrative'
+                ? address.country
+                : type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' ')
             if (extratags.cuisine) {
               typeString =
                 typeString +
