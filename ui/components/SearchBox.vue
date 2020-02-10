@@ -19,6 +19,7 @@
 </template>
 
 <script>
+/*
 import { GEO } from '~/store/scheme-types'
 
 const LAT_BOX = 0.1
@@ -40,6 +41,7 @@ function getLocation() {
     )
   })
 }
+*/
 
 export default {
   props: {
@@ -69,11 +71,12 @@ export default {
     this.query = this.$route.query.q
   },
   methods: {
-    async search() {
+    search() {
       if (this.query && this.query.length > 0) {
         const query = { q: this.query }
-        const box = await getLocation()
-        if (box) query[GEO] = box
+        // Needs a less restrictive mechanic.
+        /* const box = await getLocation()
+        if (box) query[GEO] = box */
         this.$router.push({ path: 'search', query })
       }
     },
