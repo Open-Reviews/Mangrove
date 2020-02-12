@@ -289,7 +289,7 @@ fn check_image(img: &Image) -> Result<(), Error> {
             return Err(Error::Incorrect(format!("Image label is too long: {}", l)))
         }
     }
-    info!("Checking the file: {}", img.src);
+    println!("Checking the file: {}", img.src);
     let exists = reqwest::blocking::get(&img.src)?.status().is_success();
     if exists {
         Ok(())

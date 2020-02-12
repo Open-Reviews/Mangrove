@@ -45,7 +45,6 @@ impl DbConn {
     pub fn filter(&self, query: Query) -> Result<Vec<Review>, Error> {
         use schema::reviews::dsl::*;
 
-        info!("Reviews requested for query {:?}", query);
         let always_true = Box::new(signature.eq(signature));
         let mut f: Box<dyn BoxableExpression<schema::reviews::table, _, SqlType = Bool>> =
             always_true;

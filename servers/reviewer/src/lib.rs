@@ -7,8 +7,6 @@ pub mod review;
 pub mod schema;
 
 #[macro_use]
-extern crate log;
-#[macro_use]
 extern crate diesel;
 #[macro_use]
 extern crate rocket;
@@ -44,7 +42,7 @@ fn index() -> &'static str {
 #[openapi]
 #[put("/submit/<jwt_review>")]
 fn submit_review_jwt(conn: DbConn, jwt_review: String) -> Result<String, Error> {
-    info!("Review received: {:?}", jwt_review);
+    println!("Review received: {:?}", jwt_review);
     let review = Review::from_str(&jwt_review)?;
     review.validate(&conn)?;
     println!("Inserting review: {:?}", review);
@@ -66,6 +64,7 @@ struct Reviews {
 
 fn get_reviews(conn: DbConn, json: Form<Query>) -> Result<Reviews, Error> {
     let query = json.into_inner();
+    println!("Reviews requested for query {:?}", query);
     let add_issuers = query.issuers.unwrap_or(false);
     let add_subjects = query.maresi_subjects.unwrap_or(false);
     let reviews = conn.filter(query)?;
@@ -98,7 +97,7 @@ fn get_reviews(conn: DbConn, json: Form<Query>) -> Result<Reviews, Error> {
         },
         reviews,
     };
-    info!("Returning {:?}", out);
+    println!("Returning {:?}", out);
     Ok(out)
 }
 
@@ -194,7 +193,7 @@ struct BatchReturn {
 #[post("/batch", format = "application/json", data = "<json>")]
 fn batch(conn: DbConn, json: Json<BatchQuery>) -> Result<Json<BatchReturn>, Error> {
     let query = json.into_inner();
-    info!("Batch request made: {:?}", query);
+    println!("Batch request made: {:?}", query);
     let subjects = match &query.subs {
         Some(subs) => Some(Subject::compute_bulk(&conn, subs.iter().cloned())?),
         None => None,
@@ -203,13 +202,13 @@ fn batch(conn: DbConn, json: Json<BatchQuery>) -> Result<Json<BatchReturn>, Erro
         Some(subs) => Some(Issuer::compute_bulk(&conn, subs.into_iter())?),
         None => None,
     };
-    info!("Returning batch of subjects and issuers: {:?} {:?}", subjects, issuers);
+    println!("Returning batch of subjects and issuers: {:?} {:?}", subjects, issuers);
     Ok(Json(BatchReturn { subjects, issuers }))
 }
 
 pub fn rocket() -> Rocket {
     let cors = rocket_cors::CorsOptions {
-        allowed_methods: vec![Method::Put, Method::Get, Method::Post]
+        allowed_methods: vec![Method::Put, Method::Get, Method::Post, Method::Options]
             .into_iter()
             .map(From::from)
             .collect(),

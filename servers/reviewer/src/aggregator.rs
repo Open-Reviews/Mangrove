@@ -102,7 +102,7 @@ impl Statistic for Issuer {
                 ..Default::default()
             })?
             .len();
-        info!("Returning count {:?}", count);
+        println!("Returning count {:?}", count);
         Ok(Issuer { count })
     }
 }
