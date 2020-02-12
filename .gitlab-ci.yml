@@ -25,6 +25,7 @@ build:
 test:
   script:
     - cd clients/mangrove-reviews-js
+    - yarn install
     - yarn test
   only:
     changes:
