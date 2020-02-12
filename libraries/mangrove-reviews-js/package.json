@@ -12,10 +12,12 @@
   },
   "devDependencies": {
     "jest": "^25.1.0",
+    "jsdoc": "^3.6.3",
     "node-webcrypto-ossl": "^1.0.48"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "doc": "jsdoc index.js -c jsdoc.json -d dist"
   },
   "jest": {
     "setupFiles": [

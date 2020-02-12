@@ -50,6 +50,7 @@ pages:
   only:
     changes:
       - ui
+      - libraries/mangrove-reviews-js
 
 production:
   variables:
@@ -67,3 +68,4 @@ production:
       - master
     changes:
       - ui
+      - libraries/mangrove-reviews-js

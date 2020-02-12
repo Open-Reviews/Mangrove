@@ -1,11 +1,20 @@
+/** @module Mangrove Client JS */
 const axios = require('axios')
 const jwkToPem = require('jwk-to-pem')
 const jsonwebtoken = require('jsonwebtoken')
 
+/** The API of the server used for https://mangrove.reviews */
 const ORIGINAL_API = 'https://api.mangrove.reviews'
 
-// Base payload requires at least `sub` and `rating` or `opinion` claims.
-// Mutates the argument filling and removing fields.
+/**
+ * Check and fill in the review payload so that its ready for signing.
+ * See the [Mangrove Review Standard](https://mangrove.reviews/standard) for more details.
+ * @param {Object} payload - Base payload to be cleaned, it will be mutated.
+ * @param {string} payload.sub - URI of the review subject.
+ * @param {number} [payload.rating] - Rating of subject between 0 and 100.
+ * @param {string} [payload.opinion] - Opinion of subject with at most 500 characters.
+ * @returns Payload ready to sign.
+ */
 function cleanPayload(payload) {
   if (!payload.sub) throw 'Payload must include subject URI in `sub` field.'
   if (!payload.rating && !payload.opinion) throw 'Payload must include either rating or opinion.'
@@ -20,7 +29,10 @@ function cleanPayload(payload) {
   return payload
 }
 
-// Assembles JWT from base payload, mutates the payload as needed.
+/** Assembles JWT from base payload, mutates the payload as needed.
+ * @param keypair - WebCrypto keypair, can be generated with `generateKeypair`.
+ * @param payload - Base payload of the review.
+ */
 async function signReview(keypair, payload) {
   return jsonwebtoken.sign(
     cleanPayload(payload),
@@ -37,6 +49,12 @@ async function signReview(keypair, payload) {
   )
 }
 
+/**
+ * Submit a signed review to be stored in the database.
+ * @param {string} jwt 
+ * @param {string} api 
+ * @returns {Promise} Resolves to "true" in case of successful insertion or rejects with errors.
+ */
 function submitReview(jwt, api = ORIGINAL_API) {
   return axios.put(`${api}/submit/${jwt}`)
 }
@@ -57,6 +75,11 @@ function getSubject(uri, api = ORIGINAL_API) {
   return axios.get(`${api}/subject/${encodeURIComponent(uri)}`).then(({ data }) => data)
 }
 
+/**
+ * Get aggregate information about the reviewer.
+ * @param {string} pem - Reviewer public key in PEM format.
+ * @param {string} [api=ORIGINAL_API] - API endpoint used to fetch the data.
+ */
 function getIssuer(pem, api = ORIGINAL_API) {
   return axios.get(`${api}/issuer/${encodeURIComponent(pem)}`).then(({ data }) => data)
 }
@@ -66,6 +89,12 @@ function batchAggregate(query, api = ORIGINAL_API) {
   return axios.post(`${api}/batch`, query).then(({ data }) => data)
 }
 
+/**
+ * Generate a new user identity, which can be used for signing reviews and stored for later.
+ * @returns ECDSA
+ * [WebCrypto](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API)
+ * key pair with `privateKey` and `publicKey`
+ */
 function generateKeypair() {
   return crypto.subtle
     .generateKey(
@@ -80,6 +109,11 @@ function generateKeypair() {
 
 const PRIVATE_KEY_METADATA = 'Mangrove private key'
 
+/**
+ * Come back from JWK representation to representation which allows for signing.
+ * Import keys which were exported with `keypairToJwk`.
+ * @param jwk - Private JSON Web Key (JWK) to be converted in to a WebCrypto keypair.
+ */
 async function jwkToKeypair(jwk) {
   // Do not mutate the argument.
   let key = { ...jwk }
@@ -117,6 +151,12 @@ async function jwkToKeypair(jwk) {
   return { privateKey: sk, publicKey: pk }
 }
 
+/**
+ * Exports a keypair to JSON Web Key (JWK) of the private key.
+ * JWK is a format which can be then used to stringify and store.
+ * You can later import it back with `jwkToKeypair`.
+ * @param keypair - WebCrypto key pair, can be generate with `generateKeypair`.
+ */
 async function keypairToJwk(keypair) {
   const s = await crypto.subtle.exportKey('jwk', keypair.privateKey)
   s.metadata = PRIVATE_KEY_METADATA
@@ -127,6 +167,10 @@ function u8aToString(buf) {
   return String.fromCharCode.apply(null, new Uint8Array(buf))
 }
 
+/**
+ * Get PEM represenation of the user "password".
+ * @param key - Private WebCrypto key to be exported.
+ */
 async function privateToPem(key) {
   try {
     const exported = await window.crypto.subtle.exportKey('pkcs8', key)
@@ -140,6 +184,11 @@ async function privateToPem(key) {
   }
 }
 
+/**
+ * Get PEM representation of public reviewer identity.
+ * This format can be found in the `kid` field of a Mangrove Review Header.
+ * @param key - Public WebCrypto key to be exported.
+ */
 async function publicToPem(key) {
   const exported = await crypto.subtle.exportKey('spki', key)
   const exportedAsString = u8aToString(exported)
