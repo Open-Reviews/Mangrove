@@ -143,10 +143,11 @@ import { MAX_OPINION_LENGTH, isMobileFirefox } from '~/utils'
 
 const AFFILIATED_EXAMPLES = {
   [GEO]:
-    'work there; friends/family of the owner; receive compensation for writing a review',
+    'owner; friends/family of the owner; work there; receive compensation for reviewing',
   [ISBN]: 'author; friends/family of the author; publisher',
   [LEI]: 'owner; friends/family of the owner; employee; investor',
-  [HTTPS]: 'owner; friends/family of the owner; employee; investor'
+  [HTTPS]: 'owner; friends/family of the owner; employee; investor',
+  [MARESI]: 'owner; friends/family of the owner; work there'
 }
 
 export default {

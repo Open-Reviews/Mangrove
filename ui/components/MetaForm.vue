@@ -51,7 +51,7 @@
 
 <script>
 import { SET_META } from '~/store/mutation-types'
-import { GEO, HTTPS, ISBN, LEI } from '~/store/scheme-types'
+import { GEO, HTTPS, ISBN, LEI, MARESI } from '~/store/scheme-types'
 import {
   AGE,
   NICKNAME,
@@ -77,6 +77,10 @@ const CONTEXTS = {
   [LEI]: {
     label: 'My context of experience',
     options: ['customer', 'supplier', 'employee', 'contractor', 'investor']
+  },
+  [MARESI]: {
+    label: 'Commenting as',
+    options: ['user', 'owner']
   }
 }
 
