@@ -40,8 +40,8 @@
         <v-col>
           <v-select
             v-model="context"
-            :items="contexts"
-            label="Context of the experience"
+            :items="contextInput.options"
+            :label="contextInput.label"
           />
         </v-col>
       </v-row>
@@ -51,6 +51,7 @@
 
 <script>
 import { SET_META } from '~/store/mutation-types'
+import { GEO, HTTPS, ISBN, LEI } from '~/store/scheme-types'
 import {
   AGE,
   NICKNAME,
@@ -60,10 +61,34 @@ import {
   EXPERIENCE_CONTEXT
 } from '~/store/metadata-types'
 
+const CONTEXTS = {
+  [GEO]: {
+    label: 'Context of the experience',
+    options: ['business', 'family', 'couple/date', 'friends']
+  },
+  [HTTPS]: {
+    label: 'Context of experience',
+    options: ['business', 'private']
+  },
+  [ISBN]: {
+    label: 'Context of reading',
+    options: ['education', 'entertainment', 'for kids']
+  },
+  [LEI]: {
+    label: 'My context of experience',
+    options: ['customer', 'supplier', 'employee', 'contractor', 'investor']
+  }
+}
+
 export default {
+  props: {
+    scheme: {
+      type: String,
+      default: () => null
+    }
+  },
   data() {
     return {
-      contexts: ['business', 'private', 'family', 'couple/date', 'friends'],
       genders: ['female', 'male', 'other'],
       short_text_length: 20,
       is_short_text: (t) =>
@@ -72,6 +97,9 @@ export default {
     }
   },
   computed: {
+    contextInput() {
+      return CONTEXTS[this.scheme]
+    },
     [NICKNAME]: {
       get() {
         return this.$store.state.metadata[NICKNAME]

@@ -18,7 +18,7 @@
             v-model="opinion"
             :counter="MAX_OPINION_LENGTH"
             :maxlength="MAX_OPINION_LENGTH"
-            label="Describe your experience here"
+            :label="opinionLabel"
             auto-grow
             filled
             rows="3"
@@ -45,7 +45,7 @@
 
           <v-divider />
 
-          <MetaForm />
+          <MetaForm :scheme="subject.scheme" />
 
           <v-divider />
 
@@ -138,7 +138,7 @@ import SaveKeyDialog from './SaveKeyDialog'
 import UserHeader from './UserHeader'
 import LogInDialog from './LogInDialog'
 import { HAS_SAVED_KEY } from '~/store/indexeddb-types'
-import { MARESI } from '~/store/scheme-types'
+import { MARESI, ISBN, LEI } from '~/store/scheme-types'
 import { MAX_OPINION_LENGTH, isMobileFirefox } from '~/utils'
 
 export default {
@@ -193,6 +193,13 @@ export default {
         stub.rating = this.rating * 25 - 25
       }
       return stub
+    },
+    opinionLabel() {
+      if (this.subject.scheme === ISBN)
+        return 'Describe your opinion about this book'
+      if (this.subject.scheme === LEI)
+        return 'Describe your experience with this company'
+      return 'Describe your experience here'
     },
     ticks() {
       return [
