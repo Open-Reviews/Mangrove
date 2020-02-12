@@ -18,7 +18,7 @@
             v-model="opinion"
             :counter="MAX_OPINION_LENGTH"
             :maxlength="MAX_OPINION_LENGTH"
-            label="Describe your experience here"
+            :label="opinionLabel"
             auto-grow
             filled
             rows="3"
@@ -45,7 +45,7 @@
 
           <v-divider />
 
-          <MetaForm />
+          <MetaForm :scheme="subject.scheme" />
 
           <v-divider />
 
@@ -138,8 +138,17 @@ import SaveKeyDialog from './SaveKeyDialog'
 import UserHeader from './UserHeader'
 import LogInDialog from './LogInDialog'
 import { HAS_SAVED_KEY } from '~/store/indexeddb-types'
-import { MARESI } from '~/store/scheme-types'
+import { GEO, MARESI, ISBN, LEI, HTTPS } from '~/store/scheme-types'
 import { MAX_OPINION_LENGTH, isMobileFirefox } from '~/utils'
+
+const AFFILIATED_EXAMPLES = {
+  [GEO]:
+    'owner; friends/family of the owner; work there; receive compensation for reviewing',
+  [ISBN]: 'author; friends/family of the author; publisher',
+  [LEI]: 'owner; friends/family of the owner; employee; investor',
+  [HTTPS]: 'owner; friends/family of the owner; employee; investor',
+  [MARESI]: 'owner; friends/family of the owner; work there'
+}
 
 export default {
   name: 'ReviewForm',
@@ -194,13 +203,22 @@ export default {
       }
       return stub
     },
+    opinionLabel() {
+      if (this.subject.scheme === ISBN)
+        return 'Describe your opinion about this book'
+      if (this.subject.scheme === LEI)
+        return 'Describe your experience with this company'
+      return 'Describe your experience here'
+    },
     ticks() {
       return [
         {
           ticked: 'isAffiliated',
-          text: `I am affiliated with ${this.subject.title} (e.g., work there,
-                friends with the owner, receive compensation for writing a
-                review)`
+          text: `I am affiliated${
+            this.subject.scheme === MARESI
+              ? ''
+              : ' with <i>' + this.subject.title + '</i>'
+          } (e.g., ${AFFILIATED_EXAMPLES[this.subject.scheme]})`
         },
         {
           ticked: 'termsAgreed',

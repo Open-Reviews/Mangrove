@@ -189,15 +189,17 @@ export default {
                 (hidden) => key === hidden
               )
           )
-          .map(
-            ([k, v]) =>
+          .map(([k, v]) => {
+            console.log(k, v)
+            return (
               (META_DISPLAY[k] ? META_DISPLAY[k].label : k) +
               (v === 'true'
                 ? ''
                 : META_DISPLAY[k] && META_DISPLAY[k].postfix
                 ? ': ' + v + META_DISPLAY[k].postfix
                 : ': ' + v)
-          ),
+            )
+          }),
       raw: { data: undefined, jwt: undefined },
       flagSubject: null,
       personalMeta: { [IS_PERSONAL_EXPERIENCE]: 'true' },
