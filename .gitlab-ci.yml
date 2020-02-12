@@ -17,6 +17,18 @@ build:
     - cd ui
     - yarn install
     - yarn generate
+  only:
+    changes:
+      - ui
+      - clients/mangrove-reviews-js
+
+test:
+  script:
+    - cd clients/mangrove-reviews-js
+    - yarn test
+  only:
+    changes:
+      - clients/mangrove-reviews-js
 
 pages:
   variables:
