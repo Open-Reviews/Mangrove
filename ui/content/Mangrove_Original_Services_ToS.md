@@ -263,7 +263,7 @@ Attribution is an important part of these licenses. We consider it giving credit
 
 
 
-*   Through display of your review with all fields described in the [Mangrove Review Standard](https://gitlab.com/plantingspace/mangrove/blob/master/Mangrove_Review_Standard_v1.md). 
+*   Through display of your review with all fields described in the [Mangrove Review Standard](https://mangrove.reviews/standard). 
 *   Through hyperlink (where possible) or URL to your review on the Mangrove Website.
 *   When your review is aggregated with other reviews to a single rating, through a reference to the Mangrove data set.
 
@@ -281,7 +281,7 @@ Therefore, we happily welcome re-use of content as part of our mission. Any re-u
 
 When you re-use or re-distribute reviews created by the Mangrove community, you agree to attribute the authors in any of the following fashions:
 
-*   Through display of the full Mangrove review that you are re-using, with all fields described in the [Mangrove Review Standard](https://gitlab.com/plantingspace/mangrove/blob/master/Mangrove_Review_Standard_v1.md)
+*   Through display of the full Mangrove review that you are re-using, with all fields described in the [Mangrove Review Standard](https://mangrove.reviews/standard)
 *   Through hyperlink (where possible) or URL to the review you are re-using on the Mangrove Website.
 *   Through reference to the Mangrove database when you re-use the data set for aggregation of reviews to a single rating.
 

@@ -194,4 +194,11 @@ export default {
   margin-bottom: 0em;
   margin-top: 1em;
 }
+.v-application h1,
+.v-application h2,
+.v-application h3,
+.v-application h4,
+.v-application code {
+  margin-top: 1em;
+}
 </style>
