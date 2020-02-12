@@ -20,16 +20,16 @@ build:
   only:
     changes:
       - ui
-      - clients/mangrove-reviews-js
+      - libraries/mangrove-reviews-js
 
 test:
   script:
-    - cd clients/mangrove-reviews-js
+    - cd libraries/mangrove-reviews-js
     - yarn install
     - yarn test
   only:
     changes:
-      - clients/mangrove-reviews-js
+      - libraries/mangrove-reviews-js
 
 pages:
   variables:
