@@ -2,6 +2,6 @@
 title: Embed reviews in your website
 ---
 
-Mangrove provides you with a tool to grow: use Mangrove’s free and easy-to-use script to embed review functionality and allow your users to read and write reviews right on your website.
+Would you like to display reviews that your users wrote about your service or product? Allow your users to read and write reviews directly on your website.
 
-(coming soon)
+We can create an embed code with the functionality that you need for you to integrate it into your website or blog. Get in touch with us at mangrove(at)planting(dot)space to discuss your needs.

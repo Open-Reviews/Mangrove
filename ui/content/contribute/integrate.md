@@ -9,5 +9,5 @@ Travel and tourism websites
 Restaurants, hotels, tourist attractions
 Online libraries and bookstores
 
-Write us at partners(at)mangrove(dot)reviews, and we will reach out to the respective projects or companies. If they are open-source, you could make a pull request to their repository. Or just inform them directly about Mangrove’s open-source API and open dataset via forums, customer service, or social media.
+Write us at mangrove(at)planting(dot)space, and we will reach out to the respective projects or companies. If they are open-source, you could make a pull request to their repository. Or just inform them directly about Mangrove’s open-source API and open dataset via forums, customer service, or social media.
 

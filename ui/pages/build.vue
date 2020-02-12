@@ -42,7 +42,7 @@ export default {
             {
               icon: 'mdi-email-outline',
               link:
-                'mailto:hello@planting.space?subject=Missing Review Subject on Mangrove'
+                'mailto:mangrove@planting.space?subject=Interest in integrating with Mangrove'
             },
             LINKS.Riot
           ]

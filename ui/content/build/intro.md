@@ -6,4 +6,4 @@ Mangrove provides
 * An aggregation algorithm to clean and filter the data
 * A downloadable open dataset licensed under [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/)  
 
-Mangrove is a non-profit service hosted and supported by a community of businesses, developers and interested parties around the world. Contact us to discuss your integration.
+Mangrove is a non-profit service hosted and supported by a community of businesses, developers and interested parties around the world. **Contact us to discuss your integration.** 
