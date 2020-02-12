@@ -10,41 +10,47 @@ image: wilson208/circleci-awscli:node
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
-  - ui/node_modules/
+    - ui/node_modules/
 
 build:
   script:
-  - cd ui
-  - yarn install
-  - yarn generate
+    - cd ui
+    - yarn install
+    - yarn generate
 
 pages:
   variables:
-    BASE_URL: "https://plantingspace.gitlab.io/mangrove"
+    BASE_URL: "https://staging.mangrove.reviews"
   stage: deploy
   script:
-  - cd ui
-  - yarn install
-  - yarn generate
-  - cd ..
-  - mkdir public
-  - cp -r ui/dist/* public
+    - cd ui
+    - yarn install
+    - yarn generate
+    - cd ..
+    - mkdir public
+    - cp -r ui/dist/* public
   artifacts:
     paths:
-    - public
+      - public
   except:
-  - master
+    - master
+  only:
+    changes:
+      - ui
 
 production:
   variables:
     BASE_URL: "https://mangrove.reviews"
   stage: deploy
   script:
-  - cd ui
-  - yarn install
-  - yarn generate
-  - aws s3 rm s3://$S3_BUCKET --recursive
-  - aws s3 cp --recursive ./dist s3://$S3_BUCKET
-  - aws cloudfront create-invalidation --distribution-id E3R6KTTYJH0XRG --paths "/*"
+    - cd ui
+    - yarn install
+    - yarn generate
+    - aws s3 rm s3://$S3_BUCKET --recursive
+    - aws s3 cp --recursive ./dist s3://$S3_BUCKET
+    - aws cloudfront create-invalidation --distribution-id E3R6KTTYJH0XRG --paths "/*"
   only:
-  - master
+    refs:
+      - master
+    changes:
+      - ui
