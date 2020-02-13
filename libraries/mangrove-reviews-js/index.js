@@ -31,7 +31,10 @@ function cleanPayload(payload) {
 
 /** Assembles JWT from base payload, mutates the payload as needed.
  * @param keypair - WebCrypto keypair, can be generated with `generateKeypair`.
- * @param payload - Base payload of the review.
+ * @param {Object} payload - Base payload to be cleaned, it will be mutated.
+ * @param {string} payload.sub - URI of the review subject.
+ * @param {number} [payload.rating] - Rating of subject between 0 and 100.
+ * @param {string} [payload.opinion] - Opinion of subject with at most 500 characters.
  */
 async function signReview(keypair, payload) {
   return jsonwebtoken.sign(
@@ -59,11 +62,25 @@ function submitReview(jwt, api = ORIGINAL_API) {
   return axios.put(`${api}/submit/${jwt}`)
 }
 
+/**
+ * Composition of `signReview` and `submitReview`.
+ * @param keypair - WebCrypto keypair, can be generated with `generateKeypair`.
+ * @param {Object} payload - Base payload to be cleaned, it will be mutated.
+ * @param {string} payload.sub - URI of the review subject.
+ * @param {number} [payload.rating] - Rating of subject between 0 and 100.
+ * @param {string} [payload.opinion] - Opinion of subject with at most 500 characters.
+ * @param {string} [api=ORIGINAL_API] - API endpoint used to fetch the data.
+ */
 async function signAndSubmitReview(keypair, payload, api = ORIGINAL_API) {
   const jwt = await signReview(keypair, payload)
   return submitReview(jwt, api)
 }
 
+/**
+ * Retrieve reviews which fulfill the query.
+ * @param {Object} query - See the API documentation for query, working on an automated generator here.
+ * @param {string} [api=ORIGINAL_API] - API endpoint used to fetch the data.
+ */
 function getReviews(query, api = ORIGINAL_API) {
   return axios.get(`${api}/reviews`, {
     params: query,
@@ -71,6 +88,11 @@ function getReviews(query, api = ORIGINAL_API) {
   }).then(({ data }) => data)
 }
 
+/**
+ * Get aggregate information about the review subject.
+ * @param {string} uri - URI of the review subject.
+ * @param {string} [api=ORIGINAL_API] - API endpoint used to fetch the data.
+ */
 function getSubject(uri, api = ORIGINAL_API) {
   return axios.get(`${api}/subject/${encodeURIComponent(uri)}`).then(({ data }) => data)
 }
@@ -173,7 +195,7 @@ function u8aToString(buf) {
  */
 async function privateToPem(key) {
   try {
-    const exported = await window.crypto.subtle.exportKey('pkcs8', key)
+    const exported = await crypto.subtle.exportKey('pkcs8', key)
     const exportedAsString = u8aToString(exported)
     const exportedAsBase64 = window.btoa(exportedAsString)
     return `-----BEGIN PRIVATE KEY-----\n${exportedAsBase64}\n-----END PRIVATE KEY-----`

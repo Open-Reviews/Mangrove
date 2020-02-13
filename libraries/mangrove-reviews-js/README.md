@@ -2,10 +2,53 @@
 
 Retrieve reviews from the Mangrove Original Server.
 
-[On npm](https://www.npmjs.com/package/mangrove-reviews-js)
+[![npm](https://img.shields.io/npm/v/mangrove-reviews-js)](https://www.npmjs.com/package/mangrove-reviews-js)
+
+Retrieve reviews according to different criteria:
 
 ```javascript
 import { getReviews } from 'mangrove-reviews-js'
 
-getReviews({ sub: 'https://nytimes.com' })
+// Of a particular subject.
+getReviews({ sub: 'https://nytimes.com' }).then((reviews) => console.log(reviews))
+
+// Given by a particular user since certain time.
+getReviews({
+  kid: '-----BEGIN PUBLIC KEY-----MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEDo6mN4kY6YFhpvF0u3hfVWD1RnDElPweX3U3KiUAx0dVeFLPAmeKdQY3J5agY3VspnHo1p/wH9hbZ63qPbCr6g==-----END PUBLIC KEY-----',
+  gt_iat: 1580860800
+}).then((reviews) => console.log(reviews))
+```
+
+User accounts:
+- generate user accounts / key pairs
+- serialize and deserialize key pair
+- sign reviews with key pair
+- submit reviews
+
+```javascript
+import {
+  generateKeypair,
+  keypairToJwk,
+  jwkToKeypair,
+  signAndSubmitReview
+} from 'mangrove-reviews-js'
+
+const keypair = await generateKeypair()
+
+// Show the private key.
+const jwk = await keypairToJwk(keypair)
+console.log(jwk)
+
+// Restore key pair from JWK.
+const restoredKeypair = await jwkToKeypair(jwk)
+
+// Sign and submit a review (reviews of this example subject are removed from the database).
+signAndSubmitReview(keypair, {
+  sub: "https://example.com",
+  rating: 75,
+  opinion: "Great website to be used as an example.",
+  metadata: {
+    nickname: "docs reader"
+  }
+})
 ```
