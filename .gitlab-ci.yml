@@ -18,6 +18,9 @@ build:
     - cd ui
     - yarn install
     - yarn generate
+    - cd ../libraries/mangrove-reviews-js
+    - yarn install
+    - yarn doc
 
 test:
   script:
@@ -48,6 +51,7 @@ production:
   stage: deploy
   script:
     - cd libraries/mangrove-reviews-js
+    - yarn install
     - yarn doc
     - aws s3 rm s3://$JS_BUCKET --recursive
     - aws s3 cp --recursive ./dist s3://$JS_BUCKET
