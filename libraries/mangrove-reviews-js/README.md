@@ -1,6 +1,4 @@
-# Mangrove JS Client Library
-
-> Work in progress.
+# Mangrove Client JS Library
 
 Retrieve reviews from the Mangrove Original Server.
 

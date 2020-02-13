@@ -17,7 +17,7 @@
   },
   "scripts": {
     "test": "jest",
-    "doc": "jsdoc index.js -c jsdoc.json -d dist"
+    "doc": "jsdoc index.js -R README.md -c jsdoc.json -d dist"
   },
   "jest": {
     "setupFiles": [

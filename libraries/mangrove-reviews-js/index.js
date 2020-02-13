@@ -1,4 +1,4 @@
-/** @module Mangrove Client JS */
+/** @module All functions */
 const axios = require('axios')
 const jwkToPem = require('jwk-to-pem')
 const jsonwebtoken = require('jsonwebtoken')

@@ -1,5 +1,6 @@
 variables:
-  S3_BUCKET: "mangrove.reviews"
+  UI_BUCKET: "mangrove.reviews"
+  JS_BUCKET: "js.mangrove.reviews"
   CDN_DISTRIBUTION_ID: "E3R6KTTYJH0XRG"
   CI_DEBUG_TRACE: "true"
   VUE_APP_API_URL: "https://api.mangrove.reviews"
@@ -17,19 +18,12 @@ build:
     - cd ui
     - yarn install
     - yarn generate
-  only:
-    changes:
-      - ui
-      - libraries/mangrove-reviews-js
 
 test:
   script:
     - cd libraries/mangrove-reviews-js
     - yarn install
     - yarn test
-  only:
-    changes:
-      - libraries/mangrove-reviews-js
 
 pages:
   variables:
@@ -47,25 +41,21 @@ pages:
       - public
   except:
     - master
-  only:
-    changes:
-      - ui
-      - libraries/mangrove-reviews-js
 
 production:
   variables:
     BASE_URL: "https://mangrove.reviews"
   stage: deploy
   script:
-    - cd ui
+    - cd libraries/mangrove-reviews-js
+    - yarn doc
+    - aws s3 rm s3://$JS_BUCKET --recursive
+    - aws s3 cp --recursive ./dist s3://$JS_BUCKET
+    - cd ../ui
     - yarn install
     - yarn generate
-    - aws s3 rm s3://$S3_BUCKET --recursive
-    - aws s3 cp --recursive ./dist s3://$S3_BUCKET
+    - aws s3 rm s3://$UI_BUCKET --recursive
+    - aws s3 cp --recursive ./dist s3://$UI_BUCKET
     - aws cloudfront create-invalidation --distribution-id E3R6KTTYJH0XRG --paths "/*"
   only:
-    refs:
-      - master
-    changes:
-      - ui
-      - libraries/mangrove-reviews-js
+    - master
