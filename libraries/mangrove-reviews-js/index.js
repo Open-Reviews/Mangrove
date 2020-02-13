@@ -106,6 +106,11 @@ function getIssuer(pem, api = ORIGINAL_API) {
   return axios.get(`${api}/issuer/${encodeURIComponent(pem)}`).then(({ data }) => data)
 }
 
+/**
+ * Retrieve aggregates for multiple subjects or issuers.
+ * @param {Object} query 
+ * @param {string} [api=ORIGINAL_API] - API endpoint used to fetch the data.
+ */
 function batchAggregate(query, api = ORIGINAL_API) {
   if (!query.pems && !query.subs) { return null }
   return axios.post(`${api}/batch`, query).then(({ data }) => data)

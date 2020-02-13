@@ -1,13 +1,13 @@
 # Mangrove Client JS Library
 
-Retrieve reviews from the Mangrove Original Server.
+Retrieve and submit Mangrove reviews. Key pair related functions work only in the browser using WebCrypto.
 
-[![npm](https://img.shields.io/npm/v/mangrove-reviews-js)](https://www.npmjs.com/package/mangrove-reviews-js)
+[![npm](https://img.shields.io/npm/v/mangrove-reviews)](https://www.npmjs.com/package/mangrove-reviews)
 
-Retrieve reviews according to different criteria:
+Retrieve reviews according to different criteria.
 
 ```javascript
-import { getReviews } from 'mangrove-reviews-js'
+import { getReviews } from 'mangrove-reviews'
 
 // Of a particular subject.
 getReviews({ sub: 'https://nytimes.com' }).then((reviews) => console.log(reviews))
@@ -31,7 +31,7 @@ import {
   keypairToJwk,
   jwkToKeypair,
   signAndSubmitReview
-} from 'mangrove-reviews-js'
+} from 'mangrove-reviews'
 
 const keypair = await generateKeypair()
 
