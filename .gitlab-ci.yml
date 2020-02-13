@@ -55,7 +55,7 @@ production:
     - yarn doc
     - aws s3 rm s3://$JS_BUCKET --recursive
     - aws s3 cp --recursive ./dist s3://$JS_BUCKET
-    - cd ../ui
+    - cd ../../ui
     - yarn install
     - yarn generate
     - aws s3 rm s3://$UI_BUCKET --recursive
