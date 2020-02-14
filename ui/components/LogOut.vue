@@ -25,7 +25,8 @@ export default {
   data() {
     return {
       dialog: false,
-      explanation: 'Save your pass and youll get a new account'
+      explanation:
+        'Make sure to save your password if you want to return to the current account. After logging out a new account will be automatically generated for you.'
     }
   },
   methods: {

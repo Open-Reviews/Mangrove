@@ -50,10 +50,10 @@
                 Your cryptographically generated password:
               </KeyList>
             </v-card-text>
+            <v-card-actions class="justify-center">
+              <LogOut />
+            </v-card-actions>
           </div>
-          <v-card-actions class="justify-center">
-            <LogOut />
-          </v-card-actions>
         </v-card>
         <AdvancedAccount />
       </v-col>
