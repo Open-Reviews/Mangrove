@@ -27,15 +27,17 @@
             <v-divider class="my-8" />
           </div>
           <div v-else>
+            <v-row justify="center">
+              <div>
+                <UserHeader
+                  :pk="$store.state.publicKey"
+                  :metadata="$store.state.metadata"
+                  :placeholder="Anonymous"
+                  :count="reviewCount"
+                />
+              </div>
+            </v-row>
             <v-card-text>
-              Congratulations,
-              <b>
-                you wrote {{ reviewCount }} review{{
-                  reviewCount > 1 ? 's' : ''
-                }}
-              </b>
-              with this account.
-              <br />
               You can build your reputation by using the same account for your
               future reviews, and by receiving Likes and Confirmations from
               other users.
@@ -68,6 +70,7 @@ import ReviewList from '~/components/ReviewList'
 import LogInDialog from '~/components/LogInDialog'
 import KeyList from '~/components/KeyList'
 import AdvancedAccount from '~/components/AdvancedAccount'
+import UserHeader from '~/components/UserHeader'
 
 export default {
   components: {
@@ -75,7 +78,8 @@ export default {
     LogInDialog,
     KeyList,
     SchemeFilter,
-    ReviewList
+    ReviewList,
+    UserHeader
   },
   computed: {
     counts() {
