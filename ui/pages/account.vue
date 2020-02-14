@@ -51,6 +51,9 @@
               </KeyList>
             </v-card-text>
           </div>
+          <v-card-actions class="justify-center">
+            <LogOut />
+          </v-card-actions>
         </v-card>
         <AdvancedAccount />
       </v-col>
@@ -71,6 +74,7 @@ import LogInDialog from '~/components/LogInDialog'
 import KeyList from '~/components/KeyList'
 import AdvancedAccount from '~/components/AdvancedAccount'
 import UserHeader from '~/components/UserHeader'
+import LogOut from '~/components/LogOut'
 
 export default {
   components: {
@@ -79,7 +83,8 @@ export default {
     KeyList,
     SchemeFilter,
     ReviewList,
-    UserHeader
+    UserHeader,
+    LogOut
   },
   computed: {
     counts() {
