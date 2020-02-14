@@ -145,12 +145,10 @@ export default {
         }
       } else {
         const subject = this.$store.getters.subject(sub)
-        return (
-          subject &&
-          `Your review of ${[subject.title, subject.subtitle]
-            .filter(Boolean)
-            .join(', ')}`
-        )
+        const name = subject
+          ? [subject.title, subject.subtitle].filter(Boolean).join(', ')
+          : `subject with indentifier ${sub}, more information is currently not available.`
+        return `Your review of ${name}`
       }
     }
   }

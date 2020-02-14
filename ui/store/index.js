@@ -121,6 +121,7 @@ export const getters = {
         }
       })
   },
+  // Return the filtered list of reviews and total counts for different schemes.
   reviewsAndCounts: (state) => (rootSub = null, rootPk = state.publicKey) => {
     const counts = {}
     const reviews = Object.values(state.reviews)
@@ -130,7 +131,7 @@ export const getters = {
         const scheme = subToScheme(payload.sub)
         const isFiltered = !state.filter || scheme === state.filter
         const isReturned = isSelected && isFiltered
-        if (!state.filter && isReturned) {
+        if (isSelected) {
           counts[scheme] = counts[scheme] ? counts[scheme] + 1 : 1
         }
         return isReturned
