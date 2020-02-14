@@ -1,4 +1,4 @@
-/** @module All functions */
+/** @module Client functions */
 const axios = require('axios')
 const jwkToPem = require('jwk-to-pem')
 const jsonwebtoken = require('jsonwebtoken')
@@ -54,8 +54,8 @@ async function signReview(keypair, payload) {
 
 /**
  * Submit a signed review to be stored in the database.
- * @param {string} jwt 
- * @param {string} api 
+ * @param {string} jwt Signed review in JWT format.
+ * @param {string} [api=ORIGINAL_API] API endpoint used to fetch the data.
  * @returns {Promise} Resolves to "true" in case of successful insertion or rejects with errors.
  */
 function submitReview(jwt, api = ORIGINAL_API) {
@@ -64,9 +64,9 @@ function submitReview(jwt, api = ORIGINAL_API) {
 
 /**
  * Composition of `signReview` and `submitReview`.
- * @param keypair - WebCrypto keypair, can be generated with `generateKeypair`.
- * @param {Object} payload - Base payload to be cleaned, it will be mutated.
- * @param {string} payload.sub - URI of the review subject.
+ * @param keypair WebCrypto keypair, can be generated with `generateKeypair`.
+ * @param {Object} payload Base payload to be cleaned, it will be mutated.
+ * @param {string} payload.sub URI of the review subject.
  * @param {number} [payload.rating] - Rating of subject between 0 and 100.
  * @param {string} [payload.opinion] - Opinion of subject with at most 500 characters.
  * @param {string} [api=ORIGINAL_API] - API endpoint used to fetch the data.
