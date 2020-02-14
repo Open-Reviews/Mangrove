@@ -1,6 +1,9 @@
 <template>
   <v-container :style="`max-width: ${reviewCount ? 1300 : 800}px`">
-    <v-row>
+    <v-row v-if="!$store.state.publicKey" justify="center">
+      <h1 class="display-3">Loading...</h1>
+    </v-row>
+    <v-row v-else>
       <v-col>
         <h1 class="display-1">Your account</h1>
         <v-divider class="mb-2" />
@@ -53,10 +56,7 @@
         <h1 class="display-1">Your reviews</h1>
         <v-divider />
         <SchemeFilter :counts="counts" comments />
-        <ReviewList
-          :rootPk="$store.state.publicKey"
-          @counted="counts = $event"
-        />
+        <ReviewList :rootPk="$store.state.publicKey" />
       </v-col>
     </v-row>
   </v-container>
@@ -77,14 +77,12 @@ export default {
     SchemeFilter,
     ReviewList
   },
-  data() {
-    return {
-      counts: undefined
-    }
-  },
   computed: {
+    counts() {
+      return this.$store.getters.reviewsAndCounts().counts
+    },
     reviewCount() {
-      return this.counts === undefined || this.counts.null
+      return this.counts.null
     }
   },
   middleware: 'account'

@@ -47,7 +47,7 @@
 
 <script>
 import { downloadLink, pemDisplay, displayName } from '../utils'
-import { MARESI, subPath, subToScheme } from '../store/scheme-types'
+import { MARESI, subPath } from '../store/scheme-types'
 import { IS_PERSONAL_EXPERIENCE } from '../store/metadata-types'
 import ReviewListBase from './ReviewListBase'
 
@@ -70,26 +70,8 @@ export default {
   },
   computed: {
     reviews() {
-      const counts = {}
-      const rs = Object.values(this.$store.state.reviews)
-        .filter(({ payload, kid }) => {
-          // Pick only ones for selected subject or issuer.
-          const isSelected = payload.sub === this.rootSub || kid === this.rootPk
-          const scheme = subToScheme(payload.sub)
-          const isFiltered =
-            !this.$store.state.filter || scheme === this.$store.state.filter
-          const isReturned = isSelected && isFiltered
-          if (!this.$store.state.filter && isReturned) {
-            counts[scheme] = counts[scheme] ? counts[scheme] + 1 : 1
-          }
-          return isReturned
-        })
-        .sort((r1, r2) => r2.payload.iat - r1.payload.iat)
-      if (rs.length && !this.$store.state.filter) {
-        counts.null = rs.length
-        this.$emit('counted', counts)
-      }
-      return rs
+      return this.$store.getters.reviewsAndCounts(this.rootSub, this.rootPk)
+        .reviews
     },
     opinionated() {
       return this.reviews.filter((r) => r.payload.opinion).map(this.reviewToArg)
