@@ -4,6 +4,8 @@ Retrieve and submit Mangrove reviews. Key pair related functions work only in th
 
 [![npm](https://img.shields.io/npm/v/mangrove-reviews)](https://www.npmjs.com/package/mangrove-reviews)
 
+[Documentation](https://js.mangrove.reviews/module-Client%2520functions.html)
+
 Retrieve reviews according to different criteria.
 
 ```javascript
