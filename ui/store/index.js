@@ -213,11 +213,10 @@ export const actions = {
         commit(t.ADD_SUBJECTS, rs.maresi_subjects)
         commit(t.ADD_REVIEWS, rs.reviews)
       }
-      console.log(rs)
       return rs
     })
   },
-  async saveMyReviews({ state, dispatch }, metadata = false) {
+  async saveMyReviews({ state, dispatch, commit }, metadata = false) {
     const rs = await dispatch('saveReviews', { kid: state.publicKey })
     if (!rs.reviews && !rs.reviews.length) return
     const subs = Object.values(rs.reviews).map((review) => review.payload.sub)
@@ -226,12 +225,15 @@ export const actions = {
     )
     if (metadata) {
       const newestReview = rs.reviews.reduce(function(prev, current) {
-        return prev.payload.iat > current.payload.iat ? prev : current
+        const isNewer = current.payload.iat > prev.payload.iat
+        const hasData = Object.keys(current.payload.metadata).some((k) =>
+          RECURRING.includes(k)
+        )
+        return isNewer && hasData ? current : prev
       })
-      Object.entries(newestReview.payload.metadata).map(
-        ([k, v]) =>
-          RECURRING.includes(k) && this.$store.commit(t.SET_META, [k, v])
-      )
+      Object.entries(newestReview.payload.metadata).map(([k, v]) => {
+        RECURRING.includes(k) && commit(t.SET_META, [k, v])
+      })
     }
     return rs
   },
