@@ -219,7 +219,7 @@ export const actions = {
   },
   async saveMyReviews({ state, dispatch, commit }, metadata = false) {
     const rs = await dispatch('saveReviews', { kid: state.publicKey })
-    if (!rs.reviews && !rs.reviews.length) return
+    if (!rs.reviews || !rs.reviews.length) return
     const subs = Object.values(rs.reviews).map((review) => review.payload.sub)
     subsToSubjects(this.$axios, subs).map((promise) =>
       promise.then((subject) => dispatch('storeWithRating', [subject]))
