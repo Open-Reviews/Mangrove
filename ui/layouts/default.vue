@@ -162,7 +162,8 @@ export default {
         },
         { label: 'Donate', href: LINKS.OpenCollective.link }
       ],
-      socials: ['Mastodon', 'Twitter', 'Riot'].map((wanted) => LINKS[wanted])
+      socials: ['Mastodon', 'Twitter', 'Riot'].map((wanted) => LINKS[wanted]),
+      toc: ['/terms']
     }
   },
   computed: {
