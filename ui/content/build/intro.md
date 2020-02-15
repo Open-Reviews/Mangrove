@@ -2,7 +2,7 @@ Our aim is to create an open data ecosystem for reviews of places, companies, we
    
 Mangrove provides  
 * A [technical standard](https://mangrove.reviews/standard) to ensure interoperability
-* An open-source [API](https://app.swaggerhub.com/apis/keorn/Mangrove_Server/0.1.0)
+* An open-source [API](https://docs.mangrove.reviews)
 * An aggregation algorithm to clean and filter the data
 * A downloadable open dataset licensed under [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/)  
 

@@ -53,7 +53,7 @@ export default {
           icons: [
             {
               icon: 'mdi-api',
-              link: `https://app.swaggerhub.com/apis/keorn/Mangrove_Server/0.1.0`
+              link: `https://docs.mangrove.reviews`
             },
             {
               icon: 'mdi-language-javascript',
