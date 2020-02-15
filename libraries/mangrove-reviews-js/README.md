@@ -4,7 +4,7 @@ Retrieve and submit Mangrove reviews. Key pair related functions work only in th
 
 [![npm](https://img.shields.io/npm/v/mangrove-reviews)](https://www.npmjs.com/package/mangrove-reviews)
 
-[Documentation](https://js.mangrove.reviews/module-Client%2520functions.html)
+[Documentation](https://js.mangrove.reviews/global.html)
 
 Retrieve reviews according to different criteria.
 
@@ -12,13 +12,13 @@ Retrieve reviews according to different criteria.
 import { getReviews } from 'mangrove-reviews'
 
 // Of a particular subject.
-getReviews({ sub: 'https://nytimes.com' }).then((reviews) => console.log(reviews))
+const subReviews = await getReviews({ sub: 'https://nytimes.com' })
 
 // Given by a particular user since certain time.
-getReviews({
+const userReviews = await getReviews({
   kid: '-----BEGIN PUBLIC KEY-----MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEDo6mN4kY6YFhpvF0u3hfVWD1RnDElPweX3U3KiUAx0dVeFLPAmeKdQY3J5agY3VspnHo1p/wH9hbZ63qPbCr6g==-----END PUBLIC KEY-----',
   gt_iat: 1580860800
-}).then((reviews) => console.log(reviews))
+})
 ```
 
 User accounts:

@@ -1,19 +1,36 @@
-/** @module Client functions */
 const axios = require('axios')
 const jwkToPem = require('jwk-to-pem')
 const jsonwebtoken = require('jsonwebtoken')
+
+/**
+ * @typedef {Object} Payload
+ * @property {string} sub URI of the review subject.
+ * @property {number} [rating] Rating of subject between 0 and 100.
+ * @property {string} [opinion] Opinion of subject with at most 500 characters.
+ * @property {string} [iat] Unix timestamp of when review was issued,
+ *  gets filled in automatically if not provided.
+ * @property {Object[]} [images] Array of up to 5 images to be included.
+ * @property {string} images[].src Public URL of an image.
+ * @property {string} [images[].label] Optional label of an image.
+ * @property {Object} [metadata]
+ *  Any data relating to the issuer or circumstances of leaving review.
+ *  See the [Mangrove Review Standard](https://mangrove.reviews/standard) for more.
+ * @property {string} [metadata.client_id]
+ *  Identity of the client used to leave the review, gets populated if not provided.
+ * @property {string} [metadata.nickname]
+ *  Nickname of the reviewer.
+ */
 
 /** The API of the server used for https://mangrove.reviews */
 const ORIGINAL_API = 'https://api.mangrove.reviews'
 
 /**
  * Check and fill in the review payload so that its ready for signing.
- * See the [Mangrove Review Standard](https://mangrove.reviews/standard) for more details.
- * @param {Object} payload - Base payload to be cleaned, it will be mutated.
- * @param {string} payload.sub - URI of the review subject.
- * @param {number} [payload.rating] - Rating of subject between 0 and 100.
- * @param {string} [payload.opinion] - Opinion of subject with at most 500 characters.
- * @returns Payload ready to sign.
+ * See the [Mangrove Review Standard](https://mangrove.reviews/standard)
+ * for more details.
+ * Has to include at least `sub` and `rating` or `opinion`.
+ * @param {Payload} payload Base {@link Payload} to be cleaned, it will be mutated.
+ * @returns {Payload} Payload ready to sign.
  */
 function cleanPayload(payload) {
   if (!payload.sub) throw 'Payload must include subject URI in `sub` field.'
@@ -31,10 +48,8 @@ function cleanPayload(payload) {
 
 /** Assembles JWT from base payload, mutates the payload as needed.
  * @param keypair - WebCrypto keypair, can be generated with `generateKeypair`.
- * @param {Object} payload - Base payload to be cleaned, it will be mutated.
- * @param {string} payload.sub - URI of the review subject.
- * @param {number} [payload.rating] - Rating of subject between 0 and 100.
- * @param {string} [payload.opinion] - Opinion of subject with at most 500 characters.
+ * @param {Payload} payload - Base {@link Payload} to be cleaned, it will be mutated.
+ * @returns {string} Mangrove Review encoded as JWT.
  */
 async function signReview(keypair, payload) {
   return jsonwebtoken.sign(
@@ -65,10 +80,7 @@ function submitReview(jwt, api = ORIGINAL_API) {
 /**
  * Composition of `signReview` and `submitReview`.
  * @param keypair WebCrypto keypair, can be generated with `generateKeypair`.
- * @param {Object} payload Base payload to be cleaned, it will be mutated.
- * @param {string} payload.sub URI of the review subject.
- * @param {number} [payload.rating] - Rating of subject between 0 and 100.
- * @param {string} [payload.opinion] - Opinion of subject with at most 500 characters.
+ * @param {Payload} payload Base {@link Payload} to be cleaned, it will be mutated.
  * @param {string} [api=ORIGINAL_API] - API endpoint used to fetch the data.
  */
 async function signAndSubmitReview(keypair, payload, api = ORIGINAL_API) {
@@ -78,7 +90,17 @@ async function signAndSubmitReview(keypair, payload, api = ORIGINAL_API) {
 
 /**
  * Retrieve reviews which fulfill the query.
- * @param {Object} query - See the API documentation for query, working on an automated generator here.
+ * @param {Object} query Query to be passed to API, see the API documentation for examples.
+ * @param {string} [query.q] Search for reviews that have this string in `sub` or `opinion` field.
+ * @param {string} [query.signature] Review with this `signature` value.
+ * @param {string} [query.kid] Reviews by issuer with the following PEM public key.
+ * @param {number} [query.iat] Reviews issued at this UNIX time.
+ * @param {number} [query.gt_iat] Reviews with UNIX timestamp greater than this.
+ * @param {string} [query.sub] Reviews of the given subject URI.
+ * @param {number} [query.rating] Reviews with the given rating.
+ * @param {string} [query.opinion] Reviews with the given opinion.
+ * @param {boolean} [query.issuers] Include aggregate information about review issuers.
+ * @param {boolean} [query.maresi_subjects] Include aggregate information about reviews of returned reviews.
  * @param {string} [api=ORIGINAL_API] - API endpoint used to fetch the data.
  */
 function getReviews(query, api = ORIGINAL_API) {
@@ -90,8 +112,8 @@ function getReviews(query, api = ORIGINAL_API) {
 
 /**
  * Get aggregate information about the review subject.
- * @param {string} uri - URI of the review subject.
- * @param {string} [api=ORIGINAL_API] - API endpoint used to fetch the data.
+ * @param {string} uri URI of the review subject.
+ * @param {string} [api=ORIGINAL_API] API endpoint used to fetch the data.
  */
 function getSubject(uri, api = ORIGINAL_API) {
   return axios.get(`${api}/subject/${encodeURIComponent(uri)}`).then(({ data }) => data)
@@ -108,7 +130,9 @@ function getIssuer(pem, api = ORIGINAL_API) {
 
 /**
  * Retrieve aggregates for multiple subjects or issuers.
- * @param {Object} query 
+ * @param {Object} query Batch query listing identifiers to use for fetching.
+ * @param {string[]} [query.subs] A list of subject URIs to get aggregates for.
+ * @param {string[]} [query.pems] A list of issuer PEM public keys to get aggregates for.
  * @param {string} [api=ORIGINAL_API] - API endpoint used to fetch the data.
  */
 function batchAggregate(query, api = ORIGINAL_API) {
