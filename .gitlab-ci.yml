@@ -1,5 +1,6 @@
 variables:
   UI_BUCKET: "mangrove.reviews"
+  DOCS_BUCKET: "docs.mangrove.reviews"
   JS_BUCKET: "js.mangrove.reviews"
   CDN_DISTRIBUTION_ID: "E3R6KTTYJH0XRG"
   CI_DEBUG_TRACE: "true"
@@ -19,6 +20,9 @@ build:
     - yarn install
     - yarn generate
     - cd ../libraries/mangrove-reviews-js
+    - yarn install
+    - yarn doc
+    - cd ../../servers/reviewer/docs
     - yarn install
     - yarn doc
 
@@ -50,11 +54,17 @@ production:
     BASE_URL: "https://mangrove.reviews"
   stage: deploy
   script:
-    - cd libraries/mangrove-reviews-js
+    - cd servers/reviewer/docs
+    - yarn install
+    - yarn doc
+    - aws s3 rm s3://$DOCS_BUCKET --recursive
+    - aws s3 cp --recursive ./dist s3://$DOCS_BUCKET
+    - cd ../../../libraries/mangrove-reviews-js
     - yarn install
     - yarn doc
     - aws s3 rm s3://$JS_BUCKET --recursive
     - aws s3 cp --recursive ./dist s3://$JS_BUCKET
+    - aws cloudfront create-invalidation --distribution-id E3PQ8VOO0YPOZI --paths "/*"
     - cd ../../ui
     - yarn install
     - yarn generate
