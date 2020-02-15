@@ -116,11 +116,13 @@ export default {
             },
             {
               subtitle: 'Companies',
-              description: `try entering the exact legal name (e.g., BASF SE); you can search for the exact name of the entity you'd like to review in GLEIF's <a href="https://search.gleif.org/#/search/">Legal Entity Identifier</a> database that Mangrove uses for company identifiers`
+              description: `try entering the exact legal name (e.g., BASF SE);
+                you can search for the exact name of the entity you'd like to review in GLEIF's <a href="https://search.gleif.org/#/search/">Legal Entity Identifier</a> database that Mangrove uses for company identifiers`
             },
             {
               subtitle: 'Books',
-              description: 'try adding the author, subtitle, or searching by ISBN; you can check out the <a href="https://openlibrary.org/">Open Library</a> database to see if the book you are searching for has been entered already; Mangrove uses this open database for book identifiers'
+              description: `try adding the author, subtitle, or searching by ISBN;
+                you can check out the <a href="https://openlibrary.org/">Open Library</a> database to see if the book you are searching for has been entered already; Mangrove uses this open database for book identifiers`
             },
             {
               subtitle: 'Websites',
@@ -129,7 +131,8 @@ export default {
           ]
         },
         {
-          title: 'Add a missing entry to the open datasets that Mangrove uses to provide unique identifiers:',
+          title:
+            'Add a missing entry to the open datasets that Mangrove uses to provide unique identifiers:',
           bullets: [
             {
               subtitle: 'Restaurants, hotels, local businesses',
