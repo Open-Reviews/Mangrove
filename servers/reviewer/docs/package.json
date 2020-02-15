@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "redoc-cli": "^0.9.6"
+  },
+  "scripts": {
+    "serve": "yarn redoc-cli serve mangrove_openapi.yml",
+    "doc": "yarn redoc-cli bundle mangrove_openapi.yml; mkdir -p dist; mv redoc-static.html dist/index.html"
+  }
+}

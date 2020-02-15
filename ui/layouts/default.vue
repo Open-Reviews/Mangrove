@@ -13,14 +13,14 @@
       </router-link>
       <v-spacer />
       <v-toolbar-items class="mr-n4 hidden-sm-and-down">
-        <v-btn
-          v-for="item in menu"
-          :to="item.to"
-          v-html="item.label"
-          :key="item.to"
-          text
-        />
-        <v-btn text to="/account"> <v-icon>mdi-account-circle</v-icon></v-btn>
+        <v-btn v-for="item in menu" :to="item.to" :key="item.to" text>
+          <span v-html="item.label" />
+          <Identicon
+            v-if="item.to === '/account'"
+            :seed="$store.state.publicKey"
+            class="ml-2"
+          />
+        </v-btn>
       </v-toolbar-items>
       <div class="hidden-md-and-up">
         <v-menu bottom left>
@@ -32,9 +32,10 @@
           <v-list>
             <v-list-item v-for="item in menu" :to="item.to" :key="item.to">
               <v-list-item-title>{{ item.label }}</v-list-item-title>
-            </v-list-item>
-            <v-list-item to="/account">
-              <v-list-item-title>Account</v-list-item-title>
+              <Identicon
+                v-if="item.to === '/account'"
+                :seed="$store.state.publicKey"
+              />
             </v-list-item>
           </v-list>
         </v-menu>
@@ -120,6 +121,7 @@
 
 <script>
 import tree from 'ps-trees'
+import Identicon from '~/components/Identicon'
 import { LINKS } from '~/store/links'
 
 const FEEDBACK_IDS = {
@@ -133,12 +135,16 @@ const FEEDBACK_IDS = {
 }
 
 export default {
+  components: {
+    Identicon
+  },
   data() {
     return {
       title: 'Mangrove',
       menu: [
         { to: '/build', label: 'Build on Mangrove' },
-        { to: '/contribute', label: 'Contribute' }
+        { to: '/contribute', label: 'Contribute' },
+        { to: '/account', label: 'Account' }
       ],
       psUrl: 'https://planting.space',
       ccbyUrl: 'https://creativecommons.org/licenses/by/4.0',
@@ -156,7 +162,8 @@ export default {
         },
         { label: 'Donate', href: LINKS.OpenCollective.link }
       ],
-      socials: ['Mastodon', 'Twitter', 'Riot'].map((wanted) => LINKS[wanted])
+      socials: ['Mastodon', 'Twitter', 'Riot'].map((wanted) => LINKS[wanted]),
+      toc: ['/terms']
     }
   },
   computed: {

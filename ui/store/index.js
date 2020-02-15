@@ -11,7 +11,7 @@ import {
   getIssuer,
   batchAggregate,
   getReviews
-} from 'mangrove-reviews-js'
+} from 'mangrove-reviews'
 import { MARESI, GEO, subToScheme } from './scheme-types'
 import { subsToSubjects } from './apis'
 import { PRIVATE_KEY } from './indexeddb-types'
@@ -120,6 +120,25 @@ export const getters = {
           coordinates: subject.coordinates
         }
       })
+  },
+  // Return the filtered list of reviews and total counts for different schemes.
+  reviewsAndCounts: (state) => (rootSub = null, rootPk = state.publicKey) => {
+    const counts = {}
+    const reviews = Object.values(state.reviews)
+      .filter(({ payload, kid }) => {
+        // Pick only ones for selected subject or issuer.
+        const isSelected = payload.sub === rootSub || kid === rootPk
+        const scheme = subToScheme(payload.sub)
+        const isFiltered = !state.filter || scheme === state.filter
+        const isReturned = isSelected && isFiltered
+        if (isSelected) {
+          counts[scheme] = counts[scheme] ? counts[scheme] + 1 : 1
+        }
+        return isReturned
+      })
+      .sort((r1, r2) => r2.payload.iat - r1.payload.iat)
+    counts.null = reviews.length
+    return { counts, reviews }
   }
 }
 
@@ -198,22 +217,26 @@ export const actions = {
       return rs
     })
   },
-  async saveMyReviews({ state, dispatch }, metadata = false) {
+  async saveMyReviews({ state, dispatch, commit }, metadata = false) {
     const rs = await dispatch('saveReviews', { kid: state.publicKey })
-    if (!rs || !rs.length) return
+    if (!rs.reviews || !rs.reviews.length) return
     const subs = Object.values(rs.reviews).map((review) => review.payload.sub)
     subsToSubjects(this.$axios, subs).map((promise) =>
       promise.then((subject) => dispatch('storeWithRating', [subject]))
     )
     if (metadata) {
-      const newestReview = rs.reduce(function(prev, current) {
-        return prev.payload.iat > current.payload.iat ? prev : current
+      const newestReview = rs.reviews.reduce(function(prev, current) {
+        const isNewer = current.payload.iat > prev.payload.iat
+        const hasData = Object.keys(current.payload.metadata).some((k) =>
+          RECURRING.includes(k)
+        )
+        return isNewer && hasData ? current : prev
       })
-      Object.entries(newestReview.payload.metadata).map(
-        ([k, v]) =>
-          RECURRING.includes(k) && this.$store.commit(t.SET_META, [k, v])
-      )
+      Object.entries(newestReview.payload.metadata).map(([k, v]) => {
+        RECURRING.includes(k) && commit(t.SET_META, [k, v])
+      })
     }
+    return rs
   },
   bulkSubjects({ commit }, subs) {
     return batchAggregate({ subs }, process.env.VUE_APP_API_URL)
@@ -236,7 +259,8 @@ export const actions = {
       })
   },
   storeWithRating({ commit, dispatch }, rawSubjects) {
-    rawSubjects.length &&
+    return (
+      rawSubjects.length &&
       dispatch(
         'bulkSubjects',
         rawSubjects.map((raw) => raw.sub)
@@ -251,6 +275,7 @@ export const actions = {
           commit(t.ADD_SUBJECTS, subjects)
         }
       })
+    )
   },
   storeResults({ dispatch, commit }, subjects) {
     dispatch('storeWithRating', subjects).then(() =>

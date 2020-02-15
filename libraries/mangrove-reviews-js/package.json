@@ -1,9 +1,11 @@
 {
-  "name": "mangrove-reviews-js",
-  "version": "0.1.2",
+  "name": "mangrove-reviews",
+  "version": "0.1.3",
   "description": "JS library for submission and retrieval of Mangrove reviews.",
+  "keywords": ["reviews", "client", "API", "open data", "crypto"],
   "main": "index.js",
   "repository": "https://gitlab.com/plantingspace/mangrove",
+  "homepage": "https://mangrove.reviews",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.19.2",
@@ -12,10 +14,12 @@
   },
   "devDependencies": {
     "jest": "^25.1.0",
+    "jsdoc": "^3.6.3",
     "node-webcrypto-ossl": "^1.0.48"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "doc": "jsdoc index.js -R README.md -c jsdoc.json -d dist"
   },
   "jest": {
     "setupFiles": [

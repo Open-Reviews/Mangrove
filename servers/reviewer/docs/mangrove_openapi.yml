@@ -1,0 +1,373 @@
+openapi: 3.0.0
+info:
+  title: Mangrove Server API
+  description: Submit and retrieve reviews, as well as aggregate statistics about reviews.
+    See [Mangrove Original UI](https://mangrove.reviews) for more information.
+  version: 0.1.0
+
+servers:
+  - url: https://api.mangrove.reviews
+
+paths:
+  /submit/{jwt_review}:
+    put:
+      description: Submit a new review.
+      parameters:
+        - name: jwt_review
+          description: Mangrove Review in [JSON Web Token format](https://gitlab.com/plantingspace/mangrove/-/blob/master/Mangrove_Review_Standard.md).
+          in: path
+          required: true
+          schema:
+            type: string
+            format: jwt
+          example: eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ii0tLS0tQkVHSU4gUFVCTElDIEtFWS0tLS0tTUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJemowREFRY0RRZ0FFcDc4Zms1eUNqYmlZYXZ5UjZGQ2xxcTlBRkJUaXpBSG1ZdU9rcTR3cy9aYmdleG41SVQ2bi83NGt2YlZ0UGxNc3A5Z2luTysxMVZ4ZUorbVFJQ1pZamc9PS0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLSIsImp3ayI6IntcImNydlwiOlwiUC0yNTZcIixcImV4dFwiOnRydWUsXCJrZXlfb3BzXCI6W1widmVyaWZ5XCJdLFwia3R5XCI6XCJFQ1wiLFwieFwiOlwicDc4Zms1eUNqYmlZYXZ5UjZGQ2xxcTlBRkJUaXpBSG1ZdU9rcTR3c19aWVwiLFwieVwiOlwiNEhzWi1TRS1wXy0tSkwyMWJUNVRMS2ZZSXB6dnRkVmNYaWZwa0NBbVdJNFwifSJ9.eyJpYXQiOjE1ODA5MTAwMjIsInN1YiI6Imh0dHBzOi8vbWFuZ3JvdmUucmV2aWV3cyIsInJhdGluZyI6NzUsIm9waW5pb24iOiJHcmVhdCB3ZWJzaXRlIGZvciByZXZpZXdzLiIsIm1ldGFkYXRhIjp7Im5pY2tuYW1lIjoiam9objEyMyIsImNsaWVudF9pZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCJ9fQ.7xQtIlHuDdCVioyztj8i3zJ8dk3oCSfKr6VCR5RtBn6sBcqvpfyvs13PlKGJoamKzx8xUgQTQJjRPv5s91-VLQ
+      responses:
+        '200':
+          description: Review is in the database.
+          content:
+            text/plain:
+              schema:
+                type: boolean
+        '400':
+          $ref: '#/components/responses/BadRequest' 
+        '500':
+          $ref: '#/components/responses/InternalServerError' 
+  /reviews:
+    get:
+      description: Request reviews matching the provided query.
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          description: Search for reviews that have this string in `sub` or `opinion` field.
+          example: restaurants in zurich
+        - in: query
+          name: signature
+          schema:
+            type: string
+          description: Review with this `signature` value.
+        - in: query
+          name: kid
+          schema:
+            type: string
+          description: Reviews by issuer with the following PEM public key.
+          example: -----BEGIN PUBLIC KEY-----MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEDo6mN4kY6YFhpvF0u3hfVWD1RnDElPweX3U3KiUAx0dVeFLPAmeKdQY3J5agY3VspnHo1p/wH9hbZ63qPbCr6g==-----END PUBLIC KEY-----
+        - in: query
+          name: iat
+          schema:
+            type: number
+          description: Reviews issued at this UNIX time.
+        - in: query
+          name: gt_iat
+          schema:
+            type: number
+          description: Reviews with UNIX timestamp greater than this.
+        - in: query
+          name: sub
+          schema:
+            type: string
+            format: uri
+          description: Reviews of the given subject URI.
+        - in: query
+          name: rating
+          schema:
+            type: number
+            minimum: 0
+            maximum: 100
+          description: Reviews with the given rating.
+        - in: query
+          name: opinion
+          schema:
+            type: string
+          description: Reviews with the given opinion.
+        - in: query
+          name: issuers
+          schema:
+            type: boolean
+          description: Include aggregate information about review issuers.
+        - in: query
+          name: maresi_subjects
+          schema:
+            type: boolean
+          description: Include aggregate information about reviews of returned reviews.
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reviews'
+        '400':
+          $ref: '#/components/responses/BadRequest' 
+        '500':
+          $ref: '#/components/responses/InternalServerError' 
+  /subject/{sub}:
+    get:
+      description: Request aggregate information about the subject.
+      parameters:
+        - name: sub
+          description: Unique subject identifying URI.
+          in: path
+          required: true
+          schema:
+            type: string
+          example: https://nytimes.com
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subject'
+        '400':
+          $ref: '#/components/responses/BadRequest' 
+        '500':
+          $ref: '#/components/responses/InternalServerError' 
+  /issuer/{pem}:
+    get:
+      description: Request aggregate information about the reviewer.
+      parameters:
+        - name: pem
+          in: path
+          required: true
+          schema:
+            type: string
+          example: -----BEGIN PUBLIC KEY-----MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEDo6mN4kY6YFhpvF0u3hfVWD1RnDElPweX3U3KiUAx0dVeFLPAmeKdQY3J5agY3VspnHo1p/wH9hbZ63qPbCr6g==-----END PUBLIC KEY-----
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Issuer'
+        '400':
+          $ref: '#/components/responses/BadRequest' 
+        '500':
+          $ref: '#/components/responses/InternalServerError' 
+  /batch:
+    post:
+      description: Retrieve aggregates for multiple subjects or issuers.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchQuery'
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchReturn'
+        '400':
+          $ref: '#/components/responses/BadRequest' 
+        '500':
+          $ref: '#/components/responses/InternalServerError' 
+components:
+  responses:
+    BadRequest:
+      description: Provided request has incorrect format.
+      content:
+        text/plain:
+          schema:
+            type: string
+    InternalServerError:
+      description: Server encountered an error when processing the request.
+      content:
+        text/plain:
+          schema:
+            type: string
+
+  schemas:
+    Review:
+      description: Mangrove Review in encoded JWT form and with decoded fields.
+      type: object
+      required:
+        - jwt
+        - kid
+        - payload
+        - signature
+      properties:
+        jwt:
+          description: Review in JWT format.
+          type: string
+        kid:
+          description: Public key of the reviewer in PEM format.
+          type: string
+        payload:
+          description: Primary content of the review.
+          allOf:
+            - $ref: '#/components/schemas/Payload'
+        signature:
+          description: JWT signature by the review issuer.
+          type: string
+    Payload:
+      description: 'Primary content of the review, this is what gets serialized for signing.'
+      type: object
+      required:
+        - iat
+        - images
+        - metadata
+        - opinion
+        - rating
+        - sub
+      properties:
+        iat:
+          description: Unix Time at which the review was signed.
+          type: integer
+          format: int64
+        sub:
+          description: URI of the subject that is being reviewed.
+          type: string
+          format: uri
+        rating:
+          description: Rating indicating how likely the issuer is to
+            recommend the subject.
+          type: integer
+          format: int16
+          nullable: true
+          minimum: 0
+          maximum: 100
+        opinion:
+          description: Text of an opinion that the issuer had about the subject.
+          type: string
+          nullable: true
+        images:
+          description: Images to be included in the review, contain URLs and optional labels.
+          nullable: true
+          type: array
+          items:
+            type: object
+            properties:
+              src:
+                type: string
+                format: url
+              label:
+                type: string
+        metadata:
+          description: Any data relating to the issuer or circumstances of leaving review.
+          nullable: true
+          type: object
+          properties:
+            client_id:
+              type: string
+            nickname:
+              type: string
+    Subject:
+      description: Information about a subject of reviews.
+      type: object
+      required:
+        - confirmed_count
+        - count
+        - opinion_count
+        - positive_count
+        - quality
+        - sub
+      properties:
+        confirmed_count:
+          description: >-
+            Number of reviews with rating above 50 and `is_personal_experience`
+            flag given to this subject.
+          type: integer
+          format: uint
+          minimum: 0
+        count:
+          description: Number of reviews given to this subject.
+          type: integer
+          format: uint
+          minimum: 0
+        opinion_count:
+          description: Number of reviews which included an opinion.
+          type: integer
+          format: uint
+          minimum: 0
+        positive_count:
+          description: Number of reviews with rating above 50 given to this subject.
+          type: integer
+          format: uint
+          minimum: 0
+        quality:
+          description: Aggregate number representing quality of the subject.
+          type: integer
+          format: int16
+          nullable: true
+        sub:
+          description: URI uniquely identifying the subject.
+          type: string
+          format: uri
+    Issuer:
+      description: Information about a review issuer.
+      type: object
+      required:
+        - count
+      properties:
+        count:
+          description: Number of reviews written by this issuer.
+          type: integer
+          format: uint
+          minimum: 0
+    Reviews:
+      description: Return type used to provide `Review`s and any associated data.
+      type: object
+      required:
+        - issuers
+        - maresi_subjects
+        - reviews
+      properties:
+        issuers:
+          description: A map from public keys to information about issuers.
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Issuer'
+          nullable: true
+        maresi_subjects:
+          description: A map from Review identifiers (`urn:maresi:<signature>`) to
+            information about the reviews of that review.
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Subject'
+          nullable: true
+        reviews:
+          description: A list of reviews satisfying the query.
+          type: array
+          items:
+            $ref: '#/components/schemas/Review'
+    BatchQuery:
+      description: Query allowing for retrieval of information about multiple subjects or
+        issuers.
+      type: object
+      required:
+        - pems
+        - subs
+      properties:
+        pems:
+          description: List of issuer public keys to get information about.
+          type: array
+          items:
+            type: string
+          nullable: true
+        subs:
+          description: List of subject URIs to get information about.
+          type: array
+          items:
+            type: string
+            format: uri
+          nullable: true
+    BatchReturn:
+      type: object
+      required:
+        - issuers
+        - subjects
+      properties:
+        issuers:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Issuer'
+          nullable: true
+        subjects:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Subject'
+          nullable: true

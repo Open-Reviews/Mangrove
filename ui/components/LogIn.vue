@@ -19,7 +19,7 @@
 
 <script>
 import { set } from 'idb-keyval'
-import { jwkToKeypair } from 'mangrove-reviews-js'
+import { jwkToKeypair } from 'mangrove-reviews'
 import { HAS_SAVED_KEY } from '~/store/indexeddb-types'
 
 export default {

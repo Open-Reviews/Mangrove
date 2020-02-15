@@ -1,6 +1,9 @@
 <template>
   <v-container :style="`max-width: ${reviewCount ? 1300 : 800}px`">
-    <v-row>
+    <v-row v-if="!$store.state.publicKey" justify="center">
+      <h1 class="display-3">Loading...</h1>
+    </v-row>
+    <v-row v-else>
       <v-col>
         <h1 class="display-1">Your account</h1>
         <v-divider class="mb-2" />
@@ -24,15 +27,17 @@
             <v-divider class="my-8" />
           </div>
           <div v-else>
+            <v-row justify="center">
+              <div>
+                <UserHeader
+                  :pk="$store.state.publicKey"
+                  :metadata="$store.state.metadata"
+                  :placeholder="Anonymous"
+                  :count="reviewCount"
+                />
+              </div>
+            </v-row>
             <v-card-text>
-              Congratulations,
-              <b>
-                you wrote {{ reviewCount }} review{{
-                  reviewCount > 1 ? 's' : ''
-                }}
-              </b>
-              with this account.
-              <br />
               You can build your reputation by using the same account for your
               future reviews, and by receiving Likes and Confirmations from
               other users.
@@ -45,6 +50,9 @@
                 Your cryptographically generated password:
               </KeyList>
             </v-card-text>
+            <v-card-actions class="justify-center">
+              <LogOut />
+            </v-card-actions>
           </div>
         </v-card>
         <AdvancedAccount />
@@ -53,10 +61,7 @@
         <h1 class="display-1">Your reviews</h1>
         <v-divider />
         <SchemeFilter :counts="counts" comments />
-        <ReviewList
-          :rootPk="$store.state.publicKey"
-          @counted="counts = $event"
-        />
+        <ReviewList :rootPk="$store.state.publicKey" />
       </v-col>
     </v-row>
   </v-container>
@@ -68,6 +73,8 @@ import ReviewList from '~/components/ReviewList'
 import LogInDialog from '~/components/LogInDialog'
 import KeyList from '~/components/KeyList'
 import AdvancedAccount from '~/components/AdvancedAccount'
+import UserHeader from '~/components/UserHeader'
+import LogOut from '~/components/LogOut'
 
 export default {
   components: {
@@ -75,16 +82,16 @@ export default {
     LogInDialog,
     KeyList,
     SchemeFilter,
-    ReviewList
-  },
-  data() {
-    return {
-      counts: undefined
-    }
+    ReviewList,
+    UserHeader,
+    LogOut
   },
   computed: {
+    counts() {
+      return this.$store.getters.reviewsAndCounts().counts
+    },
     reviewCount() {
-      return this.counts === undefined || this.counts.null
+      return this.counts.null
     }
   },
   middleware: 'account'

@@ -90,7 +90,7 @@
         <v-card-actions>
           <v-spacer />
           <v-btn @click="dismissAlphaWarning" text>
-            Ok, got it
+            Let me try it
           </v-btn>
         </v-card-actions>
       </v-card>

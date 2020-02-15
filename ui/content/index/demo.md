@@ -1,9 +1,7 @@
 ---
-title: This is a DEMO version
+title: Welcome to Mangrove beta!
 ---
 
-Welcome to Mangrove! This is a demo version of the Mangrove online reviews service.   
-
-Its purpose is to allow you to **test the basic functionality** and to **give us feedback** so that we can find all bugs and release a beta version soon. We highly appreciate feedback on all pages, please use the **red button** on the right as often as you like.    
-
-Please consider a small **donation** to help us add more features :)
+Try out writing reviews in the public domain, using a cryptographically generated account that puts you in control of your privacy.   
+   
+Mangrove is here to stay and grow. With your kind feedback and help we can jointly build an ecosystem around this open dataset so that the insights people share with each other can be free and accessible to everyone.
