@@ -235,8 +235,17 @@ fn check_place(geo: &Url) -> Result<(), Error> {
     }
 }
 
-fn check_url(id: &str) -> Result<(), url::ParseError> {
-    Url::parse(id).map(|_| ())
+fn check_url(id: &str) -> Result<(), Error> {
+    Url::parse(id)?;
+    let exists = reqwest::blocking::get(id)?.status().is_success();
+    if exists {
+        Ok(())
+    } else {
+        Err(Error::Incorrect(format!(
+            "Subject is not publicly accessible: {:?}",
+            id
+        )))
+    }
 }
 
 fn check_lei(id: &str) -> Result<(), Error> {
