@@ -12,6 +12,7 @@ This repository contains:
   - [File Hoster Lambda](servers/file_hoster) accessing an S3 bucket
 - [Mangrove Original UI](ui) implementation
   - Client using Vue.js
+- [Mangrove Client JS Library](libraries/mangrove-reviews-js) for interacting with Mangrove Servers
 
 ## Local testing
 
@@ -46,7 +47,7 @@ cd servers/reviewer
 cargo run
 ```
 
-See [initial autotmated API docs here](https://api.mangrove.reviews/swagger-ui). Two issues make them incomplete: [route descriptions](https://github.com/GREsau/okapi/issues/) and [content types](https://github.com/GREsau/okapi/issues/10).
+See [the API docs here](https://docs.mangrove.reviews).
 
 ### Mangrove File Server
 
