@@ -59,6 +59,7 @@ production:
     - yarn doc
     - aws s3 rm s3://$DOCS_BUCKET --recursive
     - aws s3 cp --recursive ./dist s3://$DOCS_BUCKET
+    - aws cloudfront create-invalidation --distribution-id E2HRIGC1I7B7ZA --paths "/*"
     - cd ../../../libraries/mangrove-reviews-js
     - yarn install
     - yarn doc
