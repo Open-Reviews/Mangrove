@@ -12,13 +12,22 @@ const jsonwebtoken = require('jsonwebtoken')
  * @property {Object[]} [images] Array of up to 5 images to be included.
  * @property {string} images[].src Public URL of an image.
  * @property {string} [images[].label] Optional label of an image.
- * @property {Object} [metadata]
- *  Any data relating to the issuer or circumstances of leaving review.
+ * @property {Metadata} [metadata]
+ *  Any {@link Metadata} relating to the issuer or circumstances of leaving review.
  *  See the [Mangrove Review Standard](https://mangrove.reviews/standard) for more.
- * @property {string} [metadata.client_id]
+ */
+
+/**
+ * @typedef {Object} Metadata
+ * @property {string} [client_id]
  *  Identity of the client used to leave the review, gets populated if not provided.
- * @property {string} [metadata.nickname]
- *  Nickname of the reviewer.
+ * @property {string} [nickname] Nickname of the reviewer.
+ * @property {string} [given_name]
+ * @property {string} [family_name]
+ * @property {number} [age]
+ * @property {string} [gender]
+ * @property {boolean} [is_generated] Please set this flag to `true`
+ *  when automatically generating reviews.
  */
 
 /** The API of the server used for https://mangrove.reviews */
