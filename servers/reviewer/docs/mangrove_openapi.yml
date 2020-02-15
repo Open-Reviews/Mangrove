@@ -335,8 +335,7 @@ components:
           items:
             $ref: '#/components/schemas/Review'
     BatchQuery:
-      description: >-
-        Query allowing for retrieval of information about multiple subjects or
+      description: Query allowing for retrieval of information about multiple subjects or
         issuers.
       type: object
       required:
