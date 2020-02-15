@@ -5,6 +5,7 @@
   "keywords": ["reviews", "client", "API", "open data", "crypto"],
   "main": "index.js",
   "repository": "https://gitlab.com/plantingspace/mangrove",
+  "homepage": "https://mangrove.reviews",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.19.2",
