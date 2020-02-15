@@ -214,9 +214,11 @@ export default {
       return [
         {
           ticked: 'isAffiliated',
-          text: `I am affiliated with ${this.subject.title} (e.g., ${
-            AFFILIATED_EXAMPLES[this.subject.scheme]
-          })`
+          text: `I am affiliated${
+            this.subject.scheme === MARESI
+              ? ''
+              : ' with <i>' + this.subject.title + '</i>'
+          } (e.g., ${AFFILIATED_EXAMPLES[this.subject.scheme]})`
         },
         {
           ticked: 'termsAgreed',
