@@ -6,7 +6,7 @@ import {
 } from '~/store/mutation-types'
 import { HTTPS, GEO, ISBN, LEI } from '~/store/scheme-types'
 import {
-  subsToSubjects,
+  subToSubject,
   leiToSubject,
   searchGeo,
   olDocToSubject
@@ -37,7 +37,9 @@ Searches for subjects and returns and object for each:
 export default function({ store, $axios, route }) {
   const query = route.query.q
   if (!query && route.query.sub) {
-    return
+    return subToSubject($axios, route.query.sub).then((subject) =>
+      store.dispatch('storeResults', [subject])
+    )
   } else if (
     // Do not run if there is no query and specific subject is not selected.
     !query ||
@@ -75,9 +77,8 @@ export default function({ store, $axios, route }) {
       .dispatch('getReviews', { q: query })
       .then((rs) => {
         if (!rs || !rs.reviews.length) return
-        return subsToSubjects(
-          $axios,
-          rs.reviews.map((review) => review.payload.sub)
+        return rs.reviews.map((review) =>
+          subToSubject($axios, review.payload.sub)
         )
       })
       .then((subjects) => subjects && store.dispatch('storeResults', subjects))

@@ -13,7 +13,7 @@ import {
   getReviews
 } from 'mangrove-reviews'
 import { MARESI, GEO, subToScheme } from './scheme-types'
-import { subsToSubjects } from './apis'
+import { subToSubject } from './apis'
 import { PRIVATE_KEY } from './indexeddb-types'
 import * as t from './mutation-types'
 import { CLIENT_ID, RECURRING } from './metadata-types'
@@ -221,8 +221,10 @@ export const actions = {
     const rs = await dispatch('saveReviews', { kid: state.publicKey })
     if (!rs.reviews || !rs.reviews.length) return
     const subs = Object.values(rs.reviews).map((review) => review.payload.sub)
-    subsToSubjects(this.$axios, subs).map((promise) =>
-      promise.then((subject) => dispatch('storeWithRating', [subject]))
+    subs.map((sub) =>
+      subToSubject(this.$axios, sub).then((subject) =>
+        dispatch('storeWithRating', [subject])
+      )
     )
     if (metadata) {
       const newestReview = rs.reviews.reduce(function(prev, current) {

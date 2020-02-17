@@ -14,7 +14,7 @@ paths:
       description: Submit a new review.
       parameters:
         - name: jwt_review
-          description: Mangrove Review in [JSON Web Token format](https://gitlab.com/plantingspace/mangrove/-/blob/master/Mangrove_Review_Standard.md).
+          description: Mangrove Review in [JSON Web Token format](https://gitlab.com/plantingspace/mangrove/-/blob/master/Mangrove_Review_Standard.md). Please use https://example.com in subject `sub` field for testing.
           in: path
           required: true
           schema:

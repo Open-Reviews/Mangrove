@@ -184,35 +184,31 @@ export function olDocToSubject(doc) {
   }
 }
 
-// TODO: make appropriate queries to learn more about these
-export function subsToSubjects(axios, subs) {
-  return subs
-    ? subs.map(async (sub) => {
-        const scheme = subToScheme(sub)
-        let subject
-        if (scheme === LEI) {
-          subject = await leiToSubject(axios, subPath(LEI, sub))
-        } else if (scheme === GEO) {
-          const uri = new URL(sub)
-          const coordinates = uri.pathname.split(',')
-          const subjects = await searchGeo(
-            axios,
-            uri.searchParams.get('q'),
-            coordinates
-          )
-          subject = subjects[0]
-        } else if (scheme === ISBN) {
-          subject = await isbnToSubject(axios, subPath(ISBN, sub))
-        } else {
-          subject = {
-            sub,
-            scheme,
-            title: sub,
-            subtitle: '',
-            description: ''
-          }
-        }
-        return subject
-      })
-    : []
+// Makes appropriate queries to learn more about the subject.
+export async function subToSubject(axios, sub) {
+  const scheme = subToScheme(sub)
+  let subject
+  if (scheme === LEI) {
+    subject = await leiToSubject(axios, subPath(LEI, sub))
+  } else if (scheme === GEO) {
+    const uri = new URL(sub)
+    const coordinates = uri.pathname.split(',')
+    const subjects = await searchGeo(
+      axios,
+      uri.searchParams.get('q'),
+      coordinates
+    )
+    subject = subjects[0]
+  } else if (scheme === ISBN) {
+    subject = await isbnToSubject(axios, subPath(ISBN, sub))
+  } else {
+    subject = {
+      sub,
+      scheme,
+      title: sub,
+      subtitle: '',
+      description: ''
+    }
+  }
+  return subject
 }
