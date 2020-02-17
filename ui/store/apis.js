@@ -193,12 +193,16 @@ export async function subToSubject(axios, sub) {
   } else if (scheme === GEO) {
     const uri = new URL(sub)
     const coordinates = uri.pathname.split(',')
-    const subjects = await searchGeo(
-      axios,
-      uri.searchParams.get('q'),
-      coordinates
-    )
+    // Convert from meters to degrees.
+    const area = uri.searchParams.get('u') / 110000
+    const subjects = await searchGeo(axios, uri.searchParams.get('q'), [
+      coordinates[1] - area,
+      coordinates[0] - area,
+      coordinates[1] + area,
+      coordinates[0] + area
+    ])
     subject = subjects[0]
+    subject.sub = sub
   } else if (scheme === ISBN) {
     subject = await isbnToSubject(axios, subPath(ISBN, sub))
   } else {
