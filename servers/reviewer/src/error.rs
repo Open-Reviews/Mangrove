@@ -25,8 +25,8 @@ impl<'r> OpenApiResponder<'r> for Error {
     }
 }
 
-impl From<rusoto_s3::DeleteObjectTaggingError> for Error {
-    fn from(error: rusoto_s3::DeleteObjectTaggingError) -> Self {
+impl From<rusoto_core::RusotoError<rusoto_s3::DeleteObjectTaggingError>> for Error {
+    fn from(error: rusoto_core::RusotoError<rusoto_s3::DeleteObjectTaggingError>) -> Self {
         Error::Incorrect(format!("Issue with image persisting: {}", error))
     }
 }

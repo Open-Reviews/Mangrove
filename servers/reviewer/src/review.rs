@@ -146,7 +146,7 @@ impl Payload {
         metadata.map_or(Ok(()), |m| {
             m.0.into_iter().map(|(k, v)| check_metadata(&k, v)).collect()
         })?;
-        images.map_or(Ok(()), |e| {
+        images.as_ref().map_or(Ok(()), |e| {
             e.0.iter().map(|img| img.validate()).collect()
         })?;
         check_sub(conn, &self.sub)?;
@@ -193,7 +193,7 @@ impl Image {
 
     fn persist(&self) -> Result<(), Error> {
         let parsed = Url::parse(&self.src)?;
-        if (parsed.host_str() !== Some(IMAGES_BUCKET)) {
+        if parsed.host_str() != Some(IMAGES_BUCKET) {
             // Nothing to be done if the image is not on the original server.
             return Ok(())
         }

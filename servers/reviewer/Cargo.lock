@@ -1771,6 +1771,7 @@ dependencies = [
  "rocket_cors 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "rocket_lamb 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "rocket_okapi 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rusoto_core 0.42.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "rusoto_s3 0.42.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "schemars 0.6.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde 1.0.104 (registry+https://github.com/rust-lang/crates.io-index)",
