@@ -1,6 +1,7 @@
 use super::database::{self, DbConn};
 use super::error::Error;
 use super::schema::reviews;
+use rusoto_s3::{DeleteObjectTaggingRequest, S3Client, S3};
 use isbn::Isbn;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -10,6 +11,19 @@ use std::borrow::Cow;
 use std::collections::BTreeMap;
 use std::time::Duration;
 use std::str::FromStr;
+
+const IMAGES_BUCKET: &str = "files.mangrove.reviews";
+
+static JWT_VALIDATION: Lazy<jsonwebtoken::Validation> = Lazy::new(|| {
+    jsonwebtoken::Validation {
+        leeway: 5,
+        validate_exp: false,
+        algorithms: vec![jsonwebtoken::Algorithm::ES256],
+        ..Default::default()
+    }
+});
+
+static S3_CLIENT: Lazy<S3Client> = Lazy::new(|| { S3Client::new(Default::default()) });
 
 /// Mangrove Review used for submission or retrieval from the database.
 #[derive(
@@ -27,15 +41,6 @@ pub struct Review {
     #[diesel(embed)]
     pub payload: Payload
 }
-
-static JWT_VALIDATION: Lazy<jsonwebtoken::Validation> = Lazy::new(|| {
-    jsonwebtoken::Validation {
-        leeway: 5,
-        validate_exp: false,
-        algorithms: vec![jsonwebtoken::Algorithm::ES256],
-        ..Default::default()
-    }
-});
 
 impl FromStr for Review {
     type Err = Error;
@@ -95,7 +100,6 @@ impl Review {
 #[derive(
     Debug, PartialEq, Serialize, Deserialize, Insertable, Queryable, JsonSchema,
 )]
-
 #[table_name = "reviews"]
 pub struct Payload {
     /// Unix Time at which the review was signed.
@@ -117,20 +121,6 @@ pub struct Payload {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<serde_json::Value>,
 }
-
-pub type Rating = i16;
-
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
-struct Images(Vec<Image>);
-
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
-struct Image {
-    src: String,
-    label: Option<String>
-}
-
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
-struct Metadata(BTreeMap<String, serde_json::Value>);
 
 impl Payload {
     /// Check the Review roughly in order of complexity of checks.
@@ -157,10 +147,63 @@ impl Payload {
             m.0.into_iter().map(|(k, v)| check_metadata(&k, v)).collect()
         })?;
         images.map_or(Ok(()), |e| {
-            e.0.iter().map(|img| check_image(img)).collect()
+            e.0.iter().map(|img| img.validate()).collect()
         })?;
         check_sub(conn, &self.sub)?;
+        // Make sure images stick around.
+        images.map_or(Ok(()), |e| {
+            e.0.iter().map(|img| img.persist()).collect()
+        })?;
         Ok(true)
+    }
+}
+
+pub type Rating = i16;
+
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+struct Metadata(BTreeMap<String, serde_json::Value>);
+
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+struct Images(Vec<Image>);
+
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+struct Image {
+    src: String,
+    label: Option<String>
+}
+
+impl Image {
+    fn validate(&self) -> Result<(), Error> {
+        if let Some(l) = &self.label {
+            if l.len() > 50 {
+                return Err(Error::Incorrect(format!("Image label is too long: {}", l)))
+            }
+        }
+        println!("Checking the file: {}", self.src);
+        let exists = reqwest::blocking::get(&self.src)?.status().is_success();
+        if exists {
+            Ok(())
+        } else {
+            Err(Error::Incorrect(format!(
+                "No file can be found online: {:?}",
+                self.src
+            )))
+        }
+    }
+
+    fn persist(&self) -> Result<(), Error> {
+        let parsed = Url::parse(&self.src)?;
+        if (parsed.host_str() !== Some(IMAGES_BUCKET)) {
+            // Nothing to be done if the image is not on the original server.
+            return Ok(())
+        }
+        S3_CLIENT.delete_object_tagging(DeleteObjectTaggingRequest {
+            bucket: IMAGES_BUCKET.into(),
+            key: parsed.path().into(),
+            version_id: None,
+        })
+        .sync()?;
+        Ok(())
     }
 }
 
@@ -289,24 +332,6 @@ fn check_sub(conn: &DbConn, uri: &str) -> Result<(), Error> {
         "geo" => check_place(&parsed).map_err(Into::into),
         "http" | "https" => check_url(uri).map_err(Into::into),
         s => Err(Error::Incorrect(format!("Unknown URI scheme: {}", s))),
-    }
-}
-
-fn check_image(img: &Image) -> Result<(), Error> {
-    if let Some(l) = &img.label {
-        if l.len() > 50 {
-            return Err(Error::Incorrect(format!("Image label is too long: {}", l)))
-        }
-    }
-    println!("Checking the file: {}", img.src);
-    let exists = reqwest::blocking::get(&img.src)?.status().is_success();
-    if exists {
-        Ok(())
-    } else {
-        Err(Error::Incorrect(format!(
-            "No file can be found online: {:?}",
-            img.src
-        )))
     }
 }
 
