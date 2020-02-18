@@ -197,9 +197,16 @@ impl Image {
             // Nothing to be done if the image is not on the original server.
             return Ok(())
         }
+        let key = parsed
+            .path()
+            .get(1..)
+            .ok_or_else(|| Error::Incorrect(format!(
+                "File hash is too short: {:?}", parsed.path())
+            ))?
+            .into();
         S3_CLIENT.delete_object_tagging(DeleteObjectTaggingRequest {
             bucket: IMAGES_BUCKET.into(),
-            key: parsed.path().into(),
+            key,
             version_id: None,
         })
         .sync()?;
