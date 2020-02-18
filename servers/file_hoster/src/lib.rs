@@ -3,8 +3,6 @@
 #[macro_use]
 extern crate log;
 #[macro_use]
-extern crate lazy_static;
-#[macro_use]
 extern crate rocket;
 
 use rocket::http::{ContentType, Method};
@@ -15,6 +13,7 @@ use rocket_multipart_form_data::{
 };
 use rusoto_s3::{PutObjectRequest, S3Client, S3};
 use sha2::{Digest, Sha256};
+use once_cell::sync::Lazy;
 use std::fs::{self, File};
 use std::io::{self, Read};
 use std::path::Path;
@@ -22,18 +21,7 @@ use std::path::Path;
 const FILES: &str = "files";
 const BUCKET: &str = "files.mangrove.reviews";
 
-lazy_static! {
-    /*
-    static ref STORE: &'static Path = {
-        fs::create_dir("/tmp/files").or_else(|e| match e.kind() {
-            io::ErrorKind::AlreadyExists => Ok(()),
-            _ => Err(e),
-        }).expect("Access to tmp is missing.");
-        Path::new("/tmp")
-    };
-    */
-    static ref STORE: S3Client = S3Client::new(Default::default());
-}
+static STORE: Lazy<S3Client> = Lazy::new(|| { S3Client::new(Default::default()) });
 
 /// Compute base64url encoded SHA256 of the file.
 fn hash(data: &SingleFileField) -> Result<String, io::Error> {
