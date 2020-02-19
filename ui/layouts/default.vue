@@ -154,7 +154,7 @@ export default {
         { label: 'Terms & Privacy', to: 'terms' },
         {
           label: 'API',
-          href: 'https://app.swaggerhub.com/apis/keorn/Mangrove_Server/0.1.0'
+          href: 'https://docs.mangrove.reviews'
         },
         {
           label: 'Develop',
