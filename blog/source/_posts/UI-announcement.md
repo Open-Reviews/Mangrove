@@ -4,6 +4,8 @@ date: 2020-02-19 09:38:18
 tags:
 ---
 
+![](https://i.imgur.com/12bueV7.jpg)
+
 ***We built a service for online reviews that makes the insights you share accessible across any application, and that does not invade your privacy. Leave proprietary data silos behind and enter the open data ecosystem of Mangrove reviews.***
 
 Our goal for this blog post is to show you around in the newly released Mangrove web app: this is a brief summary of its capabilities at a glance. 
