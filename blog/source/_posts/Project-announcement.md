@@ -6,6 +6,10 @@ excerpt: As consumer choice proliferates, people will rely even more on online r
 photos: [https://i.imgur.com/hTwTo1l.jpg]
 ---
 
+![](https://i.imgur.com/hTwTo1l.jpg)
+
+***As consumer choice proliferates, people will rely even more on online reviews to inform their decisions. This makes reviews an increasingly powerful tool and valuable source of insight for individuals and businesses alike. The problem is that hundreds of millions of people are feeding their valuable insights currently into proprietary data silos of a few dominant platforms.***
+
 We all benefit from leveraging the experiences of others for our own decision-making. We feel an intrinsic need to share with others information about things we used and experienced, and to make use of such information ourselves before we invest resources.
 
 The world is growing more complex, and so are the choices that we have to make each day. The number of services, products, media outlets, books, travel destinations, websites, apps, is growing, and it takes more effort to navigate the global range of offerings. We increasingly look up information online when we want to buy something or go somewhere, and we actively search for other people's opinions in order to form our own (research studies performed by [IMC](https://spiegel.medill.northwestern.edu/online-reviews/) or [BrightLocal](https://www.brightlocal.com/research/local-consumer-review-survey/) have quantified this trend).
@@ -14,7 +18,7 @@ In addition, the opinions of customers in the form of online reviews have become
 
 Companies such as Google, Yelp, Facebook, TripAdvisor, or TrustPilot have recognized this trend already years ago, and offered business listing platforms on which users could leave reviews as well as read other people's reviews for free. By now, these services boast hundreds of millions of consumer reviews in their applications. The crowd-sourced data has become a well-guarded asset for these companies, based on which they generate revenues, predominantly from advertising and sharing the personal data of their users.
 
-## A threat to free competition and, possibly, to free will
+## A threat to free competition
 
 As the amount of available review data is growing, and with it the dependence of people and organizations on the insights that can be generated from it, access restriction not only stifles innovation, but locks us in even further. The opportunities arising to create new products and technologies will only be open to a few powerful organisations, threatening free market competition, and possibly even free will.
 
@@ -32,7 +36,7 @@ Most importantly, you would not have to choose whose service you want to trust b
 
 Recommendation services are already being marketed by Amazon, Google, Foursquare and others, mostly to the benefits of their advertising partners. These technologies are still in their infancy, but as they become better, people will start relying on them in order to manage complexity in their lives. Driven by pressure to generate profits combined with their reliance on advertising-based business models, we all might end up being at the mercy of closed-source algorithms that might bombard us with things to buy that we don’t need -- but can’t resist.
 
-## Not having an alternative is, for me at least, a nightmare
+## Need to create alternatives
 
 To be able to use technology in a way that actually helps us and releases creative and innovative energy, I believe that we need to rethink some of the fundamental architectures that internet services are built on today. Most importantly, we need people to create alternatives.
 
