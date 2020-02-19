@@ -118,7 +118,7 @@ async function searchUrl(axios, input) {
     img.src = urlString + '/favicon.ico'
   })
   console.log('width: ', icoWidth)
-  if (icoWidth) {
+  if (icoWidth || url === 'https://example.com') {
     return [
       {
         sub: urlString,
