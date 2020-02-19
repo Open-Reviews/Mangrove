@@ -149,7 +149,7 @@ export default {
       psUrl: 'https://planting.space',
       ccbyUrl: 'https://creativecommons.org/licenses/by/4.0',
       internals: [
-        { label: 'About', href: 'https://planting.space/mangrove.html' },
+        { label: 'Blog', href: 'https://blog.mangrove.reviews' },
         { label: 'FAQ', to: 'faq' },
         { label: 'Terms & Privacy', to: 'terms' },
         {
