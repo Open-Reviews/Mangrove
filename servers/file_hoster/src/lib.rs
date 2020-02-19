@@ -3,8 +3,6 @@
 #[macro_use]
 extern crate log;
 #[macro_use]
-extern crate lazy_static;
-#[macro_use]
 extern crate rocket;
 
 use rocket::http::{ContentType, Method};
@@ -13,27 +11,17 @@ use rocket_contrib::json::Json;
 use rocket_multipart_form_data::{
     FileField, MultipartFormData, MultipartFormDataField, MultipartFormDataOptions, SingleFileField,
 };
-use rusoto_s3::{DeleteObjectTaggingRequest, PutObjectRequest, S3Client, S3};
+use rusoto_s3::{PutObjectRequest, S3Client, S3};
 use sha2::{Digest, Sha256};
+use once_cell::sync::Lazy;
 use std::fs::{self, File};
 use std::io::{self, Read};
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 const FILES: &str = "files";
 const BUCKET: &str = "files.mangrove.reviews";
 
-lazy_static! {
-    /*
-    static ref STORE: &'static Path = {
-        fs::create_dir("/tmp/files").or_else(|e| match e.kind() {
-            io::ErrorKind::AlreadyExists => Ok(()),
-            _ => Err(e),
-        }).expect("Access to tmp is missing.");
-        Path::new("/tmp")
-    };
-    */
-    static ref STORE: S3Client = S3Client::new(Default::default());
-}
+static STORE: Lazy<S3Client> = Lazy::new(|| { S3Client::new(Default::default()) });
 
 /// Compute base64url encoded SHA256 of the file.
 fn hash(data: &SingleFileField) -> Result<String, io::Error> {
@@ -46,13 +34,9 @@ fn hash(data: &SingleFileField) -> Result<String, io::Error> {
 trait HashingStore {
     // Put file in temporary storage under its hash and return hash.
     fn save(&self, data: &SingleFileField) -> Result<String, String>;
-
-    // Return true if file is known, otherwise false.
-    // Move file to permanent storage if currently in temporary.
-    fn persist(&self, file: String) -> bool;
 }
 
-/// Works by using the root Path for temporary files and FILES subfolder for permanent files.
+/// Works by using the root Path for temporary files.
 impl HashingStore for &Path {
     fn save(&self, data: &SingleFileField) -> Result<String, String> {
         let hash = hash(data).map_err(|e| e.to_string())?;
@@ -64,23 +48,6 @@ impl HashingStore for &Path {
             }
         }
         Ok(hash)
-    }
-
-    fn persist(&self, hash: String) -> bool {
-        let files = self.join(FILES);
-        let file: PathBuf = hash.into();
-        if files.join(&file).exists() {
-            true
-        } else if self.join(&file).exists() {
-            if let Err(e) = fs::rename(&self.join(&file), files.join(&file)) {
-                warn!("Unable to make the file permanent: {}", e);
-                false
-            } else {
-                true
-            }
-        } else {
-            false
-        }
     }
 }
 
@@ -102,16 +69,6 @@ impl HashingStore for S3Client {
         .sync()
         .map_err(|e| format!("Error uploading to S3: {}", e))?;
         Ok(hash)
-    }
-
-    fn persist(&self, key: String) -> bool {
-        self.delete_object_tagging(DeleteObjectTaggingRequest {
-            bucket: BUCKET.into(),
-            key,
-            version_id: None,
-        })
-        .sync()
-        .is_ok()
     }
 }
 
@@ -154,12 +111,7 @@ fn upload(content_type: &ContentType, data: Data) -> Result<Json<Vec<String>>, S
 
 #[get("/")]
 fn index() -> &'static str {
-    "Check out for project information: https://planting.space/mangrove.html"
-}
-
-#[get("/<hash>/exists")]
-fn exists(hash: String) -> String {
-    STORE.persist(hash).to_string()
+    "Check out for project information: https://mangrove.reviews"
 }
 
 pub fn rocket() -> Rocket {
@@ -174,6 +126,6 @@ pub fn rocket() -> Rocket {
     .expect("CORS configuration correct.");
 
     rocket::ignite()
-        .mount("/", routes![index, upload, exists])
+        .mount("/", routes![index, upload])
         .attach(cors)
 }
