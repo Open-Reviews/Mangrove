@@ -6,10 +6,18 @@ excerpt: We built a service for online reviews that makes the insights you share
 photos: [https://i.imgur.com/12bueV7.jpg]
 ---
 
+![](https://i.imgur.com/12bueV7.jpg)
+
+
+***We built a service for online reviews that makes the insights you share accessible across any application, and that does not invade your privacy. Leave proprietary data silos behind and enter the open data ecosystem of Mangrove reviews.***
+
 Our goal for this blog post is to show you around in the newly released Mangrove web app: this is a brief summary of its capabilities at a glance. 
 
-This web app is one building block of a larger vision. **One way to make value creation on the internet more inclusive, and to allow more people to participate in economic growth, is to make more data openly accessible.** If we are able to create attractive open alternatives to proprietary services based on data that is in the public domain, we can reduce the dominance of information monopolists and our growing dependence on them. Stay tuned for upcoming blog posts where we share our vision for creating an open data ecosystem for reviews in order to achieve the scale at which we can speak of a true alternative to closed, exploitative systems.
 
+This web app is part of a larger vision: the insights that people share with each other via online word-of-mouth are invaluable for navigating our increasingly complex world with offerings on a global scale. With artificial intelligence still being far away from understanding human preferences, let alone matching them to all the offers out there, in the foreseeable future, the safer bet are the insights and opinions of our fellow humans. If we want to improve decision-making and accessibility of the best offers, we need to make these insights freely available to all and allow people to share their opinions in the public domain where they can be used for individual guidance as well as for innovation and entrepreneurial activity.
+
+Stay tuned for upcoming blog posts where we share more about our vision for creating an open data ecosystem for reviews.   
+    
 So, what can the Mangrove web app do for you? In brief, it lets you read and write reviews! **But what’s different to the well-known proprietary services out there?**
 
 1. **You can read/write reviews for many things that matter to people, all in one place.** These things are currently: places on the map such as restaurants, hotels, touristic sites; but also companies, websites, and books. In Mangrove you can share with people a wider range of your experiences if you like, all in one profile. 
@@ -46,7 +54,7 @@ Clicking the “Write a review” button opens the review form. It is slightly d
 
 What is, however, significantly different is that in Mangrove you are in full control of what information you share about yourself. 
 
-## Privacy, literally
+## Privacy
 
 In today’s dominant proprietary review services you share one type of information openly on the platform for other users to see. That’s the voluntary part. But you share a whole lot more information in the background. While being logged in on the platform, you are exposed to trackers, and first and third-party cookies that record your search and browsing history, as well as your online behavior to determine predictive patterns that make you an easier target for advertising and political campaigns. 
 
@@ -84,8 +92,9 @@ And finally, financial sponsorships and donations help us to get more reach and 
 
 ## Get in touch
 
-Twitter: @mangroveReviews   
-Mastodon: @mangroveReviews@mas.to    
-LinkedIn: [PlantingSpace](https://www.linkedin.com/company/plantingspace)    
+Twitter: [@mangroveReviews](https://twitter.com/mangroveReviews)      
+Mastodon: [@mangroveReviews@mas.to](https://mas.to/web/accounts/88962)    
+LinkedIn: [PlantingSpace](https://www.linkedin.com/company/plantingspace)      
+Join our chat: [Riot](https://riot.im/app/#/room/#mangrove:matrix.org)   
 Email: mangrove@planting.space    
 Website: [mangrove.reviews](https://mangrove.reviews)     
