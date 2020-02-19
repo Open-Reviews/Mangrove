@@ -6,7 +6,7 @@ variables:
   UI_DIST: "E3R6KTTYJH0XRG"
   DOCS_DIST: "E2HRIGC1I7B7ZA"
   JS_DIST: "E3PQ8VOO0YPOZI"
-  BLOG_DIST: "EAF2A9OTIB6LI"
+  BLOG_DIST: "E2MJJIV6P7ASG5"
   CI_DEBUG_TRACE: "true"
   VUE_APP_API_URL: "https://api.mangrove.reviews"
   VUE_APP_FILES_URL: "https://files.mangrove.reviews"
