@@ -1,0 +1,20 @@
+<% if (page.tag) { %>
+  <% page.posts.each(function(post){ %>
+    <% var tag = _.find(theme.menu, function (item) {
+      return item.path === '/tags/' + page.tag;
+    }); %>
+    <%- partial('_partial/' + (theme.card_style.tag || 'article-card'), { post: post }) %>
+  <% }) %>
+  <%- partial('_partial/pagination') %>
+<% } else { %>
+  <section class="tagcloud">
+    <%- tagcloud({
+    min_font: 12, 
+    max_font: 30, 
+    amount: 300, 
+    color: true, 
+    start_color: '#aaa', 
+    end_color: '#333',
+    }) %>
+  </section>
+<% } %>

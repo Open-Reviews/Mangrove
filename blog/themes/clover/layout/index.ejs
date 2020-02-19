@@ -1,0 +1,4 @@
+<% page.posts.each(function(post){ %>
+  <%- partial('_partial/' + (theme.card_style.home || 'project-card') , { post: post }) %>
+<% }) %>
+<%- partial('_partial/pagination') %>

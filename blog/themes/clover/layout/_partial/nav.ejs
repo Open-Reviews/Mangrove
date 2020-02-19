@@ -1,0 +1,19 @@
+<nav id="nav">
+  <header class="header">
+    <a href="<%= url_for('/') %>" class="title">
+      <%= theme.nav.title %>
+    </a>
+  </header>
+  <div class="ctnWrap">
+    <div class="menu">
+      <% if (theme.menu) { %>
+        <% _.forEach(theme.menu, function(value, key) {
+          value = value.path || value;
+          if (value) { %>
+            <a href="<%= url_for(value) %>" class="nav-menu <%= is_current(value) ? 'z-active' : '' %>"><%= key %></a>
+          <% } %>
+        <% }); %>
+      <% } %>
+    </div>
+  </div>
+</nav>
