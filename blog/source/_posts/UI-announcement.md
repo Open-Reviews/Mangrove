@@ -1,14 +1,12 @@
 ---
-title: UI announcement
+title: Mangrove Beta Release: a Web App for Open Reviews
 date: 2020-02-19 09:38:18
 tags:
 ---
-# Mangrove Beta Release: a Web App for Open Reviews
 
 ***We built a service for online reviews that makes the insights you share accessible across any application, and that does not invade your privacy. Leave proprietary data silos behind and enter the open data ecosystem of Mangrove reviews.***
 
 Our goal for this blog post is to show you around in the newly released Mangrove web app: this is a brief summary of its capabilities at a glance. 
-
 
 This web app is one building block of a larger vision. **One way to make value creation on the internet more inclusive, and to allow more people to participate in economic growth, is to make more data openly accessible.** If we are able to create attractive open alternatives to proprietary services based on data that is in the public domain, we can reduce the dominance of information monopolists and our growing dependence on them. Stay tuned for upcoming blog posts where we share our vision for creating an open data ecosystem for reviews in order to achieve the scale at which we can speak of a true alternative to closed, exploitative systems.
 
