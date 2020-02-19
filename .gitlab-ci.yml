@@ -2,7 +2,10 @@ variables:
   UI_BUCKET: "mangrove.reviews"
   DOCS_BUCKET: "docs.mangrove.reviews"
   JS_BUCKET: "js.mangrove.reviews"
-  CDN_DISTRIBUTION_ID: "E3R6KTTYJH0XRG"
+  BLOG_BUCKET: "blog.mangrove.reviews"
+  UI_DIST: "E3R6KTTYJH0XRG"
+  DOCS_DIST: "E2HRIGC1I7B7ZA"
+  JS_DIST: "E3PQ8VOO0YPOZI"
   CI_DEBUG_TRACE: "true"
   VUE_APP_API_URL: "https://api.mangrove.reviews"
   VUE_APP_FILES_URL: "https://files.mangrove.reviews"
@@ -19,6 +22,9 @@ build:
     - cd ui
     - yarn install
     - yarn generate
+    - cd ../blog
+    - yarn install
+    - yarn build
     - cd ../libraries/mangrove-reviews-js
     - yarn install
     - yarn doc
@@ -59,18 +65,23 @@ production:
     - yarn doc
     - aws s3 rm s3://$DOCS_BUCKET --recursive
     - aws s3 cp --recursive ./dist s3://$DOCS_BUCKET
-    - aws cloudfront create-invalidation --distribution-id E2HRIGC1I7B7ZA --paths "/*"
+    - aws cloudfront create-invalidation --distribution-id $DOCS_DIST --paths "/*"
     - cd ../../../libraries/mangrove-reviews-js
     - yarn install
     - yarn doc
     - aws s3 rm s3://$JS_BUCKET --recursive
     - aws s3 cp --recursive ./dist s3://$JS_BUCKET
-    - aws cloudfront create-invalidation --distribution-id E3PQ8VOO0YPOZI --paths "/*"
+    - aws cloudfront create-invalidation --distribution-id $JS_DIST --paths "/*"
     - cd ../../ui
     - yarn install
     - yarn generate
     - aws s3 rm s3://$UI_BUCKET --recursive
     - aws s3 cp --recursive ./dist s3://$UI_BUCKET
-    - aws cloudfront create-invalidation --distribution-id E3R6KTTYJH0XRG --paths "/*"
+    - aws cloudfront create-invalidation --distribution-id $UI_DIST --paths "/*"
+    - cd ../blog
+    - yarn install
+    - yarn build
+    - aws s3 rm s3://$BLOG_BUCKET --recursive
+    - aws s3 cp --recursive ./public s3://$BLOG_BUCKET
   only:
     - master
