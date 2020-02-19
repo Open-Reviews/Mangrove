@@ -1,11 +1,10 @@
 ---
-title: Creating an Open Data Ecosystem for Reviews
+title: "Creating an Open Data Ecosystem for Reviews"
 date: 2019-12-09 11:12:18
-tags:
+tags: Vision
+excerpt: As consumer choice proliferates, people will rely even more on online reviews to inform their decisions. This makes reviews an increasingly powerful tool and valuable source of insight for individuals and businesses alike. The problem is that hundreds of millions of people are feeding their valuable insights currently into proprietary data silos of a few dominant platforms.
+photos: [https://i.imgur.com/hTwTo1l.jpg]
 ---
-![](https://i.imgur.com/hTwTo1l.jpg)
-
-***As consumer choice proliferates, people will rely even more on online reviews to inform their decisions. This makes reviews an increasingly powerful tool and valuable source of insight for individuals and businesses alike. The problem is that hundreds of millions of people are feeding their valuable insights currently into proprietary data silos of a few dominant platforms.***
 
 We all benefit from leveraging the experiences of others for our own decision-making. We feel an intrinsic need to share with others information about things we used and experienced, and to make use of such information ourselves before we invest resources.
 
@@ -17,7 +16,7 @@ Companies such as Google, Yelp, Facebook, TripAdvisor, or TrustPilot have recogn
 
 ## A threat to free competition and, possibly, to free will
 
-As the amount of available review data is growing, and with it the dependence of people and organizations on the insights that can be generated from it, the restricted access to this data not only stifles innovation, but locks us in even further. The opportunities arising to create new products and technologies will only be open to those with access to the data, threatening free market competition, and possibly even free will.
+As the amount of available review data is growing, and with it the dependence of people and organizations on the insights that can be generated from it, access restriction not only stifles innovation, but locks us in even further. The opportunities arising to create new products and technologies will only be open to a few powerful organisations, threatening free market competition, and possibly even free will.
 
 Suppose all review data was openly accessible and could be shared freely. Something like a commons, available free of charge and without restrictions to all. Think of Wikipedia, the Internet Archive, or OpenStreetMap. Assume in addition that there was a way to let people write reviews without requiring them to provide any personal data; that people could create an identity within the open reviews ecosystem that they control and that cannot be linked to their real-world identity, but that nevertheless allow the system to track reputation. 
 
