@@ -6,6 +6,7 @@ variables:
   UI_DIST: "E3R6KTTYJH0XRG"
   DOCS_DIST: "E2HRIGC1I7B7ZA"
   JS_DIST: "E3PQ8VOO0YPOZI"
+  BLOG_DIST: "EAF2A9OTIB6LI"
   CI_DEBUG_TRACE: "true"
   VUE_APP_API_URL: "https://api.mangrove.reviews"
   VUE_APP_FILES_URL: "https://files.mangrove.reviews"
@@ -83,5 +84,6 @@ production:
     - yarn build
     - aws s3 rm s3://$BLOG_BUCKET --recursive
     - aws s3 cp --recursive ./public s3://$BLOG_BUCKET
+    - aws cloudfront create-invalidation --distribution-id $BLOG_DIST --paths "/*"
   only:
     - master
