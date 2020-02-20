@@ -44,3 +44,12 @@ export function isMobile() {
 export function isMobileFirefox() {
   return navigator.userAgent.match(/(Android.*Firefox)/i)
 }
+
+export function faviconWidth(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => resolve(img.naturalWidth)
+    img.onerror = reject
+    img.src = url
+  })
+}
