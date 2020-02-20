@@ -73,7 +73,7 @@ impl DbConn {
         if let Some(s) = &query.q {
             if !s.is_empty() {
                 let pattern = format!("%{}%", s);
-                f = Box::new(f.and(sub.like(pattern.clone()).or(opinion.like(pattern))))
+                f = Box::new(f.and(sub.ilike(pattern.clone()).or(opinion.ilike(pattern))))
             }
         }
         Ok(reviews.filter(f).select((signature, jwt, kid, (iat, sub, rating, opinion, images, metadata))).load::<Review>(&self.0)?)
