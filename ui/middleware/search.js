@@ -11,6 +11,7 @@ import {
   searchGeo,
   olDocToSubject
 } from '~/store/apis'
+import { faviconWidth } from '~/utils'
 
 /*
 Searches for subjects and returns and object for each:
@@ -53,7 +54,7 @@ export default function({ store, $axios, route }) {
   store.commit(SET_QUERY, { q: query, geo: route.query.geo })
   const queries = Promise.all([
     searchUrl($axios, query)
-      .then((subjects) => store.dispatch('storeResults', subjects))
+      .then((subjects) => subjects && store.dispatch('storeResults', subjects))
       .catch((error) => console.log('Not a website: ', error)),
     searchGeo($axios, query, route.query.geo)
       .then((subjects) => store.dispatch('storeResults', subjects))
@@ -111,13 +112,14 @@ async function searchUrl(axios, input) {
     return
   }
   const urlString = `${url.protocol}//${url.hostname}`
-  const icoWidth = await new Promise((resolve, reject) => {
-    const img = new Image()
-    img.onload = () => resolve(img.naturalWidth)
-    img.onerror = reject
-    img.src = urlString + '/favicon.ico'
-  })
-  if (icoWidth || urlString === 'https://example.com') {
+  let isWebsite = false
+  try {
+    isWebsite = await faviconWidth(urlString + '/favicon.ico')
+  } catch (e) {}
+  try {
+    isWebsite = await faviconWidth(urlString + '/assets/favicon.png')
+  } catch (e) {}
+  if (isWebsite || urlString === 'https://example.com') {
     return [
       {
         sub: urlString,

@@ -6,6 +6,7 @@ use isbn::Isbn;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use url::Url;
+use diesel_geography::types::GeogPoint;
 use once_cell::sync::Lazy;
 use std::borrow::Cow;
 use std::collections::BTreeMap;
@@ -39,7 +40,10 @@ pub struct Review {
     pub kid: String,
     /// Primary content of the review.
     #[diesel(embed)]
-    pub payload: Payload
+    pub payload: Payload,
+    pub schema: Strng,
+    pub coordinates: GeogPoint,
+    pub uncertainty: i32,
 }
 
 impl FromStr for Review {
