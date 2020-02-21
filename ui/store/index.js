@@ -218,6 +218,8 @@ export const actions = {
     })
   },
   async saveMyReviews({ state, dispatch, commit }, metadata = false) {
+    // Avoid querying for all reviews.
+    if (!state.publicKey) return
     const rs = await dispatch('saveReviews', { kid: state.publicKey })
     if (!rs.reviews || !rs.reviews.length) return
     const subs = Object.values(rs.reviews).map((review) => review.payload.sub)
