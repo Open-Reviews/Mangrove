@@ -53,7 +53,7 @@ export default function({ store, $axios, route }) {
   store.commit(START_SEARCH)
   store.commit(SET_QUERY, { q: query, geo: route.query.geo })
   const queries = Promise.all([
-    searchUrl($axios, query)
+    searchUrl(query)
       .then((subjects) => subjects && store.dispatch('storeResults', subjects))
       .catch((error) => console.log('Not a website: ', error)),
     searchGeo($axios, query, route.query.geo)
@@ -105,7 +105,7 @@ export default function({ store, $axios, route }) {
   })
 }
 
-async function searchUrl(axios, input) {
+async function searchUrl(input) {
   // Try to recover a valid url.
   const url = new URL(input.startsWith('http') ? input : `https://${input}`)
   if (!url) {
