@@ -12,8 +12,6 @@ extern crate diesel;
 extern crate rocket;
 #[macro_use]
 extern crate rocket_contrib;
-#[macro_use]
-extern crate rocket_okapi;
 
 use self::aggregator::{Issuer, Statistic, Subject};
 use self::database::{DbConn, Query};
@@ -25,21 +23,18 @@ use rocket::request::{Form, Request};
 use rocket::Rocket;
 use rocket::http::hyper::header::{ContentDisposition, DispositionType, DispositionParam, Charset};
 use rocket_contrib::json::Json;
-use rocket_okapi::swagger_ui::{make_swagger_ui, SwaggerUIConfig};
 use csv::Writer;
 use serde::{Deserialize, Serialize};
 use std::time::SystemTime;
 use std::str::FromStr;
 use std::collections::{HashSet, BTreeMap};
 
-#[openapi(skip)]
 #[get("/")]
 fn index() -> &'static str {
     "Check out for project information: https://planting.space/mangrove.html"
 }
 
 
-#[openapi]
 #[put("/submit/<jwt_review>")]
 fn submit_review_jwt(conn: DbConn, jwt_review: String) -> Result<String, Error> {
     println!("Review received: {:?}", jwt_review);
@@ -51,7 +46,7 @@ fn submit_review_jwt(conn: DbConn, jwt_review: String) -> Result<String, Error> 
 }
 
 /// Return type used to provide `Review`s and any associated data.
-#[derive(Debug, Serialize, JsonSchema)]
+#[derive(Debug, Serialize)]
 struct Reviews {
     /// A list of reviews satisfying the `Query`.
     reviews: Vec<Review>,
@@ -101,7 +96,6 @@ fn get_reviews(conn: DbConn, json: Form<Query>) -> Result<Reviews, Error> {
     Ok(out)
 }
 
-#[openapi]
 #[get("/reviews?<json..>", format = "application/json")]
 fn get_reviews_json(conn: DbConn, json: Form<Query>) -> Result<Json<Reviews>, Error> {
     get_reviews(conn, json).map(Json)
@@ -134,7 +128,6 @@ impl Responder<'static> for Csv {
 }
 
 /// Csv serde serialization does not support maps...
-#[openapi(skip)]
 #[get("/reviews?<json..>", rank = 2)] //format = "text/csv"
 fn get_reviews_csv(conn: DbConn, json: Form<Query>) -> Result<Csv, Error> {
     let out = get_reviews(conn, json)?;
@@ -156,21 +149,19 @@ fn get_reviews_csv(conn: DbConn, json: Form<Query>) -> Result<Csv, Error> {
     Ok(Csv(String::from_utf8(wtr.into_inner()?)?))
 }
 
-#[openapi]
 #[get("/subject/<sub>")]
 fn get_subject(conn: DbConn, sub: String) -> Result<Json<Subject>, Error> {
     Subject::compute(&conn, sub).map(Json)
 }
 
 /// Get information on issuer with given public key.
-#[openapi]
 #[get("/issuer/<pem>")]
 fn get_issuer(conn: DbConn, pem: String) -> Result<Json<Issuer>, Error> {
     Issuer::compute(&conn, pem).map(Json)
 }
 
 /// Query allowing for retrieval of information about multiple subjects or issuers.
-#[derive(Debug, Deserialize, JsonSchema)]
+#[derive(Debug, Deserialize)]
 struct BatchQuery {
     /// List of subject URIs to get information about.
     subs: Option<Vec<String>>,

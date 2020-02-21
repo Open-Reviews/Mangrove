@@ -28,7 +28,7 @@ static S3_CLIENT: Lazy<S3Client> = Lazy::new(|| { S3Client::new(Default::default
 
 /// Mangrove Review used for submission or retrieval from the database.
 #[derive(
-    Debug, PartialEq, Serialize, Deserialize, Identifiable, Insertable, Queryable, JsonSchema,
+    Debug, PartialEq, Serialize, Deserialize, Identifiable, Insertable, Queryable
 )]
 #[primary_key(signature)]
 pub struct Review {
@@ -41,7 +41,7 @@ pub struct Review {
     /// Primary content of the review.
     #[diesel(embed)]
     pub payload: Payload,
-    pub schema: Strng,
+    pub scheme: String,
     pub coordinates: GeogPoint,
     pub uncertainty: i32,
 }
