@@ -115,9 +115,14 @@ export default {
         return null
       } else if (this.rootSub) {
         return 'Be the first to review!'
-      } else {
+      } else if (this.isMine) {
         return `No reviews yet. <a href="${process.env.BASE_URL}">Leave your first review</a>`
+      } else {
+        return `This user has not left any reviews.`
       }
+    },
+    isMine() {
+      return this.rootPk === this.$store.state.publicKey
     }
   },
   methods: {
@@ -139,16 +144,18 @@ export default {
       if (sub.startsWith(MARESI)) {
         const originalReview = this.$store.state.reviews[subPath(MARESI, sub)]
         if (originalReview && originalReview.payload.metadata) {
-          return `Your comment on ${displayName(
+          const start = this.isMine ? 'Your comment' : 'Comment'
+          return `${start} on ${displayName(
             originalReview.payload.metadata
           )}'s review`
         }
       } else {
         const subject = this.$store.getters.subject(sub)
+        const start = this.isMine ? 'Your review' : 'Review'
         const name = subject
           ? [subject.title, subject.subtitle].filter(Boolean).join(', ')
           : `subject with indentifier ${sub}, more information is currently not available.`
-        return `Your review of ${name}`
+        return `${start} of ${name}`
       }
     }
   }

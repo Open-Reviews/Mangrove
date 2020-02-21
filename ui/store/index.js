@@ -217,10 +217,8 @@ export const actions = {
       return rs
     })
   },
-  async saveMyReviews({ state, dispatch, commit }, metadata = false) {
-    // Avoid querying for all reviews.
-    if (!state.publicKey) return
-    const rs = await dispatch('saveReviews', { kid: state.publicKey })
+  async saveReviewsWithSubjects({ dispatch }, params) {
+    const rs = await dispatch('saveReviews', params)
     if (!rs.reviews || !rs.reviews.length) return
     const subs = Object.values(rs.reviews).map((review) => review.payload.sub)
     subs.map((sub) =>
@@ -228,6 +226,14 @@ export const actions = {
         dispatch('storeWithRating', [subject])
       )
     )
+    return rs
+  },
+  async saveMyReviews({ state, dispatch, commit }, metadata = false) {
+    // Avoid querying for all reviews.
+    if (!state.publicKey) return
+    const rs = await dispatch('saveReviewsWithSubjects', {
+      kid: state.publicKey
+    })
     if (metadata) {
       const newestReview = rs.reviews.reduce(function(prev, current) {
         const isNewer = current.payload.iat > prev.payload.iat
