@@ -41,6 +41,9 @@ sql_function! {
     fn within(c1: Nullable<Geography>, c2: Nullable<Geography>, u: Nullable<Integer>) -> Bool;
 }
 
+use diesel_geography::types::GeogPoint;
+use diesel::deserialize::FromSql;
+
 impl DbConn {
     pub fn insert(&self, review: Review) -> Result<(), Error> {
         diesel::insert_into(schema::reviews::table)
@@ -73,10 +76,14 @@ impl DbConn {
         // Match also in vicinity.
         if let Some(s) = &query.sub {
             let (query_scheme, geo) = validate_sub(s)?;
-            f = Box::new(f.and(scheme.eq(query_scheme)));
-            f = Box::new(f.and(
-                within(coordinates, geo.coordinates, uncertainty + geo.uncertainty)
-            ))
+            if query_scheme == "geo" {
+                f = Box::new(f.and(scheme.eq(query_scheme)));
+                let isClose = within(coordinates, geo.coordinates, uncertainty + geo.uncertainty);
+                println!("Are the points close: {:?}", GeogPoint::from_sql(&isClose));
+                f = Box::new(f.and(isClose))
+            } else {
+                f = Box::new(f.and(sub.eq(s)))
+            }
         }
         if let Some(s) = &query.rating {
             f = Box::new(f.and(rating.eq(s)))
