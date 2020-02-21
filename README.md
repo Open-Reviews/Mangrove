@@ -35,7 +35,7 @@ cd ..
 
 ### Mangrove Review Server
 
-Server relies on a Postgres database running and set up with [Diesel](https://diesel.rs/guides/getting-started/):
+Server relies on a Postgres database running and set up with [PostGIS](https://postgis.net/install/) and [Diesel](https://diesel.rs/guides/getting-started/):
 ```
 cargo install diesel_cli --features "postgres" --no-default-features
 diesel setup

@@ -39,7 +39,7 @@ fn index() -> &'static str {
 fn submit_review_jwt(conn: DbConn, jwt_review: String) -> Result<String, Error> {
     println!("Review received: {:?}", jwt_review);
     let review = Review::from_str(&jwt_review)?;
-    review.validate(&conn)?;
+    review.validate_db(&conn)?;
     println!("Inserting review: {:?}", review);
     conn.insert(review)?;
     Ok("true".into())
@@ -172,7 +172,7 @@ struct BatchQuery {
 type Subjects = BTreeMap<String, Subject>;
 type Issuers = BTreeMap<String, Issuer>;
 
-#[derive(Debug, Serialize, JsonSchema)]
+#[derive(Debug, Serialize)]
 struct BatchReturn {
     #[serde(skip_serializing_if = "Option::is_none")]
     subjects: Option<Subjects>,
@@ -180,7 +180,6 @@ struct BatchReturn {
     issuers: Option<Issuers>,
 }
 
-#[openapi]
 #[post("/batch", format = "application/json", data = "<json>")]
 fn batch(conn: DbConn, json: Json<BatchQuery>) -> Result<Json<BatchReturn>, Error> {
     let query = json.into_inner();
@@ -212,7 +211,7 @@ pub fn rocket() -> Rocket {
         .attach(DbConn::fairing())
         .mount(
             "/",
-            routes_with_openapi![
+            routes![
                 index,
                 submit_review_jwt,
                 get_reviews_json,
@@ -221,13 +220,6 @@ pub fn rocket() -> Rocket {
                 get_issuer,
                 batch
             ],
-        )
-        .mount(
-            "/swagger-ui/",
-            make_swagger_ui(&SwaggerUIConfig {
-                url: Some("../openapi.json".to_owned()),
-                urls: None,
-            }),
         )
         .attach(cors)
 }

@@ -3,7 +3,6 @@ use super::error::Error;
 use super::schema::reviews;
 use rusoto_s3::{DeleteObjectTaggingRequest, S3Client, S3};
 use isbn::Isbn;
-use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use url::Url;
 use diesel_geography::types::GeogPoint;
@@ -27,9 +26,7 @@ static JWT_VALIDATION: Lazy<jsonwebtoken::Validation> = Lazy::new(|| {
 static S3_CLIENT: Lazy<S3Client> = Lazy::new(|| { S3Client::new(Default::default()) });
 
 /// Mangrove Review used for submission or retrieval from the database.
-#[derive(
-    Debug, PartialEq, Serialize, Deserialize, Identifiable, Insertable, Queryable
-)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Identifiable, Insertable, Queryable)]
 #[primary_key(signature)]
 pub struct Review {
     /// JWT signature by the review issuer.
@@ -41,9 +38,9 @@ pub struct Review {
     /// Primary content of the review.
     #[diesel(embed)]
     pub payload: Payload,
-    pub scheme: String,
-    pub coordinates: GeogPoint,
-    pub uncertainty: i32,
+    pub scheme: Option<String>,
+    #[diesel(embed)]
+    pub geo: UncertainPoint,
 }
 
 impl FromStr for Review {
@@ -57,10 +54,13 @@ impl FromStr for Review {
             .kid
             .ok_or_else(|| Error::Incorrect("kid is missing from header".into()))?;
 
-        let decoded = decode::<Payload>(
+        let payload = decode::<Payload>(
             &jwt_review, &DecodingKey::from_ec_pem(kid.as_bytes())?,
             &JWT_VALIDATION
-        )?;
+        )?.claims;
+        payload.validate()?;
+
+        let (scheme, geo) = validate_sub(&payload.sub)?;
 
         Ok(Review{
             jwt: jwt_review.into(),
@@ -71,13 +71,18 @@ impl FromStr for Review {
                 .nth(2)
                 .expect("Assuming jsonwebtoken does validation when decoding above.")
                 .into(),
-            payload: decoded.claims
+            payload,
+            scheme: Some(scheme),
+            geo
         })
     }
 }
 
 impl Review {
-    fn validate_unique(&self, conn: &DbConn) -> Result<(), Error> {
+    pub fn validate_db(&self, conn: &DbConn) -> Result<(), Error> {
+        if self.scheme == Some("urn:maresi".into()) {
+            check_maresi(conn, &self.payload.sub)?;
+        }
         let similar = conn.filter(database::Query {
             kid: Some(self.kid.clone()),
             sub: Some(self.payload.sub.clone()),
@@ -93,17 +98,10 @@ impl Review {
             ))
         }
     }
-
-    pub fn validate(&self, conn: &DbConn) -> Result<bool, Error> {
-        self.validate_unique(conn)?;
-        self.payload.validate(conn)
-    }
 }
 
 /// Primary content of the review, this is what gets serialized for signing.
-#[derive(
-    Debug, PartialEq, Serialize, Deserialize, Insertable, Queryable, JsonSchema,
-)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Insertable, Queryable)]
 #[table_name = "reviews"]
 pub struct Payload {
     /// Unix Time at which the review was signed.
@@ -128,7 +126,7 @@ pub struct Payload {
 
 impl Payload {
     /// Check the Review roughly in order of complexity of checks.
-    pub fn validate(&self, conn: &DbConn) -> Result<bool, Error> {
+    pub fn validate(&self) -> Result<bool, Error> {
         let images: Option<Images> = match self.images {
             Some(ref v) => serde_json::from_value(v.clone())?,
             None => None,
@@ -153,7 +151,6 @@ impl Payload {
         images.as_ref().map_or(Ok(()), |e| {
             e.0.iter().map(|img| img.validate()).collect()
         })?;
-        check_sub(conn, &self.sub)?;
         // Make sure images stick around.
         images.map_or(Ok(()), |e| {
             e.0.iter().map(|img| img.persist()).collect()
@@ -218,6 +215,13 @@ impl Image {
     }
 }
 
+#[derive(Debug, PartialEq, Default, Serialize, Deserialize, Insertable, Queryable)]
+#[table_name = "reviews"]
+pub struct UncertainPoint {
+    pub coordinates: Option<GeogPoint>,
+    pub uncertainty: Option<i32>
+}
+
 const MANGROVE_EPOCH: Duration = Duration::from_secs(1_577_836_800);
 
 fn check_timestamp(iat: Duration) -> Result<(), Error> {
@@ -248,15 +252,15 @@ fn check_opinion(opinion: &str) -> Result<(), Error> {
     }
 }
 
-fn check_geo_param(param: (Cow<str>, Cow<str>)) -> Result<(), Error> {
+fn check_geo_param(param: (Cow<str>, Cow<str>)) -> Result<Option<i32>, Error> {
     match param.0.as_ref() {
         "q" => if param.1.len() > 100 {
             Err(Error::Incorrect("Place name too long.".into()))
         } else {
-            Ok(())
+            Ok(None)
         },
-        "u" => match param.1.parse::<f32>() {
-            Ok(n) if 0. < n && n < 40_000_000. => Ok(()),
+        "u" => match param.1.parse::<i32>() {
+            Ok(n) if 0 < n && n < 40_000_000 => Ok(Some(n)),
             _ => Err(Error::Incorrect("Uncertainty incorrect.".into())),
         },
         _ => Err(Error::Incorrect("Query field unknown.".into())),
@@ -264,18 +268,18 @@ fn check_geo_param(param: (Cow<str>, Cow<str>)) -> Result<(), Error> {
 }
 
 /// Check if `geo` URI is correct.
-fn check_place(geo: &Url) -> Result<(), Error> {
+fn check_place(geo: &Url) -> Result<UncertainPoint, Error> {
     let mut coords = geo
         .path()
         .split(',')
         .map(|c| c.parse());
-    let lat: f32 = coords
+    let lat = coords
         .next()
         .ok_or_else(|| Error::Incorrect("No latitude found.".into()))??;
     if -90. > lat || lat > 90. {
         return Err(Error::Incorrect("Latitude out of range.".into()));
     }
-    let lon: f32 = coords
+    let lon = coords
         .next()
         .ok_or_else(|| Error::Incorrect("No longitude found.".into()))??;
     if -180. > lon || lon > 180. {
@@ -283,21 +287,31 @@ fn check_place(geo: &Url) -> Result<(), Error> {
     }
     let mut pairs = geo.query_pairs().peekable();
     if pairs.peek().is_some() {
-        pairs.map(check_geo_param).collect()
+        let a = pairs
+            .map(check_geo_param)
+            .collect::<Result<Vec<Option<i32>>, Error>>()?;
+        if let Some(uncertainty) = a.into_iter().find(Option::is_some) {
+            Ok(UncertainPoint {
+                coordinates: Some(GeogPoint { x: lon, y: lat, srid: Some(4326) }),
+                uncertainty
+            })
+        } else {
+            Err(Error::Incorrect("Geo URI has to specify uncertainty.".into()))
+        }
     } else {
         Err(Error::Incorrect("Geo URI has to specify query.".into()))
     }
+
 }
 
-fn check_url(id: &str) -> Result<(), Error> {
-    Url::parse(id)?;
-    let exists = reqwest::blocking::get(id)?.status().is_success();
+fn check_url(uri: &Url) -> Result<(), Error> {
+    let exists = reqwest::blocking::get(uri.as_str())?.status().is_success();
     if exists {
         Ok(())
     } else {
         Err(Error::Incorrect(format!(
-            "Subject is not publicly accessible: {:?}",
-            id
+            "Subject is not publicly accessible: {}",
+            uri
         )))
     }
 }
@@ -322,26 +336,35 @@ fn check_isbn(id: &str) -> Result<(), Error> {
     }
 }
 
-// check Mangrove Review Signature, which is a unique id of a review.
-fn check_maresi(conn: &DbConn, id: &str) -> Result<(), Error> {
-    conn.select(id).map(|_| ())
+/// Check Mangrove Review Signature, which is a unique id of a review.
+fn check_maresi(conn: &DbConn, sub: &str) -> Result<(), Error> {
+    if let Some(id) = sub.split(':').nth(2) {
+        conn.select(id).map(|_| ())
+    } else {
+        Err(Error::Incorrect(format!("No signature found: {}", sub)))
+    }
 }
 
-fn check_sub(conn: &DbConn, uri: &str) -> Result<(), Error> {
-    let parsed = Url::parse(&uri)?;
-    match parsed.scheme() {
+pub fn validate_sub(sub: &str) -> Result<(String, UncertainPoint), Error> {
+    let uri = Url::parse(&sub)?;
+    match uri.scheme() {
         "urn" => {
-            let sub = Url::parse(parsed.path())?;
+            let sub = Url::parse(uri.path())?;
             // Parsing lower cases the scheme.
             match sub.scheme() {
                 "lei" => check_lei(sub.path()),
                 "isbn" => check_isbn(sub.path()),
-                "maresi" => check_maresi(conn, sub.path()),
+                // This scheme is only checked with database.
+                "maresi" => Ok(()),
                 s => Err(Error::Incorrect(format!("Unknown URN scheme: {}", s))),
-            }
-        }
-        "geo" => check_place(&parsed).map_err(Into::into),
-        "http" | "https" => check_url(uri).map_err(Into::into),
+            }?;
+            Ok((format!("{}:{}", uri.scheme(), sub.scheme()), Default::default()))
+        },
+        "geo" => check_place(&uri)
+            .map(|p| (uri.scheme().into(), p)).map_err(Into::into),
+        "https" => check_url(&uri)
+            .map(|_| (uri.scheme().into(), Default::default()))
+            .map_err(Into::into),
         s => Err(Error::Incorrect(format!("Unknown URI scheme: {}", s))),
     }
 }

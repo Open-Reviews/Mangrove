@@ -1,7 +1,6 @@
 use super::database::{DbConn, Query};
 use super::error::Error;
 use super::review::MAX_RATING;
-use schemars::JsonSchema;
 use serde::Serialize;
 use std::collections::BTreeMap;
 
@@ -25,7 +24,7 @@ pub trait Statistic {
 }
 
 /// Information about a subject of reviews.
-#[derive(Debug, Serialize, JsonSchema)]
+#[derive(Debug, Serialize)]
 pub struct Subject {
     /// URI uniquely identifying the subject.
     pub sub: String,
@@ -87,7 +86,7 @@ impl Statistic for Subject {
 }
 
 /// Information about a review issuer.
-#[derive(Debug, Serialize, JsonSchema)]
+#[derive(Debug, Serialize)]
 pub struct Issuer {
     /// Number of reviews written by this issuer.
     pub count: usize,

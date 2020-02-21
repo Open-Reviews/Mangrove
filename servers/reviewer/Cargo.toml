@@ -8,7 +8,7 @@ default-run = "main"
 [dependencies]
 csv = "1.1"
 diesel = { version = "1.0", features = ["postgres", "serde_json"] }
-diesel-geography = "0.2"
+diesel-geography = { git = "https://github.com/plantingspace/diesel-geography" }
 dotenv = "0.9"
 isbn = "0.2"
 jsonwebtoken = { git = "https://github.com/plantingspace/jsonwebtoken.git" }
