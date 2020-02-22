@@ -32,8 +32,8 @@
                 <UserHeader
                   :pk="$store.state.publicKey"
                   :metadata="$store.state.metadata"
-                  :placeholder="Anonymous"
                   :count="reviewCount"
+                  placeholder="Anonymous"
                 />
               </div>
             </v-row>
@@ -61,7 +61,7 @@
         <h1 class="display-1">Your reviews</h1>
         <v-divider />
         <SchemeFilter :counts="counts" comments />
-        <ReviewList :rootPk="$store.state.publicKey" />
+        <ReviewList :query="{ kid: $store.state.publicKey }" />
       </v-col>
     </v-row>
   </v-container>
@@ -88,7 +88,9 @@ export default {
   },
   computed: {
     counts() {
-      return this.$store.getters.reviewsAndCounts().counts
+      return this.$store.getters.reviewsAndCounts({
+        kid: this.$store.state.publicKey
+      }).counts
     },
     reviewCount() {
       return this.counts.null

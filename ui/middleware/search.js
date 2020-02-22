@@ -78,8 +78,10 @@ export default function({ store, $axios, route }) {
       .dispatch('getReviews', { q: query })
       .then((rs) => {
         if (!rs || !rs.reviews.length) return
-        return rs.reviews.map((review) =>
-          subToSubject($axios, review.payload.sub)
+        return rs.reviews.map(
+          (review) =>
+            store.state.subjects[review.payload.sub] ||
+            subToSubject($axios, review.payload.sub)
         )
       })
       .then((subjects) => subjects && store.dispatch('storeResults', subjects))

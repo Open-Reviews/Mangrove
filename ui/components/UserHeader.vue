@@ -1,5 +1,5 @@
 <template>
-  <v-list-item>
+  <v-list-item @click.stop="select">
     <v-list-item-avatar class="mr-2 ml-auto" tile>
       <Identicon :seed="pk" />
     </v-list-item-avatar>
@@ -27,6 +27,11 @@ export default {
   computed: {
     name() {
       return displayName(this.metadata, this.placeholder)
+    }
+  },
+  methods: {
+    select() {
+      this.$router.push({ path: 'list', query: { kid: this.pk } })
     }
   }
 }

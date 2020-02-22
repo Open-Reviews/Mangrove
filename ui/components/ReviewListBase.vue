@@ -8,7 +8,7 @@
         :subjectTitle="arg.subjectTitle"
         class="mb-10"
       />
-      <ReviewList :rootSub="arg.rootSub" class="ml-4" />
+      <ReviewList :query="{ sub: arg.rootSub }" class="ml-4" />
     </div>
   </div>
 </template>
