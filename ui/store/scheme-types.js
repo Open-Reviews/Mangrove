@@ -48,6 +48,18 @@ export function geoUri(lat, lon, name) {
   return `${GEO}:${lat},${lon}?q=${name}&u=30`
 }
 
+export function geoSubject(sub) {
+  const uri = new URL(sub)
+  return {
+    coordinates: uri.pathname
+      .split(',')
+      .map(parseFloat)
+      .reverse(),
+    uncertainty: parseFloat(uri.searchParams.get('u')),
+    query: uri.searchParams.get('q')
+  }
+}
+
 const ERRORS = {
   [GEO]: `Places search: the OpenStreetMap server could not be reached.
   Please try again in a few minutes.`,

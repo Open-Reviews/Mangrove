@@ -1,4 +1,13 @@
-import { GEO, LEI, ISBN, subToScheme, subPath, geoUri } from './scheme-types'
+import { getBoundsOfDistance } from 'geolib'
+import {
+  GEO,
+  LEI,
+  ISBN,
+  subToScheme,
+  subPath,
+  geoUri,
+  geoSubject
+} from './scheme-types'
 
 export function leiToSubject(axios, lei) {
   return entityLookup(axios, lei)
@@ -192,31 +201,20 @@ export async function subToSubject(axios, sub) {
   if (scheme === LEI) {
     subject = await leiToSubject(axios, subPath(LEI, sub))
   } else if (scheme === GEO) {
-    const uri = new URL(sub)
-    const coordinates = uri.pathname
-      .split(',')
-      .map(parseFloat)
-      .reverse()
-    console.log('coords: ', coordinates)
-    console.log('uri: ', uri)
-    // Roughly convert from meters to degrees.
-    const area = parseFloat(uri.searchParams.get('u')) / 110000
+    const geo = geoSubject(sub)
+    // Convert from meters to degrees.
+    const box = getBoundsOfDistance(geo.coordinates, geo.uncertainty)
     const viewbox = [
-      coordinates[0] - area,
-      coordinates[1] - area,
-      coordinates[0] + area,
-      coordinates[1] + area
+      box[0].longitude,
+      box[0].latitude,
+      box[1].longitude,
+      box[1].latitude
     ]
-    console.log('box: ', viewbox)
-    const subjects = await searchGeo(
-      axios,
-      uri.searchParams.get('q'),
-      viewbox.join(',')
-    )
+    const subjects = await searchGeo(axios, geo.query, viewbox.join(','))
     if (subjects[0]) {
       subject = subjects[0]
       subject.sub = sub
-      subject.coordinates = coordinates
+      subject.coordinates = geo.coordinates
     }
   } else if (scheme === ISBN) {
     subject = await isbnToSubject(axios, subPath(ISBN, sub))

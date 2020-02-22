@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import { get, set } from 'idb-keyval'
+import { isPointWithinRadius } from 'geolib'
 import {
   generateKeypair,
   jwkToKeypair,
@@ -12,7 +13,7 @@ import {
   batchAggregate,
   getReviews
 } from 'mangrove-reviews'
-import { MARESI, GEO, subToScheme } from './scheme-types'
+import { MARESI, GEO, subToScheme, geoSubject } from './scheme-types'
 import { subToSubject } from './apis'
 import { PRIVATE_KEY } from './indexeddb-types'
 import * as t from './mutation-types'
@@ -125,14 +126,29 @@ export const getters = {
   reviewsAndCounts: (state) => (query) => {
     const counts = {}
     const reviews = Object.values(state.reviews)
-      .filter(({ payload, kid }) => {
-        // Pick only ones for selected subject or issuer.
+      .filter(({ payload, kid, scheme, geo }) => {
+        // Pick only ones selected according to query.
         const isSelected =
           (!query.kid || query.kid === kid) &&
           Object.entries(query)
-            .map(([k, v]) => k === 'kid' || payload[k] === v)
+            .map(([k, v]) => {
+              if (k === 'kid' || payload[k] === v) {
+                return true
+              } else if (k === 'sub' && scheme === GEO) {
+                // TODO: remove after db upgrade
+                if (!geo) return false
+                const geoQuery = geoSubject(v)
+                console.log('compare: ', geoQuery.coordinates, geo.coordinates)
+                return isPointWithinRadius(
+                  geoQuery.coordinates,
+                  geo.coordinates,
+                  geo.uncertainty + geoQuery.uncertainty
+                )
+              } else {
+                return false
+              }
+            })
             .every(Boolean)
-        const scheme = subToScheme(payload.sub)
         const isFiltered = !state.filter || scheme === state.filter
         const isReturned = isSelected && isFiltered
         if (isSelected) {
@@ -307,12 +323,17 @@ export const actions = {
     }
     payload.metadata[CLIENT_ID] = process.env.BASE_URL
     const jwt = await signReview(state.keyPair, payload)
-    return {
+    let review = {
       jwt,
       kid: state.publicKey,
       payload,
-      signature: jwt.split('.')[2]
+      signature: jwt.split('.')[2],
+      scheme: subToScheme(payload.sub)
     }
+    if (review.scheme === GEO) {
+      review = { ...review, ...geoSubject(payload.sub) }
+    }
+    return review
   },
   submitReview({ getters, commit, dispatch }, reviewStub) {
     return dispatch('reviewContent', reviewStub).then((review) => {

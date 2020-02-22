@@ -292,7 +292,7 @@ fn check_place(geo: &Url) -> Result<UncertainPoint, Error> {
             .collect::<Result<Vec<Option<i32>>, Error>>()?;
         if let Some(uncertainty) = a.into_iter().find(Option::is_some) {
             Ok(UncertainPoint {
-                coordinates: Some(GeogPoint { x: lon, y: lat, srid: Some(4326) }),
+                coordinates: Some(GeogPoint { lon, lat, srid: Some(4326) }),
                 uncertainty
             })
         } else {
