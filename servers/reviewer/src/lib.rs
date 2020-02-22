@@ -229,24 +229,16 @@ mod tests {
     use super::*;
 
     #[test]
-    #[ignore]
-    fn requiring_api() {
-        use reqwest::header::CONTENT_TYPE;
-        let client = reqwest::Client::new();
-        let out: String = client
-            .put("http://localhost:8000/submit")
-            .header(CONTENT_TYPE, "application/cbor")
-            .body(r#"
-                {"signature":"9tK0nToEjPstvi3plrTa2EusKcPgIdSc_RF8fFXwUKBGhO5XjjJ43mDY_sp0FOvd","payload":"pWdvcGluaW9ueKVUaGlzIGRvbWFpbiBoYXMgYmVlbiByYW5rZWQgMSBvZiAxMCBtaWxsaW9uIHdpdGggT3BlbiBQYWdlUmFuayAxMC4wLgoKU291cmNlOiBodHRwczovL3d3dy5kb21jb3AuY29tL29wZW5wYWdlcmFuay93aGF0LWlzLW9wZW5wYWdlcmFuaywgcmV0cmlldmVkIG9uIDI5IE5vdmVtYmVyIDIwMTljc3VieBxodHRwczovL2ZvbnRzLmdvb2dsZWFwaXMuY29tY2lhdDqh8KTVY2lzc3hAUVpRQmVJN29ISHFaNU5jaWtNNmdaYks0WkFWMHJINDdxRUI4MUFWdVl0dTRDaG9yV19vYUdlSUphRFh6cUN1d2htZXRhZGF0YaNsZGlzcGxheV9uYW1lbE1hbmdyb3ZlIEJvdGtkYXRhX3NvdXJjZXg4aHR0cHM6Ly93d3cuZG9tY29wLmNvbS9vcGVucGFnZXJhbmsvd2hhdC1pcy1vcGVucGFnZXJhbmtsaXNfZ2VuZXJhdGVk9Q"}
-            "#)
-            .send()
-            .unwrap()
-            .text()
-            .unwrap();
-            //.parse()
-            //.unwrap();
-        println!("{:?}", out)
-        //assert!(out)
+    fn add_columns() {
+        use diesel::prelude::*;
+        use schema::reviews::dsl::*;
+        use diesel::{QueryDsl, ExpressionMethods, pg::Pg};
+
+        let conn = PgConnection::establish(&database_url)
+            .expect(&format!("Error connecting to {}", database_url));
+
+        let target = reviews.filter(sub.like("geo:%"));
+        //diesel::update(target).set(coordinates.eq(sub)).execute(&conn).unwrap();
+        //diesel::update(target).set(uncertainty.eq(sub)).execute(&conn).unwrap();
     }
 }
-

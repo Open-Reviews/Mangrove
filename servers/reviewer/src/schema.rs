@@ -12,7 +12,7 @@ table! {
         opinion -> Nullable<Text>,
         images -> Nullable<Json>,
         metadata -> Nullable<Json>,
-        scheme -> Nullable<Text>,
+        scheme -> Text,
         coordinates -> Nullable<Geography>,
         uncertainty -> Nullable<Int4>,
     }

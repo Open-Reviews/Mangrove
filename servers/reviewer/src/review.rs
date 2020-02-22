@@ -38,7 +38,7 @@ pub struct Review {
     /// Primary content of the review.
     #[diesel(embed)]
     pub payload: Payload,
-    pub scheme: Option<String>,
+    pub scheme: String,
     #[diesel(embed)]
     pub geo: UncertainPoint,
 }
@@ -72,7 +72,7 @@ impl FromStr for Review {
                 .expect("Assuming jsonwebtoken does validation when decoding above.")
                 .into(),
             payload,
-            scheme: Some(scheme),
+            scheme,
             geo
         })
     }
@@ -80,7 +80,7 @@ impl FromStr for Review {
 
 impl Review {
     pub fn validate_db(&self, conn: &DbConn) -> Result<(), Error> {
-        if self.scheme == Some("urn:maresi".into()) {
+        if self.scheme == "urn:maresi" {
             check_maresi(conn, &self.payload.sub)?;
         }
         let similar = conn.filter(database::Query {
@@ -430,36 +430,6 @@ fn check_metadata(key: &str, value: serde_json::Value) -> Result<(), Error> {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn test_verification() {
-        let pubkey = untrusted::Input::from(&[
-            4, 253, 66, 207, 28, 80, 88, 205, 80, 193, 228, 51, 157, 213, 215, 192, 1, 9, 132, 22,
-            113, 148, 88, 74, 30, 114, 138, 210, 81, 120, 37, 204, 33, 207, 1, 215, 76, 125, 15,
-            71, 120, 25, 47, 210, 116, 199, 156, 233, 204, 9, 217, 251, 226, 88, 107, 121, 219, 41,
-            38, 138, 34, 188, 123, 112, 126,
-        ]);
-        let msg = untrusted::Input::from(&[
-            166, 103, 118, 101, 114, 115, 105, 111, 110, 1, 105, 112, 117, 98, 108, 105, 99, 107,
-            101, 121, 120, 130, 48, 52, 102, 100, 52, 50, 99, 102, 49, 99, 53, 48, 53, 56, 99, 100,
-            53, 48, 99, 49, 101, 52, 51, 51, 57, 100, 100, 53, 100, 55, 99, 48, 48, 49, 48, 57, 56,
-            52, 49, 54, 55, 49, 57, 52, 53, 56, 52, 97, 49, 101, 55, 50, 56, 97, 100, 50, 53, 49,
-            55, 56, 50, 53, 99, 99, 50, 49, 99, 102, 48, 49, 100, 55, 52, 99, 55, 100, 48, 102, 52,
-            55, 55, 56, 49, 57, 50, 102, 100, 50, 55, 52, 99, 55, 57, 99, 101, 57, 99, 99, 48, 57,
-            100, 57, 102, 98, 101, 50, 53, 56, 54, 98, 55, 57, 100, 98, 50, 57, 50, 54, 56, 97, 50,
-            50, 98, 99, 55, 98, 55, 48, 55, 101, 105, 116, 105, 109, 101, 115, 116, 97, 109, 112,
-            26, 93, 157, 246, 255, 102, 105, 100, 116, 121, 112, 101, 99, 85, 82, 76, 98, 105, 100,
-            113, 104, 116, 116, 112, 58, 47, 47, 103, 111, 111, 103, 108, 101, 46, 99, 111, 109,
-            102, 114, 97, 116, 105, 110, 103, 24, 50,
-        ]);
-        let sig = untrusted::Input::from(&[
-            194, 167, 81, 117, 30, 229, 244, 238, 28, 127, 29, 111, 138, 117, 234, 216, 111, 34,
-            188, 145, 122, 9, 160, 165, 97, 181, 161, 195, 99, 150, 130, 75, 48, 170, 116, 73, 69,
-            89, 231, 128, 67, 191, 45, 35, 104, 86, 106, 98, 111, 182, 114, 75, 96, 50, 99, 90,
-            127, 241, 155, 0, 0, 121, 154, 77,
-        ]);
-        assert!(signature::verify(&signature::ECDSA_P256_SHA256_FIXED, pubkey, msg, sig).is_ok());
-    }
 
     #[test]
     fn test_uri() {
