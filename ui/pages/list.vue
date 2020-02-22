@@ -1,9 +1,9 @@
 <template>
   <v-container style="max-width: 700px">
-    <h1 class="display-1">User profile</h1>
-    <v-divider />
+    <h1 v-text="title" class="display-1" />
+    <v-divider class="mt-2" />
     <SchemeFilter :counts="counts" comments />
-    <ReviewList :rootPk="$route.query.kid" />
+    <ReviewList :query="$route.query" />
   </v-container>
 </template>
 
@@ -19,6 +19,9 @@ export default {
   computed: {
     counts() {
       return this.$store.getters.reviewsAndCounts(this.$route.query).counts
+    },
+    title() {
+      return this.$route.query.kid ? 'User profile' : 'Review list'
     }
   },
   middleware: 'review-list'

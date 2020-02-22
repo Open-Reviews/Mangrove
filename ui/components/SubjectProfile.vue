@@ -69,7 +69,7 @@
         <ReviewForm v-model="reviewForm" :subject="subject" />
       </v-card-actions>
     </v-card>
-    <ReviewList :rootSub="$route.query.sub" />
+    <ReviewList :query="{ sub: $route.query.sub }" />
   </v-container>
 </template>
 

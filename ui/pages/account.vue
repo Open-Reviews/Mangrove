@@ -61,7 +61,7 @@
         <h1 class="display-1">Your reviews</h1>
         <v-divider />
         <SchemeFilter :counts="counts" comments />
-        <ReviewList :rootPk="$store.state.publicKey" />
+        <ReviewList :query="{ kid: $store.state.publicKey }" />
       </v-col>
     </v-row>
   </v-container>

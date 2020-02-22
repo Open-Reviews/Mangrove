@@ -205,9 +205,8 @@ export const actions = {
       })
   },
   // Fetch reviews mathing params from the server and save the locally.
-  saveReviews({ commit, dispatch }, params) {
-    params.issuers = true
-    params.maresi_subjects = true
+  saveReviews({ commit, dispatch }, inParams) {
+    const params = { ...inParams, issuers: true, maresi_subjects: true }
     // Get and save in state the reviews and their issuers.
     return dispatch('getReviews', params).then((rs) => {
       if (rs) {

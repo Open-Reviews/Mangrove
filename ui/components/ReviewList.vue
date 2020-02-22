@@ -8,7 +8,7 @@
     <ReviewListBase :listArgs="opinionated" />
     <v-row
       v-if="
-        rootSub && opinionless.ratings.length && !showOpinionless && notMaresi
+        query.sub && opinionless.ratings.length && !showOpinionless && notMaresi
       "
       justify="center"
     >
@@ -16,16 +16,16 @@
         >Show reviews without a description</span
       >
     </v-row>
-    <v-container v-if="rootPk && opinionless">
+    <v-container v-if="query.kid && opinionless">
       <span
-        v-if="rootPk && v !== 0"
+        v-if="query.kid && v !== 0"
         v-for="[k, v] in Object.entries(opinionless.other)"
       >
         {{ k }}: {{ v }}
       </span>
     </v-container>
     <ReviewListBase
-      v-if="showOpinionless || rootPk"
+      v-if="showOpinionless || query.kid"
       :listArgs="opinionless.ratings"
     />
     <v-row v-if="reviews.length && notMaresi" justify="center">
@@ -57,10 +57,13 @@ export default {
     ReviewListBase
   },
   props: {
-    rootSub: String,
-    rootPk: {
-      type: String,
-      default: () => ''
+    query: {
+      type: Object,
+      default: () => {
+        return {
+          kid: this.$store.state.publicKey
+        }
+      }
     }
   },
   data() {
@@ -70,10 +73,7 @@ export default {
   },
   computed: {
     reviews() {
-      const query = {}
-      this.rootSub && (query.sub = this.rootSub)
-      this.rootPk && (query.kid = this.rootPk)
-      return this.$store.getters.reviewsAndCounts(query).reviews
+      return this.$store.getters.reviewsAndCounts(this.query).reviews
     },
     opinionated() {
       return this.reviews.filter((r) => r.payload.opinion).map(this.reviewToArg)
@@ -103,19 +103,23 @@ export default {
     notMaresi() {
       return (
         !this.$store.state.isSearching &&
-        (!this.rootSub || !this.rootSub.startsWith(MARESI))
+        (!this.query.sub || !this.query.sub.startsWith(MARESI))
       )
     },
     download() {
       return this.notMaresi && downloadLink(this.reviews)
     },
     downloadName() {
-      return `mangrove.reviews_${this.rootSub || pemDisplay(this.rootPk)}.json`
+      const name =
+        this.query.sub ||
+        (this.query.kid && pemDisplay(this.query.kid)) ||
+        this.query
+      return `mangrove.reviews_${name}.json`
     },
     noReviewsMessage() {
       if (!this.download || this.reviews.length) {
         return null
-      } else if (this.rootSub) {
+      } else if (this.query.sub) {
         return 'Be the first to review!'
       } else if (this.isMine) {
         return `No reviews yet. <a href="${process.env.BASE_URL}">Leave your first review</a>`
@@ -124,7 +128,7 @@ export default {
       }
     },
     isMine() {
-      return this.rootPk === this.$store.state.publicKey
+      return this.query.kid === this.$store.state.publicKey
     }
   },
   methods: {
@@ -140,7 +144,7 @@ export default {
       }
     },
     subjectTitle({ sub, metadata }) {
-      if (!this.rootPk) {
+      if (this.query.sub) {
         return
       }
       if (sub.startsWith(MARESI)) {
