@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container style="max-width: 700px">
     <h1 class="display-1">User profile</h1>
     <v-divider />
     <SchemeFilter :counts="counts" comments />
@@ -18,7 +18,8 @@ export default {
   },
   computed: {
     counts() {
-      return this.$store.getters.reviewsAndCounts(this.$route.query.kid).counts
+      return this.$store.getters.reviewsAndCounts(null, this.$route.query.kid)
+        .counts
     }
   },
   middleware: 'review-list'
