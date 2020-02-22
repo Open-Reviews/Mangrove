@@ -113,7 +113,8 @@ export default {
       const name =
         this.query.sub ||
         (this.query.kid && pemDisplay(this.query.kid)) ||
-        this.query
+        (Object.keys(this.query).length === 0 && '') ||
+        JSON.stringify(this.query)
       return `mangrove.reviews_${name}.json`
     },
     noReviewsMessage() {

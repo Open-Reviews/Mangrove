@@ -224,13 +224,10 @@ export const actions = {
     const rs = await dispatch('saveReviews', params)
     if (!rs.reviews || !rs.reviews.length) return
     const subs = Object.values(rs.reviews).map((review) => review.payload.sub)
-    subs.map(
-      (sub) =>
-        state.subjects[sub] ||
-        subToSubject(this.$axios, sub).then((subject) =>
-          dispatch('storeWithRating', [subject])
-        )
+    const subjects = await Promise.all(
+      subs.map((sub) => state.subjects[sub] || subToSubject(this.$axios, sub))
     )
+    await dispatch('storeWithRating', subjects)
     return rs
   },
   async saveMyReviews({ state, dispatch, commit }, metadata = false) {
