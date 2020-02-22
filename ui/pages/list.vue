@@ -18,8 +18,7 @@ export default {
   },
   computed: {
     counts() {
-      return this.$store.getters.reviewsAndCounts(null, this.$route.query.kid)
-        .counts
+      return this.$store.getters.reviewsAndCounts(this.$route.query).counts
     }
   },
   middleware: 'review-list'

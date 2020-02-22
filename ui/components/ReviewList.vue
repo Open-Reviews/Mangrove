@@ -70,8 +70,10 @@ export default {
   },
   computed: {
     reviews() {
-      return this.$store.getters.reviewsAndCounts(this.rootSub, this.rootPk)
-        .reviews
+      const query = {}
+      this.rootSub && (query.sub = this.rootSub)
+      this.rootPk && (query.kid = this.rootPk)
+      return this.$store.getters.reviewsAndCounts(query).reviews
     },
     opinionated() {
       return this.reviews.filter((r) => r.payload.opinion).map(this.reviewToArg)

@@ -122,12 +122,16 @@ export const getters = {
       })
   },
   // Return the filtered list of reviews and total counts for different schemes.
-  reviewsAndCounts: (state) => (rootSub = null, rootPk = state.publicKey) => {
+  reviewsAndCounts: (state) => (query) => {
     const counts = {}
     const reviews = Object.values(state.reviews)
       .filter(({ payload, kid }) => {
         // Pick only ones for selected subject or issuer.
-        const isSelected = payload.sub === rootSub || kid === rootPk
+        const isSelected =
+          (!query.kid || query.kid === kid) &&
+          Object.entries(query)
+            .map(([k, v]) => k === 'kid' || payload[k] === v)
+            .every(Boolean)
         const scheme = subToScheme(payload.sub)
         const isFiltered = !state.filter || scheme === state.filter
         const isReturned = isSelected && isFiltered
@@ -217,14 +221,16 @@ export const actions = {
       return rs
     })
   },
-  async saveReviewsWithSubjects({ dispatch }, params) {
+  async saveReviewsWithSubjects({ state, dispatch }, params) {
     const rs = await dispatch('saveReviews', params)
     if (!rs.reviews || !rs.reviews.length) return
     const subs = Object.values(rs.reviews).map((review) => review.payload.sub)
-    subs.map((sub) =>
-      subToSubject(this.$axios, sub).then((subject) =>
-        dispatch('storeWithRating', [subject])
-      )
+    subs.map(
+      (sub) =>
+        state.subjects[sub] ||
+        subToSubject(this.$axios, sub).then((subject) =>
+          dispatch('storeWithRating', [subject])
+        )
     )
     return rs
   },

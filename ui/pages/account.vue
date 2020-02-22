@@ -32,8 +32,8 @@
                 <UserHeader
                   :pk="$store.state.publicKey"
                   :metadata="$store.state.metadata"
-                  :placeholder="Anonymous"
                   :count="reviewCount"
+                  placeholder="Anonymous"
                 />
               </div>
             </v-row>
@@ -88,7 +88,9 @@ export default {
   },
   computed: {
     counts() {
-      return this.$store.getters.reviewsAndCounts().counts
+      return this.$store.getters.reviewsAndCounts({
+        kid: this.$store.state.publicKey
+      }).counts
     },
     reviewCount() {
       return this.counts.null
