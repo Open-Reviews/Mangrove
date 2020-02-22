@@ -38,8 +38,8 @@ Searches for subjects and returns and object for each:
 export default function({ store, $axios, route }) {
   const query = route.query.q
   if (!query && route.query.sub) {
-    return subToSubject($axios, route.query.sub).then((subject) =>
-      store.dispatch('storeResults', [subject])
+    return subToSubject($axios, route.query.sub).then(
+      (subject) => subject && store.dispatch('storeResults', [subject])
     )
   } else if (
     // Do not run if there is no query and specific subject is not selected.

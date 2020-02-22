@@ -47,6 +47,7 @@ function entityForm(axios, elf) {
 
 const GEO_IGNORE_CLASSES = ['highway']
 
+// Viebox should be a comma separated string.
 export function searchGeo(axios, q, viewbox) {
   const params = {
     q,
@@ -192,19 +193,31 @@ export async function subToSubject(axios, sub) {
     subject = await leiToSubject(axios, subPath(LEI, sub))
   } else if (scheme === GEO) {
     const uri = new URL(sub)
-    const coordinates = uri.pathname.split(',')
-    // Convert from meters to degrees.
-    const area = uri.searchParams.get('u') / 110000
+    const coordinates = uri.pathname
+      .split(',')
+      .map(parseFloat)
+      .reverse()
+    console.log('coords: ', coordinates)
+    console.log('uri: ', uri)
+    // Roughly convert from meters to degrees.
+    const area = parseFloat(uri.searchParams.get('u')) / 110000
     const viewbox = [
-      coordinates[1] - area,
       coordinates[0] - area,
-      coordinates[1] + area,
-      coordinates[0] + area
+      coordinates[1] - area,
+      coordinates[0] + area,
+      coordinates[1] + area
     ]
-    const subjects = await searchGeo(axios, uri.searchParams.get('q'), viewbox)
-    subject = subjects[0]
-    subject.sub = sub
-    subject.coordinates = coordinates.reverse().map(parseFloat)
+    console.log('box: ', viewbox)
+    const subjects = await searchGeo(
+      axios,
+      uri.searchParams.get('q'),
+      viewbox.join(',')
+    )
+    if (subjects[0]) {
+      subject = subjects[0]
+      subject.sub = sub
+      subject.coordinates = coordinates
+    }
   } else if (scheme === ISBN) {
     subject = await isbnToSubject(axios, subPath(ISBN, sub))
   } else {

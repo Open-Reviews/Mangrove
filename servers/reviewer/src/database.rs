@@ -41,9 +41,6 @@ sql_function! {
     fn within(c1: Nullable<Geography>, c2: Nullable<Geography>, u: Nullable<Integer>) -> Bool;
 }
 
-use diesel_geography::types::GeogPoint;
-use diesel::deserialize::FromSql;
-
 impl DbConn {
     pub fn insert(&self, review: Review) -> Result<(), Error> {
         diesel::insert_into(schema::reviews::table)
@@ -78,9 +75,8 @@ impl DbConn {
             let (query_scheme, geo) = validate_sub(s)?;
             if query_scheme == "geo" {
                 f = Box::new(f.and(scheme.eq(query_scheme)));
-                let isClose = within(coordinates, geo.coordinates, uncertainty + geo.uncertainty);
-                println!("Are the points close: {:?}", GeogPoint::from_sql(&isClose));
-                f = Box::new(f.and(isClose))
+                let is_close = within(coordinates, geo.coordinates, uncertainty + geo.uncertainty);
+                f = Box::new(f.and(is_close))
             } else {
                 f = Box::new(f.and(sub.eq(s)))
             }
