@@ -124,15 +124,17 @@ export const getters = {
   },
   // Return the filtered list of reviews and total counts for different schemes.
   reviewsAndCounts: (state) => (query) => {
+    if (state.filter) query = { ...query, scheme: state.filter }
     const counts = {}
     const reviews = Object.values(state.reviews)
       .filter(({ payload, kid, scheme, geo }) => {
         // Pick only ones selected according to query.
         const isSelected =
           (!query.kid || query.kid === kid) &&
+          (!query.scheme || query.scheme === scheme) &&
           Object.entries(query)
             .map(([k, v]) => {
-              if (k === 'kid' || payload[k] === v) {
+              if (k === 'kid' || k === 'scheme' || payload[k] === v) {
                 return true
               } else if (k === 'sub' && scheme === GEO) {
                 // TODO: remove after db upgrade
@@ -149,12 +151,10 @@ export const getters = {
               }
             })
             .every(Boolean)
-        const isFiltered = !state.filter || scheme === state.filter
-        const isReturned = isSelected && isFiltered
         if (isSelected) {
           counts[scheme] = counts[scheme] ? counts[scheme] + 1 : 1
         }
-        return isReturned
+        return isSelected
       })
       .sort((r1, r2) => r2.payload.iat - r1.payload.iat)
     counts.null = reviews.length

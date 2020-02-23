@@ -16,13 +16,20 @@ export default {
     SchemeFilter,
     ReviewList
   },
+  data() {
+    return {
+      counts: { null: 0 }
+    }
+  },
   computed: {
-    counts() {
-      return this.$store.getters.reviewsAndCounts(this.$route.query).counts
-    },
     title() {
       return this.$route.query.kid ? 'User profile' : 'Review list'
     }
+  },
+  mounted() {
+    this.counts = this.$store.getters.reviewsAndCounts({
+      kid: this.$store.state.publicKey
+    }).counts
   },
   middleware: 'review-list'
 }

@@ -86,15 +86,20 @@ export default {
     UserHeader,
     LogOut
   },
+  data() {
+    return {
+      counts: { null: 0 }
+    }
+  },
   computed: {
-    counts() {
-      return this.$store.getters.reviewsAndCounts({
-        kid: this.$store.state.publicKey
-      }).counts
-    },
     reviewCount() {
       return this.counts.null
     }
+  },
+  mounted() {
+    this.counts = this.$store.getters.reviewsAndCounts({
+      kid: this.$store.state.publicKey
+    }).counts
   },
   middleware: 'account'
 }
