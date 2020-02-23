@@ -6,20 +6,6 @@
       class="text-center"
     />
     <ReviewListBase :listArgs="opinionated" />
-    <v-row
-      v-if="
-        query.sub && opinionless.ratings.length && !showOpinionless && notMaresi
-      "
-      justify="center"
-    >
-      <span @click="showOpinionless = true" style="cursor: pointer"
-        >Show reviews without a description</span
-      >
-    </v-row>
-    <ReviewListBase
-      v-if="showOpinionless || query.kid"
-      :listArgs="opinionless.ratings"
-    />
     <v-container v-if="query.kid && opinionless">
       <span
         v-if="query.kid && v !== 0"
@@ -28,6 +14,16 @@
         {{ k }}: {{ v }}
       </span>
     </v-container>
+    <v-row
+      v-if="opinionless.ratings.length && !showOpinionless"
+      justify="center"
+    >
+      <span @click="showOpinionless = true" style="cursor: pointer"
+        >Show reviews without a description</span
+      >
+    </v-row>
+    <ReviewListBase v-if="showOpinionless" :listArgs="opinionless.ratings" />
+
     <v-row v-if="reviews.length && notMaresi" justify="center">
       <v-tooltip top>
         <template v-slot:activator="{ on }">
