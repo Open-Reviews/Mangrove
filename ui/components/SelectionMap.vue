@@ -1,6 +1,6 @@
 <template>
   <v-row
-    v-if="selected"
+    v-if="selected || display"
     justify="center"
     style="position: relative"
     class="pa-1"
@@ -13,7 +13,7 @@
       data-projection="EPSG:4326"
       class="mx-3"
     >
-      <vl-view :center="selected" :zoom="15" />
+      <vl-view :center="display ? [0, 0] : selected" :zoom="display ? 1 : 15" />
 
       <vl-interaction-select
         @update:features="$emit('select', $event[0] && $event[0].id)"
@@ -36,6 +36,7 @@
     </vl-map>
     <v-btn
       @click="geoSearch"
+      v-if="!display"
       class="ma-3"
       absolute
       style="background: rgb(255, 255, 255, 0.7)"
@@ -54,6 +55,7 @@ export default {
       type: Array,
       default: () => null
     },
+    display: Boolean,
     // Any other points to display for possible selection.
     // { coordinates, id }
     points: {
