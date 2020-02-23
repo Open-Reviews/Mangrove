@@ -41,11 +41,10 @@ export const state = () => ({
 })
 
 export const mutations = {
-  [t.SET_KEYPAIR](state, keypair) {
-    state.keyPair = keypair
-  },
-  [t.SET_PK](state, key) {
-    state.publicKey = key
+  [t.SET_KEYS](state, { keyPair, publicKey }) {
+    state.keyPair = keyPair
+    state.publicKey = publicKey
+    state.metadata = {}
   },
   [t.DISMISS_ALPHA_WARNING](state) {
     state.alphaWarning = false
@@ -163,10 +162,10 @@ export const getters = {
 }
 
 export const actions = {
-  setKeypair({ commit }, keypair) {
-    commit(t.SET_KEYPAIR, keypair)
-    keypairToJwk(keypair).then((jwk) => set(PRIVATE_KEY, jwk))
-    publicToPem(keypair.publicKey).then((pem) => commit(t.SET_PK, pem))
+  async setKeypair({ commit }, keyPair) {
+    const publicKey = await publicToPem(keyPair.publicKey)
+    commit(t.SET_KEYS, { keyPair, publicKey })
+    keypairToJwk(keyPair).then((jwk) => set(PRIVATE_KEY, jwk))
   },
   // Storage in IndexedDB is done as jwk instead CryptoKey due to two issues:
   // https://bugzilla.mozilla.org/show_bug.cgi?id=1048931

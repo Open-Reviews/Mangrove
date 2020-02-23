@@ -1,5 +1,4 @@
-export const SET_KEYPAIR = 'SET_KEYPAIR'
-export const SET_PK = 'SET_PK'
+export const SET_KEYS = 'SET_KEYS'
 export const DISMISS_ALPHA_WARNING = 'DISMISS_ALPHA_WARNING'
 export const START_SEARCH = 'START_SEARCH'
 export const STOP_SEARCH = 'STOP_SEARCH'
