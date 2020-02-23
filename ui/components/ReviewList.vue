@@ -16,6 +16,10 @@
         >Show reviews without a description</span
       >
     </v-row>
+    <ReviewListBase
+      v-if="showOpinionless || query.kid"
+      :listArgs="opinionless.ratings"
+    />
     <v-container v-if="query.kid && opinionless">
       <span
         v-if="query.kid && v !== 0"
@@ -24,10 +28,6 @@
         {{ k }}: {{ v }}
       </span>
     </v-container>
-    <ReviewListBase
-      v-if="showOpinionless || query.kid"
-      :listArgs="opinionless.ratings"
-    />
     <v-row v-if="reviews.length && notMaresi" justify="center">
       <v-tooltip top>
         <template v-slot:activator="{ on }">
@@ -84,18 +84,13 @@ export default {
       let Confirmations = 0
       const ratings = this.reviews
         .filter(({ payload }) => {
-          if (payload.opinion) {
-            return false
-          }
           if (payload.rating === 0) {
             Flags++
-            return false
           }
           if (payload.rating === 100) {
             payload.metadata[IS_PERSONAL_EXPERIENCE] ? Confirmations++ : Likes++
-            return false
           }
-          return true
+          return !payload.opinion
         })
         .map(this.reviewToArg)
       return { ratings, other: { Flags, Likes, Confirmations } }
