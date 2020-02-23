@@ -272,6 +272,7 @@ export const actions = {
         return response.subjects
       })
       .catch((error) => {
+        console.log('Client request processing error: ', error)
         if (error.response) {
           console.log(error.response.status)
           console.log(error.response.headers)
@@ -280,7 +281,6 @@ export const actions = {
           console.log(error.request)
           commit(t.REQUEST_ERROR, 'Server not reachable.')
         } else {
-          console.log('Client request processing error: ', error.message)
           commit(t.REQUEST_ERROR, 'Internal client error, please report.')
         }
       })
@@ -291,16 +291,14 @@ export const actions = {
       dispatch(
         'bulkSubjects',
         rawSubjects.map((raw) => raw.sub)
-      ).then((subjects) => {
-        if (subjects) {
-          rawSubjects.map((raw) => {
-            const rawQuality = subjects[raw.sub].quality
-            // Quality is null when there are no reviews.
-            subjects[raw.sub].quality = rawQuality && (rawQuality + 25) / 25
-            subjects[raw.sub] = { ...raw, ...subjects[raw.sub] }
-          })
-          commit(t.ADD_SUBJECTS, subjects)
-        }
+      ).then((subjects = {}) => {
+        rawSubjects.map((raw) => {
+          const rawQuality = subjects[raw.sub].quality
+          subjects[raw.sub] = { ...raw, ...subjects[raw.sub] }
+          // Quality is null when there are no reviews.
+          subjects[raw.sub].quality = rawQuality && (rawQuality + 25) / 25
+        })
+        commit(t.ADD_SUBJECTS, subjects)
       })
     )
   },
