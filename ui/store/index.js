@@ -237,7 +237,7 @@ export const actions = {
   },
   async saveReviewsWithSubjects({ state, dispatch }, params) {
     const rs = await dispatch('saveReviews', params)
-    if (!rs.reviews || !rs.reviews.length) return
+    if (!rs || !rs.reviews.length) return
     const subs = Object.values(rs.reviews).map((review) => review.payload.sub)
     const subjects = await Promise.all(
       subs.map((sub) => state.subjects[sub] || subToSubject(this.$axios, sub))
@@ -251,7 +251,7 @@ export const actions = {
     const rs = await dispatch('saveReviewsWithSubjects', {
       kid: state.publicKey
     })
-    if (metadata) {
+    if (rs && metadata) {
       const newestReview = rs.reviews.reduce(function(prev, current) {
         const isNewer = current.payload.iat > prev.payload.iat
         const hasData = Object.keys(current.payload.metadata).some((k) =>
@@ -274,11 +274,8 @@ export const actions = {
       .catch((error) => {
         console.log('Client request processing error: ', error)
         if (error.response) {
-          console.log(error.response.status)
-          console.log(error.response.headers)
           commit(t.REQUEST_ERROR, error.response.data)
         } else if (error.request) {
-          console.log(error.request)
           commit(t.REQUEST_ERROR, 'Server not reachable.')
         } else {
           commit(t.REQUEST_ERROR, 'Internal client error, please report.')
