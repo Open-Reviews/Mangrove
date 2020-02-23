@@ -108,20 +108,26 @@ export default function({ store, $axios, route }) {
 }
 
 async function searchUrl(input) {
+  // Assume all properly formatted URLs are websites.
+  const formatted = input.startsWith('https://') && input.includes('.')
   // Try to recover a valid url.
-  const url = new URL(input.startsWith('http') ? input : `https://${input}`)
+  const url = new URL(formatted ? input : `https://${input}`)
   if (!url) {
     return
   }
   const urlString = `${url.protocol}//${url.hostname}`
-  let isWebsite = false
-  try {
-    isWebsite = await faviconWidth(urlString + '/favicon.ico')
-  } catch (e) {}
-  try {
-    isWebsite = await faviconWidth(urlString + '/assets/favicon.png')
-  } catch (e) {}
-  if (isWebsite || urlString === 'https://example.com') {
+  let isWebsite
+  if (formatted) {
+    isWebsite = true
+  } else {
+    try {
+      isWebsite = await faviconWidth(urlString + '/favicon.ico')
+    } catch (e) {}
+    try {
+      isWebsite = await faviconWidth(urlString + '/assets/favicon.png')
+    } catch (e) {}
+  }
+  if (isWebsite) {
     return [
       {
         sub: urlString,
