@@ -1,4 +1,4 @@
-# Mangrove Review Standard (MaReSt) v0.2.0
+# Mangrove Review Standard (MaReSt) v0.2.1
 
 The mission of the Mangrove initiative is to create a public space on the Internet where people can freely share insights with each other and make better decisions based on open data. Mangrove contributes to the Open and Privacy movements by proposing an alternative architecture that is characterized by a **separation of data and products**, and that **respects the right to privacy**:
 
