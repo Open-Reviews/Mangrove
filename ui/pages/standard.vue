@@ -1,11 +1,15 @@
 <template>
-  <v-container v-html="html" style="max-width: 1200px" />
+  <MdText :html="html" />
 </template>
 
 <script>
 import { html } from '../../Mangrove_Review_Standard.md'
+import MdText from '~/components/MdText'
 
 export default {
+  components: {
+    MdText
+  },
   data() {
     return { html }
   }
