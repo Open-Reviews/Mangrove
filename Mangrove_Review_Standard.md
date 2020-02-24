@@ -82,7 +82,7 @@ Try decoding the token yourself using the [Debugger](https://jwt.io/): just past
 
 ## Mangrove Review creation and verification
 
-Mangrove Reviews are meant to be easily constructed and verified using any existing [JWT libraries](https://jwt.io/). Dedicated JavaScript and Rust libraries are in the works as well.
+Mangrove Reviews are meant to be easily constructed and verified using any existing [JWT libraries](https://jwt.io/). [A dedicated JavaScript library](https://js.mangrove.reviews) is also available and libraries in other languages will be developed according to demand.
 
 ## Mangrove Review Format (MaReFo)
 
@@ -152,6 +152,9 @@ Value of the `sub` claim MUST comply with one of Core URI Schemes:
     - Query string for this URI (content following `?`):
         - MUST contain a field `q=` for which the value is a commonly used name of the selected place with [URI compliant percent encoding](https://tools.ietf.org/html/rfc3986) which SHOULD not be longer than 100 letters.
         - MAY contain a field `u=` for which the value indicates an approximate radius of the place in meters which SHOULD not be greater than 40000000.
+    - Reviews should be considered to refer to a given subject if:
+      - they contain the same `q=` parameter
+      - their coordinates are within a distance which is a sum of the two `u=` values.
 - `urn:lei`
     -  Refers to a legal entity being reviewed.
     -  Scheme MUST be followed by a valid LEI according to [ISO 17442](https://www.gleif.org/en/about-lei/iso-17442-the-lei-code-structure) which is equal to one of registered legal entity identifiers in [GLEIF database](https://www.gleif.org/en/).
