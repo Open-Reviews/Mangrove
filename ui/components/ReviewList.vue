@@ -15,7 +15,7 @@
       </span>
     </v-container>
     <v-row
-      v-if="opinionless.ratings.length && !showOpinionless"
+      v-if="opinionless.ratings.length && !showOpinionless && !opinions"
       justify="center"
     >
       <span @click="showOpinionless = true" style="cursor: pointer"
@@ -24,7 +24,7 @@
     </v-row>
     <ReviewListBase v-if="showOpinionless" :listArgs="opinionless.ratings" />
 
-    <v-row v-if="reviews.length && notMaresi" justify="center">
+    <v-row v-if="reviews.length && notMaresi && !opinions" justify="center">
       <v-tooltip top>
         <template v-slot:activator="{ on }">
           <v-btn
@@ -60,7 +60,8 @@ export default {
           kid: this.$store.state.publicKey
         }
       }
-    }
+    },
+    opinions: Boolean
   },
   data() {
     return {

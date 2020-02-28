@@ -25,6 +25,9 @@
                 class="title white--text"
               />
             </v-row>
+            <v-row>
+              <ReviewList :query="{ limit: 3 }" opinions />
+            </v-row>
           </v-col>
           <v-col />
         </v-row>
@@ -99,8 +102,9 @@
 </template>
 
 <script>
-import { DISMISS_ALPHA_WARNING, SET_FILTER } from '../store/mutation-types'
-import SearchBox from '../components/SearchBox'
+import { DISMISS_ALPHA_WARNING, SET_FILTER } from '~/store/mutation-types'
+import SearchBox from '~/components/SearchBox'
+import ReviewList from '~/components/ReviewList'
 import {
   html as demoContent,
   attributes as demoAttributes
@@ -120,7 +124,8 @@ import {
 
 export default {
   components: {
-    SearchBox
+    SearchBox,
+    ReviewList
   },
   data() {
     return {
@@ -182,7 +187,8 @@ export default {
     dismissAlphaWarning() {
       this.$store.commit(DISMISS_ALPHA_WARNING)
     }
-  }
+  },
+  middleware: 'front'
 }
 </script>
 

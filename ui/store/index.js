@@ -125,7 +125,11 @@ export const getters = {
   reviewsAndCounts: (state) => (query) => {
     if (state.filter) query = { ...query, scheme: state.filter }
     const counts = {}
-    const reviews = Object.values(state.reviews)
+    const allReviews = Object.values(state.reviews)
+    const reviews = (query.limit
+      ? allReviews.slice(0, query.limit)
+      : allReviews
+    )
       .filter(({ payload, kid, scheme, geo }) => {
         // Pick only ones selected according to query.
         const isSelected =
@@ -133,7 +137,12 @@ export const getters = {
           (!query.scheme || query.scheme === scheme) &&
           Object.entries(query)
             .map(([k, v]) => {
-              if (k === 'kid' || k === 'scheme' || payload[k] === v) {
+              if (
+                k === 'kid' ||
+                k === 'scheme' ||
+                k === 'limit' ||
+                payload[k] === v
+              ) {
                 return true
               } else if (k === 'sub' && scheme === GEO) {
                 // TODO: remove after db upgrade
