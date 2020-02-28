@@ -4,7 +4,7 @@ using Gen
 
 RATINGS = 5
 
-@dist object_quality() = uniform_discrete(1, RATINGS)
+@dist subject_quality() = uniform_discrete(1, RATINGS)
 
 @enum Bias neutral owner
 
@@ -34,12 +34,12 @@ end
   filter(_ -> bernoulli(0.9), items)
 end
 
-@gen function reviews()
-  objects = [@trace(object_quality(), (:quality, i)) for i in 1:10]
-  reviewers = [@trace(reviewer_bias(), (:bias, i)) for i in 1:10]
-  for (i, object) in enumerate(objects)
-    for (j, reviewer) in enumerate(subset(reviewers))
-      @trace(rating(object, reviewer), (i, j))
+@gen function mangrove_model(subjects::Set{String}, reviewers::Set{String})
+  qualities = (sub => @trace(subject_quality(), (:quality, sub)) for sub in subjects)
+  biases = [id => @trace(reviewer_bias(), (:bias, id)) for id in reviewers]
+  for (sub, quality) in qualities
+    for (id, bias) in subset(biases)
+      @trace(rating(quality, bias), (sub, id))
     end
   end
 end
