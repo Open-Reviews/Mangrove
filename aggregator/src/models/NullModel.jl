@@ -2,12 +2,9 @@ module Model
 
 using Gen
 using ..MangroveBase: RatingInfo, Rating, RATINGS
+include("models_base.jl")
 
 @dist rating() = uniform_discrete(1, RATINGS)
-
-@gen function subset(items::Vector)::Vector
-  filter(_ -> bernoulli(0.5), items)
-end
 
 @gen function mangrove_model(subjects::Set{String}, reviewers::Set{String})
   for sub in subjects

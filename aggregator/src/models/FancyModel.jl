@@ -2,6 +2,7 @@ module Model
 
 using Gen
 using ..MangroveBase: RatingInfo, Rating, RATINGS
+include("models_base.jl")
 
 @dist subject_quality() = uniform_discrete(1, RATINGS)
 
@@ -27,10 +28,6 @@ end
       @trace(triangle_categorical(RATINGS, 1, 0.2))
     end
   end
-end
-
-@gen function subset(items::Vector)::Vector
-  filter(_ -> bernoulli(0.9), items)
 end
 
 @gen function mangrove_model(subjects::Set{String}, reviewers::Set{String})
