@@ -3,7 +3,7 @@
     <v-row class="mb-1 text-center white--text">
       <v-img
         :src="front.image"
-        :height="isSmall && focus ? '150vh' : '100vh'"
+        :height="isSmall ? (focus ? '210vh' : '160vh') : '100vh'"
         class="display-3 pa-12"
       >
         <h1
@@ -16,7 +16,7 @@
           :class="isSmall ? 'headline' : 'display-1'"
         />
         <v-row>
-          <v-col />
+          <v-col v-if="!isSmall" />
           <v-col :cols="isSmall ? 12 : 6">
             <SearchBox @focus="focus = $event" />
             <v-row class="justify-space-around mt-n8">
@@ -25,12 +25,16 @@
                 class="title white--text"
               />
             </v-row>
-            <v-row>
-              <ReviewList :query="{ limit: 3 }" opinions />
-            </v-row>
           </v-col>
-          <v-col />
+          <v-col v-if="!isSmall" />
         </v-row>
+        <v-col class="text-left" cols="12">
+          <ReviewList
+            :query="{ limit: isSmall ? 3 : 4 }"
+            :cols="isSmall ? 12 : 3"
+            opinions
+          />
+        </v-col>
         <v-row
           v-if="!isSmall || ($vuetify.breakpoint.sm && !focus)"
           class="headline"

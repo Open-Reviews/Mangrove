@@ -5,7 +5,7 @@
       v-html="noReviewsMessage"
       class="text-center"
     />
-    <ReviewListBase :listArgs="opinionated" />
+    <ReviewListBase :listArgs="opinionated" :cols="cols" />
     <v-container v-if="query.kid && opinionless">
       <span
         v-if="query.kid && v !== 0"
@@ -22,7 +22,11 @@
         >Show reviews without a description</span
       >
     </v-row>
-    <ReviewListBase v-if="showOpinionless" :listArgs="opinionless.ratings" />
+    <ReviewListBase
+      v-if="showOpinionless"
+      :listArgs="opinionless.ratings"
+      :cols="cols"
+    />
 
     <v-row v-if="reviews.length && notMaresi && !opinions" justify="center">
       <v-tooltip top>
@@ -61,7 +65,11 @@ export default {
         }
       }
     },
-    opinions: Boolean
+    opinions: Boolean,
+    cols: {
+      type: Number,
+      default: () => 12
+    }
   },
   data() {
     return {

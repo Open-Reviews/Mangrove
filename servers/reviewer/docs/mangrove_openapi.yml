@@ -87,6 +87,11 @@ paths:
             type: number
           description: Maximum number of reviews that will be returned.
         - in: query
+          name: opinionated
+          schema:
+            type: boolean
+          description: Only reviews which either contain or do not contain an opinion.
+        - in: query
           name: issuers
           schema:
             type: boolean
