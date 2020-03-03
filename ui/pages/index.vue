@@ -28,22 +28,17 @@
           </v-col>
           <v-col v-if="!isSmall" />
         </v-row>
-        <v-col class="text-left" cols="12">
+        <v-col
+          class="text-left"
+          cols="11"
+          style="position: absolute; bottom: 100px; margin-left: auto; margin-right: auto; left: 0; right: 0;"
+        >
           <ReviewList
             :query="{ limit: isSmall ? 3 : 4 }"
             :cols="isSmall ? 12 : 3"
             opinions
           />
         </v-col>
-        <v-row
-          v-if="!isSmall || ($vuetify.breakpoint.sm && !focus)"
-          class="headline"
-          style="position: absolute; bottom: 100px; margin-left: auto; margin-right: auto; width: 330px; left: 0; right: 0;"
-          align="center"
-        >
-          <div class="ml-12">WHY MANGROVE</div>
-          <v-img :src="arrow" max-height="10vh" contain class="ml-n12" />
-        </v-row>
       </v-img>
     </v-row>
     <v-row v-for="(feature, i) in features" :key="i" class="mb-1">
