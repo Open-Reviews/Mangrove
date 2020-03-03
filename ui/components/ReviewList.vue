@@ -82,13 +82,11 @@ export default {
         .filter(({ payload }) => {
           if (payload.rating === 0) {
             Flags++
-            return this.notMaresi
           }
           if (payload.rating === 100) {
             payload.metadata[IS_PERSONAL_EXPERIENCE] ? Confirmations++ : Likes++
-            return this.notMaresi
           }
-          return !payload.opinion
+          return !payload.opinion && this.notMaresi
         })
         .map(this.reviewToArg)
       return { ratings, other: { Flags, Likes, Confirmations } }
