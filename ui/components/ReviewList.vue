@@ -5,7 +5,7 @@
       v-html="noReviewsMessage"
       class="text-center"
     />
-    <ReviewListBase :listArgs="opinionated" :cols="cols" />
+    <ReviewListBase :listArgs="opinionated" :cols="cols" :dense="opinions" />
     <v-container v-if="query.kid && opinionless">
       <span
         v-if="query.kid && v !== 0"
