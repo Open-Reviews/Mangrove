@@ -6,6 +6,7 @@
         :issuer="arg.issuer"
         :maresiSubject="arg.maresiSubject"
         :subjectTitle="arg.subjectTitle"
+        :dense="dense"
         class="mb-10"
       />
       <ReviewList :query="{ sub: arg.rootSub }" class="ml-4" />
@@ -31,7 +32,8 @@ export default {
     cols: {
       type: Number,
       default: () => 12
-    }
+    },
+    dense: Boolean
   },
   // Avoid issues with circular dependencies.
   beforeCreate() {

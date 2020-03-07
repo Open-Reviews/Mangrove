@@ -31,7 +31,7 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/plugins/vue-layers'],
+  plugins: ['~/plugins/vue-layers', '~/plugins/vue-line-clamp'],
   /*
    ** Nuxt.js dev-modules
    */

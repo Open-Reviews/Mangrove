@@ -28,7 +28,9 @@
         />
         Reviewed {{ new Date(payload.iat * 1000).toDateString() }}
       </v-row>
-      <span v-html="formattedOpinion" />
+      <span v-line-clamp="dense && 2">
+        <span v-html="formattedOpinion" />
+      </span>
       <v-row v-if="payload.images" class="mx-auto">
         <v-img
           v-for="img in payload.images"
@@ -52,7 +54,7 @@
         </v-chip>
       </div>
     </v-card-text>
-    <v-card-actions v-if="!preview" class="my-n7 mx-auto">
+    <v-card-actions v-if="!(preview || dense)" class="my-n7 mx-auto">
       <v-tooltip v-for="action in actions" :key="action.icon" top>
         <template v-slot:activator="{ on }">
           <v-btn
@@ -163,6 +165,7 @@ export default {
       }
     },
     preview: Boolean,
+    dense: Boolean,
     subjectTitle: {
       type: String,
       default: () => ''
