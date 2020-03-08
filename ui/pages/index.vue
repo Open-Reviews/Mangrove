@@ -3,7 +3,7 @@
     <v-row class="mb-1 text-center white--text">
       <v-img
         :src="front.image"
-        :height="isSmall && focus ? '150vh' : '100vh'"
+        :height="isSmall ? (focus ? '160vh' : '110vh') : '100vh'"
         class="display-3 pa-12"
       >
         <h1
@@ -16,7 +16,7 @@
           :class="isSmall ? 'headline' : 'display-1'"
         />
         <v-row>
-          <v-col />
+          <v-col v-if="!isSmall" />
           <v-col :cols="isSmall ? 12 : 6">
             <SearchBox @focus="focus = $event" />
             <v-row class="justify-space-around mt-n8">
@@ -26,17 +26,15 @@
               />
             </v-row>
           </v-col>
-          <v-col />
+          <v-col v-if="!isSmall" />
         </v-row>
-        <v-row
-          v-if="!isSmall || ($vuetify.breakpoint.sm && !focus)"
-          class="headline"
-          style="position: absolute; bottom: 100px; margin-left: auto; margin-right: auto; width: 330px; left: 0; right: 0;"
-          align="center"
+        <v-col
+          class="text-left"
+          cols="11"
+          style="position: absolute; bottom: 20px; margin-left: auto; margin-right: auto; left: 0; right: 0;"
         >
-          <div class="ml-12">WHY MANGROVE</div>
-          <v-img :src="arrow" max-height="10vh" contain class="ml-n12" />
-        </v-row>
+          <ReviewList :query="{ limit: 4 }" :cols="isSmall ? 12 : 3" opinions />
+        </v-col>
       </v-img>
     </v-row>
     <v-row v-for="(feature, i) in features" :key="i" class="mb-1">
@@ -99,8 +97,9 @@
 </template>
 
 <script>
-import { DISMISS_ALPHA_WARNING, SET_FILTER } from '../store/mutation-types'
-import SearchBox from '../components/SearchBox'
+import { DISMISS_ALPHA_WARNING, SET_FILTER } from '~/store/mutation-types'
+import SearchBox from '~/components/SearchBox'
+import ReviewList from '~/components/ReviewList'
 import {
   html as demoContent,
   attributes as demoAttributes
@@ -120,7 +119,8 @@ import {
 
 export default {
   components: {
-    SearchBox
+    SearchBox,
+    ReviewList
   },
   data() {
     return {
@@ -182,7 +182,8 @@ export default {
     dismissAlphaWarning() {
       this.$store.commit(DISMISS_ALPHA_WARNING)
     }
-  }
+  },
+  middleware: 'front'
 }
 </script>
 

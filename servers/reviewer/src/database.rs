@@ -30,6 +30,10 @@ pub struct Query {
     pub rating: Option<i16>,
     /// Reviews with the given opinion.
     pub opinion: Option<String>,
+    /// Limit the number of returned results.
+    pub limit: Option<i64>,
+    /// Get only reviews with opinion present or not present.
+    pub opinionated: Option<bool>,
     /// Include aggregate information about review issuers.
     pub issuers: Option<bool>,
     /// Include aggregate information about reviews of returned reviews.
@@ -60,6 +64,9 @@ impl DbConn {
         }
         if let Some(s) = &query.scheme {
             f = Box::new(f.and(scheme.eq(s)))
+        }
+        if let Some(s) = &query.opinionated {
+            f = Box::new(f.and(opinion.is_null().ne(s)))
         }
         if let Some(s) = &query.kid {
             f = Box::new(f.and(kid.eq(s)))
@@ -95,6 +102,7 @@ impl DbConn {
         }
         Ok(reviews
             .filter(f)
+            .limit(query.limit.unwrap_or(10_000))
             .select((
                 signature,
                 jwt,

@@ -1,6 +1,9 @@
 <template>
   <v-avatar tile>
-    <div v-html="identicon" style="width: 100%; height: 100%" />
+    <div
+      v-html="identicon"
+      style="width: 100%; height: 100%; display: flex; align-items: center"
+    />
   </v-avatar>
 </template>
 
@@ -10,7 +13,7 @@ export default {
   props: ['seed'],
   computed: {
     identicon() {
-      return jdenticon.toSvg(this.seed, 100, { padding: 0.08 })
+      return jdenticon.toSvg(this.seed, 100)
     }
   }
 }

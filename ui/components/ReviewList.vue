@@ -5,7 +5,29 @@
       v-html="noReviewsMessage"
       class="text-center"
     />
-    <ReviewListBase :listArgs="opinionated" />
+    <v-carousel
+      v-if="$vuetify.breakpoint.mdAndDown && opinions"
+      :show-arrows="false"
+      hide-delimiter-background
+      height="auto"
+    >
+      <v-carousel-item v-for="(arg, i) in opinionated" :key="i">
+        <Review
+          :review="arg.review"
+          :issuer="arg.issuer"
+          :maresiSubject="arg.maresiSubject"
+          :subjectTitle="arg.subjectTitle"
+          dense
+          class="mb-10"
+        />
+      </v-carousel-item>
+    </v-carousel>
+    <ReviewListBase
+      :listArgs="opinionated"
+      :cols="cols"
+      :dense="opinions"
+      v-else
+    />
     <v-container v-if="query.kid && opinionless">
       <span
         v-if="query.kid && v !== 0"
@@ -15,16 +37,20 @@
       </span>
     </v-container>
     <v-row
-      v-if="opinionless.ratings.length && !showOpinionless"
+      v-if="opinionless.ratings.length && !showOpinionless && !opinions"
       justify="center"
     >
       <span @click="showOpinionless = true" style="cursor: pointer"
         >Show reviews without a description</span
       >
     </v-row>
-    <ReviewListBase v-if="showOpinionless" :listArgs="opinionless.ratings" />
+    <ReviewListBase
+      v-if="showOpinionless"
+      :listArgs="opinionless.ratings"
+      :cols="cols"
+    />
 
-    <v-row v-if="reviews.length && notMaresi" justify="center">
+    <v-row v-if="reviews.length && notMaresi && !opinions" justify="center">
       <v-tooltip top>
         <template v-slot:activator="{ on }">
           <v-btn
@@ -46,11 +72,13 @@ import { downloadLink, pemDisplay, displayName } from '../utils'
 import { MARESI, subPath } from '../store/scheme-types'
 import { IS_PERSONAL_EXPERIENCE } from '../store/metadata-types'
 import ReviewListBase from './ReviewListBase'
+import Review from './Review'
 
 export default {
   name: 'ReviewList',
   components: {
-    ReviewListBase
+    ReviewListBase,
+    Review
   },
   props: {
     query: {
@@ -60,6 +88,11 @@ export default {
           kid: this.$store.state.publicKey
         }
       }
+    },
+    opinions: Boolean,
+    cols: {
+      type: Number,
+      default: () => 12
     }
   },
   data() {
@@ -159,3 +192,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.v-btn--round .v-btn__content .v-icon {
+  color: white !important;
+}
+</style>

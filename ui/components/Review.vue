@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card light>
     <v-subheader
       v-if="subjectTitle"
       v-text="subjectTitle"
@@ -10,7 +10,7 @@
       :pk="review.kid"
       :metadata="payload.metadata"
       :count="issuer && issuer.count"
-      class="mb-n5"
+      class="my-n5"
     />
     <v-card-text>
       <v-row v-if="payload.rating !== null" align="center" class="pl-2">
@@ -28,7 +28,9 @@
         />
         Reviewed {{ new Date(payload.iat * 1000).toDateString() }}
       </v-row>
-      <span v-html="formattedOpinion" />
+      <span v-line-clamp="dense && 2">
+        <span v-html="formattedOpinion" />
+      </span>
       <v-row v-if="payload.images" class="mx-auto">
         <v-img
           v-for="img in payload.images"
@@ -52,7 +54,7 @@
         </v-chip>
       </div>
     </v-card-text>
-    <v-card-actions v-if="!preview" class="my-n7 mx-auto">
+    <v-card-actions v-if="!(preview || dense)" class="my-n7 mx-auto">
       <v-tooltip v-for="action in actions" :key="action.icon" top>
         <template v-slot:activator="{ on }">
           <v-btn
@@ -163,6 +165,7 @@ export default {
       }
     },
     preview: Boolean,
+    dense: Boolean,
     subjectTitle: {
       type: String,
       default: () => ''
