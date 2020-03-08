@@ -31,7 +31,7 @@
         <v-col
           class="text-left"
           cols="11"
-          style="position: absolute; bottom: 50px; margin-left: auto; margin-right: auto; left: 0; right: 0;"
+          style="position: absolute; bottom: 20px; margin-left: auto; margin-right: auto; left: 0; right: 0;"
         >
           <ReviewList :query="{ limit: 4 }" :cols="isSmall ? 12 : 3" opinions />
         </v-col>
