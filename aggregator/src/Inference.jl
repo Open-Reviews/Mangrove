@@ -10,15 +10,23 @@ function get_trace(
   )::Gen.Trace
   println("Running inference...")
   observations = Gen.choicemap()
+  subjects = subs(ratings)
+  reviewers = kids(ratings)
+  for sub in subjects
+    for kid in reviewers
+      observations[:selected => sub => kid] = false
+    end
+  end
   for (k, v) in ratings
     observations[k => :rating] = v
+    observations[:selected => k.sub => k.kid] = true
   end
 
   # Call importance_resampling to obtain a likely trace consistent
   # with our observations.
   (trace, _) = Gen.importance_resampling(
     model,
-    (subs(ratings), kids(ratings)),
+    (subjects, reviewers),
     observations,
     amount_of_computation
   )
@@ -26,7 +34,7 @@ function get_trace(
 end
 
 function qualities(t::Gen.Trace)::Dict{Sub, Rating}
-  Dict(sub => t[(:quality, sub)] for sub in get_args(t)[1])
+  Dict(sub => t[:quality => sub] for sub in get_args(t)[1])
 end
 
 function mean_l2(data::Dict{RatingInfo, Rating}, trace::Gen.Trace)::Real
