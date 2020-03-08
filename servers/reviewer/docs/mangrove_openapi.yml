@@ -1,8 +1,11 @@
 openapi: 3.0.0
 info:
   title: Mangrove Server API
-  description: Submit and retrieve reviews, as well as aggregate statistics about reviews.
-    See [Mangrove Original UI](https://mangrove.reviews) for more information.
+  description: Submit and retrieve reviews,
+    as well as aggregate statistics about reviews.
+    See [Mangrove Original UI](https://mangrove.reviews) for more information
+    and [Mangrove Client JS Library](https://js.mangrove.reviews/)
+    for a JavaScript wrapper.
   version: 0.1.0
 
 servers:

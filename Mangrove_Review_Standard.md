@@ -1,4 +1,4 @@
-# Mangrove Review Standard (MaReSt) v0.2.1
+# Mangrove Review Standard (MaReSt) v0.2.2
 
 The mission of the Mangrove initiative is to create a public space on the Internet where people can freely share insights with each other and make better decisions based on open data. Mangrove contributes to the Open and Privacy movements by proposing an alternative architecture that is characterized by a **separation of data and products**, and that **respects the right to privacy**:
 
@@ -10,9 +10,21 @@ We want this open dataset to be as useful as possible, to as many people and org
 
 The standard was developed based on a set of [principles](#principles-of-the-data-format-specification) that guided the design decisions made.
 
+## Summary
+
+Mangrove dataset consists of reviews. The dataset is initially collected on the Original Mangrove Server, where reviews can be submitted and retrieved via an [open API](https://docs.mangrove.reviews). Other servers can be easily created using open-source infrastructure.
+
+Reviews refer to subjects by unique identifiers (URIs), which currently cover places (touristic attractions, hotels, restaurants), websites, books, companies and other reviews.
+
+Each submitted review has to conform to the Mangrove Review Format, which is a type of a [JSON Web Token (JWT)](https://jwt.io). This format ensures that the reviews can be handled in a standardized manner and that reviewers can maintain their identity across reviews.
+The format aims to be flexible to allow sharing any useful information about the subject.
+
+Allowing reviewers to maintain their identity is important to help with weeding out unreliable reviews. The usual way to ensure identity is to run a centralized login server, while this works well for managed centralized databases, it can be problematic for an open dataset. This is why Mangrove makes use of public key cryptography and JWT standard to provide this capability.
+It is also possible to run a review submitting service which manages user keys in a centralized fashion, allowing for easy integration with existing login infrastructure of an integrating service.
+
 ## Definitions
 
-**Mangrove review** ("Review"): a statement by a reviewer about an subject, whereby the review is provided according to the MaReSt, and contains, among other things, either a rating (a number between 1 and 100) for the subject, or an opinion (a piece of text describing the experience) about the subject, or both.
+**Mangrove review** ("Review"): a statement (in JSON Web Token format) by a reviewer about an subject, whereby the review is provided according to the MaReSt, and contains, among other things, either a rating (a number between 1 and 100) for the subject, or an opinion (a piece of text describing the experience) about the subject, or both.
 
 **Mangrove version**: a version number of the Mangrove Review Standard following the [Semantic Versioning 2.0.0 rules](https://semver.org/).
 
@@ -33,6 +45,7 @@ The standard was developed based on a set of [principles](#principles-of-the-dat
 - Addition of another claim with an object for structured review content beyond rating.
 - Removal of `kid` header field once JWK format has more adoption.
 - Additional metadata fields: proof-of-purchase, identity token, useful information about the subject.
+- Addition of federation protocol, allowing for seamless multi-server ecosystem.
 
 ## Mangrove Review Example
 
