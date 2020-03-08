@@ -3,7 +3,7 @@
     <v-row class="mb-1 text-center white--text">
       <v-img
         :src="front.image"
-        :height="isSmall ? (focus ? '210vh' : '160vh') : '100vh'"
+        :height="isSmall ? (focus ? '160vh' : '110vh') : '100vh'"
         class="display-3 pa-12"
       >
         <h1
@@ -31,13 +31,9 @@
         <v-col
           class="text-left"
           cols="11"
-          style="position: absolute; bottom: 100px; margin-left: auto; margin-right: auto; left: 0; right: 0;"
+          style="position: absolute; bottom: 50px; margin-left: auto; margin-right: auto; left: 0; right: 0;"
         >
-          <ReviewList
-            :query="{ limit: isSmall ? 3 : 4 }"
-            :cols="isSmall ? 12 : 3"
-            opinions
-          />
+          <ReviewList :query="{ limit: 4 }" :cols="isSmall ? 12 : 3" opinions />
         </v-col>
       </v-img>
     </v-row>

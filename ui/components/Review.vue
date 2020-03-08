@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card light>
     <v-subheader
       v-if="subjectTitle"
       v-text="subjectTitle"

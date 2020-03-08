@@ -5,7 +5,29 @@
       v-html="noReviewsMessage"
       class="text-center"
     />
-    <ReviewListBase :listArgs="opinionated" :cols="cols" :dense="opinions" />
+    <v-carousel
+      v-if="$vuetify.breakpoint.mdAndDown && opinions"
+      :show-arrows="false"
+      hide-delimiter-background
+      height="auto"
+    >
+      <v-carousel-item v-for="(arg, i) in opinionated" :key="i">
+        <Review
+          :review="arg.review"
+          :issuer="arg.issuer"
+          :maresiSubject="arg.maresiSubject"
+          :subjectTitle="arg.subjectTitle"
+          dense
+          class="mb-10"
+        />
+      </v-carousel-item>
+    </v-carousel>
+    <ReviewListBase
+      :listArgs="opinionated"
+      :cols="cols"
+      :dense="opinions"
+      v-else
+    />
     <v-container v-if="query.kid && opinionless">
       <span
         v-if="query.kid && v !== 0"
@@ -50,11 +72,13 @@ import { downloadLink, pemDisplay, displayName } from '../utils'
 import { MARESI, subPath } from '../store/scheme-types'
 import { IS_PERSONAL_EXPERIENCE } from '../store/metadata-types'
 import ReviewListBase from './ReviewListBase'
+import Review from './Review'
 
 export default {
   name: 'ReviewList',
   components: {
-    ReviewListBase
+    ReviewListBase,
+    Review
   },
   props: {
     query: {
@@ -170,3 +194,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.v-btn--round .v-btn__content .v-icon {
+  color: white !important;
+}
+</style>
