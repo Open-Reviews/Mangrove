@@ -33,7 +33,7 @@
       </span>
       <v-row v-if="payload.images" class="mx-auto">
         <v-img
-          v-for="img in payload.images"
+          v-for="img in payload.images.slice(dense ? 2 : 0)"
           :key="img.src"
           :src="img.src"
           max-height="80"
