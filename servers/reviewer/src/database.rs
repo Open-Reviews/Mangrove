@@ -102,6 +102,7 @@ impl DbConn {
         }
         Ok(reviews
             .filter(f)
+            .order(iat.desc())
             .limit(query.limit.unwrap_or(10_000))
             .select((
                 signature,
