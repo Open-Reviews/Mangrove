@@ -3,11 +3,11 @@ module Inference
 using Gen
 using ..MangroveBase: RatingInfo, Rating, Sub, mean, subs, kids
 
-function get_trace(
+function get_traces(
     model::DynamicDSLFunction,
     ratings::Dict{RatingInfo, Rating},
     amount_of_computation::Int
-  )::Gen.Trace
+  )::Vector{Gen.Trace}
   println("Running inference...")
   observations = Gen.choicemap()
   subjects = subs(ratings)
@@ -22,15 +22,21 @@ function get_trace(
     observations[:selected => k.sub => k.kid] = true
   end
 
-  # Call importance_resampling to obtain a likely trace consistent
-  # with our observations.
-  (trace, _) = Gen.importance_resampling(
+  trace, = Gen.importance_resampling(
     model,
     (subjects, reviewers),
     observations,
-    amount_of_computation
+    100
   )
-  return trace
+
+  traces = Gen.Trace[]
+
+  for _ in 1:amount_of_computation
+    trace, = mh(trace, select(:quality))
+    push!(traces, trace)
+  end
+
+  return traces
 end
 
 function qualities(t::Gen.Trace)::Dict{Sub, Rating}
