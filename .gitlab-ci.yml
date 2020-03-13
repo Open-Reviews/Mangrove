@@ -1,16 +1,9 @@
-variables:
-  UI_BUCKET: "mangrove.reviews"
-  DOCS_BUCKET: "docs.mangrove.reviews"
-  JS_BUCKET: "js.mangrove.reviews"
-  BLOG_BUCKET: "blog.mangrove.reviews"
-  UI_DIST: "E3R6KTTYJH0XRG"
-  DOCS_DIST: "E2HRIGC1I7B7ZA"
-  JS_DIST: "E3PQ8VOO0YPOZI"
-  BLOG_DIST: "E2MJJIV6P7ASG5"
-  CI_DEBUG_TRACE: "true"
-  VUE_APP_API_URL: "https://api.mangrove.reviews"
-  VUE_APP_FILES_URL: "https://files.mangrove.reviews"
-  VUE_APP_UPLOAD_URL: "https://upload.mangrove.reviews"
+stages:
+  - build
+  - test
+  - pages
+  - production
+  - task
 
 image: wilson208/circleci-awscli:node
 cache:
@@ -18,20 +11,45 @@ cache:
   paths:
     - ui/node_modules/
 
-build:
+build ui:
+  stage: build
   script:
     - cd ui
     - yarn install
     - yarn generate
-    - cd ../blog
+  rules:
+    - changes:
+      - ui/**/*
+
+build blog:
+  stage: build
+  script:
+    - cd blog
     - yarn install
     - yarn build
-    - cd ../libraries/mangrove-reviews-js
+  rules:
+    - changes:
+      - blog/**/*
+
+build js doc:
+  stage: build
+  script:
+    - cd libraries/mangrove-reviews-js
     - yarn install
     - yarn doc
-    - cd ../../servers/reviewer/docs
+  rules:
+    - changes:
+      - libraries/mangrove-reviews-js/**/*
+
+build api doc:
+  stage: build
+  script:
+    - cd servers/reviewer/docs
     - yarn install
     - yarn doc
+  rules:
+    - changes:
+      - servers/reviewer/docs/**/*
 
 test:
   script:
@@ -56,9 +74,20 @@ pages:
   except:
     - master
 
-production:
+deploy api docs:
   variables:
     BASE_URL: "https://mangrove.reviews"
+    UI_BUCKET: "mangrove.reviews"
+    DOCS_BUCKET: "docs.mangrove.reviews"
+    JS_BUCKET: "js.mangrove.reviews"
+    BLOG_BUCKET: "blog.mangrove.reviews"
+    UI_DIST: "E3R6KTTYJH0XRG"
+    DOCS_DIST: "E2HRIGC1I7B7ZA"
+    JS_DIST: "E3PQ8VOO0YPOZI"
+    BLOG_DIST: "E2MJJIV6P7ASG5"
+    VUE_APP_API_URL: "https://api.mangrove.reviews"
+    VUE_APP_FILES_URL: "https://files.mangrove.reviews"
+    VUE_APP_UPLOAD_URL: "https://upload.mangrove.reviews"
   stage: deploy
   script:
     - cd servers/reviewer/docs
