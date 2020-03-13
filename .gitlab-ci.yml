@@ -1,8 +1,7 @@
 stages:
   - build
   - test
-  - pages
-  - production
+  - deploy
   - task
 
 image: wilson208/circleci-awscli:node
@@ -31,16 +30,6 @@ build blog:
     - changes:
       - blog/**/*
 
-build js doc:
-  stage: build
-  script:
-    - cd libraries/mangrove-reviews-js
-    - yarn install
-    - yarn doc
-  rules:
-    - changes:
-      - libraries/mangrove-reviews-js/**/*
-
 build api doc:
   stage: build
   script:
@@ -51,13 +40,28 @@ build api doc:
     - changes:
       - servers/reviewer/docs/**/*
 
-test:
+build js lib doc:
+  stage: build
+  script:
+    - cd libraries/mangrove-reviews-js
+    - yarn install
+    - yarn doc
+  rules:
+    - changes:
+      - libraries/mangrove-reviews-js/**/*
+
+test js lib:
+  stage: test
   script:
     - cd libraries/mangrove-reviews-js
     - yarn install
     - yarn test
+  rules:
+    - changes:
+      - libraries/mangrove-reviews-js/**/*
 
 pages:
+  stage: deploy
   variables:
     BASE_URL: "https://staging.mangrove.reviews"
   stage: deploy
@@ -74,7 +78,8 @@ pages:
   except:
     - master
 
-deploy api docs:
+production:
+  stage: deploy
   variables:
     BASE_URL: "https://mangrove.reviews"
     UI_BUCKET: "mangrove.reviews"
