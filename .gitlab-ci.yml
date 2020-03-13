@@ -30,7 +30,7 @@ build blog:
     - changes:
       - blog/**/*
 
-build api doc:
+build api docs:
   stage: build
   script:
     - cd servers/reviewer/docs
@@ -40,7 +40,7 @@ build api doc:
     - changes:
       - servers/reviewer/docs/**/*
 
-build js lib doc:
+build js lib docs:
   stage: build
   script:
     - cd libraries/mangrove-reviews-js
@@ -78,22 +78,11 @@ pages:
   except:
     - master
 
-production:
+deploy api docs:
   stage: deploy
   variables:
-    BASE_URL: "https://mangrove.reviews"
-    UI_BUCKET: "mangrove.reviews"
     DOCS_BUCKET: "docs.mangrove.reviews"
-    JS_BUCKET: "js.mangrove.reviews"
-    BLOG_BUCKET: "blog.mangrove.reviews"
-    UI_DIST: "E3R6KTTYJH0XRG"
     DOCS_DIST: "E2HRIGC1I7B7ZA"
-    JS_DIST: "E3PQ8VOO0YPOZI"
-    BLOG_DIST: "E2MJJIV6P7ASG5"
-    VUE_APP_API_URL: "https://api.mangrove.reviews"
-    VUE_APP_FILES_URL: "https://files.mangrove.reviews"
-    VUE_APP_UPLOAD_URL: "https://upload.mangrove.reviews"
-  stage: deploy
   script:
     - cd servers/reviewer/docs
     - yarn install
@@ -101,23 +90,62 @@ production:
     - aws s3 rm s3://$DOCS_BUCKET --recursive
     - aws s3 cp --recursive ./dist s3://$DOCS_BUCKET
     - aws cloudfront create-invalidation --distribution-id $DOCS_DIST --paths "/*"
-    - cd ../../../libraries/mangrove-reviews-js
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
+    - changes:
+      - servers/reviewer/docs/**/*
+
+deploy js lib docs:
+  stage: deploy
+  variables:
+    JS_BUCKET: "js.mangrove.reviews"
+    JS_DIST: "E3PQ8VOO0YPOZI"
+  script:
+    - cd libraries/mangrove-reviews-js
     - yarn install
     - yarn doc
     - aws s3 rm s3://$JS_BUCKET --recursive
     - aws s3 cp --recursive ./dist s3://$JS_BUCKET
     - aws cloudfront create-invalidation --distribution-id $JS_DIST --paths "/*"
-    - cd ../../ui
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
+    - changes:
+      - libraries/mangrove-reviews-js/**/*
+
+deploy ui:
+  stage: deploy
+  variables:
+    BASE_URL: "https://mangrove.reviews"
+    UI_BUCKET: "mangrove.reviews"
+    UI_DIST: "E3R6KTTYJH0XRG"
+    VUE_APP_API_URL: "https://api.mangrove.reviews"
+    VUE_APP_FILES_URL: "https://files.mangrove.reviews"
+    VUE_APP_UPLOAD_URL: "https://upload.mangrove.reviews"
+  script:
+    - cd ui
     - yarn install
     - yarn generate
     - aws s3 rm s3://$UI_BUCKET --recursive
     - aws s3 cp --recursive ./dist s3://$UI_BUCKET
     - aws cloudfront create-invalidation --distribution-id $UI_DIST --paths "/*"
-    - cd ../blog
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
+    - changes:
+      - ui/**/*
+
+deploy blog:
+  stage: deploy
+  variables:
+    BLOG_BUCKET: "blog.mangrove.reviews"
+    BLOG_DIST: "E2MJJIV6P7ASG5"
+  script:
+    - cd blog
     - yarn install
     - yarn build
     - aws s3 rm s3://$BLOG_BUCKET --recursive
     - aws s3 cp --recursive ./public s3://$BLOG_BUCKET
     - aws cloudfront create-invalidation --distribution-id $BLOG_DIST --paths "/*"
-  only:
-    - master
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
+    - changes:
+      - blog/**/*
