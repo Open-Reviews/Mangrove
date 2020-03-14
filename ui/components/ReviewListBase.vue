@@ -1,13 +1,13 @@
 <template>
   <v-row>
-    <v-col v-for="(arg, i) in listArgs" :key="i" :cols="cols" class="mb-n6">
+    <v-col v-for="(arg, i) in listArgs" :key="i" :cols="cols">
       <Review
         :review="arg.review"
         :issuer="arg.issuer"
         :maresiSubject="arg.maresiSubject"
         :subjectTitle="arg.subjectTitle"
         :dense="dense"
-        class="mb-10"
+        class="mb-7"
       />
       <ReviewList :query="{ sub: arg.rootSub }" class="ml-4" />
     </v-col>

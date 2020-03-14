@@ -98,31 +98,31 @@
         <v-alert v-if="error" type="error" border="left" elevation="8">
           Error encountered: {{ error }}
         </v-alert>
+        <v-dialog :value="ratingDialog" :width="width - 200">
+          <v-card>
+            <v-card-title>
+              Would you like to leave a rating as well?
+            </v-card-title>
+            <v-rating v-model="rating" hover class="my-2 mx-4" large />
+            <v-card-actions>
+              <v-spacer />
+              <v-btn
+                @click.stop="submitReview"
+                color="secondary"
+                class="black--text"
+                >Submit</v-btn
+              >
+              <v-btn
+                @click.stop="
+                  dismissedRating = true
+                  submitReview()
+                "
+                >Dismiss</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-card>
-      <v-dialog :value="ratingDialog" :width="width - 200">
-        <v-card>
-          <v-card-title>
-            Would you like to leave a rating as well?
-          </v-card-title>
-          <v-rating v-model="rating" hover class="my-2 mx-4" large />
-          <v-card-actions>
-            <v-spacer />
-            <v-btn
-              @click.stop="submitReview"
-              color="secondary"
-              class="black--text"
-              >Submit</v-btn
-            >
-            <v-btn
-              @click.stop="
-                dismissedRating = true
-                submitReview()
-              "
-              >Dismiss</v-btn
-            >
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
     </v-dialog>
     <SaveKeyDialog @dismiss="clear" v-if="keyDialog" :count="hasReviewed" />
   </div>
