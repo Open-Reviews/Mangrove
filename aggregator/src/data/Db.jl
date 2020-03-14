@@ -11,7 +11,10 @@ function mangrove_ratings(conn_string::String = ENV_CONN)::MangroveData
     result = execute(conn, "SELECT * FROM reviews")
     data = columntable(result)
     close(conn)
-    Dict(RatingInfo(row.sub, row.kid) => row.rating for row in Tables.rows(data))
+    Dict(
+        RatingInfo(row.sub, row.kid) => row.rating
+        for row in Tables.rows(data) if !ismissing(row.rating)
+    )
 end
 
 function insert(conn_string::String, subs::Vector{String}, qualities::Vector{Int16})

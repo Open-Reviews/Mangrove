@@ -25,7 +25,7 @@ normalize(rating::Real) = (rating + 0.5) / 101
 MangroveData = Dict{RatingInfo, Rating}
 generate_data(subs::Int, ratings::Int)::MangroveData =
   Dict(
-    RatingInfo(string(i % subs + 1), string(i % ratings + 1)) => i % subs % 5 + 1
+    RatingInfo(string(i % subs), string(i % ratings)) => i % subs % 100
     for i in 1:ratings
   )
 
