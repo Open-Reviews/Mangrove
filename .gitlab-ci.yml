@@ -19,6 +19,8 @@ build ui:
   only:
     changes:
       - ui/**/*
+  except:
+    - schedules
 
 build blog:
   stage: build
@@ -29,6 +31,8 @@ build blog:
   only:
     changes:
       - blog/**/*
+  except:
+    - schedules
 
 build api docs:
   stage: build
@@ -39,6 +43,8 @@ build api docs:
   only:
     changes:
       - servers/reviewer/docs/**/*
+  except:
+    - schedules
 
 build js lib docs:
   stage: build
@@ -49,6 +55,8 @@ build js lib docs:
   only:
     changes:
       - libraries/mangrove-reviews-js/**/*
+  except:
+    - schedules
 
 test js lib:
   stage: test
@@ -59,6 +67,8 @@ test js lib:
   only:
     changes:
       - libraries/mangrove-reviews-js/**/*
+  except:
+    - schedules
 
 pages:
   stage: deploy
@@ -77,6 +87,7 @@ pages:
       - public
   except:
     - master
+    - schedules
   only:
     changes:
       - ui/**/*
@@ -98,6 +109,8 @@ deploy api docs:
       - master
     changes:
       - servers/reviewer/docs/**/*
+  except:
+    - schedules
 
 deploy js lib docs:
   stage: deploy
@@ -116,6 +129,8 @@ deploy js lib docs:
       - master
     changes:
       - libraries/mangrove-reviews-js/**/*
+  except:
+    - schedules
 
 deploy ui:
   stage: deploy
@@ -138,6 +153,8 @@ deploy ui:
       - master
     changes:
       - ui/**/*
+  except:
+    - schedules
 
 deploy blog:
   stage: deploy
@@ -156,6 +173,8 @@ deploy blog:
       - master
     changes:
       - blog/**/*
+  except:
+    - schedules
 
 aggregator:
   stage: task
@@ -164,5 +183,4 @@ aggregator:
     - cd aggregator
     - julia --project=. run.jl
   only:
-    variables:
-      - $AGGREGATOR == "true"
+    - schedules
