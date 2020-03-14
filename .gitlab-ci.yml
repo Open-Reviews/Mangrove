@@ -19,6 +19,7 @@ build ui:
   only:
     changes:
       - ui/**/*
+      - libraries/mangrove-reviews-js/**/*
   except:
     - schedules
 
@@ -153,6 +154,7 @@ deploy ui:
       - master
     changes:
       - ui/**/*
+      - libraries/mangrove-reviews-js/**/*
   except:
     - schedules
 
