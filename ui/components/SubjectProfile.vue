@@ -34,16 +34,14 @@
         >{{ subject.subtitle }}
         <v-row align="center" class="ml-auto">
           <v-rating
-            :value="subject.quality"
+            :value="stars"
             :background-color="subject.quality ? 'primary' : 'grey lighten-2'"
             half-increments
             dense
             class="mr-2"
             readonly
           />
-          {{ subject.quality && subject.quality.toFixed(1) }} ({{
-            subject.count
-          }})
+          {{ stars && stars.toFixed(1) }} ({{ subject.count }})
         </v-row>
       </v-card-subtitle>
       <v-list-item-content>
@@ -92,6 +90,9 @@ export default {
   computed: {
     subject() {
       return this.$store.getters.subject(this.$route.query.sub)
+    },
+    stars() {
+      return this.subject.quality && (this.subject.quality + 25) / 25
     },
     details() {
       const s = this.subject

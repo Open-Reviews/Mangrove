@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-list v-if="subjects.length" three-line>
-      <template v-for="(subject, i) in subjects">
+      <template v-for="(subject, i) in subjectArgs">
         <v-list-item
           :key="subject.sub"
           @click="select(subject)"
@@ -11,15 +11,15 @@
         >
           <div style="min-width: 140px">
             <v-chip class="ma-3">
-              <v-icon v-text="icon(subject.scheme)" small class="mr-1" />
-              {{ name(subject.scheme) }}
+              <v-icon v-text="subject.icon" small class="mr-1" />
+              {{ subject.name }}
             </v-chip>
           </div>
           <v-list-item-content>
             <v-list-item-title>{{ subject.title }}</v-list-item-title>
             <v-row align="center" class="ml-auto">
               <v-rating
-                :value="subject.quality"
+                :value="subject.stars"
                 :background-color="
                   subject.quality ? 'primary' : 'grey lighten-2'
                 "
@@ -28,7 +28,7 @@
                 dense
                 class="mr-2"
               />
-              {{ subject.quality && subject.quality.toFixed(1) }}
+              {{ subject.stars && subject.stars.toFixed(1) }}
               <span
                 :class="subject.quality ? 'ml-1' : 'grey--text text--lighten-2'"
                 >({{ subject.count }})</span
@@ -190,15 +190,17 @@ export default {
     showAdvice() {
       console.log('isSearching: ', this.$store.state.isSearching)
       return !this.$store.state.isSearching
+    },
+    subjectArgs() {
+      return this.subjects.map((subject) => {
+        subject.name = NAMES[subject.scheme]
+        subject.icon = ICONS[subject.scheme]
+        subject.stars = subject.quality && (subject.quality + 25) / 25
+        return subject
+      })
     }
   },
   methods: {
-    name(uri) {
-      return NAMES[uri]
-    },
-    icon(uri) {
-      return ICONS[uri]
-    },
     select(subject) {
       this.$emit('selected')
       this.$store.dispatch('selectSubject', [this.$route.query, subject.sub])

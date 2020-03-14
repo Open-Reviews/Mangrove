@@ -299,10 +299,7 @@ export const actions = {
         rawSubjects.map((raw) => raw.sub)
       ).then((subjects = {}) => {
         rawSubjects.map((raw) => {
-          const rawQuality = subjects[raw.sub].quality
           subjects[raw.sub] = { ...raw, ...subjects[raw.sub] }
-          // Quality is null when there are no reviews.
-          subjects[raw.sub].quality = rawQuality && (rawQuality + 25) / 25
         })
         commit(t.ADD_SUBJECTS, subjects)
       })

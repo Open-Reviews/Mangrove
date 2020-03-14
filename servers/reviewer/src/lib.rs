@@ -5,6 +5,7 @@ pub mod database;
 pub mod error;
 pub mod review;
 pub mod schema;
+pub mod aggregator_schema;
 
 #[macro_use]
 extern crate diesel;

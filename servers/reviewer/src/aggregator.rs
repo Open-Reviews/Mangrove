@@ -1,6 +1,8 @@
+use super::aggregator_schema::subjects;
 use super::database::{DbConn, Query};
 use super::error::Error;
 use super::review::MAX_RATING;
+use diesel::prelude::*;
 use serde::Serialize;
 use std::collections::BTreeMap;
 
@@ -47,16 +49,12 @@ impl Statistic for Subject {
             ..Default::default()
         })?;
         let mut count = 0;
-        let mut rated_count = 0;
-        let mut rating_total = 0;
         let mut opinion_count = 0;
         let mut positive_count = 0;
         let mut confirmed_count = 0;
         for review in relevant {
             count += 1;
             if let Some(rating) = review.payload.rating {
-                rated_count += 1;
-                rating_total += rating;
                 if rating > MAX_RATING / 2 {
                     positive_count += 1;
                     if let Some(metadata) = review.payload.metadata {
@@ -70,10 +68,11 @@ impl Statistic for Subject {
                 opinion_count += 1;
             }
         }
-        let quality = match rated_count {
-            0 => None,
-            _ => Some(rating_total / rated_count)
-        };
+        let quality = subjects::table
+            .find(&sub)
+            .select(subjects::quality)
+            .first::<i16>(&conn.0)
+            .ok();
         Ok(Subject {
             sub,
             quality,

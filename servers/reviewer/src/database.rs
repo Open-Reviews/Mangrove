@@ -128,9 +128,7 @@ impl DbConn {
                 scheme,
                 (coordinates, uncertainty)
             ))
-            .load::<Review>(&self.0)?
-            .into_iter()
-            .next()
-            .ok_or_else(|| Error::Incorrect(format!("No review found with MaReSi: {}", sig)))
+            .first::<Review>(&self.0)
+            .map_err(Into::into)
     }
 }
