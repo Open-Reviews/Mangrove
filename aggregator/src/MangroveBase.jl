@@ -20,7 +20,16 @@ RATINGS = 5
 Rating = Int
 check_rating(rating::Rating) = @assert(1 <= rating <= RATINGS)
 
-function mean(ratings::Dict{RatingInfo, Rating})::Dict{Sub, Rating}
+normalize(rating::Real) = (rating + 0.5) / 101
+
+MangroveData = Dict{RatingInfo, Rating}
+generate_data(subs::Int, ratings::Int)::MangroveData =
+  Dict(
+    RatingInfo(string(i % subs + 1), string(i % ratings + 1)) => i % subs % 5 + 1
+    for i in 1:ratings
+  )
+
+function mean(ratings::MangroveData)::Dict{Sub, Rating}
   acc = Dict()
   for (info, r) in ratings
     push!(get!(acc, info.sub, []), r)

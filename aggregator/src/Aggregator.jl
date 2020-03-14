@@ -1,21 +1,20 @@
 module Aggregator
 
 include("MangroveBase.jl")
-using .MangroveBase: RatingInfo, Rating, mean, hash
-export RatingInfo, Rating, mean
+using .MangroveBase: RatingInfo, normalize, generate_data, mean, hash
+export RatingInfo, normalize, generate_data
 
-include("Data.jl")
-using .Data: current_mangrove_data, current_mangrove_ratings
-export current_mangrove_data, current_mangrove_ratings
+include("Model.jl")
+using .Model: mangrove_model, get_chains, subs, qualities
+export get_chains, subs, qualities
 
-include("models/HonestModel.jl")
-using .Model: RATINGS, mangrove_model
-export RATINGS, mangrove_model
+include("data/Api.jl")
+include("data/Db.jl")
 
-include("Inference.jl")
-using .Inference: get_trace, qualities, mean_l2
-export get_trace, qualities, mean_l2
+include("Job.jl")
+using .Job: store_qualities
+export store_qualities
 
-export hash
+export hash, mean
 
 end

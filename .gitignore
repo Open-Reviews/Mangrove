@@ -1,6 +1,7 @@
 **/packaged.yaml
 **/package-lock.json
 **/yarn.lock
+**/.env
 node_modules/
 dist/
 .nuxt/
@@ -9,4 +10,3 @@ target/
 test
 servers/file_hoster/files
 servers/reviewer/.env
-ui/.env
