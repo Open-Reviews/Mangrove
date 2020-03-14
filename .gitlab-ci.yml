@@ -156,3 +156,13 @@ deploy blog:
       - master
     changes:
       - blog/**/*
+
+aggregator:
+  stage: task
+  image: julia:latest
+  script:
+    - cd aggregator
+    - julia --project=. run.jl
+  only:
+    variables:
+      - $AGGREGATOR == "true"
