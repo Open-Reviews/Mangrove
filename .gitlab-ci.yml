@@ -181,6 +181,6 @@ aggregator:
   image: julia:latest
   script:
     - cd aggregator
-    - julia --project=. run.jl
+    - julia --project run.jl
   only:
     - schedules
