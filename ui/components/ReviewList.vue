@@ -11,7 +11,7 @@
       hide-delimiter-background
       height="auto"
     >
-      <v-carousel-item v-for="(arg, i) in opinionated" :key="i">
+      <v-carousel-item v-for="(arg, i) in reliable" :key="i">
         <Review
           :review="arg.review"
           :issuer="arg.issuer"
@@ -23,7 +23,7 @@
       </v-carousel-item>
     </v-carousel>
     <ReviewListBase
-      :listArgs="opinionated"
+      :listArgs="reliable"
       :cols="cols"
       :dense="opinions"
       v-else
@@ -40,8 +40,8 @@
       v-if="opinionless.ratings.length && !showOpinionless && !opinions"
       justify="center"
     >
-      <span @click="showOpinionless = true" style="cursor: pointer"
-        >Show reviews without a description</span
+      <v-btn @click="showOpinionless = true" text
+        >Show reviews without a description</v-btn
       >
     </v-row>
     <ReviewListBase
@@ -49,6 +49,16 @@
       :listArgs="opinionless.ratings"
       :cols="cols"
     />
+
+    <v-row
+      v-if="unreliable.length && !showUnreliable && !opinions"
+      justify="center"
+    >
+      <v-btn @click="showUnreliable = true" text
+        >Show less reliable reviews</v-btn
+      >
+    </v-row>
+    <ReviewListBase v-if="showUnreliable" :listArgs="unreliable" :cols="cols" />
 
     <v-row v-if="reviews.length && notMaresi && !opinions" justify="center">
       <v-tooltip top>
@@ -97,7 +107,9 @@ export default {
   },
   data() {
     return {
-      showOpinionless: false
+      neutralityThreshold: 0.2,
+      showOpinionless: false,
+      showUnreliable: false
     }
   },
   computed: {
@@ -106,6 +118,18 @@ export default {
     },
     opinionated() {
       return this.reviews.filter((r) => r.payload.opinion).map(this.reviewToArg)
+    },
+    reliable() {
+      return this.opinionated.filter(
+        (a) =>
+          a.issuer.neutrality && a.issuer.neutrality >= this.neutralityThreshold
+      )
+    },
+    unreliable() {
+      return this.opinionated.filter(
+        (a) =>
+          !a.issuer.neutrality || a.issuer.neutrality < this.neutralityThreshold
+      )
     },
     opinionless() {
       let Flags = 0
