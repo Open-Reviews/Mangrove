@@ -1,7 +1,7 @@
 module Model
 
 using Gen
-using ..MangroveBase: RatingInfo, Rating, RATINGS
+using ..MangroveBase: ReviewInfo, Rating, RATINGS
 
 @gen function subset(items::Vector)::Vector
   filter(item -> @trace(bernoulli(0.5), item[1]), items)
@@ -37,7 +37,7 @@ end
   for sub in subjects
     true_quality = @trace(subject_quality(), :quality => sub)
     for (id, bias) in @trace(subset(biases), :selected => sub)
-      @trace(rating(true_quality, bias), RatingInfo(sub, id))
+      @trace(rating(true_quality, bias), ReviewInfo(sub, id))
     end
   end
 end

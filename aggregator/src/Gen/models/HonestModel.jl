@@ -1,7 +1,7 @@
 module Model
 
 using Gen
-using ..MangroveBase: RatingInfo, Rating, RATINGS
+using ..MangroveBase: ReviewInfo, Rating, RATINGS
 
 @gen function subset(items::Vector{String})::Vector
   filter(item -> @trace(bernoulli(0.5), item), items)
@@ -20,7 +20,7 @@ end
     for kid in @trace(subset(collect(reviewers)), :selected => sub)
       @trace(
         triangle_categorical(true_quality),
-        RatingInfo(sub, kid)
+        ReviewInfo(sub, kid)
       )
     end
   end

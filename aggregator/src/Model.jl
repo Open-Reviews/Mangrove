@@ -1,34 +1,50 @@
 module Model
 
 using Turing
-using ..MangroveBase: MangroveData, RatingInfo, subs, normalize
+using ..MangroveBase: ReviewsSummary, ReviewInfo, kids, subs, normalize
 import ..MangroveBase.subs
 
-MeanBeta(mean::Real, certainty::Real) = Beta(certainty, certainty * (1 - mean) / mean)
+MeanBeta(mean::Real, certainty::Real = 3) = Beta(certainty * mean, certainty * (1 - mean))
 
 @model mangrove_model(data, typical_rating) = begin
+    # Assume that each subject has a fundamental quality associated with it.
+    # Extreme qualities are not as likely as moderate ones.
     qualities = Dict()
     for sub in subs(data)
-        qualities[sub] ~ MeanBeta(typical_rating, 2)
+        qualities[sub] ~ MeanBeta(typical_rating)
     end
+    # Assume that each reviewer is either neutral (0) or biased (1).
+    biases = Dict()
+    for kid in kids(data)
+        biases[kid] ~ Bernoulli(0.3)
+    end
+    # Observe the ratings from the dataset, which depend on quality and bias.
     for info in keys(data)
-        data[info] ~ MeanBeta(qualities[info.sub], 1)
+      if biases[info.kid] == 0
+            # Neutral reviewer leaves a review which reflects the quality.
+            data[info][1] ~ MeanBeta(qualities[info.sub])
+        else
+            # Biased reviewers are mostly negative and pay not attention to actual quality.
+            data[info][1] ~ Beta(0.04, 0.08)
+        end
     end
+    return collect(values(qualities))
 end
 
-function get_chains(raw_data::MangroveData)::Chains
-    normal_data = Dict{RatingInfo, Float64}()
-    for key in keys(raw_data)
-        normal_data[key] = normalize(raw_data[key])
-    end
-    typical_rating = mean(values(normal_data))
-    sample(mangrove_model(normal_data, typical_rating), HMC(0.1, 5), 1000)
+function get_chains(raw_data::Reviews)::Chains
+    data = convert(ReviewsSummary, raw_data)
+    typical_rating = mean(values(data))
+    sampler = PG(100)
+    sample(mangrove_model(data, typical_rating), sampler, 100)
 end
 
-subs(chains_mean::ChainDataFrame)::Vector{String} =
-  [match(r"qualities\[(.+)\]", p)[1] for p in chains_mean[:, :parameters]]
+subs(qualities_mean::ChainDataFrame)::Vector{String} =
+  [match(r"qualities\[(.+)\]", p)[1] for p in qualities_mean[:, :parameters]]
+qualities(qualities_mean::ChainDataFrame)::Vector{Int16} =
+  [round(Int16, m*100) for m in qualities_mean[:, :mean]]
 
-qualities(chains_mean::ChainDataFrame)::Vector{Int16} =
-  [round(Int16, m*100) for m in chains_mean[:, :mean]]
+kids(biases_mean::ChainDataFrame)::Vector{String} =
+    [match(r"biases\[(.+)\]", p)[1] for p in biases_mean[:, :parameters]]
+neutralities(biases_mean::ChainDataFrame)::Vector{Float64} = biases_mean[:, :mean]
 
 end

@@ -1,5 +1,5 @@
 import Pkg.instantiate
 instantiate()
 
-import Aggregator.store_qualities
-store_qualities()
+import Aggregator.store_inferred
+store_inferred()

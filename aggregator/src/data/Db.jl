@@ -1,18 +1,18 @@
 module Db
 
 using LibPQ, Tables, DotEnv
-using ..MangroveBase: RatingInfo, MangroveData
+using ..MangroveBase: ReviewInfo, ReviewContent, Reviews
 
 DotEnv.config(path = "../.env")
 const ENV_CONN = ENV["MANGROVE_DATABASE"]
 
-function mangrove_ratings(conn_string::String = ENV_CONN)::MangroveData
+function mangrove_reviews(conn_string::String = ENV_CONN)::Reviews
     conn = LibPQ.Connection(conn_string)
     result = execute(conn, "SELECT * FROM reviews")
     data = columntable(result)
     close(conn)
     Dict(
-        RatingInfo(row.sub, row.kid) => row.rating
+        ReviewInfo(row.sub, row.kid) => ReviewContent(row.rating, row.opinion)
         for row in Tables.rows(data) if !ismissing(row.rating)
     )
 end

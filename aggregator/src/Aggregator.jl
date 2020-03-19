@@ -1,8 +1,8 @@
 module Aggregator
 
 include("MangroveBase.jl")
-using .MangroveBase: RatingInfo, normalize, generate_data, mean, hash
-export RatingInfo, normalize, generate_data
+using .MangroveBase: ReviewInfo, normalize, generate_data, convert, mean, hash
+export ReviewInfo, normalize, generate_data
 
 include("Model.jl")
 using .Model: mangrove_model, get_chains, subs, qualities
@@ -15,6 +15,6 @@ include("Job.jl")
 using .Job: store_qualities
 export store_qualities
 
-export hash, mean
+export convert, hash, mean
 
 end

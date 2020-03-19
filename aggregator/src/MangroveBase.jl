@@ -1,38 +1,54 @@
 module MangroveBase
 
 using Statistics
-import Base.hash, Statistics.mean
+import Base.convert, Base.hash, Statistics.mean
 
 Sub = String
 Kid = String
-struct RatingInfo
+struct ReviewInfo
   sub::Sub
   kid::Kid
 end
-hash(info::RatingInfo) = hash(info.sub, hash(info.kid))
+hash(info::ReviewInfo) = hash(info.sub, hash(info.kid))
 
-subs(infos::AbstractSet{RatingInfo}) = Set(info.sub for info in infos)
-kids(infos::AbstractSet{RatingInfo}) = Set(info.kid for info in infos)
-subs(infos::AbstractDict{RatingInfo, T}) where T = subs(keys(infos))
-kids(infos::AbstractDict{RatingInfo, T}) where T = kids(keys(infos))
+struct ReviewContent
+  rating::Int
+  opinion::Union{Missing, String}
+end
+normalize(rating::Int)::Float64 = (rating + 0.5) / 101
 
-RATINGS = 5
-Rating = Int
-check_rating(rating::Rating) = @assert(1 <= rating <= RATINGS)
+"Normalized version of `ReviewContent`"
+ReviewSummary = Tuple{Float64, Bool}
+rating(s::ReviewSummary) = s[1]
 
-normalize(rating::Real) = (rating + 0.5) / 101
+convert(::Type{ReviewSummary}, c::ReviewContent) =
+  (normalize(c.rating), !ismissing(c.opinion))
 
-MangroveData = Dict{RatingInfo, Rating}
-generate_data(subs::Int, ratings::Int)::MangroveData =
+Reviews = Dict{ReviewInfo, ReviewContent}
+ReviewsSummary = Dict{ReviewInfo, ReviewSummary}
+
+convert(::Type{ReviewsSummary}, r::Reviews) =
+  Dict(i => convert(ReviewSummary, c) for (i, c) in r)
+
+subs(infos::AbstractSet{ReviewInfo}) = Set(info.sub for info in infos)
+kids(infos::AbstractSet{ReviewInfo}) = Set(info.kid for info in infos)
+subs(infos::AbstractDict{ReviewInfo, T}) where T = subs(keys(infos))
+kids(infos::AbstractDict{ReviewInfo, T}) where T = kids(keys(infos))
+
+RATINGS = 100
+check_rating(rating::Int) = @assert(0 <= rating <= RATINGS)
+
+generate_data(subs::Int, ratings::Int)::Reviews =
   Dict(
-    RatingInfo(string(i % subs), string(i % ratings)) => i % subs % 100
-    for i in 1:ratings
+    ReviewInfo(string(i % subs), string(i % 100)) =>
+      ReviewContent((i % subs % 11) * 10, missing)
+    for i in 0:ratings - 1
   )
 
-function mean(ratings::MangroveData)::Dict{Sub, Rating}
+function mean(ratings::ReviewsSummary)::Dict{Sub, Int}
   acc = Dict()
-  for (info, r) in ratings
-    push!(get!(acc, info.sub, []), r)
+  for (info, s) in ratings
+    push!(get!(acc, info.sub, []), rating(s))
   end
   out = Dict()
   for (sub, v) in acc
@@ -40,5 +56,7 @@ function mean(ratings::MangroveData)::Dict{Sub, Rating}
   end
   out
 end
+
+mean(rs::Base.ValueIterator{ReviewsSummary}) = mean(rating(s) for s in rs)
 
 end
