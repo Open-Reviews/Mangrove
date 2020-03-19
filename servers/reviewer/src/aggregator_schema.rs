@@ -4,3 +4,10 @@ table! {
         quality -> Int2,
     }
 }
+
+table! {
+    reviewers (pem) {
+        pem -> Text,
+        neutrality -> Float,
+    }
+}

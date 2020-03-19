@@ -1,4 +1,4 @@
-use super::aggregator_schema::subjects;
+use super::aggregator_schema::{subjects, reviewers};
 use super::database::{DbConn, Query};
 use super::error::Error;
 use super::review::MAX_RATING;
@@ -89,18 +89,23 @@ impl Statistic for Subject {
 pub struct Issuer {
     /// Number of reviews written by this issuer.
     pub count: usize,
+    /// How neutral the reviewer appears to be.
+    pub neutrality: Option<f32>,
 }
 
 impl Statistic for Issuer {
     fn compute(conn: &DbConn, kid: String) -> Result<Self, Error> {
-        // TODO: Optimize it by counting closer to DB.
+        let neutrality = reviewers::table
+            .find(&kid)
+            .select(reviewers::neutrality)
+            .first::<f32>(&conn.0)
+            .ok();
         let count = conn
             .filter(Query {
                 kid: Some(kid),
                 ..Default::default()
             })?
             .len();
-        println!("Returning count {:?}", count);
-        Ok(Issuer { count })
+        Ok(Issuer { count, neutrality })
     }
 }
