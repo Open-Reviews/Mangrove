@@ -10,6 +10,30 @@ cache:
   paths:
     - ui/node_modules/
 
+build reviewer server:
+  stage: build
+  image: plantingspace/lambda-rust
+  script:
+    - cd servers/reviewer
+    - cargo build
+  only:
+    changes:
+      - server/reviewer/src/**/*
+  except:
+    - schedules
+
+build files server:
+  stage: build
+  image: plantingspace/lambda-rust
+  script:
+    - cd servers/file_hoster
+    - cargo build
+  only:
+    changes:
+      - server/file_hoster/**/*
+  except:
+    - schedules
+
 build ui:
   stage: build
   script:
