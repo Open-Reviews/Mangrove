@@ -1,8 +1,8 @@
 module Model
 
 using Turing
-using ..MangroveBase: ReviewsSummary, ReviewInfo, kids, subs, normalize
-import ..MangroveBase.subs
+using ..MangroveBase: ReviewsSummary, Reviews, kids, subs, normalize
+import ..MangroveBase.subs, ..MangroveBase.kids
 
 MeanBeta(mean::Real, certainty::Real = 3) = Beta(certainty * mean, certainty * (1 - mean))
 
@@ -45,6 +45,7 @@ qualities(qualities_mean::ChainDataFrame)::Vector{Int16} =
 
 kids(biases_mean::ChainDataFrame)::Vector{String} =
     [match(r"biases\[(.+)\]", p)[1] for p in biases_mean[:, :parameters]]
-neutralities(biases_mean::ChainDataFrame)::Vector{Float64} = biases_mean[:, :mean]
+neutralities(biases_mean::ChainDataFrame)::Vector{Float32} =
+    [1 - m for m in biases_mean[:, :mean]]
 
 end

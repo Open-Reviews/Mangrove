@@ -17,17 +17,34 @@ function mangrove_reviews(conn_string::String = ENV_CONN)::Reviews
     )
 end
 
-function insert(conn_string::String, subs::Vector{String}, qualities::Vector{Int16})
+struct DbInput
+    subs::Vector{String}
+    qualities::Vector{Int16}
+    kids::Vector{String}
+    neutralities::Vector{Float32}
+end
+
+function insert(conn_string::String, in::DbInput)
     conn = LibPQ.Connection(conn_string)
     execute(conn, "BEGIN;")
     LibPQ.load!(
-        (sub = subs, quality = qualities),
+        (sub = in.subs, quality = in.qualities),
         conn,
         """
         INSERT INTO subjects (sub, quality) VALUES (\$1, \$2)
         ON CONFLICT (sub) DO UPDATE
             SET sub = excluded.sub,
                 quality = excluded.quality;
+        """,
+    )
+    LibPQ.load!(
+        (pem = in.kids, neutrality = in.neutralities),
+        conn,
+        """
+        INSERT INTO reviewers (pem, neutrality) VALUES (\$1, \$2)
+        ON CONFLICT (pem) DO UPDATE
+            SET pem = excluded.pem,
+                neutrality = excluded.neutrality;
         """,
     )
     execute(conn, "COMMIT;")
