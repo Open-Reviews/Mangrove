@@ -321,6 +321,12 @@ components:
           type: integer
           format: uint
           minimum: 0
+        neutrality:
+          description: How likely is it for this reviewer to be fair.
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
     Reviews:
       description: Return type used to provide `Review`s and any associated data.
       type: object
