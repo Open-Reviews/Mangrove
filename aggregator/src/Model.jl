@@ -4,8 +4,10 @@ using Turing
 using ..MangroveBase: ReviewsSummary, Reviews, kids, subs, normalize
 import ..MangroveBase.subs, ..MangroveBase.kids
 
+"Construct a `Beta` distribution with given `mean` and spikiness given by `certainty`."
 MeanBeta(mean::Real, certainty::Real = 3) = Beta(certainty * mean, certainty * (1 - mean))
 
+"Generative Bayesian model representing the Mangrove Reviews data."
 @model mangrove_model(data, typical_rating) = begin
     # Assume that each subject has a fundamental quality associated with it.
     # Extreme qualities are not as likely as moderate ones.
@@ -28,15 +30,17 @@ MeanBeta(mean::Real, certainty::Real = 3) = Beta(certainty * mean, certainty * (
             data[info][1] ~ Beta(0.04, 0.08)
         end
     end
-    return collect(values(qualities))
 end
 
+"Normalize the data and run inference using the model."
 function get_chains(raw_data::Reviews)::Chains
     data = convert(ReviewsSummary, raw_data)
     typical_rating = mean(values(data))
     sampler = PG(500)
     sample(mangrove_model(data, typical_rating), sampler, 100)
 end
+
+# Extract useful data from the resulting MarkovChains: `mean(chn::Chains)`
 
 subs(qualities_mean::ChainDataFrame)::Vector{String} =
   [match(r"qualities\[(.+)\]", p)[1] for p in qualities_mean[:, :parameters]]

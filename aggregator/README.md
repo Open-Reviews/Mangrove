@@ -11,8 +11,8 @@ Mangrove makes it easy to write reviews pseudonymously and aims to preserve all 
 
 Aggregator employs statistical methods to uncover what is the likely quality of subjects given all of the reviews, as well as how likely a given reviewer is to be neutral (fair) in their judgement.
 
-To compute these statistics, the Aggregator takes in the list of all reviews as data and uses a generative Bayesian model. The model is specified in a probabilistic programming language [Turing.jl](https://turing.ml/) and makes use of Bayesian inference to output the values of interest.
+To compute these statistics, the Aggregator takes in the list of all reviews as data and uses a [generative Bayesian model](src/Model.jl). The model is specified in a probabilistic programming language [Turing.jl](https://turing.ml/) and makes use of Bayesian inference to output the values of interest.
 
 ## How do the results make their way to Mangrove Server?
 
-The Original Mangrove deployment uses GitLab CI to run the Aggregator regularly and output the results in to PostgreSQL database tables (`subjects` and `reviewers`). The Mangrove Server then reads the values to provide them via the API.
+The Original Mangrove deployment uses [GitLab CI](../.gitlab-ci.yml) to run the Aggregator regularly and output the results in to PostgreSQL database tables (`subjects` and `reviewers`). The Mangrove Server then reads the values to provide them via the API.
