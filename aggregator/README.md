@@ -1,6 +1,6 @@
 # Mangrove Aggregator
 
-This folder contains a [Julia](https://julialang.org/) module for generating statistics about Mangrove reviews.
+This folder contains `Aggregator` [Julia](https://julialang.org/) module for generating statistics about Mangrove reviews.
 This is what powers the subject [`quality`](https://docs.mangrove.reviews/#/paths/~1subject~1{sub}/get) and reviewer [`neutrality`](https://docs.mangrove.reviews/#/paths/~1issuer~1{pem}/get) fields in the API.
 
 ## Why is the Aggregator needed?
