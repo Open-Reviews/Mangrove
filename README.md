@@ -13,6 +13,7 @@ This repository contains:
 - [Mangrove Original UI](ui) implementation
   - Client using Vue.js
 - [Mangrove Client JS Library](libraries/mangrove-reviews-js) for interacting with Mangrove Servers
+- [Mangrove Aggregator](aggregator) a probabilistic model to help with making sense of reviews
 
 ## Local testing
 
