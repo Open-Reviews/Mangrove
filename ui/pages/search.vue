@@ -114,8 +114,7 @@ export default {
         path: 'search',
         query: {
           [GEO]: geo,
-          q: this.$route.query.q,
-          sub: this.$route.query.sub
+          q: this.$route.query.q
         }
       })
     }
