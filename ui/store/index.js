@@ -310,7 +310,7 @@ export const actions = {
       commit(
         t.ADD_RESULTS,
         subjects
-          .filter(({ scheme }) => scheme !== MARESI)
+          .filter(({ scheme }) => scheme && scheme !== MARESI)
           .map((subject) => subject.sub)
       )
     )

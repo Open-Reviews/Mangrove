@@ -30,7 +30,13 @@
 
 <script>
 import { SET_FILTER } from '../store/mutation-types'
-import { ICONS, pluralName, errorString, MARESI } from '~/store/scheme-types'
+import {
+  ICONS,
+  pluralName,
+  errorString,
+  MARESI,
+  GEO
+} from '~/store/scheme-types'
 
 export default {
   props: {
@@ -63,6 +69,9 @@ export default {
         return this.$store.state.filter
       },
       set(value) {
+        if (value === GEO) {
+          this.$emit(GEO)
+        }
         this.$store.commit(SET_FILTER, value)
       }
     },

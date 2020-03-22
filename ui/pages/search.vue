@@ -8,7 +8,7 @@
     >
       <v-row class="px-10">
         <SearchBox />
-        <SchemeFilter class="mt-n6" />
+        <SchemeFilter @geo="geoLoc" class="mt-n6" />
       </v-row>
       <SelectionMap
         v-if="!isBig"
@@ -54,6 +54,24 @@ import SubjectProfile from '~/components/SubjectProfile'
 import SelectionMap from '~/components/SelectionMap'
 import SchemeFilter from '~/components/SchemeFilter'
 
+const LAT_BOX = 0.1
+const LON_BOX = 0.1
+
+function getLocation() {
+  if (!navigator.geolocation) return
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        console.log('GOT LOCATION')
+        const lat = position.coords.latitude
+        const lon = position.coords.longitude
+        resolve([lon - LON_BOX, lat - LAT_BOX, lon + LON_BOX, lat + LAT_BOX])
+      },
+      (error) => console.log('No location: ', error)
+    )
+  })
+}
+
 export default {
   components: {
     SearchBox,
@@ -84,6 +102,10 @@ export default {
         this.viewProfile = true
         this.$store.dispatch('selectSubject', [this.$route.query, sub])
       }
+    },
+    async geoLoc() {
+      const box = await getLocation()
+      if (box) this.geoSearch(box)
     },
     geoSearch(coordinates) {
       const geo = coordinates.join(',')
