@@ -7,7 +7,7 @@ import ..MangroveBase.subs, ..MangroveBase.kids
 "Construct a `Beta` distribution with given `mean` and spikiness given by `certainty`."
 MeanBeta(mean::Real, certainty::Real = 3) = Beta(certainty * mean, certainty * (1 - mean))
 
-"Generative Bayesian model representing the Mangrove Reviews data."
+# Generative Bayesian model representing the Mangrove Reviews data.
 @model mangrove_model(data, typical_rating) = begin
     # Assume that each subject has a fundamental quality associated with it.
     # Extreme qualities are not as likely as moderate ones.
@@ -48,8 +48,8 @@ qualities(qualities_mean::ChainDataFrame)::Vector{Int16} =
   [round(Int16, m*100) for m in qualities_mean[:, :mean]]
 
 kids(biases_mean::ChainDataFrame)::Vector{String} =
-    [match(r"biases\[(.+)\]", p)[1] for p in biases_mean[:, :parameters]]
+  [match(r"biases\[(.+)\]", p)[1] for p in biases_mean[:, :parameters]]
 neutralities(biases_mean::ChainDataFrame)::Vector{Float32} =
-    [1 - m for m in biases_mean[:, :mean]]
+  [1 - m for m in biases_mean[:, :mean]]
 
 end
