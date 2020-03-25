@@ -64,7 +64,7 @@ import {
 const CONTEXTS = {
   [GEO]: {
     label: 'Context of the experience',
-    options: ['business', 'family', 'couple/date', 'friends']
+    options: ['business', 'family', 'couple/date', 'sightseeing', 'friends']
   },
   [HTTPS]: {
     label: 'Context of experience',
