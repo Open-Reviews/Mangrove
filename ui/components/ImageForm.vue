@@ -31,32 +31,7 @@
 <script>
 import { imageUrl } from '~/utils'
 const base64url = require('base64-url')
-
-function dataURIToBlob(dataURI) {
-  // convert base64 to raw binary data held in a string
-  const byteString = atob(dataURI.split(',')[1])
-
-  // separate out the mime component
-  const mimeString = dataURI
-    .split(',')[0]
-    .split(':')[1]
-    .split(';')[0]
-
-  // write the bytes of the string to an ArrayBuffer
-  const ab = new ArrayBuffer(byteString.length)
-
-  // create a view into the buffer
-  const ia = new Uint8Array(ab)
-
-  // set the bytes of the buffer to the correct values
-  for (let i = 0; i < byteString.length; i++) {
-    ia[i] = byteString.charCodeAt(i)
-  }
-
-  // write the ArrayBuffer to a blob, and you're done
-  const blob = new Blob([ab], { type: mimeString })
-  return blob
-}
+const loadImage = require('blueimp-load-image')
 
 function hashFiles(files) {
   return Promise.all(
@@ -104,34 +79,20 @@ export default {
     },
     resizeFile(file) {
       return new Promise((resolve) => {
-        const reader = new FileReader()
-        reader.onload = (readerEvent) => {
-          const image = new Image()
-          image.onload = (imageEvent) => {
-            // Resize the image
-            const canvas = document.createElement('canvas')
-            let width = image.width
-            let height = image.height
-            if (width > height) {
-              if (width > this.maxWidth) {
-                height *= this.maxWidth / width
-                width = this.maxWidth
-              }
-            } else if (height > this.maxHeight) {
-              width *= this.maxHeight / height
-              height = this.maxHeight
-            }
-            canvas.width = width
-            canvas.height = height
-            const context = canvas.getContext('2d')
-            context.drawImage(image, 0, 0, width, height)
-            const dataUrl = canvas.toDataURL('image/jpeg')
-            const resizedImage = dataURIToBlob(dataUrl)
-            resolve(resizedImage)
+        loadImage(
+          file,
+          function(img) {
+            img.toBlob(function(blob) {
+              resolve(blob)
+            }, 'image/jpeg')
+          },
+          {
+            maxWidth: this.maxWidth,
+            maxHeight: this.maxHeight,
+            orientation: true,
+            canvas: true
           }
-          image.src = readerEvent.target.result
-        }
-        reader.readAsDataURL(file)
+        )
       })
     },
     upload(formData) {
