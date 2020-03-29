@@ -111,8 +111,10 @@ async function searchUrl(input) {
   // Assume all properly formatted URLs are websites.
   const formatted = input.startsWith('https://') && input.includes('.')
   // Try to recover a valid url.
-  const url = new URL(formatted ? input : `https://${input}`)
-  if (!url) {
+  let url
+  try {
+    url = new URL(formatted ? input : `https://${input}`)
+  } catch (e) {
     return
   }
   const path = url.pathname === '/' ? '' : url.pathname
