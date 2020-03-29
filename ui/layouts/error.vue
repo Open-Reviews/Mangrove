@@ -1,10 +1,7 @@
 <template>
   <v-app>
-    <h1 v-if="error.statusCode === 404">
-      {{ pageNotFound }}
-    </h1>
-    <h1 v-else>
-      {{ otherError }}
+    <h1>
+      {{ head }}
     </h1>
     <NuxtLink to="/">
       Home page
