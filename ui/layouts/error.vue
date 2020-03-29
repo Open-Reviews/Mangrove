@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <h1>
-      {{ head }}
+      {{ info }}
     </h1>
     <NuxtLink to="/">
       Home page
@@ -20,9 +20,7 @@ export default {
   },
   head() {
     const title =
-      this.error.statusCode === 404
-        ? this.pageNotFound
-        : this.otherError + this.error
+      this.error.statusCode === 404 ? this.pageNotFound : this.otherError
     return {
       title
     }
@@ -31,6 +29,13 @@ export default {
     return {
       pageNotFound: '404 Not Found',
       otherError: 'An error occurred: '
+    }
+  },
+  computed: {
+    info() {
+      return this.error.statusCode === 404
+        ? this.pageNotFound
+        : this.otherError + this.error
     }
   }
 }
