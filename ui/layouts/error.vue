@@ -36,7 +36,7 @@ export default {
       console.log('Full error: ', this.error)
       return this.error.statusCode === 404
         ? this.pageNotFound
-        : this.otherError + this.error
+        : this.otherError + JSON.stringify(this.error)
     }
   }
 }
