@@ -49,6 +49,7 @@ export function geoUri(lat, lon, name) {
 }
 
 export function geoSubject(sub) {
+  console.log('geoSubject: ', sub)
   let uri
   try {
     uri = new URL(sub)

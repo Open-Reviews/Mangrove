@@ -152,7 +152,7 @@ export const getters = {
                 return true
               } else if (k === 'sub' && scheme === GEO) {
                 // TODO: remove after db upgrade
-                if (!geo) return false
+                if (!geo || !v) return false
                 const geoQuery = geoSubject(v)
                 console.log('compare: ', geoQuery.coordinates, geo.coordinates)
                 return isPointWithinRadius(

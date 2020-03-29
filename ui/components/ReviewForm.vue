@@ -61,7 +61,7 @@
           </v-list>
           <v-dialog v-model="preview" :width="width - 100">
             <v-card>
-              <v-card-title>Preview</v-card-title>
+              <v-card-title class="mb-5">Preview</v-card-title>
               <v-card-text>
                 <Review
                   :review="review"
@@ -85,7 +85,12 @@
           <v-btn @click.stop="clear" text>
             Cancel
           </v-btn>
-          <v-btn @click.stop="previewReview" text>Preview</v-btn>
+          <v-btn
+            @click.stop="previewReview"
+            :disabled="!rating && !opinion.length"
+            text
+            >Preview</v-btn
+          >
           <v-btn
             @click="submitReview"
             :disabled="!checkBoxes.termsAgreed || (!rating && !opinion.length)"
@@ -171,7 +176,7 @@ export default {
       rating: null,
       opinion: '',
       images: [],
-      review: {},
+      review: { metadata: null, sub: '' },
       checkBoxes: {
         termsAgreed: false,
         isAffiliated: false
