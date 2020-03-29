@@ -83,7 +83,7 @@
     </v-row>
     <v-dialog v-model="$store.state.betaWarning" max-width="500">
       <v-card>
-        <v-card-title v-text="betaAttributes.title" />
+        <v-card-title v-text="betaAttributes && betaAttributes.title" />
         <v-card-text v-html="betaContent" />
         <v-divider />
         <v-card-actions>
