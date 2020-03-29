@@ -34,6 +34,7 @@ export default {
       await set(PRIVATE_KEY, null)
       await set(HAS_SAVED_KEY, null)
       await this.$store.dispatch('generateKeypair')
+      this.$emit('logout')
       this.dialog = false
     }
   }

@@ -8,7 +8,12 @@
       <v-card-title>
         Log in
       </v-card-title>
-      <LogIn @success="dialog = false" />
+      <LogIn
+        @login="
+          dialog = false
+          $emit('login')
+        "
+      />
     </v-card>
   </v-dialog>
 </template>

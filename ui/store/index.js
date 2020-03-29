@@ -22,7 +22,10 @@ import { CLIENT_ID, RECURRING } from './metadata-types'
 export const state = () => ({
   keyPair: null,
   publicKey: null,
-  alphaWarning: true,
+  // Should the beta warning be displayed.
+  betaWarning: true,
+  // Have the latest reviews for display been fetched.
+  fetchedDisplay: false,
   isSearching: false,
   // Current query - gets out of line with URL only when changed.
   query: { q: null, geo: null },
@@ -46,8 +49,11 @@ export const mutations = {
     state.publicKey = publicKey
     state.metadata = {}
   },
-  [t.DISMISS_ALPHA_WARNING](state) {
-    state.alphaWarning = false
+  [t.DISMISS_BETA_WARNING](state) {
+    state.betaWarning = false
+  },
+  [t.FETCHED_DISPLAY](state) {
+    state.fetchedDisplay = true
   },
   [t.START_SEARCH](state) {
     state.isSearching = true
@@ -174,7 +180,8 @@ export const actions = {
   async setKeypair({ commit }, keyPair) {
     const publicKey = await publicToPem(keyPair.publicKey)
     commit(t.SET_KEYS, { keyPair, publicKey })
-    keypairToJwk(keyPair).then((jwk) => set(PRIVATE_KEY, jwk))
+    const jwk = await keypairToJwk(keyPair)
+    set(PRIVATE_KEY, jwk)
   },
   // Storage in IndexedDB is done as jwk instead CryptoKey due to two issues:
   // https://bugzilla.mozilla.org/show_bug.cgi?id=1048931
@@ -256,6 +263,7 @@ export const actions = {
   },
   async saveMyReviews({ state, dispatch, commit }, metadata = false) {
     // Avoid querying for all reviews.
+    console.log('Saving reviews for: ', state.publicKey)
     if (!state.publicKey) return
     const rs = await dispatch('saveReviewsWithSubjects', {
       kid: state.publicKey

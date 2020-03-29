@@ -8,7 +8,7 @@
         />
       </v-list-item-content>
       <v-list-item-action>
-        <v-btn :disabled="!privateInput" @click="importPrivate">Log in</v-btn>
+        <v-btn :disabled="!privateInput" @click="loadPrivate">Log in</v-btn>
       </v-list-item-action>
     </v-list-item>
     <v-alert v-if="error" type="warning" border="left" elevation="8">
@@ -26,10 +26,16 @@ export default {
   data() {
     return {
       privateInput: null,
+      loader: false,
       error: null
     }
   },
   methods: {
+    async loadPrivate() {
+      this.loader = true
+      await this.importPrivate()
+      this.loader = false
+    },
     importPrivate() {
       let jwk
       try {
@@ -38,15 +44,18 @@ export default {
         this.error = e
         return
       }
-      jwkToKeypair(jwk)
-        .then((keypair) => {
-          this.$store.dispatch('setKeypair', keypair)
+      return jwkToKeypair(jwk)
+        .then(async (keypair) => {
+          await this.$store.dispatch('setKeypair', keypair)
           set(HAS_SAVED_KEY, true)
           this.error = null
-          this.$emit('success')
-          this.$store.dispatch('saveMyReviews', true)
+          const rs = await this.$store.dispatch('saveMyReviews', true)
+          console.log('Fetched reviews: ', rs)
+          this.$emit('login')
         })
-        .catch((error) => (this.error = error))
+        .catch((error) => {
+          this.error = error
+        })
     }
   }
 }

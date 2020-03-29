@@ -22,7 +22,7 @@
               Returning reviewer?
             </v-card-title>
             <v-card-actions class="justify-center">
-              <LogInDialog />
+              <LogInDialog @login="load" />
             </v-card-actions>
             <v-divider class="my-8" />
           </div>
@@ -51,7 +51,7 @@
               </KeyList>
             </v-card-text>
             <v-card-actions class="justify-center">
-              <LogOut />
+              <LogOut @logout="load" />
             </v-card-actions>
           </div>
         </v-card>
@@ -97,9 +97,14 @@ export default {
     }
   },
   mounted() {
-    this.counts = this.$store.getters.reviewsAndCounts({
-      kid: this.$store.state.publicKey
-    }).counts
+    this.load()
+  },
+  methods: {
+    load() {
+      this.counts = this.$store.getters.reviewsAndCounts({
+        kid: this.$store.state.publicKey
+      }).counts
+    }
   },
   middleware: 'account'
 }

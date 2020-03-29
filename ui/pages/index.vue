@@ -81,14 +81,14 @@
         </v-row>
       </v-img>
     </v-row>
-    <v-dialog v-model="$store.state.alphaWarning" max-width="500">
+    <v-dialog v-model="$store.state.betaWarning" max-width="500">
       <v-card>
-        <v-card-title v-text="demoAttributes.title" />
-        <v-card-text v-html="demoContent" />
+        <v-card-title v-text="betaAttributes.title" />
+        <v-card-text v-html="betaContent" />
         <v-divider />
         <v-card-actions>
           <v-spacer />
-          <v-btn @click="dismissAlphaWarning" text>
+          <v-btn @click="dismissBetaWarning" text>
             Let me try it
           </v-btn>
         </v-card-actions>
@@ -98,13 +98,13 @@
 </template>
 
 <script>
-import { DISMISS_ALPHA_WARNING, SET_FILTER } from '~/store/mutation-types'
+import { DISMISS_BETA_WARNING, SET_FILTER } from '~/store/mutation-types'
 import SearchBox from '~/components/SearchBox'
 import ReviewList from '~/components/ReviewList'
 import {
-  html as demoContent,
-  attributes as demoAttributes
-} from '~/content/index/demo.md'
+  html as betaContent,
+  attributes as betaAttributes
+} from '~/content/index/beta.md'
 import {
   html as complexContent,
   attributes as complexAttributes
@@ -125,8 +125,8 @@ export default {
   },
   data() {
     return {
-      demoContent,
-      demoAttributes,
+      betaContent,
+      betaAttributes,
       front: {
         image: require('~/assets/index/BG1_sunset_2000x950.jpg'),
         tagline: 'Share with others and make better decisions.',
@@ -180,8 +180,8 @@ export default {
     this.$store.commit(SET_FILTER, null)
   },
   methods: {
-    dismissAlphaWarning() {
-      this.$store.commit(DISMISS_ALPHA_WARNING)
+    dismissBetaWarning() {
+      this.$store.commit(DISMISS_BETA_WARNING)
     }
   },
   middleware: 'front'

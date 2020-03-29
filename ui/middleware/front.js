@@ -1,8 +1,9 @@
-import { SET_FILTER } from '~/store/mutation-types'
+import { SET_FILTER, FETCHED_DISPLAY } from '~/store/mutation-types'
 
 export default function({ store }) {
   store.commit(SET_FILTER, null)
-  if (Object.entries(store.state.reviews).length >= 5) return
+  if (store.state.fetchedDisplay) return
+  store.commit(FETCHED_DISPLAY)
   return store.dispatch('saveReviewsWithSubjects', {
     limit: 5,
     opinionated: true
