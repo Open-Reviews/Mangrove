@@ -25,6 +25,7 @@ export const ICONS = {
 }
 
 export function subToScheme(sub) {
+  if (!sub) return
   let scheme
   if (sub.startsWith(GEO)) {
     scheme = GEO

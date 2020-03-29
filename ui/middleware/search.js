@@ -4,7 +4,7 @@ import {
   START_SEARCH,
   STOP_SEARCH
 } from '~/store/mutation-types'
-import { HTTPS, GEO, ISBN, LEI } from '~/store/scheme-types'
+import { HTTPS, GEO, ISBN, LEI, subToScheme } from '~/store/scheme-types'
 import {
   subToSubject,
   leiToSubject,
@@ -37,7 +37,7 @@ Searches for subjects and returns and object for each:
 
 export default function({ store, $axios, route }) {
   const query = route.query.q
-  if (!query && route.query.sub) {
+  if (subToScheme(query) || route.query.sub) {
     return subToSubject($axios, route.query.sub).then(
       (subject) => subject && store.dispatch('storeResults', [subject])
     )
