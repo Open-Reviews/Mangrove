@@ -55,51 +55,49 @@
       </div>
     </v-card-text>
     <v-card-actions v-if="!dense" class="my-n7 mx-auto">
-      <v-row>
-        <v-col v-if="!preview">
-          <v-tooltip v-for="action in actions" :key="action.icon" top>
-            <template v-slot:activator="{ on }">
-              <v-btn
-                v-on="on"
-                @click="action.action(review.signature)"
-                :disabled="action.disabled"
-                icon
-                class="mr-5"
-              >
-                <v-icon class="mr-1" small>{{ action.icon }}</v-icon>
-                {{ action.number }}
-              </v-btn>
-            </template>
-            <span>{{ action.tooltip }}</span>
-          </v-tooltip>
-          <v-card-text class="ml-n6">
-            <div
-              v-if="maresiSubject.opinion_count"
-              @click="requestResponses"
-              style="cursor: pointer"
-            >
-              Read comments
-            </div>
-          </v-card-text>
-        </v-col>
-        <v-spacer />
-        <v-menu offset-y close-on-click>
+      <template v-if="!preview">
+        <v-tooltip v-for="action in actions" :key="action.icon" top>
           <template v-slot:activator="{ on }">
-            <v-btn v-on="on" icon>
-              <v-icon>mdi-dots-vertical</v-icon>
+            <v-btn
+              v-on="on"
+              @click="action.action(review.signature)"
+              :disabled="action.disabled"
+              icon
+              class="mr-5"
+            >
+              <v-icon class="mr-1" small>{{ action.icon }}</v-icon>
+              {{ action.number }}
             </v-btn>
           </template>
-          <v-list>
-            <v-list-item
-              v-for="item in menu"
-              :key="item.title"
-              @click.stop="item.action(review)"
-            >
-              <v-list-item-title>{{ item.title }}</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-      </v-row>
+          <span>{{ action.tooltip }}</span>
+        </v-tooltip>
+        <v-card-text class="ml-n6">
+          <div
+            v-if="maresiSubject.opinion_count"
+            @click="requestResponses"
+            style="cursor: pointer"
+          >
+            Read comments
+          </div>
+        </v-card-text>
+      </template>
+      <v-spacer />
+      <v-menu offset-y close-on-click>
+        <template v-slot:activator="{ on }">
+          <v-btn v-on="on" icon>
+            <v-icon>mdi-dots-vertical</v-icon>
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-item
+            v-for="item in menu"
+            :key="item.title"
+            @click.stop="item.action(review)"
+          >
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </v-card-actions>
     <v-dialog :value="raw.jwt" @click:outside="raw.jwt = null" width="600">
       <v-card>
