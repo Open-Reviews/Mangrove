@@ -122,13 +122,15 @@ export default {
     reliable() {
       return this.opinionated.filter(
         (a) =>
-          a.issuer.neutrality && a.issuer.neutrality >= this.neutralityThreshold
+          (!a.issuer.neutrality && !this.opinions) ||
+          (a.issuer.neutrality &&
+            a.issuer.neutrality >= this.neutralityThreshold)
       )
     },
     unreliable() {
       return this.opinionated.filter(
         (a) =>
-          !a.issuer.neutrality || a.issuer.neutrality < this.neutralityThreshold
+          a.issuer.neutrality && a.issuer.neutrality < this.neutralityThreshold
       )
     },
     opinionless() {

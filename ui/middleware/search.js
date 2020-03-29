@@ -117,7 +117,7 @@ async function searchUrl(input) {
   } catch (e) {
     return
   }
-  const path = url.pathname === '/' ? null : url.pathname
+  const path = url.pathname === '/' ? '' : url.pathname
   const urlString = `${url.protocol}//${url.hostname}${path}`
   let isWebsite
   if (formatted) {
