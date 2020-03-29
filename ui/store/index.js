@@ -154,7 +154,6 @@ export const getters = {
                 // TODO: remove after db upgrade
                 if (!geo) return false
                 const geoQuery = geoSubject(v)
-                console.log('compare: ', geoQuery.coordinates, geo.coordinates)
                 return isPointWithinRadius(
                   geoQuery.coordinates,
                   geo.coordinates,
