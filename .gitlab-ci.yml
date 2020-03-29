@@ -18,7 +18,7 @@ build reviewer server:
     - cargo build
   only:
     changes:
-      - server/reviewer/src/**/*
+      - servers/reviewer/src/**/*
   except:
     - schedules
 
@@ -30,7 +30,7 @@ build files server:
     - cargo build
   only:
     changes:
-      - server/file_hoster/**/*
+      - servers/file_hoster/**/*
   except:
     - schedules
 

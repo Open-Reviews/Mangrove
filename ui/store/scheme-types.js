@@ -49,7 +49,12 @@ export function geoUri(lat, lon, name) {
 }
 
 export function geoSubject(sub) {
-  const uri = new URL(sub)
+  let uri
+  try {
+    uri = new URL(sub)
+  } catch (e) {
+    return
+  }
   return {
     coordinates: uri.pathname
       .split(',')
