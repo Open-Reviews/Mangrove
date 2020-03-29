@@ -155,6 +155,7 @@ function isbnToSubject(axios, isbn) {
     .then((response) => {
       console.log('isbn lookup: ', response)
       const info = response.data[key]
+      if (!info) return
       return {
         sub: `${ISBN}:${isbn}`,
         scheme: ISBN,
@@ -218,7 +219,8 @@ export async function subToSubject(axios, sub) {
     }
   } else if (scheme === ISBN) {
     subject = await isbnToSubject(axios, subPath(ISBN, sub))
-  } else {
+  }
+  if (!subject) {
     subject = {
       sub,
       scheme,
