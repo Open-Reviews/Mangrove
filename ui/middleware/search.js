@@ -37,7 +37,7 @@ Searches for subjects and returns and object for each:
 
 export default function({ store, $axios, route }) {
   const query = route.query.q
-  if (subToScheme(query) || route.query.sub) {
+  if (!query && route.query.sub) {
     return subToSubject($axios, route.query.sub).then(
       (subject) => subject && store.dispatch('storeResults', [subject])
     )
@@ -56,6 +56,12 @@ export default function({ store, $axios, route }) {
     searchUrl(query)
       .then((subjects) => subjects && store.dispatch('storeResults', subjects))
       .catch((error) => console.log('Not a website: ', error)),
+    geoLookup($axios, query)
+      .then((subject) => subject && store.dispatch('storeResults', [subject]))
+      .catch((error) => {
+        store.commit(SEARCH_ERROR, GEO)
+        console.log('Nominatim error: ', error)
+      }),
     searchGeo($axios, query, route.query.geo)
       .then((subjects) => store.dispatch('storeResults', subjects))
       .catch((error) => {
@@ -115,7 +121,7 @@ async function searchUrl(input) {
   try {
     url = new URL(formatted ? input : `https://${input}`)
   } catch (e) {
-    return
+    return []
   }
   const path = url.pathname === '/' ? '' : url.pathname
   const urlString = `${url.protocol}//${url.hostname}${path}`
@@ -191,4 +197,10 @@ function searchLei(axios, query) {
         return entities.filter(Boolean)
       })
     })
+}
+
+function geoLookup(axios, query) {
+  const scheme = subToScheme(query)
+  if (scheme !== GEO) return new Promise((resolve) => resolve(null))
+  return subToSubject(axios, query)
 }

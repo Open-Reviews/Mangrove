@@ -2,10 +2,12 @@
   <v-card light>
     <v-subheader
       v-if="subjectTitle"
-      v-text="subjectTitle"
       @click="isMaresi || selectSubject()"
       :style="isMaresi ? '' : 'cursor: pointer'"
-    />
+      v-line-clamp="1"
+    >
+      {{ subjectTitle }}
+    </v-subheader>
     <UserHeader
       :pk="review.kid"
       :metadata="payload.metadata"
@@ -28,7 +30,7 @@
         />
         Reviewed {{ new Date(payload.iat * 1000).toDateString() }}
       </v-row>
-      <span v-line-clamp="dense && 2">
+      <span v-line-clamp="dense ? 2 : 20">
         <span v-html="formattedOpinion" />
       </span>
       <v-row v-if="payload.images" class="mx-auto">

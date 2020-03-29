@@ -165,7 +165,7 @@ function isbnToSubject(axios, isbn) {
         description: `Published ${info.publish_date}`,
         isbn,
         website: `https://openlibrary.org${info.key}`,
-        image: info.cover.medium,
+        image: info.cover && info.cover.medium,
         subjects: info.subjects.map(({ name }) => name)
       }
     })
