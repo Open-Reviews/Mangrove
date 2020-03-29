@@ -115,7 +115,8 @@ async function searchUrl(input) {
   if (!url) {
     return
   }
-  const urlString = `${url.protocol}//${url.hostname}`
+  const path = url.pathname === '/' ? null : url.pathname
+  const urlString = `${url.protocol}//${url.hostname}${path}`
   let isWebsite
   if (formatted) {
     isWebsite = true
@@ -133,7 +134,7 @@ async function searchUrl(input) {
         sub: urlString,
         // Remove the trailing colon
         scheme: HTTPS,
-        title: url.hostname,
+        title: url.hostname + path,
         subtitle: '',
         description: '',
         website: urlString
