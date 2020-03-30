@@ -13,7 +13,7 @@
       <SelectionMap
         v-if="!isBig"
         :selected="selected && selected.coordinates"
-        :points="$store.getters.mapPoints"
+        :points="$store.getters.mapPoints()"
         @select="selectSubject($event)"
         @search="geoSearch($event)"
       />
@@ -36,7 +36,7 @@
       <SubjectProfile>
         <SelectionMap
           :selected="selected && selected.coordinates"
-          :points="$store.getters.mapPoints"
+          :points="$store.getters.mapPoints()"
           @select="selectSubject($event)"
           @search="geoSearch($event)"
         />

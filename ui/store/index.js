@@ -117,15 +117,27 @@ export const getters = {
       ).length === 0
     )
   },
-  mapPoints: (state) => {
-    return Object.values(state.subjects)
-      .filter((subject) => subject.scheme === GEO)
-      .map((subject) => {
-        return {
-          id: subject.sub,
-          coordinates: subject.coordinates
-        }
-      })
+  mapPoints: (state, getters) => (query) => {
+    let subjects
+    // If not query provided, use the search results.
+    if (!query) {
+      subjects = state.searchResults
+        .map((sub) => getters.subject(sub))
+        .filter((subject) => subject.scheme === GEO)
+    } else {
+      // Otherwise get points for all review matching query.
+      query.scheme = GEO
+      const allSubjects = getters
+        .reviewsAndCounts(query)
+        .reviews.map((review) => getters.subject(review.payload.sub))
+      subjects = [...new Set(allSubjects)]
+    }
+    return subjects.map((subject) => {
+      return {
+        id: subject.sub,
+        coordinates: subject.coordinates
+      }
+    })
   },
   // Return the filtered list of reviews and total counts for different schemes.
   reviewsAndCounts: (state) => (query) => {

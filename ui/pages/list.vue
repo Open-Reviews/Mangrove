@@ -9,8 +9,8 @@
           <ReviewList :query="$route.query" />
         </v-container>
       </v-col>
-      <v-col v-if="$store.getters.mapPoints.length">
-        <SelectionMap :points="$store.getters.mapPoints" display />
+      <v-col v-if="mapPoints.length">
+        <SelectionMap :points="mapPoints" display />
       </v-col>
     </v-row>
   </v-container>
@@ -35,6 +35,9 @@ export default {
   computed: {
     title() {
       return this.$route.query.kid ? 'User profile' : 'Review list'
+    },
+    mapPoints() {
+      return this.$store.getters.mapPoints(this.$route.query)
     }
   },
   mounted() {
