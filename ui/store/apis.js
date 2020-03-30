@@ -172,9 +172,11 @@ function isbnToSubject(axios, isbn) {
 }
 
 export function olDocToSubject(doc) {
-  if (doc.isbn) {
+  if (doc.isbn && doc.isbn[0]) {
+    // Pick the first ISBN (usually new edition) and remove white space.
+    const isbn = doc.isbn[0].replace(/\s/g, '')
     const subject = {
-      sub: `${ISBN}:${doc.isbn[0]}`,
+      sub: `${ISBN}:${isbn}`,
       scheme: ISBN,
       // Display colon only if title ends with letter or number
       title: doc.subtitle
@@ -184,7 +186,7 @@ export function olDocToSubject(doc) {
         : doc.title,
       subtitle: `by ${doc.author_name && doc.author_name.join(', ')}`,
       description: `Published ${doc.first_publish_year} · ${doc.isbn.length} editions`,
-      isbn: doc.isbn[0],
+      isbn,
       website: `https://openlibrary.org${doc.key}`,
       subjects: doc.subject
     }
