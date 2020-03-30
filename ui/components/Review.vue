@@ -5,6 +5,7 @@
       @click="isMaresi || selectSubject()"
       :style="isMaresi ? '' : 'cursor: pointer'"
       v-line-clamp="1"
+      :class="dense ? '' : 'pt-3'"
     >
       {{ subjectTitle }}
     </v-subheader>
