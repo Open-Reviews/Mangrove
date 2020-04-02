@@ -264,17 +264,24 @@ export default {
     isMaresi() {
       return this.payload.sub.startsWith(MARESI)
     },
-    // Makes links clickable.
     formattedOpinion() {
-      return (this.payload.opinion || '').replace(
-        /([^\S]|^)(((https?:\/\/)|(www\.))(\S+))/gi,
-        function(match, space, url) {
-          let hyperlink = url
-          if (!hyperlink.match('^https?://')) {
-            hyperlink = 'http://' + hyperlink
-          }
-          return space + '<a href="' + hyperlink + '">' + url + '</a>'
-        }
+      if (!this.payload.opinion) return ''
+      return (
+        this.payload.opinion
+          // Make links clickable.
+          .replace(/([^\S]|^)(((https?:\/\/)|(www\.))(\S+))/gi, function(
+            match,
+            space,
+            url
+          ) {
+            let hyperlink = url
+            if (!hyperlink.match('^https?://')) {
+              hyperlink = 'http://' + hyperlink
+            }
+            return space + '<a href="' + hyperlink + '">' + url + '</a>'
+          })
+          // Make new lines appear.
+          .replace(/\n/g, '<br />')
       )
     }
   },
