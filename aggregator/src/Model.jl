@@ -36,7 +36,7 @@ end
 function get_chains(raw_data::Reviews)::Chains
     data = convert(ReviewsSummary, raw_data)
     typical_rating = mean(values(data))
-    sampler = PG(500)
+    sampler = PG(1000)
     sample(mangrove_model(data, typical_rating), sampler, 100)
 end
 
