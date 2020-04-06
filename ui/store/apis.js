@@ -102,7 +102,10 @@ export function searchGeo(axios, q, viewbox) {
               address.suburb ||
               address.city
             const addressString = [
-              [address.street || address.road, address.house_number]
+              [
+                address.street || address.road || address.pedestrian,
+                address.house_number
+              ]
                 .filter(Boolean)
                 .join(' '),
               address.suburb,
