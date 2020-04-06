@@ -242,7 +242,7 @@ fn check_rating(rating: Rating) -> Result<(), Error> {
     }
 }
 
-const MAX_REVIEW_LENGTH: usize = 500;
+const MAX_REVIEW_LENGTH: usize = 1000;
 
 fn check_opinion(opinion: &str) -> Result<(), Error> {
     if opinion.len() <= MAX_REVIEW_LENGTH {

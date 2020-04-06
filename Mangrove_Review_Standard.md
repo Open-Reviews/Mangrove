@@ -1,4 +1,4 @@
-# Mangrove Review Standard (MaReSt) v0.2.2
+# Mangrove Review Standard (MaReSt) v0.3.0
 
 The mission of the Mangrove initiative is to create a public space on the Internet where people can freely share insights with each other and make better decisions based on open data. Mangrove contributes to the Open and Privacy movements by proposing an alternative architecture that is characterized by a **separation of data and products**, and that **respects the right to privacy**:
 
@@ -141,7 +141,7 @@ Review MUST include either `rating` or `opinion` claim, which means it MAY omit 
     - MUST be an integer in the range from `1` to `100`.
 - `opinion`
     - Opinion of the reviewer about the subject. 
-    - MUST be a string with length less than or equal to `500`.
+    - MUST be a string with length less than or equal to `1000`.
 
 Each new Review issued by the reviewer SHOULD differ in at least the `sub`, `rating` or `opinion` claims.
 
