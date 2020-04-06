@@ -1,4 +1,4 @@
-export const MAX_OPINION_LENGTH = 500
+export const MAX_OPINION_LENGTH = 1000
 
 export function imageUrl(hash) {
   return `${process.env.VUE_APP_FILES_URL}/${hash}`
