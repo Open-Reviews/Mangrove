@@ -4,6 +4,7 @@ stages:
   - deploy
   - task
 
+image: wilson208/circleci-awscli:node
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
@@ -35,7 +36,6 @@ build files server:
 
 build ui:
   stage: build
-  image: wilson208/circleci-awscli:node
   script:
     - cd ui
     - yarn install
@@ -49,7 +49,6 @@ build ui:
 
 build blog:
   stage: build
-  image: wilson208/circleci-awscli:node
   script:
     - cd blog
     - yarn install
@@ -62,7 +61,6 @@ build blog:
 
 build api docs:
   stage: build
-  image: wilson208/circleci-awscli:node
   script:
     - cd servers/reviewer/docs
     - yarn install
@@ -75,7 +73,6 @@ build api docs:
 
 build js lib docs:
   stage: build
-  image: wilson208/circleci-awscli:node
   script:
     - cd libraries/mangrove-reviews-js
     - yarn install
@@ -88,7 +85,6 @@ build js lib docs:
 
 test js lib:
   stage: test
-  image: wilson208/circleci-awscli:node
   script:
     - cd libraries/mangrove-reviews-js
     - yarn install
@@ -101,7 +97,6 @@ test js lib:
 
 pages:
   stage: deploy
-  image: wilson208/circleci-awscli:node
   variables:
     BASE_URL: "https://staging.mangrove.reviews"
   stage: deploy
@@ -124,7 +119,6 @@ pages:
 
 deploy api docs:
   stage: deploy
-  image: wilson208/circleci-awscli:node
   variables:
     DOCS_BUCKET: "docs.mangrove.reviews"
     DOCS_DIST: "E2HRIGC1I7B7ZA"
@@ -145,7 +139,6 @@ deploy api docs:
 
 deploy js lib docs:
   stage: deploy
-  image: wilson208/circleci-awscli:node
   variables:
     JS_BUCKET: "js.mangrove.reviews"
     JS_DIST: "E3PQ8VOO0YPOZI"
@@ -166,7 +159,6 @@ deploy js lib docs:
 
 deploy ui:
   stage: deploy
-  image: wilson208/circleci-awscli:node
   variables:
     BASE_URL: "https://mangrove.reviews"
     UI_BUCKET: "mangrove.reviews"
@@ -192,7 +184,6 @@ deploy ui:
 
 deploy blog:
   stage: deploy
-  image: wilson208/circleci-awscli:node
   variables:
     BLOG_BUCKET: "blog.mangrove.reviews"
     BLOG_DIST: "E2MJJIV6P7ASG5"
