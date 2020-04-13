@@ -330,9 +330,13 @@ fn check_lei(id: &str) -> Result<(), Error> {
 }
 
 fn check_isbn(id: &str) -> Result<(), Error> {
-    match id.parse::<Isbn>() {
-        Ok(_) => Ok(()),
-        Err(e) => Err(Error::Incorrect(format!("ISBN incorrect: {:?}", e))),
+    if id.chars().any(|c| c.is_whitespace()) {
+        Err(Error::Incorrect("ISBN should not contain whitespace characters.".into()))
+    } else {
+        match id.parse::<Isbn>() {
+            Ok(_) => Ok(()),
+            Err(e) => Err(Error::Incorrect(format!("ISBN incorrect: {:?}", e))),
+        }
     }
 }
 
