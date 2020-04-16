@@ -54,8 +54,6 @@ function entityForm(axios, elf) {
     })
 }
 
-const GEO_IGNORE_CLASSES = ['highway']
-
 // Viebox should be a comma separated string.
 export function searchGeo(axios, q, viewbox) {
   const params = {
@@ -86,11 +84,7 @@ export function searchGeo(axios, q, viewbox) {
             extratags,
             importance
           }) => {
-            if (
-              !lat ||
-              !lon ||
-              GEO_IGNORE_CLASSES.some((filter) => filter === placeClass)
-            ) {
+            if (!lat || !lon) {
               return null
             }
             // Dealing with very weird name of place field.
