@@ -184,7 +184,19 @@ export default {
       this.$store.commit(DISMISS_BETA_WARNING)
     }
   },
-  middleware: 'front'
+  middleware: 'front',
+  head() {
+    return {
+      title: 'Mangrove Reviews',
+      meta: [
+        {
+          name: 'description',
+          content:
+            'Try out writing reviews in the public domain, using a cryptographically generated account that puts you in control of your privacy.'
+        }
+      ]
+    }
+  }
 }
 </script>
 

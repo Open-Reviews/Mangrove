@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1000px">
-    <span class="display-1"> Frequently asked questions <br /><br /> </span>
+    <span class="display-1">{{ title }}<br /><br /> </span>
     <v-expansion-panels>
       <v-expansion-panel v-for="qa in qas" :key="qa.q">
         <v-expansion-panel-header>
@@ -21,6 +21,7 @@
 export default {
   data() {
     return {
+      title: ' Frequently asked questions ',
       qas: [
         {
           q: 'How do you avoid spam and ensure reliable reviews and ratings?',
@@ -130,6 +131,18 @@ If you are an individual user and have enjoyed sharing and gaining insights thro
         }
       ],
       extrainfo: `Not found what you were looking for? Contact us at mangrove(at)planting(dot)space, or discuss with us in our <a href="https://riot.im/app/#/room/#mangrove:matrix.org">Riot chat</a>.`
+    }
+  },
+  head() {
+    return {
+      title: 'Mangrove Reviews, ' + this.title,
+      meta: [
+        {
+          name: 'description',
+          content:
+            'Try out writing reviews in the public domain, using a cryptographically generated account that puts you in control of your privacy.'
+        }
+      ]
     }
   }
 }

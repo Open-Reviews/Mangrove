@@ -78,6 +78,17 @@ export default {
         }
       ]
     }
+  },
+  head() {
+    return {
+      title: 'Mangrove Reviews, ' + this.title,
+      meta: [
+        {
+          name: 'description',
+          content: this.subtitle
+        }
+      ]
+    }
   }
 }
 </script>
