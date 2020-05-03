@@ -47,12 +47,6 @@ git-tree-sha1 = "68a90a692ddc0eb72d69a6993ca26e2a923bf195"
 uuid = "68821587-b530-5797-8361-c406ea357684"
 version = "3.5.0+2"
 
-[[ArrayInterface]]
-deps = ["LinearAlgebra", "Requires", "SparseArrays"]
-git-tree-sha1 = "6cfb637b174abc32587298361e42489b44db89a2"
-uuid = "4fba245c-0d91-5ea0-9b3e-6abc04ee57a9"
-version = "2.5.1"
-
 [[ArrayLayouts]]
 deps = ["FillArrays", "LinearAlgebra"]
 git-tree-sha1 = "bc779df8d73be70e4e05a63727d3a4dfb4c52b1f"
@@ -228,12 +222,6 @@ git-tree-sha1 = "85c6b57e2680fa28d5c8adc798967377646fbf66"
 uuid = "1a297f60-69ca-5386-bcde-b61e274b549b"
 version = "0.8.5"
 
-[[FiniteDiff]]
-deps = ["ArrayInterface", "LinearAlgebra", "Requires", "SparseArrays", "StaticArrays"]
-git-tree-sha1 = "aa78e468afa6a0fde472c3dba0782d1ab60b203d"
-uuid = "6a86dc24-6348-571c-b903-95158fe2bd41"
-version = "2.2.1"
-
 [[Formatting]]
 deps = ["Printf"]
 git-tree-sha1 = "a0c901c29c0e7c763342751c0a94211d56c0de5c"
@@ -250,20 +238,6 @@ version = "0.10.9"
 git-tree-sha1 = "e4813d187be8c7b993cb7f85cbf2b7bfbaadc694"
 uuid = "069b7b12-0de2-55c6-9aab-29f3d0a68a2e"
 version = "1.1.1"
-
-[[FunctionalCollections]]
-deps = ["Test"]
-git-tree-sha1 = "04cb9cfaa6ba5311973994fe3496ddec19b6292a"
-uuid = "de31a74c-ac4f-5751-b3fd-e18cd04993ca"
-version = "0.5.0"
-
-[[Gen]]
-deps = ["DataStructures", "Distributions", "FunctionalCollections", "JSON", "LinearAlgebra", "MacroTools", "Random", "ReverseDiff", "SpecialFunctions"]
-git-tree-sha1 = "3280e52b8dcb7016a62f40af4d84b997944a6a25"
-repo-rev = "master"
-repo-url = "https://github.com/PlantingSpace/Gen"
-uuid = "ea4f424c-a589-11e8-07c0-fd5c91b9da4a"
-version = "0.3.2"
 
 [[HTTP]]
 deps = ["Base64", "Dates", "IniFile", "MbedTLS", "Sockets"]
@@ -368,12 +342,6 @@ git-tree-sha1 = "c2c3db614e5dcab997dff91f9e78d330d6378b1e"
 uuid = "6f1fad26-d15e-5dc8-ae53-837a1d7b8c9f"
 version = "0.3.3"
 
-[[LineSearches]]
-deps = ["LinearAlgebra", "NLSolversBase", "NaNMath", "Parameters", "Printf", "Test"]
-git-tree-sha1 = "54eb90e8dbe745d617c78dee1d6ae95c7f6f5779"
-uuid = "d3d80556-e9d4-5f37-9878-2ab0fcc64255"
-version = "7.0.1"
-
 [[LinearAlgebra]]
 deps = ["Libdl"]
 uuid = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
@@ -453,12 +421,6 @@ git-tree-sha1 = "916b850daad0d46b8c71f65f719c49957e9513ed"
 uuid = "78c3b35d-d492-501b-9361-3d52fe80e533"
 version = "0.7.1"
 
-[[NLSolversBase]]
-deps = ["DiffResults", "Distributed", "FiniteDiff", "ForwardDiff"]
-git-tree-sha1 = "7c4e66c47848562003250f28b579c584e55becc0"
-uuid = "d41bc354-129a-5804-8e4c-c37616107c6c"
-version = "7.6.1"
-
 [[NNlib]]
 deps = ["BinaryProvider", "Libdl", "LinearAlgebra", "Requires", "Statistics"]
 git-tree-sha1 = "d9f196d911f55aeaff11b11f681b135980783824"
@@ -486,12 +448,6 @@ deps = ["CompilerSupportLibraries_jll", "Libdl", "Pkg"]
 git-tree-sha1 = "d51c416559217d974a1113522d5919235ae67a87"
 uuid = "efe28fd5-8261-553b-a9e1-b2916fc3738e"
 version = "0.5.3+3"
-
-[[Optim]]
-deps = ["Compat", "FillArrays", "LineSearches", "LinearAlgebra", "NLSolversBase", "NaNMath", "Parameters", "PositiveFactorizations", "Printf", "SparseArrays", "StatsBase"]
-git-tree-sha1 = "1c44e1ac9c39892ff74de99ec9f7428f03660851"
-uuid = "429524aa-4258-5aef-a3af-852621145aeb"
-version = "0.20.4"
 
 [[OrderedCollections]]
 deps = ["Random", "Serialization", "Test"]
@@ -526,12 +482,6 @@ deps = ["LinearAlgebra", "RecipesBase"]
 git-tree-sha1 = "1185511cac8ab9d0b658b663eae34fe9a95d4332"
 uuid = "f27b6e38-b328-58d1-80ce-0feddd5e7a45"
 version = "0.6.1"
-
-[[PositiveFactorizations]]
-deps = ["LinearAlgebra", "Test"]
-git-tree-sha1 = "127c47b91990c101ee3752291c4f45640eeb03d1"
-uuid = "85a6dd25-e78a-55b7-8502-1745935b8125"
-version = "0.2.3"
 
 [[Printf]]
 deps = ["Unicode"]

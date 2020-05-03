@@ -5,7 +5,6 @@ version = "0.1.0"
 
 [deps]
 DotEnv = "4dc1fcf4-5e3b-5448-94ab-0c38ec0385c1"
-Gen = "ea4f424c-a589-11e8-07c0-fd5c91b9da4a"
 HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
 JSON3 = "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
 LibPQ = "194296ae-ab2e-5f79-8cd4-7183a0a5a0d1"
