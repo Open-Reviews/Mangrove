@@ -1,4 +1,4 @@
-import colors from 'vuetify/lib/util/colors'
+import colors from 'vuetify/es5/util/colors'
 
 export default {
   mode: 'spa',
@@ -31,7 +31,10 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/plugins/vue-layers', '~/plugins/vue-line-clamp'],
+  plugins: [
+    { src: '~/plugins/vue-layers', ssr: false },
+    { src: '~/plugins/vue-line-clamp', ssr: false }
+  ],
   /*
    ** Nuxt.js dev-modules
    */

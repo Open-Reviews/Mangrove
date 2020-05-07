@@ -29,7 +29,7 @@
           <v-col v-if="!isSmall" />
         </v-row>
         <v-col
-          v-if="!isSmall || !focus"
+          v-if="$store.state.fetchedDisplay && (!isSmall || !focus)"
           class="text-left"
           cols="11"
           style="position: absolute; bottom: 20px; margin-left: auto; margin-right: auto; left: 0; right: 0;"
@@ -98,7 +98,11 @@
 </template>
 
 <script>
-import { DISMISS_BETA_WARNING, SET_FILTER } from '~/store/mutation-types'
+import {
+  DISMISS_BETA_WARNING,
+  SET_FILTER,
+  FETCHED_DISPLAY
+} from '~/store/mutation-types'
 import SearchBox from '~/components/SearchBox'
 import ReviewList from '~/components/ReviewList'
 import {
@@ -178,13 +182,18 @@ export default {
   },
   mounted() {
     this.$store.commit(SET_FILTER, null)
+    if (this.$store.state.fetchedDisplay) return
+    this.$store.commit(FETCHED_DISPLAY)
+    return this.$store.dispatch('saveReviewsWithSubjects', {
+      limit: 5,
+      opinionated: true
+    })
   },
   methods: {
     dismissBetaWarning() {
       this.$store.commit(DISMISS_BETA_WARNING)
     }
   },
-  middleware: 'front',
   head() {
     return {
       title: 'Mangrove Reviews',
