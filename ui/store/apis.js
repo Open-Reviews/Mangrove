@@ -90,6 +90,7 @@ export function searchGeo(axios, q, viewbox) {
             // Dealing with very weird name of place field.
             const title =
               address[type] ||
+              address[placeClass] ||
               address.address26 ||
               address.address29 ||
               address.address100 ||
