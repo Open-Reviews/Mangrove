@@ -1,0 +1,56 @@
+{
+  "@context": {
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "schema": "http://schema.org/",
+    "re": "https://mangrove.reviews/schema"
+  },
+  "@graph": [
+    {
+      "@id": "re:experienceContext",
+      "@type": "rdfs:Property",
+      "rdfs:comment": "Context in which the reviewer primarily had experience with the subject.",
+      "rdfs:label": "experienceContext",
+      "schema:domainIncludes": "Review",
+      "schema:rangeIncludes": "ExperienceContext"
+    },
+    {
+      "@id": "re:ExperienceContext",
+      "@type": "rdfs:Class",
+      "rdfs:comment": "An enumeration class that lists common contexts in which the reviewer primarily had experience with the subject.",
+      "rdfs:label": "Review",
+      "rdfs:subClassOf": "schema:Text"
+    },
+    {
+      "@id": "re:reviewerIndex",
+      "@type": "rdfs:Property",
+      "rdfs:comment": "Unique index used by the reviewer, usually indicating a ranking in a list.",
+      "rdfs:label": "reviewerIndex",
+      "schema:domainIncludes": "Review",
+      "schema:rangeIncludes": "schema:Integer"
+    },
+    {
+      "@id": "re:isGenerated",
+      "@type": "rdfs:Property",
+      "rdfs:comment": "True if the review has been left by a review generating bot.",
+      "rdfs:label": "isGenerated",
+      "schema:domainIncludes": "Review",
+      "schema:rangeIncludes": "schema:Boolean"
+    },
+    {
+      "@id": "re:isAffiliated",
+      "@type": "rdfs:Property",
+      "rdfs:comment": "True if the review has been left by a reviewer affiliated with the subject, such as business owner or employee.",
+      "rdfs:label": "isAffiliated",
+      "schema:domainIncludes": "Review",
+      "schema:rangeIncludes": "schema:Boolean"
+    },
+    {
+      "@id": "re:isPersonalExperience",
+      "@type": "rdfs:Property",
+      "rdfs:comment": "True if if the review has been left by a reviewer who had direct experience with the subject of the review and is not based on a third party account.",
+      "rdfs:label": "isPersonalExperience",
+      "schema:domainIncludes": "Review",
+      "schema:rangeIncludes": "schema:Boolean"
+    }
+  ]
+}
