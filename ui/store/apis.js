@@ -54,7 +54,7 @@ function entityForm(axios, elf) {
     })
 }
 
-// Viebox should be a comma separated string.
+// Viewbox should be a comma separated string.
 export function searchGeo(axios, q, viewbox) {
   const params = {
     q,
