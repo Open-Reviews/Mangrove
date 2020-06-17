@@ -124,15 +124,20 @@ export function searchGeo(axios, q, viewbox) {
             return {
               sub: geoUri(lat, lon, title),
               scheme: GEO,
+              // Name of the place.
               title,
+              // Type of place.
               subtitle: typeString,
+              // Address of the place.
               description: addressString,
+              // Opening hours.
               openingHours:
                 extratags.opening_hours &&
                 extratags.opening_hours.replace(/, /g, '<br />'),
               website: extratags.url || extratags['contact:website'],
               phone: extratags.phone || extratags['contact:phone'],
               coordinates: [lon, lat].map(parseFloat),
+              // How likely this place is to be the result for the query.
               importance
             }
           }
