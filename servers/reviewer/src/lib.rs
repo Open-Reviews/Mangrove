@@ -53,7 +53,7 @@ fn get_reviews_json(conn: DbConn, json: Form<Query>) -> Result<Json<Reviews>, Er
     get_reviews(conn, json).map(Json)
 }
 
-#[get("/reviews?<json..>", format = "application/n-triples", rank = 3)]
+#[get("/reviews?<json..>", format = "application/n-triples", rank = 2)]
 fn get_reviews_ntriples(conn: DbConn, json: Form<Query>) -> Result<String, Error> {
     get_reviews(conn, json).and_then(|rs| rs.into_ntriples())
 }
@@ -85,7 +85,7 @@ impl Responder<'static> for Csv {
 }
 
 /// Csv serde serialization does not support maps...
-#[get("/reviews?<json..>", rank = 2)] //format = "text/csv"
+#[get("/reviews?<json..>", rank = 3)] //format = "text/csv"
 fn get_reviews_csv(conn: DbConn, json: Form<Query>) -> Result<Csv, Error> {
     let out = get_reviews(conn, json)?;
     let mut wtr = Writer::from_writer(vec![]);
@@ -106,7 +106,7 @@ fn get_reviews_csv(conn: DbConn, json: Form<Query>) -> Result<Csv, Error> {
     Ok(Csv(String::from_utf8(wtr.into_inner()?)?))
 }
 
-#[get("/review/<signature>")]
+#[get("/review/<signature>", format = "application/json")]
 fn get_review_json(conn: DbConn, signature: String) -> Result<Json<Review>, Error> {
     conn.select(&signature).map(Json)
 }

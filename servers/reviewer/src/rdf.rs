@@ -2,6 +2,7 @@ use super::fetch::Reviews;
 use super::review::Review;
 use super::error::Error;
 
+use percent_encoding::{utf8_percent_encode, NON_ALPHANUMERIC};
 use sophia::ns::rdf;
 use sophia::graph::{*, inmem::FastGraph};
 use sophia::ns::Namespace;
@@ -33,11 +34,14 @@ impl IntoRDF for Review {
     g.insert(&review, &rdf::type_, &s_review).expect("Infallible.");
 
     let s_person = schema.get("Person")?;
-    let person = issuers.get(&*self.kid)?;
+    
+    let encoded_kid: String = utf8_percent_encode(&self.kid, NON_ALPHANUMERIC).to_string();
+    let person = issuers.get(&*encoded_kid)?;
     g.insert(&person, &rdf::type_, &s_person).expect("Infallible.");
 
     // Define relationships between nodes.
     let s_author = schema.get("author")?;
+
     g.insert(&review, &s_author, &person).expect("Infallible.");
 
     if let Some(rating) = self.payload.rating {

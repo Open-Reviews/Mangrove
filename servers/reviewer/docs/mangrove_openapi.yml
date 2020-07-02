@@ -6,7 +6,7 @@ info:
     See [Mangrove Original UI](https://mangrove.reviews) for more information
     and [Mangrove Client JS Library](https://js.mangrove.reviews/)
     for a JavaScript wrapper.
-  version: 0.1.0
+  version: 0.1.1
 
 servers:
   - url: https://api.mangrove.reviews
