@@ -111,6 +111,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Reviews'
+            application/n-triples:
+              schema: string
+            text/csv:
+              schema: string
         '400':
           $ref: '#/components/responses/BadRequest' 
         '500':
@@ -133,6 +137,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Review'
+            application/n-triples:
+              schema: string
         '400':
           $ref: '#/components/responses/BadRequest' 
         '500':
