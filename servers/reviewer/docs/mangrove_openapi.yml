@@ -115,6 +115,28 @@ paths:
           $ref: '#/components/responses/BadRequest' 
         '500':
           $ref: '#/components/responses/InternalServerError' 
+  /review/{signature}:
+    get:
+      description: Request review with the specified signature.
+      parameters:
+        - name: signature
+          description: Signature of the review being requested.
+          in: path
+          required: true
+          schema:
+            type: string
+          example: PDSpnKtHioXykdBCMA15y5cLuYrRbSexscvySt_ryjppDWaW1I1AijjWercZE6K-cbS18bCwSmgIPqRIuL-cow
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '400':
+          $ref: '#/components/responses/BadRequest' 
+        '500':
+          $ref: '#/components/responses/InternalServerError' 
   /subject/{sub}:
     get:
       description: Request aggregate information about the subject.

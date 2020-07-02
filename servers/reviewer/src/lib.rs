@@ -1,5 +1,7 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
+pub mod rdf;
+pub mod fetch;
 pub mod aggregator;
 pub mod database;
 pub mod error;
@@ -14,6 +16,8 @@ extern crate rocket;
 #[macro_use]
 extern crate rocket_contrib;
 
+use self::rdf::IntoRDF;
+use self::fetch::{Reviews, Issuers, Subjects, get_reviews};
 use self::aggregator::{Issuer, Statistic, Subject};
 use self::database::{DbConn, Query};
 use self::error::Error;
@@ -28,13 +32,11 @@ use csv::Writer;
 use serde::{Deserialize, Serialize};
 use std::time::SystemTime;
 use std::str::FromStr;
-use std::collections::{HashSet, BTreeMap};
 
 #[get("/")]
 fn index() -> &'static str {
-    "Check out for project information: https://planting.space/mangrove.html"
+    "More project information: https://mangrove.reviews"
 }
-
 
 #[put("/submit/<jwt_review>")]
 fn submit_review_jwt(conn: DbConn, jwt_review: String) -> Result<String, Error> {
@@ -46,60 +48,14 @@ fn submit_review_jwt(conn: DbConn, jwt_review: String) -> Result<String, Error> 
     Ok("true".into())
 }
 
-/// Return type used to provide `Review`s and any associated data.
-#[derive(Debug, Serialize)]
-struct Reviews {
-    /// A list of reviews satisfying the `Query`.
-    reviews: Vec<Review>,
-    /// A map from public keys to information about issuers.
-    issuers: Option<Issuers>,
-    /// A map from Review identifiers (`urn:maresi:<signature>`)
-    /// to information about the reviews of that review.
-    maresi_subjects: Option<Subjects>,
-}
-
-fn get_reviews(conn: DbConn, json: Form<Query>) -> Result<Reviews, Error> {
-    let query = json.into_inner();
-    println!("Reviews requested for query {:?}", query);
-    let add_issuers = query.issuers.unwrap_or(false);
-    let add_subjects = query.maresi_subjects.unwrap_or(false);
-    let reviews = conn.filter(query)?;
-    let out = Reviews {
-        issuers: if add_issuers {
-            Some(Issuer::compute_bulk(
-                &conn,
-                reviews
-                    .iter()
-                    .map(|review| review.kid.clone())
-                    // Deduplicate before computing Issuers.
-                    .collect::<HashSet<_>>()
-                    .into_iter(),
-            )?)
-        } else {
-            None
-        },
-        maresi_subjects: if add_subjects {
-            Some(Subject::compute_bulk(
-                &conn,
-                reviews
-                    .iter()
-                    .map(|review| format!("urn:maresi:{}", review.signature.clone()))
-                    // Deduplicate before computing Subjects.
-                    .collect::<HashSet<_>>()
-                    .into_iter(),
-            )?)
-        } else {
-            None
-        },
-        reviews,
-    };
-    println!("Returning {:?}", out);
-    Ok(out)
-}
-
 #[get("/reviews?<json..>", format = "application/json")]
 fn get_reviews_json(conn: DbConn, json: Form<Query>) -> Result<Json<Reviews>, Error> {
     get_reviews(conn, json).map(Json)
+}
+
+#[get("/reviews?<json..>", format = "application/n-triples", rank = 3)]
+fn get_reviews_ntriples(conn: DbConn, json: Form<Query>) -> Result<String, Error> {
+    get_reviews(conn, json).and_then(|rs| rs.into_ntriples())
 }
 
 #[derive(Debug)]
@@ -150,6 +106,16 @@ fn get_reviews_csv(conn: DbConn, json: Form<Query>) -> Result<Csv, Error> {
     Ok(Csv(String::from_utf8(wtr.into_inner()?)?))
 }
 
+#[get("/review/<signature>")]
+fn get_review_json(conn: DbConn, signature: String) -> Result<Json<Review>, Error> {
+    conn.select(&signature).map(Json)
+}
+
+#[get("/review/<signature>", format = "application/n-triples", rank = 2)]
+fn get_review_ntriples(conn: DbConn, signature: String) -> Result<String, Error> {
+    conn.select(&signature).and_then(|r| r.into_ntriples())
+}
+
 #[get("/subject/<sub>")]
 fn get_subject(conn: DbConn, sub: String) -> Result<Json<Subject>, Error> {
     Subject::compute(&conn, sub).map(Json)
@@ -169,9 +135,6 @@ struct BatchQuery {
     /// List of issuer public keys to get information about.
     pems: Option<Vec<String>>,
 }
-
-type Subjects = BTreeMap<String, Subject>;
-type Issuers = BTreeMap<String, Issuer>;
 
 #[derive(Debug, Serialize)]
 struct BatchReturn {
@@ -217,6 +180,9 @@ pub fn rocket() -> Rocket {
                 submit_review_jwt,
                 get_reviews_json,
                 get_reviews_csv,
+                get_reviews_ntriples,
+                get_review_json,
+                get_review_ntriples,
                 get_subject,
                 get_issuer,
                 batch
@@ -227,8 +193,9 @@ pub fn rocket() -> Rocket {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    //use super::*;
 
+    /*
     #[test]
     fn add_columns() {
         use diesel::prelude::*;
@@ -242,4 +209,5 @@ mod tests {
         //diesel::update(target).set(coordinates.eq(sub)).execute(&conn).unwrap();
         //diesel::update(target).set(uncertainty.eq(sub)).execute(&conn).unwrap();
     }
+    */
 }

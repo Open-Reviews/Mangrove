@@ -438,7 +438,7 @@ mod tests {
     #[test]
     fn test_uri() {
         check_place(&Url::parse("geo:0,0?u=30&q=47.1691576,8.514572(Juanitos)").unwrap()).unwrap();
-        check_place(&Url::parse("geo:?u=30&q=47.1691576,8.514572(Juanitos)").unwrap()).unwrap();
+        assert!(check_place(&Url::parse("geo:?u=30&q=47.1691576,8.514572(Juanitos)").unwrap()).is_err());
         assert!(check_place(&Url::parse("geo:37.78,-122.399").unwrap()).is_err());
     }
 }
