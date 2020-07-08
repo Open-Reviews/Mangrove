@@ -17,5 +17,9 @@ export const LINKS = {
   },
   OpenCollective: {
     link: 'https://opencollective.com/mangrove'
+  },
+  Email: {
+    icon: 'mdi-email',
+    link: 'mailto:hello@open-reviews.net'
   }
 }

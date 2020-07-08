@@ -83,15 +83,15 @@
       </v-col>
       <v-col class="text-center" cols="12">
         <v-divider class="mb-2" />
-        {{ new Date().getFullYear() }} — A
+        {{ new Date().getFullYear() }} —
         <a
-          :href="psUrl"
+          :href="oraUrl"
           style="text-decoration: none"
           class="white--text"
           target="_blank"
-          >PlantingSpace</a
+          >Open Reviews Association</a
         >
-        Project —
+        —
         <a
           :href="ccbyUrl"
           style="text-decoration: none"
@@ -146,23 +146,28 @@ export default {
         { to: '/contribute', label: 'Contribute' },
         { to: '/account', label: 'Account' }
       ],
-      psUrl: 'https://planting.space',
+      oraUrl: 'https://open-reviews.net',
       ccbyUrl: 'https://creativecommons.org/licenses/by/4.0',
       internals: [
         { label: 'Blog', href: 'https://blog.mangrove.reviews' },
         { label: 'FAQ', to: 'faq' },
         { label: 'Terms & Privacy', to: 'terms' },
         {
+          label: 'Develop',
+          href: LINKS.Gitlab.link
+        },
+        {
           label: 'API',
           href: 'https://docs.mangrove.reviews'
         },
         {
-          label: 'Develop',
-          href: LINKS.Gitlab.link
-        },
-        { label: 'Donate', href: LINKS.OpenCollective.link }
+          label: 'Join us',
+          href: 'https://open-reviews.net'
+        }
       ],
-      socials: ['Mastodon', 'Twitter', 'Riot'].map((wanted) => LINKS[wanted]),
+      socials: ['Mastodon', 'Twitter', 'Riot', 'Email'].map(
+        (wanted) => LINKS[wanted]
+      ),
       toc: ['/terms']
     }
   },
