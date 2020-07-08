@@ -13,14 +13,35 @@
       </router-link>
       <v-spacer />
       <v-toolbar-items class="mr-n4 hidden-sm-and-down">
-        <v-btn v-for="item in menu" :to="item.to" :key="item.to" text>
-          <span v-html="item.label" />
-          <Identicon
-            v-if="item.to === '/account'"
-            :seed="$store.state.publicKey"
-            class="ml-2"
-          />
-        </v-btn>
+        <v-menu v-for="item in menu" :key="item.to" open-on-hover offset-y>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              :to="Array.isArray(item.to) ? '' : item.to"
+              :href="item.href"
+              v-bind="attrs"
+              v-on="on"
+              :target="item.href ? '_blank' : ''"
+              text
+            >
+              <span v-html="item.label" />
+              <Identicon
+                v-if="item.to === '/account'"
+                :seed="$store.state.publicKey"
+                class="ml-2"
+              />
+            </v-btn>
+          </template>
+          <v-list v-if="Array.isArray(item.to)">
+            <v-list-item
+              v-for="dropdown in item.to"
+              :href="dropdown.href"
+              :key="dropdown.href"
+              target="_blank"
+            >
+              <v-list-item-title>{{ dropdown.label }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </v-toolbar-items>
       <div class="hidden-md-and-up">
         <v-menu bottom left>
@@ -30,13 +51,29 @@
             </v-btn>
           </template>
           <v-list>
-            <v-list-item v-for="item in menu" :to="item.to" :key="item.to">
-              <v-list-item-title>{{ item.label }}</v-list-item-title>
-              <Identicon
-                v-if="item.to === '/account'"
-                :seed="$store.state.publicKey"
-              />
-            </v-list-item>
+            <div v-for="item in menu" :key="item.to">
+              <v-list-item
+                :to="Array.isArray(item.to) ? '' : item.to"
+                :href="item.href"
+                :target="item.href ? '_blank' : ''"
+              >
+                <v-list-item-title>{{ item.label }}</v-list-item-title>
+                <Identicon
+                  v-if="item.to === '/account'"
+                  :seed="$store.state.publicKey"
+                />
+              </v-list-item>
+              <v-list v-if="Array.isArray(item.to)" class="ml-2">
+                <v-list-item
+                  v-for="dropdown in item.to"
+                  :href="dropdown.href"
+                  :key="dropdown.href"
+                  target="_blank"
+                >
+                  <v-list-item-title>{{ dropdown.label }}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </div>
           </v-list>
         </v-menu>
       </div>
@@ -108,11 +145,11 @@
         { id: '{{ feedbackId }}', position: 'right', color: '#FF1F3A' }
       ])
       ;(function() {
-        var f = document.createElement('script')
+        const f = document.createElement('script')
         f.type = 'text/javascript'
         f.async = true
         f.src = '//cdn.feedbackify.com/f.js'
-        var s = document.getElementsByTagName('script')[0]
+        const s = document.getElementsByTagName('script')[0]
         s.parentNode.insertBefore(f, s)
       })()
     </script>
@@ -142,8 +179,23 @@ export default {
     return {
       title: 'Mangrove',
       menu: [
-        { to: '/build', label: 'Build on Mangrove' },
-        { to: '/contribute', label: 'Contribute' },
+        { to: '/use-cases', label: 'Use Cases' },
+        {
+          to: [
+            { label: 'API', href: 'https://docs.mangrove.reviews/' },
+            { label: 'JS Library', href: 'https://js.mangrove.reviews/' },
+            { label: 'Standard', href: 'https://mangrove.reviews/standard' },
+            {
+              label: 'Contribute',
+              href: 'https://gitlab.com/plantingspace/mangrove'
+            }
+          ],
+          label: 'Technology'
+        },
+        {
+          label: 'Join us',
+          href: 'https://open-reviews.net'
+        },
         { to: '/account', label: 'Account' }
       ],
       oraUrl: 'https://open-reviews.net',
@@ -153,22 +205,19 @@ export default {
         { label: 'FAQ', to: 'faq' },
         { label: 'Terms & Privacy', to: 'terms' },
         {
-          label: 'Develop',
+          label: 'Code',
           href: LINKS.Gitlab.link
         },
         {
           label: 'API',
           href: 'https://docs.mangrove.reviews'
-        },
-        {
-          label: 'Join us',
-          href: 'https://open-reviews.net'
         }
       ],
       socials: ['Mastodon', 'Twitter', 'Riot', 'Email'].map(
         (wanted) => LINKS[wanted]
       ),
-      toc: ['/terms']
+      toc: ['/terms'],
+      techDropdown: false
     }
   },
   computed: {
