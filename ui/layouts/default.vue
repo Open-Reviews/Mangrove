@@ -13,7 +13,7 @@
       </router-link>
       <v-spacer />
       <v-toolbar-items class="mr-n4 hidden-sm-and-down">
-        <v-menu v-for="item in menu" :key="item.to" open-on-hover offset-y>
+        <v-menu v-for="(item, i) in menu" :key="i" open-on-hover offset-y>
           <template v-slot:activator="{ on, attrs }">
             <v-btn
               :to="Array.isArray(item.to) ? '' : item.to"
@@ -51,7 +51,7 @@
             </v-btn>
           </template>
           <v-list>
-            <div v-for="item in menu" :key="item.to">
+            <div v-for="(item, i) in menu" :key="i">
               <v-list-item
                 :to="Array.isArray(item.to) ? '' : item.to"
                 :href="item.href"

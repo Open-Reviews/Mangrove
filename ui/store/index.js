@@ -144,8 +144,9 @@ export const getters = {
     if (state.filter) query = { ...query, scheme: state.filter }
     const counts = {}
     const allReviews = Object.values(state.reviews)
+    // Prelimit to circumvent JS eager eval.
     const reviews = (query.limit
-      ? allReviews.slice(0, query.limit)
+      ? allReviews.slice(0, query.limit * 1.5)
       : allReviews
     )
       .filter(({ payload, kid, scheme, geo }) => {
@@ -153,11 +154,13 @@ export const getters = {
         const isSelected =
           (!query.kid || query.kid === kid) &&
           (!query.scheme || query.scheme === scheme) &&
+          (!query.opinionated || payload.opinion) &&
           Object.entries(query)
             .map(([k, v]) => {
               if (
                 k === 'kid' ||
                 k === 'scheme' ||
+                k === 'opinionated' ||
                 k === 'limit' ||
                 payload[k] === v
               ) {
@@ -182,6 +185,7 @@ export const getters = {
         return isSelected
       })
       .sort((r1, r2) => r2.payload.iat - r1.payload.iat)
+      .slice(0, query.limit)
     counts.null = reviews.length
     return { counts, reviews }
   }

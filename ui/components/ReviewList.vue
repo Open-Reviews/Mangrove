@@ -6,7 +6,7 @@
       class="text-center"
     />
     <v-carousel
-      v-if="$vuetify.breakpoint.mdAndDown && opinions"
+      v-if="$vuetify.breakpoint.mdAndDown && query.opinionated"
       :show-arrows="false"
       hide-delimiter-background
       height="auto"
@@ -25,7 +25,7 @@
     <ReviewListBase
       :listArgs="reliable"
       :cols="cols"
-      :dense="opinions"
+      :dense="query.opinionated"
       v-else
     />
     <v-container v-if="query.kid && opinionless">
@@ -37,7 +37,9 @@
       </span>
     </v-container>
     <v-row
-      v-if="opinionless.ratings.length && !showOpinionless && !opinions"
+      v-if="
+        opinionless.ratings.length && !showOpinionless && !query.opinionated
+      "
       justify="center"
     >
       <v-btn @click="showOpinionless = true" text
@@ -51,7 +53,7 @@
     />
 
     <v-row
-      v-if="unreliable.length && !showUnreliable && !opinions"
+      v-if="unreliable.length && !showUnreliable && !query.opinionated"
       justify="center"
     >
       <v-btn @click="showUnreliable = true" text
@@ -60,7 +62,10 @@
     </v-row>
     <ReviewListBase v-if="showUnreliable" :listArgs="unreliable" :cols="cols" />
 
-    <v-row v-if="reviews.length && notMaresi && !opinions" justify="center">
+    <v-row
+      v-if="reviews.length && notMaresi && !query.opinionated"
+      justify="center"
+    >
       <v-tooltip top>
         <template v-slot:activator="{ on }">
           <v-btn
@@ -99,7 +104,6 @@ export default {
         }
       }
     },
-    opinions: Boolean,
     cols: {
       type: Number,
       default: () => 12
@@ -122,7 +126,7 @@ export default {
     reliable() {
       return this.opinionated.filter(
         (a) =>
-          (!a.issuer.neutrality && !this.opinions) ||
+          (!a.issuer.neutrality && !this.query.opinionated) ||
           (a.issuer.neutrality &&
             a.issuer.neutrality >= this.neutralityThreshold)
       )
