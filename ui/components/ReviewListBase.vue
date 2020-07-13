@@ -9,7 +9,7 @@
         :dense="dense"
         class="mb-7"
       />
-      <ReviewList :query="{ sub: arg.rootSub }" class="ml-4" />
+      <ReviewList v-if="!dense" :query="{ sub: arg.rootSub }" class="ml-4" />
     </v-col>
   </v-row>
 </template>
