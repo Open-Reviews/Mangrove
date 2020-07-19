@@ -8,7 +8,7 @@ use sophia::graph::{*, inmem::FastGraph};
 use sophia::ns::Namespace;
 use sophia::serializer::*;
 use sophia::serializer::nt::NtSerializer;
-use sophia::term::{Term, literal::AsLiteral};
+use sophia::term::{Term, literal::AsLiteral, blank_node::BlankNode};
 
 pub trait IntoRDF {
   fn insert(&self, graph: &mut FastGraph) -> Result<(), Error>;
@@ -28,32 +28,70 @@ impl IntoRDF for Review {
     let reviews = Namespace::new("https://api.mangrove.reviews/review/")?;
     let issuers = Namespace::new("https://api.mangrove.reviews/issuer/")?;
 
-    // Define nodes and their types.
+    // Review root.
     let s_review = schema.get("Review")?;
     let review = reviews.get(&*self.signature)?;
-    g.insert(&review, &rdf::type_, &s_review).expect("Infallible.");
+    g.insert(&review, &rdf::type_, &s_review)?;
+
+    // Identifiers.
+    let s_pv = schema.get("PropertyValue")?;
+    let signature: Term<String> = Term::from(BlankNode::new("signature")?);
+    g.insert(&signature, &rdf::type_, &s_pv)?;
+
+    let jwt: Term<String> = Term::from(BlankNode::new("jwt")?);
+    g.insert(&jwt, &rdf::type_, &s_pv)?;
+
+    let s_name = schema.get("name")?;
+    let s_value = schema.get("value")?;
+    let t_name: Term<String> = "signature".as_term();
+    g.insert(&signature, &s_name, &t_name)?;
+    let t_value: Term<String> = self.signature.as_term();
+    g.insert(&signature, &s_value, &t_value)?;
+
+    let t_name: Term<String> = "jwt".as_term();
+    g.insert(&jwt, &s_name, &t_name)?;
+    let t_value: Term<String> = self.jwt.as_term();
+    g.insert(&jwt, &s_value, &t_value)?;
+
+    // Author
 
     let s_person = schema.get("Person")?;
-    
     let encoded_kid: String = utf8_percent_encode(&self.kid, NON_ALPHANUMERIC).to_string();
     let person = issuers.get(&*encoded_kid)?;
-    g.insert(&person, &rdf::type_, &s_person).expect("Infallible.");
+    g.insert(&person, &rdf::type_, &s_person)?;
 
-    // Define relationships between nodes.
     let s_author = schema.get("author")?;
 
-    g.insert(&review, &s_author, &person).expect("Infallible.");
+    g.insert(&review, &s_author, &person)?;
 
-    if let Some(rating) = self.payload.rating {
+    // Rating
+
+    if let Some(rating_value) = self.payload.rating {
       let s_review_rating = schema.get("reviewRating")?;
-      let t_rating: Term<String> = rating.as_term();
-      g.insert(&review, &s_review_rating, &t_rating).expect("Infallible.");
+      let s_rating = schema.get("Rating")?;
+      let rating: Term<String> = Term::from(BlankNode::new("rating")?);
+      g.insert(&rating, &rdf::type_, &s_rating)?;
+      g.insert(&review, &s_review_rating, &rating)?;
+
+      let s_rating_value = schema.get("ratingValue")?;
+      let t_rating_value: Term<String> = rating_value.as_term();
+      g.insert(&rating, &s_rating_value, &t_rating_value)?;
+
+      let s_worst_rating = schema.get("worstRating")?;
+      let t_worst_rating: Term<String> = 0.as_term();
+      g.insert(&rating, &s_worst_rating, &t_worst_rating)?;
+
+      let s_best_rating = schema.get("bestRating")?;
+      let t_best_rating: Term<String> = 100.as_term();
+      g.insert(&rating, &s_best_rating, &t_best_rating)?;
     }
+
+    // Opinion
 
     if let Some(ref opinion) = self.payload.opinion {
       let s_review_body = schema.get("reviewBody")?;
       let t_opinion: Term<String> = opinion.as_term();
-      g.insert(&review, &s_review_body, &t_opinion).expect("Infallible.");
+      g.insert(&review, &s_review_body, &t_opinion)?;
     }
 
     Ok(())

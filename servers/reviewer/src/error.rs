@@ -95,3 +95,9 @@ impl From<sophia::term::TermError> for Error {
         Error::Internal(error.to_string())
     }
 }
+
+impl From<core::convert::Infallible> for Error {
+    fn from(error: core::convert::Infallible) -> Self {
+        Error::Internal(error.to_string())
+    }
+}
