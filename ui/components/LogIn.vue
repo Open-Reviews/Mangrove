@@ -40,6 +40,10 @@ export default {
       let jwk
       try {
         jwk = JSON.parse(this.privateInput)
+        // Make sure to accept escaped JSON from file download.
+        if (typeof jwk === 'string') {
+          jwk = JSON.parse(jwk)
+        }
       } catch (e) {
         this.error = e
         return

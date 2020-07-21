@@ -1,5 +1,5 @@
 use super::fetch::Reviews;
-use super::review::Review;
+use super::review::{Review, Metadata};
 use super::error::Error;
 
 use percent_encoding::{utf8_percent_encode, NON_ALPHANUMERIC};
@@ -53,6 +53,33 @@ impl IntoRDF for Review {
     let t_value: Term<String> = self.jwt.as_term();
     g.insert(&jwt, &s_value, &t_value)?;
 
+    // Subject
+
+    let s_item_reviewed = schema.get("itemReviewed")?;
+    let t_subject = match self.scheme.as_ref() {
+      "geo" => {
+        let place: Term<String> = Term::from(BlankNode::new("place")?);
+        let s_thing = schema.get("Thing")?;
+        g.insert(&place, &rdf::type_, &s_thing)?;
+        let s_identifier = schema.get("identifier")?;
+        let t_sub: Term<String> = self.payload.sub.as_term();
+        g.insert(&place, &s_identifier, &t_sub)?;
+        place
+      },
+      "https" => {
+        let website: Term<String> = Term::from(BlankNode::new("website")?);
+        let s_thing = schema.get("Thing")?;
+        g.insert(&website, &rdf::type_, &s_thing)?;
+        let s_identifier = schema.get("identifier")?;
+        let t_sub: Term<String> = self.payload.sub.as_term();
+        g.insert(&website, &s_identifier, &t_sub)?;
+        website
+      },
+      // TODO: add remaining schemes
+      _ => Term::new_iri("unknown subject identifier scheme")?,
+    };
+    g.insert(&review, &s_item_reviewed, &t_subject)?;
+
     // Author
 
     let s_person = schema.get("Person")?;
@@ -61,8 +88,14 @@ impl IntoRDF for Review {
     g.insert(&person, &rdf::type_, &s_person)?;
 
     let s_author = schema.get("author")?;
-
     g.insert(&review, &s_author, &person)?;
+
+    // Date created
+
+    let s_date_created = schema.get("dateCreated")?;
+    // TODO: encode the dateTime correctly
+    let t_date_time: Term<String> = self.payload.iat.as_term();
+    g.insert(&review, &s_date_created, &t_date_time)?;
 
     // Rating
 
@@ -92,6 +125,16 @@ impl IntoRDF for Review {
       let s_review_body = schema.get("reviewBody")?;
       let t_opinion: Term<String> = opinion.as_term();
       g.insert(&review, &s_review_body, &t_opinion)?;
+    }
+
+    // Metadata
+
+    let maybe_metadata: Option<Metadata> = match self.payload.metadata {
+      Some(ref v) => serde_json::from_value(v.clone())?,
+      None => None,
+    };
+    if let Some(metadata) = maybe_metadata {
+
     }
 
     Ok(())
