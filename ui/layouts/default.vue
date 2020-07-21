@@ -211,6 +211,10 @@ export default {
         {
           label: 'API',
           href: 'https://docs.mangrove.reviews'
+        },
+        {
+          label: 'Download data',
+          href: 'https://api.mangrove.reviews/reviews'
         }
       ],
       socials: ['Mastodon', 'Twitter', 'Riot', 'Email'].map(
