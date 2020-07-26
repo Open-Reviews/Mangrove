@@ -25,7 +25,7 @@ export default {
       qas: [
         {
           q: 'How do you avoid spam and ensure reliable reviews and ratings?',
-          a: ` 
+          a: `
             Mangrove applies a variety of measures to ensure a high reliability of ratings and usefulnes of the dataset:
             <ul>
               <li><b>Users can mark reviews</b> as useful, and they can confirm the experience expressed in a review. This information is used by the aggregation algorithm to give high quality reviews a higher weight in the aggregated rating, and display them higher up in the list.</li>
@@ -46,14 +46,14 @@ export default {
               <li>The submitted star rating.</li>
               <li>The submitted review text.</li>
               <li>Uploaded media files.</li>
-              <li>Additional information if entered by the user (display name, given name, family name, age, gender, context of the experience)).</li>
+              <li>Additional information if entered by the user, such as display name, given name, family name, age, gender, context of the experience.</li>
             </ul>
             You can check what data has been stored in the database by clicking “More” -> “Show raw Mangrove review” next to each review, or by downloading the dataset.
 In addition to that, you can inspect the code and the Mangrove Review Standard that defines the data structure and more in our <a href="https://gitlab.com/plantingspace/mangrove" target="_blank">GitLab repository</a>.
           `
         },
         {
-          q: 'What 3rd party databases does Mangrove use?',
+          q: 'What 3rd party databases does the Mangrove web app use to allow reading and writing reviews?',
           a: `
             <ul>
               <li><b>Places on the map: <a href="https://openstreetmap.org" target="_blank">OpenStreetMap</a>.</b>
@@ -79,58 +79,52 @@ OpenStreetMap is built by a community of mappers that contribute and maintain da
           q:
             'What’s a cryptographic key pair and why do I need to store my private key?',
           a: `
-            Mangrove uses <a href="https://en.wikipedia.org/wiki/Public-key_cryptography" target="_blank">public key cryptography</a> to authenticate a user and to establish a user’s reputation within the system, which allows us to get rid of registrations and logins, and makes storing user’s personal information obsolete.   
+            Mangrove uses <a href="https://en.wikipedia.org/wiki/Public-key_cryptography" target="_blank">public key cryptography</a> to identify a user and to establish a user’s reputation within the system without the need for a central identity server. Participating apps and websites in the open reviews ecosystem therefore don't have to rely on a central party to manage identities across applications. This approach makes registrations and logins, as well as storing user’s personal information, obsolete.
 </br>
 
-Public-key cryptography uses pairs of keys: public keys which may be disseminated widely, and private keys which are known only to the owner. Both are generated in your browser when you access Mangrove, and are stored locally in a <b>temporary</b> storage (IndexedDB).    
+Public-key cryptography uses pairs of keys: public keys which may be disseminated widely, and private keys which are known only to the owner. Both are generated in your browser when you access Mangrove, and are stored locally in a <b>temporary</b> storage (IndexedDB) on your device.
 </br>
 
-The public key represents <b>your identifier</b> that will be displayed with each review you write. It allows you to build a reputation to make your opinion count more. This is because the algorithm that aggregates individual reviews to a final rating gives higher weight to public keys that have published many high-quality reviews. This is part of ensuring a high reliability of the ratings. Find your public key on the <a href="https://mangrove.reviews/account" target="_blank">Account page</a> under "Advanced".   
+The public key represents <b>your identifier</b> that will be displayed with each review you write. It allows you to build a reputation to make your opinion count more. This is because the algorithm that aggregates individual reviews to a final rating gives higher weight to public keys that have published many high-quality reviews. This is part of ensuring a high reliability of the ratings. Find your public key on the <a href="https://mangrove.reviews/account" target="_blank">Account page</a> under "Advanced".
 </br>
 
 The private key is used to <b>create a digital signature to authenticate you</b> so that no one else can write reviews with your identifier. Throughout the web app we call the private key a "password" so that it is easier to understand for less technical users. </br>
 
-By default, a new key pair is generated each time you access Mangrove from a new device, a new browser, or after clearing your browser data. To be able to write reviews under a previously used public key, you need to have access to the corresponding private key. <b>We therefore recommend storing it in a password manager</b>.
+By default, a new key pair is generated each time you access Mangrove from a new device, a new browser, or after clearing your browser data. To be able to write reviews under a previously used public key, you need to have access to the corresponding private key. <b>We therefore recommend storing the private key in a password manager</b>.
 To access a previously used public key simply import the corresponding private key on the <a href="https://mangrove.reviews/account" target="_blank">Account page</a> under "Advanced".
           `
         },
         {
           q: 'Who is behind the Mangrove initiative?',
           a: `
-            Mangrove is an open-source, non-profit community project started and maintained by PlantingSpace, a limited liability company incorporated in Zug, Switzerland.    
+            Mangrove is an open-source community project. It is maintained by the non-profit <a href="https://open-reviews.net" target="_blank">Open Reviews Association</a> that acts as a legal entity for the Mangrove open-source technology, and is the custodian for the computer servers and services necessary to host the open dataset. The project was initially started by <a href="https://planting.space" target="_blank">PlantingSpace</a>.
 
 </br>
-PlantingSpace is currently hosting the Original Mangrove Server and dataset, but we encourage anyone to mirror the dataset on other servers.   
-
-</br>
-Mangrove’s financial resources are managed fully transparently via <a href="https://opencollective.com/mangrove" target="_blank">Open Collective</a>. PlantingSpace has the role of a Fiscal Host for the Mangrove collective, meaning that it is the legal entity holding the money and responsible for admin/taxes forms for the collective.    
+The Open Reviews Association is hosting the Original Mangrove Server and dataset, but we encourage anyone to mirror the dataset on other servers.
           `
         },
         {
           q: 'How is Mangrove funded?',
           a: `
-            Mangrove is an open-source, non-profit community project funded by donations and sponsors. All financial resources are managed transparently via <a href="https://opencollective.com/mangrove" target="_blank">Open Collective</a>.  
+            Mangrove is an open-source, non-profit community project funded by grants, sponsoring, and donations via the non-profit <a href="https://open-reviews.net" target="_blank">Open Reviews Association</a>.
 
 </br>
-If you run a business and are using the Mangrove open dataset as part of a revenue-generating service, it makes business sense to sponsor Mangrove: it ensures the project that your service relies on stays healthy and actively maintained. It can also help your exposure in the Open Data community.  
+Everyone with an interest in open reviews is invited to join the Open Reviews Association (ORA) as a <a href="https://open-reviews.net/membership/" target="_blank">member</a> and to contribute to the movement actively by bringing in their skills and interests, whether that is promoting and connecting ORA to relevant parties, helping with comms and social media, improving the code base, giving a hand to integrators, coordinating research activities, or fundraising: any contribution is welcome!
 
-</br>
-If you are an individual user and have enjoyed sharing and gaining insights through Mangrove reviews, consider donating as a sign of appreciation - like offering the Mangrove maintainers a coffee once in a while :) 
-  
           `
         },
         {
           q: 'How can I contact you?',
           a: `
             <ul>
-              <li>For general inquiries and feedback, please email us at mangrove@planting.space</li>
-              <li>To discuss with us live you can also join our chat on <a href="https://riot.im/app/#/room/#mangrove:matrix.org">Riot</a>.</li>
+              <li>For general inquiries and feedback, please email us at hello@open-reviews.net</li>
+              <li>To discuss with the team and community, you can join our chat on <a href="https://riot.im/app/#/room/#mangrove:matrix.org">Riot</a>.</li>
               <li>To suggest a new feature or an edit, you can make a pull request to our <a href="https://gitlab.com/plantingspace/mangrove" target="_blank">GitLab repository</a>.</li>
             </ul>
           `
         }
       ],
-      extrainfo: `Not found what you were looking for? Contact us at mangrove(at)planting(dot)space, or discuss with us in our <a href="https://riot.im/app/#/room/#mangrove:matrix.org">Riot chat</a>.`
+      extrainfo: `Not found what you were looking for? Contact us at hello(at)open-reviews(dot)net, or discuss with us in our <a href="https://riot.im/app/#/room/#mangrove:matrix.org">Riot chat</a>.`
     }
   },
   head() {
@@ -140,7 +134,7 @@ If you are an individual user and have enjoyed sharing and gaining insights thro
         {
           name: 'description',
           content:
-            'Try out writing reviews in the public domain, using a cryptographically generated account that puts you in control of your privacy.'
+            'Try out writing reviews for the public good, using a cryptographically generated account that puts you in control of your privacy.'
         }
       ]
     }
