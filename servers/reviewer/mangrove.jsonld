@@ -23,6 +23,14 @@
       "schema:rangeIncludes": "schema:Text"
     },
     {
+      "@id": "re:clientId",
+      "@type": "rdf:Property",
+      "rdfs:comment": "URI corresponding to the resource the review originates from: website or app.",
+      "rdfs:label": "clientId",
+      "schema:domainIncludes": "schema:Review",
+      "schema:rangeIncludes": "schema:URL"
+    },
+    {
       "@id": "re:reviewerIndex",
       "@type": "rdf:Property",
       "rdfs:comment": "Unique index used by the reviewer, usually indicating a ranking in a list.",
