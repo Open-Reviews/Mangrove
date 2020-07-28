@@ -162,7 +162,7 @@ impl Payload {
 pub type Rating = i16;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub struct Metadata(BTreeMap<String, serde_json::Value>);
+pub struct Metadata(pub BTreeMap<String, serde_json::Value>);
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 struct Images(Vec<Image>);
