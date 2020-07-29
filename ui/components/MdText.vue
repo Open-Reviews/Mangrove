@@ -2,7 +2,7 @@
   <div>
     <v-col
       v-if="isBig"
-      cols="3"
+      cols="2"
       style="position: fixed; background: white; height: 100%"
     >
       <v-list>
