@@ -53,7 +53,8 @@ In addition to that, you can inspect the code and the Mangrove Review Standard t
           `
         },
         {
-          q: 'What 3rd party databases does the Mangrove web app use to allow reading and writing reviews?',
+          q:
+            'What 3rd party databases does the Mangrove web app use to allow reading and writing reviews?',
           a: `
             <ul>
               <li><b>Places on the map: <a href="https://openstreetmap.org" target="_blank">OpenStreetMap</a>.</b>

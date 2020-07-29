@@ -3,8 +3,8 @@
     <v-app-bar app dense scroll-off-screen color="background">
       <router-link to="/" style="text-decoration: none">
         <v-row align="center">
-          <v-avatar class="mx-2">
-            <canvas id="canvas" />
+          <v-avatar class="mx-2" tile>
+            <v-img :src="logo" />
           </v-avatar>
           <span class="black--text headline">
             MANGROVE
@@ -157,7 +157,6 @@
 </template>
 
 <script>
-import tree from 'ps-trees'
 import Identicon from '~/components/Identicon'
 import { LINKS } from '~/store/links'
 
@@ -178,6 +177,7 @@ export default {
   data() {
     return {
       title: 'Mangrove',
+      logo: require('~/assets/tree.png'),
       menu: [
         { to: '/use-cases', label: 'Use Cases' },
         {
@@ -237,9 +237,6 @@ export default {
     feedbackId() {
       return FEEDBACK_IDS[this.$route.path] || 15050
     }
-  },
-  mounted() {
-    tree(document.getElementById('canvas'), 'Mangrove')
   },
   created() {
     this.$store.dispatch('generateKeypair')
