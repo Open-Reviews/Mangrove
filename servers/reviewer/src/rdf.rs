@@ -189,8 +189,6 @@ fn insert_bool(g: &mut FastGraph, sub: &Term<&str>, prop: Term<&str>, v: &serde_
   if let Some(vs) =  v.as_str().and_then(|v| bool::from_str(v).ok()) {
     let t_v: Term<String> = vs.as_term();
     g.insert(sub, &prop, &t_v)?;
-    let s_bool = SCHEMA.get("Boolean")?;
-    g.insert(&t_v, &rdf::type_, &s_bool)?;
   }
   Ok(())
 }
