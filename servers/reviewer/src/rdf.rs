@@ -38,19 +38,24 @@ impl IntoRDF for Review {
     g.insert(&review, &rdf::type_, &s_review)?;
 
     // Identifiers.
+    let s_identifier = SCHEMA.get("identifier")?;
+
     let s_pv = SCHEMA.get("PropertyValue")?;
-    let signature: Term<String> = Term::from(BlankNode::new("signature")?);
-    g.insert(&signature, &rdf::type_, &s_pv)?;
-
-    let jwt: Term<String> = Term::from(BlankNode::new("jwt")?);
-    g.insert(&jwt, &rdf::type_, &s_pv)?;
-
     let s_name = SCHEMA.get("name")?;
     let s_value = SCHEMA.get("value")?;
+
+    let signature: Term<String> = Term::from(BlankNode::new("signature")?);
+    g.insert(&signature, &rdf::type_, &s_pv)?;
+    g.insert(&review, &s_identifier, &signature)?;
+
     let t_name: Term<String> = "signature".as_term();
     g.insert(&signature, &s_name, &t_name)?;
     let t_value: Term<String> = self.signature.as_term();
     g.insert(&signature, &s_value, &t_value)?;
+
+    let jwt: Term<String> = Term::from(BlankNode::new("jwt")?);
+    g.insert(&jwt, &rdf::type_, &s_pv)?;
+    g.insert(&review, &s_identifier, &jwt)?;
 
     let t_name: Term<String> = "jwt".as_term();
     g.insert(&jwt, &s_name, &t_name)?;
@@ -187,21 +192,11 @@ fn insert_bool(g: &mut FastGraph, sub: &Term<&str>, prop: Term<&str>, v: &serde_
   Ok(())
 }
 
-/// TODO: make it less hacky by reusing code from review.rs
 fn insert_metadata(g: &mut FastGraph, review: &Term<&str>, person: &Term<&str>, m: Metadata) -> Result<(), Error> {
-  let open_review = Namespace::new("https://gitlab.com/plantingspace/mangrove/-/raw/master/servers/reviewer/mangrove.jsonld")?;
+  let open_review = Namespace::new("https://schema.mangrove.reviews/")?;
   for (k, v) in m.0.iter() {
     match k.as_ref() {
-      "client_id" => {
-        if let Some(ci) =  v.as_str() {
-          let s_clientid = open_review.get("clientId")?;
-          let t_clientid: Term<String> = ci.as_term();
-          g.insert(review, &s_clientid, &t_clientid)?;
-          let s_url = SCHEMA.get("URL")?;
-          g.insert(&t_clientid, &rdf::type_, &s_url)?;
-        }
-        Ok(())
-      },
+      "client_id" => insert_string(g, review, SCHEMA.get("clientId")?, v),
       "nickname" => insert_string(g, person, SCHEMA.get("name")?, v),
       "age" => Ok(()),
       "experience_context" =>
