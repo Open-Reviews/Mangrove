@@ -27,6 +27,7 @@ static SCHEMA: Lazy<Namespace<&str>> = Lazy::new(|| {
   Namespace::new("http://schema.org/").expect("Correct namespace.")
 });
 
+/// Use http://rdf-translator.appspot.com/ and https://json-ld.org/playground/ for checking.
 impl IntoRDF for Review {
   fn insert(&self, g: &mut FastGraph) -> Result<(), Error> {
     let reviews = Namespace::new("https://api.mangrove.reviews/review/")?;
@@ -182,8 +183,10 @@ fn insert_string(g: &mut FastGraph, sub: &Term<&str>, prop: Term<&str>, v: &serd
   Ok(())
 }
 
+use std::str::FromStr;
+
 fn insert_bool(g: &mut FastGraph, sub: &Term<&str>, prop: Term<&str>, v: &serde_json::Value) -> Result<(), Error> {
-  if let Some(vs) =  v.as_str() {
+  if let Some(vs) =  v.as_str().and_then(|v| bool::from_str(v).ok()) {
     let t_v: Term<String> = vs.as_term();
     g.insert(sub, &prop, &t_v)?;
     let s_bool = SCHEMA.get("Boolean")?;
