@@ -178,6 +178,8 @@ export default {
         return 'Be the first to review!'
       } else if (this.isMine) {
         return `No reviews yet. <a href="${process.env.BASE_URL}">Leave your first review</a>`
+      } else if (this.query.opinionated) {
+        return ``
       } else {
         return `This user has not left any reviews.`
       }
