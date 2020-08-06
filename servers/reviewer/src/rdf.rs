@@ -8,7 +8,7 @@ use sophia::graph::{*, inmem::FastGraph};
 use sophia::ns::Namespace;
 use sophia::serializer::*;
 use sophia::serializer::nt::NtSerializer;
-use sophia::term::{Term, literal::AsLiteral, blank_node::BlankNode};
+use sophia::term::{Term, SimpleIri, literal::convert::AsLiteral};
 use once_cell::sync::Lazy;
 
 pub trait IntoRDF {
@@ -45,71 +45,62 @@ impl IntoRDF for Review {
     let s_name = SCHEMA.get("name")?;
     let s_value = SCHEMA.get("value")?;
 
-    let signature: Term<String> = Term::from(BlankNode::new("signature")?);
+    let signature: Term<String> = Term::new_bnode("signature")?;
     g.insert(&signature, &rdf::type_, &s_pv)?;
     g.insert(&review, &s_identifier, &signature)?;
 
-    let t_name: Term<String> = "signature".as_term();
-    g.insert(&signature, &s_name, &t_name)?;
-    let t_value: Term<String> = self.signature.as_term();
-    g.insert(&signature, &s_value, &t_value)?;
+    g.insert(&signature, &s_name, &"signature".as_literal())?;
+    g.insert(&signature, &s_value, &self.signature.as_literal())?;
 
-    let jwt: Term<String> = Term::from(BlankNode::new("jwt")?);
+    let jwt: Term<String> = Term::new_bnode("jwt")?;
     g.insert(&jwt, &rdf::type_, &s_pv)?;
     g.insert(&review, &s_identifier, &jwt)?;
 
-    let t_name: Term<String> = "jwt".as_term();
-    g.insert(&jwt, &s_name, &t_name)?;
-    let t_value: Term<String> = self.jwt.as_term();
-    g.insert(&jwt, &s_value, &t_value)?;
+    g.insert(&jwt, &s_name, &"jwt".as_literal())?;
+    g.insert(&jwt, &s_value, &self.jwt.as_literal())?;
 
     // Subject
 
     let s_item_reviewed = SCHEMA.get("itemReviewed")?;
     let t_subject = match self.scheme.as_ref() {
       "geo" => {
-        let place: Term<String> = Term::from(BlankNode::new("place")?);
+        let place: Term<String> = Term::new_bnode("place")?;
         let s_thing = SCHEMA.get("Thing")?;
         g.insert(&place, &rdf::type_, &s_thing)?;
         let s_identifier = SCHEMA.get("identifier")?;
-        let t_sub: Term<String> = self.payload.sub.as_term();
-        g.insert(&place, &s_identifier, &t_sub)?;
+        g.insert(&place, &s_identifier, &self.payload.sub.as_literal())?;
         place
       },
       "https" => {
-        let website: Term<String> = Term::from(BlankNode::new("website")?);
+        let website: Term<String> = Term::new_bnode("website")?;
         let s_thing = SCHEMA.get("Thing")?;
         g.insert(&website, &rdf::type_, &s_thing)?;
         let s_identifier = SCHEMA.get("identifier")?;
-        let t_sub: Term<String> = self.payload.sub.as_term();
-        g.insert(&website, &s_identifier, &t_sub)?;
+        g.insert(&website, &s_identifier, &self.payload.sub.as_literal())?;
         website
       },
       "urn:isbn" => {
-        let book: Term<String> = Term::from(BlankNode::new("book")?);
+        let book: Term<String> = Term::new_bnode("book")?;
         let s_book = SCHEMA.get("Book")?;
         g.insert(&book, &rdf::type_, &s_book)?;
         let s_isbn = SCHEMA.get("isbn")?;
-        let t_sub: Term<String> = self.payload.sub.as_term();
-        g.insert(&book, &s_isbn, &t_sub)?;
+        g.insert(&book, &s_isbn, &self.payload.sub.as_literal())?;
         book
       },
       "urn:lei" => {
-        let organisation: Term<String> = Term::from(BlankNode::new("organisation")?);
+        let organisation: Term<String> = Term::new_bnode("organisation")?;
         let s_organisation = SCHEMA.get("Organisation")?;
         g.insert(&organisation, &rdf::type_, &s_organisation)?;
         let s_lei = SCHEMA.get("leiCode")?;
-        let t_sub: Term<String> = self.payload.sub.as_term();
-        g.insert(&organisation, &s_lei, &t_sub)?;
+        g.insert(&organisation, &s_lei, &self.payload.sub.as_literal())?;
         organisation
       },
       "urn:maresi" => {
-        let review: Term<String> = Term::from(BlankNode::new("review")?);
+        let review: Term<String> = Term::new_bnode("review")?;
         let s_thing = SCHEMA.get("Thing")?;
         g.insert(&review, &rdf::type_, &s_thing)?;
         let s_identifier = SCHEMA.get("identifier")?;
-        let t_sub: Term<String> = self.payload.sub.as_term();
-        g.insert(&review, &s_identifier, &t_sub)?;
+        g.insert(&review, &s_identifier, &self.payload.sub.as_literal())?;
         review
       },
       // TODO: add remaining schemes
@@ -131,37 +122,32 @@ impl IntoRDF for Review {
 
     let s_date_created = SCHEMA.get("dateCreated")?;
     // TODO: encode the dateTime correctly
-    let t_date_time: Term<String> = self.payload.iat.as_term();
-    g.insert(&review, &s_date_created, &t_date_time)?;
+    g.insert(&review, &s_date_created, &self.payload.iat.as_literal())?;
 
     // Rating
 
     if let Some(rating_value) = self.payload.rating {
       let s_review_rating = SCHEMA.get("reviewRating")?;
       let s_rating = SCHEMA.get("Rating")?;
-      let rating: Term<String> = Term::from(BlankNode::new("rating")?);
+      let rating: Term<String> = Term::new_bnode("rating")?;
       g.insert(&rating, &rdf::type_, &s_rating)?;
       g.insert(&review, &s_review_rating, &rating)?;
 
       let s_rating_value = SCHEMA.get("ratingValue")?;
-      let t_rating_value: Term<String> = rating_value.as_term();
-      g.insert(&rating, &s_rating_value, &t_rating_value)?;
+      g.insert(&rating, &s_rating_value, &rating_value.as_literal())?;
 
       let s_worst_rating = SCHEMA.get("worstRating")?;
-      let t_worst_rating: Term<String> = 0.as_term();
-      g.insert(&rating, &s_worst_rating, &t_worst_rating)?;
+      g.insert(&rating, &s_worst_rating, &0.as_literal())?;
 
       let s_best_rating = SCHEMA.get("bestRating")?;
-      let t_best_rating: Term<String> = 100.as_term();
-      g.insert(&rating, &s_best_rating, &t_best_rating)?;
+      g.insert(&rating, &s_best_rating, &100.as_literal())?;
     }
 
     // Opinion
 
     if let Some(ref opinion) = self.payload.opinion {
       let s_review_body = SCHEMA.get("reviewBody")?;
-      let t_opinion: Term<String> = opinion.as_term();
-      g.insert(&review, &s_review_body, &t_opinion)?;
+      g.insert(&review, &s_review_body, &opinion.as_literal())?;
     }
 
     // Metadata
@@ -175,25 +161,23 @@ impl IntoRDF for Review {
   }
 }
 
-fn insert_string(g: &mut FastGraph, sub: &Term<&str>, prop: Term<&str>, v: &serde_json::Value) -> Result<(), Error> {
+fn insert_string(g: &mut FastGraph, sub: &SimpleIri, prop: SimpleIri, v: &serde_json::Value) -> Result<(), Error> {
   if let Some(vs) =  v.as_str() {
-    let t_v: Term<String> = vs.as_term();
-    g.insert(sub, &prop, &t_v)?;
+    g.insert(sub, &prop, &vs.as_literal())?;
   }
   Ok(())
 }
 
 use std::str::FromStr;
 
-fn insert_bool(g: &mut FastGraph, sub: &Term<&str>, prop: Term<&str>, v: &serde_json::Value) -> Result<(), Error> {
+fn insert_bool(g: &mut FastGraph, sub: &SimpleIri, prop: SimpleIri, v: &serde_json::Value) -> Result<(), Error> {
   if let Some(vs) =  v.as_str().and_then(|v| bool::from_str(v).ok()) {
-    let t_v: Term<String> = vs.as_term();
-    g.insert(sub, &prop, &t_v)?;
+    g.insert(sub, &prop, &vs.as_literal())?;
   }
   Ok(())
 }
 
-fn insert_metadata(g: &mut FastGraph, review: &Term<&str>, person: &Term<&str>, m: Metadata) -> Result<(), Error> {
+fn insert_metadata(g: &mut FastGraph, review: &SimpleIri, person: &SimpleIri, m: Metadata) -> Result<(), Error> {
   let open_review = Namespace::new("https://open-reviews.net/schema/")?;
   for (k, v) in m.0.iter() {
     match k.as_ref() {

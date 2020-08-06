@@ -24,7 +24,7 @@ rusoto_credential = "0.42"
 rusoto_s3 = "0.42"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-sophia = "0.5.2"
+sophia = "0.6"
 url = "2.1"
 xmltree = "0.8"
 
@@ -32,3 +32,8 @@ xmltree = "0.8"
 version = "0.4"
 default-features = false
 features = ["diesel_postgres_pool", "diesel_sqlite_pool", "json"]
+
+[replace]
+"mownstr:0.1.1" = { git = 'https://github.com/keorn/mownstr', branch = 'patch-1' }
+"sophia_api:0.6.1" = { git = 'https://github.com/keorn/sophia_rs', branch = 'patch-1' }
+"sophia:0.6.1" = { git = 'https://github.com/keorn/sophia_rs', branch = 'patch-1' }

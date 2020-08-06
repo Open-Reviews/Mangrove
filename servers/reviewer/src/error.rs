@@ -90,6 +90,12 @@ impl From<std::str::ParseBoolError> for Error {
     }
 }
 
+impl From<sophia::term::iri::error::InvalidIri> for Error {
+    fn from(error: sophia::term::iri::error::InvalidIri) -> Self {
+        Error::Internal(error.to_string())
+    }
+}
+
 impl From<sophia::term::TermError> for Error {
     fn from(error: sophia::term::TermError) -> Self {
         Error::Internal(error.to_string())
