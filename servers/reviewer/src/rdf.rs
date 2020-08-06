@@ -194,10 +194,10 @@ fn insert_bool(g: &mut FastGraph, sub: &Term<&str>, prop: Term<&str>, v: &serde_
 }
 
 fn insert_metadata(g: &mut FastGraph, review: &Term<&str>, person: &Term<&str>, m: Metadata) -> Result<(), Error> {
-  let open_review = Namespace::new("https://schema.mangrove.reviews/")?;
+  let open_review = Namespace::new("https://open-reviews.net/schema/")?;
   for (k, v) in m.0.iter() {
     match k.as_ref() {
-      "client_id" => insert_string(g, review, SCHEMA.get("clientId")?, v),
+      "client_id" => insert_string(g, review, open_review.get("clientId")?, v),
       "nickname" => insert_string(g, person, SCHEMA.get("name")?, v),
       "age" => Ok(()),
       "experience_context" =>
