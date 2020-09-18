@@ -16,8 +16,18 @@ describe('Review', () => {
   let getters
   let store
   let vuetify
+  let propsData
+  const setupComponent = () => {
+    return shallowMount(Review, {
+      propsData,
+      store,
+      localVue,
+      vuetify
+    })
+  }
 
   beforeEach(() => {
+    propsData = {}
     vuetify = new Vuetify()
     getters = {
       state: () => ({
@@ -30,8 +40,20 @@ describe('Review', () => {
     })
   })
 
-  it('renders', () => {
-    const wrapper = shallowMount(Review, { store, localVue, vuetify })
-    expect(wrapper.find('div').exists()).toBe(true)
+  it('renders some text', () => {
+    const wrapper = setupComponent()
+    expect(wrapper.text()).toContain('Raw Mangrove Review')
+  })
+
+  describe('given a subjectTitle', () => {
+    beforeEach(() => {
+      propsData = {
+        subjectTitle: 'I am a subject'
+      }
+    })
+    it('displays subject', () => {
+      const wrapper = setupComponent()
+      expect(wrapper.text()).toContain('I am a subject')
+    })
   })
 })
