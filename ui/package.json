@@ -10,7 +10,8 @@
     "lint": "eslint --ext .js,.vue --ignore-path ../.gitignore .",
     "dev": "nuxt",
     "generate": "nuxt generate",
-    "start": "nuxt start"
+    "start": "nuxt start",
+    "test": "jest"
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.3.6",
