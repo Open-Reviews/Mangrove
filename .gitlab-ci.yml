@@ -47,6 +47,19 @@ build ui:
   except:
     - schedules
 
+test ui:
+  stage: test
+  script:
+    - cd ui
+    - yarn install
+    - yarn run test
+  only:
+    changes:
+      - ui/**/*
+      - libraries/mangrove-reviews-js/**/*
+  except:
+    - schedules
+
 build blog:
   stage: build
   script:
