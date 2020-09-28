@@ -11,71 +11,79 @@
       </v-row>
     </router-link>
     <v-spacer />
-    <v-toolbar-items class="mr-n4 hidden-sm-and-down">
-      <v-menu v-for="(item, i) in menu" :key="i" open-on-hover offset-y>
+    <v-toolbar-items class="hidden-sm-and-down">
+      <v-btn nuxt text link to="/use-cases">
+        Use Cases
+      </v-btn>
+      <v-menu open-on-hover offset-y>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            :to="Array.isArray(item.to) ? '' : item.to"
-            :href="item.href"
-            v-bind="attrs"
-            v-on="on"
-            :target="item.href ? '_blank' : ''"
-            text
-          >
-            <span v-html="item.label" />
-            <Identicon
-              v-if="item.to === '/account'"
-              :seed="$store.state.publicKey"
-              class="ml-2"
-            />
-          </v-btn>
+          <v-btn v-bind="attrs" v-on="on" text> Technology </v-btn>
         </template>
-        <v-list v-if="Array.isArray(item.to)">
+        <v-list>
+          <v-list-item href="https://docs.mangrove.reviews/" target="_blank">
+            <v-list-item-title>API</v-list-item-title>
+          </v-list-item>
+          <v-list-item href="https://js.mangrove.reviews/" target="_blank">
+            <v-list-item-title>JS Library</v-list-item-title>
+          </v-list-item>
+          <v-list-item nuxt link to="/standard">
+            <v-list-item-title>Standard</v-list-item-title>
+          </v-list-item>
           <v-list-item
-            v-for="dropdown in item.to"
-            :href="dropdown.href"
-            :key="dropdown.href"
+            href="https://gitlab.com/plantingspace/mangrove"
             target="_blank"
           >
-            <v-list-item-title>{{ dropdown.label }}</v-list-item-title>
+            <v-list-item-title>Contribute</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
+      <v-btn text link href="https://open-reviews.net">
+        Join us
+      </v-btn>
+      <v-btn nuxt text link to="/account">
+        Account
+        <Identicon :seed="$store.state.publicKey" class="ml-2" />
+      </v-btn>
     </v-toolbar-items>
-    <div class="hidden-md-and-up">
-      <v-menu bottom left>
-        <template v-slot:activator="{ on }">
-          <v-btn v-on="on" icon>
-            <v-icon>mdi-menu</v-icon>
-          </v-btn>
-        </template>
-        <v-list>
-          <div v-for="(item, i) in menu" :key="i">
-            <v-list-item
-              :to="Array.isArray(item.to) ? '' : item.to"
-              :href="item.href"
-              :target="item.href ? '_blank' : ''"
-            >
-              <v-list-item-title>{{ item.label }}</v-list-item-title>
-              <Identicon
-                v-if="item.to === '/account'"
-                :seed="$store.state.publicKey"
-              />
-            </v-list-item>
-            <v-list v-if="Array.isArray(item.to)" class="ml-2">
-              <v-list-item
-                v-for="dropdown in item.to"
-                :href="dropdown.href"
-                :key="dropdown.href"
-                target="_blank"
-              >
-                <v-list-item-title>{{ dropdown.label }}</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </div>
+    <v-menu bottom left>
+      <template v-slot:activator="{ on }">
+        <v-btn v-on="on" class="hidden-md-and-up" icon>
+          <v-icon>mdi-menu</v-icon>
+        </v-btn>
+      </template>
+      <v-list>
+        <v-list-item nuxt link to="/use-cases">
+          Use Cases
+        </v-list-item>
+        <v-divider></v-divider>
+        <v-list class="pl-2">
+          <v-subheader>Technology</v-subheader>
+          <v-list-item href="https://docs.mangrove.reviews/" target="_blank">
+            <v-list-item-title>API</v-list-item-title>
+          </v-list-item>
+          <v-list-item href="https://js.mangrove.reviews/" target="_blank">
+            <v-list-item-title>JS Library</v-list-item-title>
+          </v-list-item>
+          <v-list-item nuxt link to="/standard">
+            <v-list-item-title>Standard</v-list-item-title>
+          </v-list-item>
+          <v-list-item
+            href="https://gitlab.com/plantingspace/mangrove"
+            target="_blank"
+          >
+            <v-list-item-title>Contribute</v-list-item-title>
+          </v-list-item>
         </v-list>
-      </v-menu>
-    </div>
+        <v-divider></v-divider>
+        <v-list-item link href="https://open-reviews.net">
+          Join us
+        </v-list-item>
+        <v-list-item nuxt link to="/account">
+          Account
+          <Identicon :seed="$store.state.publicKey" class="ml-2" />
+        </v-list-item>
+      </v-list>
+    </v-menu>
   </v-app-bar>
 </template>
 
@@ -85,30 +93,6 @@ import Identicon from '~/components/Identicon'
 export default {
   components: {
     Identicon
-  },
-  data() {
-    return {
-      menu: [
-        { to: '/use-cases', label: 'Use Cases' },
-        {
-          to: [
-            { label: 'API', href: 'https://docs.mangrove.reviews/' },
-            { label: 'JS Library', href: 'https://js.mangrove.reviews/' },
-            { label: 'Standard', href: 'https://mangrove.reviews/standard' },
-            {
-              label: 'Contribute',
-              href: 'https://gitlab.com/plantingspace/mangrove'
-            }
-          ],
-          label: 'Technology'
-        },
-        {
-          label: 'Join us',
-          href: 'https://open-reviews.net'
-        },
-        { to: '/account', label: 'Account' }
-      ]
-    }
   }
 }
 </script>
