@@ -3,8 +3,8 @@
 </template>
 
 <script>
-import { html } from '../../Mangrove_Review_Standard.md'
 import MdText from '~/components/MdText'
+import { html } from '~/content/Mangrove_Review_Standard.md'
 
 export default {
   components: {
