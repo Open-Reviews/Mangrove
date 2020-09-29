@@ -2,7 +2,7 @@
   "name": "mangrove-client",
   "version": "1.0.0",
   "private": false,
-  "description": "Mangrove Demo Client",
+  "description": "Try out writing reviews in the public domain, using a cryptographically generated account that puts you in control of your privacy.",
   "author": "keorn",
   "scripts": {
     "build": "nuxt build",

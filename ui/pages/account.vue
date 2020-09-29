@@ -77,6 +77,11 @@ import UserHeader from '~/components/UserHeader'
 import LogOut from '~/components/LogOut'
 
 export default {
+  head() {
+    return {
+      title: 'User Account'
+    }
+  },
   components: {
     AdvancedAccount,
     LogInDialog,

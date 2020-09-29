@@ -19,9 +19,12 @@
 
 <script>
 export default {
+  head() {
+    return { title: this.title }
+  },
   data() {
     return {
-      title: ' Frequently asked questions ',
+      title: 'Frequently asked questions',
       qas: [
         {
           q: 'How do you avoid spam and ensure reliable reviews and ratings?',
@@ -126,18 +129,6 @@ Everyone with an interest in open reviews is invited to join the Open Reviews As
         }
       ],
       extrainfo: `Not found what you were looking for? Contact us at hello(at)open-reviews(dot)net, or discuss with us in our <a href="https://riot.im/app/#/room/#mangrove:matrix.org">Riot chat</a>.`
-    }
-  },
-  head() {
-    return {
-      title: 'Mangrove Reviews, ' + this.title,
-      meta: [
-        {
-          name: 'description',
-          content:
-            'Try out writing reviews for the public good, using a cryptographically generated account that puts you in control of your privacy.'
-        }
-      ]
     }
   }
 }

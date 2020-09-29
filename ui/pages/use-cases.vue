@@ -13,22 +13,23 @@ export default {
   components: {
     InfoPage
   },
+  head() {
+    return {
+      title: this.title,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Mangrove Open Reviews use cases.'
+        }
+      ]
+    }
+  },
   data() {
     return {
       title: 'Use Cases',
       image: require('~/assets/build/leaf_2000x190.jpg'),
       content: [online, business, cities, entrepreneurs]
-    }
-  },
-  head() {
-    return {
-      title: 'Mangrove Reviews, ' + this.title,
-      meta: [
-        {
-          name: 'description',
-          content: 'Mangrove Open Reviews use cases.'
-        }
-      ]
     }
   }
 }
