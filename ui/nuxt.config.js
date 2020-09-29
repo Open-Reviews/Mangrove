@@ -109,5 +109,9 @@ export default {
         loader: 'frontmatter-markdown-loader'
       })
     }
+  },
+
+  sitemap: {
+    hostname: process.env.BASE_URL || 'http://localhost:3000'
   }
 }
