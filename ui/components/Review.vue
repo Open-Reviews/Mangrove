@@ -13,7 +13,6 @@
       :pk="review.kid"
       :metadata="payload.metadata"
       :count="issuer && issuer.count"
-      class="my-n5"
     />
     <v-card-text>
       <v-row v-if="payload.rating !== null" align="center" class="pl-2">
