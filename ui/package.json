@@ -46,6 +46,7 @@
     "eslint-plugin-nuxt": ">=0.4.2",
     "eslint-plugin-prettier": "^3.0.1",
     "jest": "^26.4.2",
+    "jest-transform-stub": "^2.0.0",
     "prettier": "^1.16.4",
     "vue-jest": "^3.0.7"
   },
@@ -57,7 +58,8 @@
     ],
     "transform": {
       ".*\\.(vue)$": "vue-jest",
-      ".*\\.(js)$": "babel-jest"
+      ".*\\.(js)$": "babel-jest",
+      ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$": "jest-transform-stub"
     },
     "moduleNameMapper": {
       "^~/(.*)$": "<rootDir>/$1"
