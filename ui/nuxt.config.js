@@ -57,7 +57,8 @@ export default {
     '@nuxtjs/axios',
     // Doc: https://github.com/nuxt-community/dotenv-module
     '@nuxtjs/dotenv',
-    'nuxt-clipboard2'
+    'nuxt-clipboard2',
+    '@nuxtjs/sitemap'
   ],
   /*
    ** Axios module configuration
