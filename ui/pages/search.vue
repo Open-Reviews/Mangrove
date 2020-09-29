@@ -80,6 +80,19 @@ export default {
     SelectionMap,
     SchemeFilter
   },
+  head() {
+    return {
+      title: 'Search',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content:
+            'Search for a reviewable subject, e.g. a restaurant, coffee place, product.'
+        }
+      ]
+    }
+  },
   data() {
     return {
       viewProfile: false

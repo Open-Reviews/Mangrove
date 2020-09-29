@@ -130,6 +130,9 @@ export default {
     SearchBox,
     ReviewList
   },
+  head() {
+    return { title: 'Start' }
+  },
   data() {
     return {
       betaContent,
@@ -195,18 +198,6 @@ export default {
   methods: {
     dismissBetaWarning() {
       this.$store.commit(DISMISS_BETA_WARNING)
-    }
-  },
-  head() {
-    return {
-      title: 'Mangrove Reviews',
-      meta: [
-        {
-          name: 'description',
-          content:
-            'Try out writing reviews in the public domain, using a cryptographically generated account that puts you in control of your privacy.'
-        }
-      ]
     }
   }
 }

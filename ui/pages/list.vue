@@ -27,6 +27,9 @@ export default {
     ReviewList,
     SelectionMap
   },
+  head() {
+    return { title: this.title }
+  },
   data() {
     return {
       counts: { null: 0 }
