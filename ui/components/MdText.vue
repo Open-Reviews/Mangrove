@@ -1,10 +1,6 @@
 <template>
-  <div>
-    <v-col
-      v-if="isBig"
-      cols="2"
-      style="position: fixed; background: white; height: 100%"
-    >
+  <v-row>
+    <v-col cols="12" md="2">
       <v-list>
         <v-subheader>Table of contents</v-subheader>
         <v-list-item
@@ -19,11 +15,8 @@
         </v-list-item>
       </v-list>
     </v-col>
-    <v-row>
-      <v-col v-if="isBig" cols="3" />
-      <v-col v-html="html" :class="'mx-12 ' + isBig && 'px-12'" />
-    </v-row>
-  </div>
+    <v-col v-html="html" class="px-12" cols="12" md="10" />
+  </v-row>
 </template>
 
 <script>
@@ -39,11 +32,6 @@ export default {
   },
   data() {
     return { toc: undefined }
-  },
-  computed: {
-    isBig() {
-      return this.$vuetify.breakpoint.mdAndUp
-    }
   },
   mounted() {
     anchors.add()
