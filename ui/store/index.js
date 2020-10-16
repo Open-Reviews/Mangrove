@@ -158,10 +158,7 @@ export const getters = {
           Object.entries(query)
             .map(([k, v]) => {
               if (
-                k === 'kid' ||
-                k === 'scheme' ||
-                k === 'opinionated' ||
-                k === 'limit' ||
+                ['kid', 'scheme', 'opinionated', 'limit'].includes(k) ||
                 payload[k] === v
               ) {
                 return true
