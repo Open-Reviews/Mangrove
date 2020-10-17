@@ -124,12 +124,14 @@ export default {
       return this.reviews.filter((r) => r.payload.opinion).map(this.reviewToArg)
     },
     reliable() {
-      return this.opinionated.filter(
-        (a) =>
-          (!a.issuer.neutrality && !this.query.opinionated) ||
-          (a.issuer.neutrality &&
-            a.issuer.neutrality >= this.neutralityThreshold)
-      )
+      return this.opinionated
+        .filter(
+          (a) =>
+            (!a.issuer.neutrality && !this.query.opinionated) ||
+            (a.issuer.neutrality &&
+              a.issuer.neutrality >= this.neutralityThreshold)
+        )
+        .slice(0, this.query.limit)
     },
     unreliable() {
       return this.opinionated.filter(

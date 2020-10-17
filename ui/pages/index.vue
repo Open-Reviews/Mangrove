@@ -35,7 +35,7 @@
           style="position: absolute; bottom: 20px; margin-left: auto; margin-right: auto; left: 0; right: 0;"
         >
           <ReviewList
-            :query="{ limit: 4, opinionated: true }"
+            :query="{ opinionated: true, limit: 4 }"
             :cols="isSmall ? 12 : 3"
           />
         </v-col>

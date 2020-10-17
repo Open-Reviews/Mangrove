@@ -182,7 +182,6 @@ export const getters = {
         return isSelected
       })
       .sort((r1, r2) => r2.payload.iat - r1.payload.iat)
-      .slice(0, query.limit)
     counts.null = reviews.length
     return { counts, reviews }
   }
