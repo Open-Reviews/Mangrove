@@ -119,7 +119,7 @@ export default {
           href: 'https://api.mangrove.reviews/reviews'
         }
       ],
-      socials: ['Mastodon', 'Twitter', 'Riot', 'Email'].map(
+      socials: ['Mastodon', 'Twitter', 'Element', 'Email'].map(
         (wanted) => LINKS[wanted]
       ),
       toc: ['/terms'],

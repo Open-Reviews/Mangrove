@@ -1,3 +1,6 @@
 {
-  "prettier.packageManager": "yarn"
+  "prettier.packageManager": "yarn",
+  "search.exclude": {
+    "**/dist": true
+  }
 }

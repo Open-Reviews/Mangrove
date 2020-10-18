@@ -7,9 +7,9 @@ export const LINKS = {
     icon: 'mdi-twitter',
     link: 'https://twitter.com/mangroveReviews'
   },
-  Riot: {
+  Element: {
     img: require('~/static/icon-riot.svg'),
-    link: 'https://riot.im/app/#/room/#mangrove:matrix.org'
+    link: 'https://app.element.io/#/room/#mangrove:matrix.org'
   },
   Gitlab: {
     icon: 'mdi-gitlab',

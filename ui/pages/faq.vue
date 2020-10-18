@@ -122,13 +122,13 @@ Everyone with an interest in open reviews is invited to join the Open Reviews As
           a: `
             <ul>
               <li>For general inquiries and feedback, please email us at hello@open-reviews.net</li>
-              <li>To discuss with the team and community, you can join our chat on <a href="https://riot.im/app/#/room/#mangrove:matrix.org">Riot</a>.</li>
+              <li>To discuss with the team and community, you can join our chat on <a href="https://app.element.io/#/room/#mangrove:matrix.org">Element</a>.</li>
               <li>To suggest a new feature or an edit, you can make a pull request to our <a href="https://gitlab.com/plantingspace/mangrove" target="_blank">GitLab repository</a>.</li>
             </ul>
           `
         }
       ],
-      extrainfo: `Not found what you were looking for? Contact us at hello(at)open-reviews(dot)net, or discuss with us in our <a href="https://riot.im/app/#/room/#mangrove:matrix.org">Riot chat</a>.`
+      extrainfo: `Not found what you were looking for? Contact us at hello(at)open-reviews(dot)net, or discuss with us in our <a href="https://app.element.io/#/room/#mangrove:matrix.org">Element chat</a>.`
     }
   }
 }
