@@ -103,7 +103,7 @@ export default {
       oraUrl: 'https://open-reviews.net',
       ccbyUrl: 'https://creativecommons.org/licenses/by/4.0',
       internals: [
-        { label: 'Blog', href: 'https://blog.mangrove.reviews' },
+        { label: 'Blog', href: 'https://blog.open-reviews.net' },
         { label: 'FAQ', to: 'faq' },
         { label: 'Terms & Privacy', to: 'terms' },
         {
