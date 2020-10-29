@@ -16,3 +16,7 @@ To compute these statistics, the Aggregator takes in the list of all reviews as 
 ## How do the results make their way to Mangrove Server?
 
 The Original Mangrove deployment uses [GitLab CI](../.gitlab-ci.yml) to run the Aggregator regularly and output the results in to PostgreSQL database tables (`subjects` and `reviewers`). The Mangrove Server then reads the values to provide them via the API.
+
+## Try it out.
+
+Get [Pluto.jl](https://github.com/fonsp/Pluto.jl) and check out the [notebook](tutorial.jl) to play around with the review data or the algorithm.

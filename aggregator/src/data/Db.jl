@@ -4,7 +4,7 @@ using LibPQ, Tables, DotEnv
 using ..MangroveBase: ReviewInfo, ReviewContent, Reviews
 
 DotEnv.config(path = "../.env")
-const ENV_CONN = ENV["MANGROVE_DATABASE"]
+const ENV_CONN = get(ENV, "MANGROVE_DATABASE", nothing)
 
 function mangrove_reviews(conn_string::String = ENV_CONN)::Reviews
     conn = LibPQ.Connection(conn_string)
