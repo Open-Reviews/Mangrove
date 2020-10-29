@@ -43,12 +43,12 @@ end
 # Extract useful data from the resulting MarkovChains: `mean(chn::Chains)`
 
 subs(qualities_mean::ChainDataFrame)::Vector{String} =
-  [match(r"qualities\[(.+)\]", p)[1] for p in qualities_mean[:, :parameters]]
+  [match(r"qualities\[(.+)\]", string(p))[1] for p in qualities_mean[:, :parameters]]
 qualities(qualities_mean::ChainDataFrame)::Vector{Int16} =
   [round(Int16, m*100) for m in qualities_mean[:, :mean]]
 
 kids(biases_mean::ChainDataFrame)::Vector{String} =
-  [match(r"biases\[(.+)\]", p)[1] for p in biases_mean[:, :parameters]]
+  [match(r"biases\[(.+)\]", string(p))[1] for p in biases_mean[:, :parameters]]
 neutralities(biases_mean::ChainDataFrame)::Vector{Float32} =
   [1 - m for m in biases_mean[:, :mean]]
 
