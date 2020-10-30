@@ -6,8 +6,8 @@ import Turing.mean
 
 function store_inferred(conn_string::String = ENV_CONN)
     chains = conn_string |> mangrove_reviews |> get_chains
-    sub_qualities = chains[:qualities] |> mean
-    kid_neutralities = chains[:biases] |> mean
+    sub_qualities = mean(group(chains, :qualities))
+    kid_neutralities = mean(group(chains, :biases))
     input = DbInput(
         subs(sub_qualities),
         qualities(sub_qualities),
