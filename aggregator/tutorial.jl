@@ -113,8 +113,11 @@ stars(rating_sample)
 # ╔═╡ 6d56a51c-1a00-11eb-11e4-a7c3f78de140
 md"### Prior distribution of ratings"
 
+# ╔═╡ 67f9ac00-1a84-11eb-1c54-7f71af6356e1
+scatter(rand(rating_prior, 100); label="Sequence of draws from rating prior", legend=:right)
+
 # ╔═╡ 7a9aa156-19fd-11eb-089b-1f1e9dc68932
-histogram([stars(rand(rating_prior)) for _ in 1:1000]; label=nothing)
+histogram(map(stars, rand(rating_prior, 1000)); label="Number of reviews with given rating", legend=:left)
 
 # ╔═╡ 80cba09a-1a01-11eb-0eca-474971cbd4d1
 md"## Data driven prior"
@@ -184,6 +187,7 @@ histogram(collect(values(reviewers)); label="Neutralities histogram", legend=:le
 # ╠═0560381c-19fe-11eb-2687-03de0bd3f1f7
 # ╠═a310a412-19fd-11eb-15ea-9f628cb434ea
 # ╟─6d56a51c-1a00-11eb-11e4-a7c3f78de140
+# ╠═67f9ac00-1a84-11eb-1c54-7f71af6356e1
 # ╠═7a9aa156-19fd-11eb-089b-1f1e9dc68932
 # ╟─80cba09a-1a01-11eb-0eca-474971cbd4d1
 # ╠═7bfb2c32-1a02-11eb-0a8c-7f0b9ff5675f

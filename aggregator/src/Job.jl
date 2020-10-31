@@ -2,7 +2,7 @@ module Job
 
 using ..Db: ENV_CONN, mangrove_reviews, DbInput, insert
 using ..Model: get_chains, subs, qualities, kids, neutralities
-import Turing.mean
+using Turing: mean, group
 
 function store_inferred(conn_string::String = ENV_CONN)
     chains = conn_string |> mangrove_reviews |> get_chains
