@@ -43,6 +43,8 @@ cd servers/reviewer
 diesel setup
 ```
 
+You may also need to install `libssl-dev` (i.e. `sudo apt install libssl-dev`).  
+
 Build and run the server.
 ```
 cargo run
