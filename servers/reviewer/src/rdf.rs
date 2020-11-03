@@ -9,6 +9,8 @@ use sophia::ns::Namespace;
 use sophia::serializer::*;
 use sophia::serializer::nt::NtSerializer;
 use sophia::term::{Term, TermError, SimpleIri, literal::convert::AsLiteral};
+use std::collections::hash_map::DefaultHasher;
+use std::hash::{Hash, Hasher};
 use once_cell::sync::Lazy;
 
 pub trait IntoRDF {
@@ -27,8 +29,11 @@ static SCHEMA: Lazy<Namespace<&str>> = Lazy::new(|| {
   Namespace::new("http://schema.org/").expect("Correct namespace.")
 });
 
-fn new_bnode(name: &str, id: &str) -> Result<Term<String>, TermError> {
-  Term::new_bnode(name)
+/// Identify blank nodes with a human readable name and a hash of a related identifier.
+fn new_bnode<T: Hash>(name: &str, id: &T) -> Result<Term<String>, TermError> {
+  let mut s = DefaultHasher::new();
+  id.hash(&mut s);
+  Term::new_bnode(format!("{}_{}", name, s.finish()))
 }
 
 /// Use http://rdf-translator.appspot.com/ and https://json-ld.org/playground/ for checking.
