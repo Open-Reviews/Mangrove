@@ -8,7 +8,9 @@ use sophia::graph::{*, inmem::FastGraph};
 use sophia::ns::Namespace;
 use sophia::serializer::*;
 use sophia::serializer::nt::NtSerializer;
-use sophia::term::{Term, SimpleIri, literal::convert::AsLiteral};
+use sophia::term::{Term, TermError, SimpleIri, literal::convert::AsLiteral};
+use std::collections::hash_map::DefaultHasher;
+use std::hash::{Hash, Hasher};
 use once_cell::sync::Lazy;
 
 pub trait IntoRDF {
@@ -26,6 +28,13 @@ pub trait IntoRDF {
 static SCHEMA: Lazy<Namespace<&str>> = Lazy::new(|| {
   Namespace::new("http://schema.org/").expect("Correct namespace.")
 });
+
+/// Identify blank nodes with a human readable name and a hash of a related identifier.
+fn new_bnode<T: Hash>(name: &str, id: &T) -> Result<Term<String>, TermError> {
+  let mut s = DefaultHasher::new();
+  id.hash(&mut s);
+  Term::new_bnode(format!("{}_{}", name, s.finish()))
+}
 
 /// Use http://rdf-translator.appspot.com/ and https://json-ld.org/playground/ for checking.
 impl IntoRDF for Review {
@@ -45,14 +54,14 @@ impl IntoRDF for Review {
     let s_name = SCHEMA.get("name")?;
     let s_value = SCHEMA.get("value")?;
 
-    let signature: Term<String> = Term::new_bnode("signature")?;
+    let signature = new_bnode("signature", &self.signature)?;
     g.insert(&signature, &rdf::type_, &s_pv)?;
     g.insert(&review, &s_identifier, &signature)?;
 
     g.insert(&signature, &s_name, &"signature".as_literal())?;
     g.insert(&signature, &s_value, &self.signature.as_literal())?;
 
-    let jwt: Term<String> = Term::new_bnode("jwt")?;
+    let jwt = new_bnode("jwt", &self.jwt)?;
     g.insert(&jwt, &rdf::type_, &s_pv)?;
     g.insert(&review, &s_identifier, &jwt)?;
 
@@ -64,7 +73,7 @@ impl IntoRDF for Review {
     let s_item_reviewed = SCHEMA.get("itemReviewed")?;
     let t_subject = match self.scheme.as_ref() {
       "geo" => {
-        let place: Term<String> = Term::new_bnode("place")?;
+        let place = new_bnode("place", &self.payload.sub)?;
         let s_thing = SCHEMA.get("Thing")?;
         g.insert(&place, &rdf::type_, &s_thing)?;
         let s_identifier = SCHEMA.get("identifier")?;
@@ -72,7 +81,7 @@ impl IntoRDF for Review {
         place
       },
       "https" => {
-        let website: Term<String> = Term::new_bnode("website")?;
+        let website = new_bnode("website", &self.payload.sub)?;
         let s_thing = SCHEMA.get("Thing")?;
         g.insert(&website, &rdf::type_, &s_thing)?;
         let s_identifier = SCHEMA.get("identifier")?;
@@ -80,7 +89,7 @@ impl IntoRDF for Review {
         website
       },
       "urn:isbn" => {
-        let book: Term<String> = Term::new_bnode("book")?;
+        let book = new_bnode("book", &self.payload.sub)?;
         let s_book = SCHEMA.get("Book")?;
         g.insert(&book, &rdf::type_, &s_book)?;
         let s_isbn = SCHEMA.get("isbn")?;
@@ -88,7 +97,7 @@ impl IntoRDF for Review {
         book
       },
       "urn:lei" => {
-        let organisation: Term<String> = Term::new_bnode("organisation")?;
+        let organisation = new_bnode("organisation", &self.payload.sub)?;
         let s_organisation = SCHEMA.get("Organisation")?;
         g.insert(&organisation, &rdf::type_, &s_organisation)?;
         let s_lei = SCHEMA.get("leiCode")?;
@@ -96,7 +105,7 @@ impl IntoRDF for Review {
         organisation
       },
       "urn:maresi" => {
-        let review: Term<String> = Term::new_bnode("review")?;
+        let review = new_bnode("review", &self.payload.sub)?;
         let s_thing = SCHEMA.get("Thing")?;
         g.insert(&review, &rdf::type_, &s_thing)?;
         let s_identifier = SCHEMA.get("identifier")?;
@@ -129,7 +138,7 @@ impl IntoRDF for Review {
     if let Some(rating_value) = self.payload.rating {
       let s_review_rating = SCHEMA.get("reviewRating")?;
       let s_rating = SCHEMA.get("Rating")?;
-      let rating: Term<String> = Term::new_bnode("rating")?;
+      let rating = new_bnode("rating", &rating_value)?;
       g.insert(&rating, &rdf::type_, &s_rating)?;
       g.insert(&review, &s_review_rating, &rating)?;
 
