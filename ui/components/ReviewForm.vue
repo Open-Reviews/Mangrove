@@ -93,7 +93,7 @@
           >
           <v-btn
             @click="submitReview"
-            :disabled="!checkBoxes.termsAgreed || (!rating && !opinion.length)"
+            :disabled="preventSubmit"
             class="black--text"
             color="secondary"
           >
@@ -179,6 +179,7 @@ export default {
       review: { metadata: null, sub: '' },
       checkBoxes: {
         termsAgreed: false,
+        licenseAgreed: false,
         isAffiliated: false
       },
       MAX_OPINION_LENGTH,
@@ -229,10 +230,28 @@ export default {
           ticked: 'termsAgreed',
           text: `I agree to the
             <a href="${process.env.BASE_URL}/terms" target="_blank">
-              Terms of Service and Privacy Policy
+              Terms of Service
+            </a>*`
+        },
+        {
+          ticked: 'licenseAgreed',
+          text: `I agree to publishing my review,
+            including any personally identifiable information I optionally entered,
+            under a free and open license
+            (<a href="terms#2-privacy-policy" target="_blank">CC-BY-4.0</a>),
+            and I agree to the
+            <a href="${process.env.BASE_URL}/terms#2-privacy-policy" target="_blank">
+              Privacy Policy
             </a>*`
         }
       ]
+    },
+    preventSubmit() {
+      return (
+        !this.checkBoxes.termsAgreed ||
+        !this.checkBoxes.licenseAgreed ||
+        (!this.rating && !this.opinion.length)
+      )
     },
     error() {
       return this.$store.state.errors.submit
