@@ -1,6 +1,6 @@
 # Mangrove Client JS Library
 
-Retrieve and submit Mangrove reviews. Key pair related functions work only in the browser using WebCrypto.
+Retrieve and submit Open Reviews. Key pair related functions work only within the browser using WebCrypto.
 
 [![npm](https://img.shields.io/npm/v/mangrove-reviews)](https://www.npmjs.com/package/mangrove-reviews)
 

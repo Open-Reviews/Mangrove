@@ -3,11 +3,11 @@ info:
   title: Mangrove Server API
   description: Submit and retrieve reviews,
     as well as aggregate statistics about reviews.
-    See [Mangrove Original UI](https://mangrove.reviews) for more information
-    and [Mangrove Client JS Library](https://js.mangrove.reviews/)
-    for a JavaScript wrapper.
     More information about the values and types can be found in the
     [Open Reviews Standard](https://mangrove.reviews/standard).
+    For more description and example usage see [Mangrove Demo UI](https://mangrove.reviews)
+    and [Mangrove Client JS Library](https://js.mangrove.reviews/)
+    for a JavaScript wrapper of this API.
   version: 0.1.1
 
 servers:
@@ -19,13 +19,23 @@ paths:
       description: Submit a new review.
       parameters:
         - name: jwt_review
-          description: Mangrove Review in JSON Web Token format as described in the [Open Reviews Standard](https://mangrove.reviews/standard). Please use https://example.com or `geo:0,0?q=<any_name>&u=30` in subject `sub` field for test reviews which should be removed later.
+          description:
+            Mangrove Review in JSON Web Token format as described in the [Open Reviews Standard](https://mangrove.reviews/standard).
+            Please use https://example.com or `geo:0,0?q=<any_name>&u=30` in subject `sub` field for test reviews which should be removed later.
           in: path
           required: true
           schema:
             type: string
             format: jwt
-          example: eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ii0tLS0tQkVHSU4gUFVCTElDIEtFWS0tLS0tTUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJemowREFRY0RRZ0FFcDc4Zms1eUNqYmlZYXZ5UjZGQ2xxcTlBRkJUaXpBSG1ZdU9rcTR3cy9aYmdleG41SVQ2bi83NGt2YlZ0UGxNc3A5Z2luTysxMVZ4ZUorbVFJQ1pZamc9PS0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLSIsImp3ayI6IntcImNydlwiOlwiUC0yNTZcIixcImV4dFwiOnRydWUsXCJrZXlfb3BzXCI6W1widmVyaWZ5XCJdLFwia3R5XCI6XCJFQ1wiLFwieFwiOlwicDc4Zms1eUNqYmlZYXZ5UjZGQ2xxcTlBRkJUaXpBSG1ZdU9rcTR3c19aWVwiLFwieVwiOlwiNEhzWi1TRS1wXy0tSkwyMWJUNVRMS2ZZSXB6dnRkVmNYaWZwa0NBbVdJNFwifSJ9.eyJpYXQiOjE1ODA5MTAwMjIsInN1YiI6Imh0dHBzOi8vbWFuZ3JvdmUucmV2aWV3cyIsInJhdGluZyI6NzUsIm9waW5pb24iOiJHcmVhdCB3ZWJzaXRlIGZvciByZXZpZXdzLiIsIm1ldGFkYXRhIjp7Im5pY2tuYW1lIjoiam9objEyMyIsImNsaWVudF9pZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCJ9fQ.7xQtIlHuDdCVioyztj8i3zJ8dk3oCSfKr6VCR5RtBn6sBcqvpfyvs13PlKGJoamKzx8xUgQTQJjRPv5s91-VLQ
+          example: eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ii0tLS0tQkVHSU4gUFVCTElDIEtFWS0tLS0tTUZrd0V3WUhLb1p
+            JemowQ0FRWUlLb1pJemowREFRY0RRZ0FFcDc4Zms1eUNqYmlZYXZ5UjZGQ2xxcTlBRkJUaXpBSG1ZdU9rcTR3cy9aYmdleG41SVQ2b
+            i83NGt2YlZ0UGxNc3A5Z2luTysxMVZ4ZUorbVFJQ1pZamc9PS0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLSIsImp3ayI6IntcImNydlw
+            iOlwiUC0yNTZcIixcImV4dFwiOnRydWUsXCJrZXlfb3BzXCI6W1widmVyaWZ5XCJdLFwia3R5XCI6XCJFQ1wiLFwieFwiOlwicDc4Z
+            ms1eUNqYmlZYXZ5UjZGQ2xxcTlBRkJUaXpBSG1ZdU9rcTR3c19aWVwiLFwieVwiOlwiNEhzWi1TRS1wXy0tSkwyMWJUNVRMS2ZZSXB
+            6dnRkVmNYaWZwa0NBbVdJNFwifSJ9.eyJpYXQiOjE1ODA5MTAwMjIsInN1YiI6Imh0dHBzOi8vbWFuZ3JvdmUucmV2aWV3cyIsInJh
+            dGluZyI6NzUsIm9waW5pb24iOiJHcmVhdCB3ZWJzaXRlIGZvciByZXZpZXdzLiIsIm1ldGFkYXRhIjp7Im5pY2tuYW1lIjoiam9obj
+            EyMyIsImNsaWVudF9pZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCJ9fQ.7xQtIlHuDdCVioyztj8i3zJ8dk3oCSfKr6VCR5RtBn6sB
+            cqvpfyvs13PlKGJoamKzx8xUgQTQJjRPv5s91-VLQ
       responses:
         '200':
           description: Review is in the database.
