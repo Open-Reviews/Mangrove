@@ -4,7 +4,7 @@ Retrieve and submit Mangrove reviews. Key pair related functions work only in th
 
 [![npm](https://img.shields.io/npm/v/mangrove-reviews)](https://www.npmjs.com/package/mangrove-reviews)
 
-[Documentation](https://js.mangrove.reviews/global.html)
+[Interface documentation](https://js.mangrove.reviews/global.html)
 
 Retrieve reviews according to different criteria.
 
@@ -26,6 +26,8 @@ User accounts:
 - serialize and deserialize key pair
 - sign reviews with key pair
 - submit reviews
+
+**For test submissions which should be deleted later please use `https://example.com` or `geo:0,0?q=<any_name>&u=30` in the `sub` field.**
 
 ```javascript
 import {

@@ -6,6 +6,8 @@ info:
     See [Mangrove Original UI](https://mangrove.reviews) for more information
     and [Mangrove Client JS Library](https://js.mangrove.reviews/)
     for a JavaScript wrapper.
+    More information about the values and types can be found in the
+    [Open Reviews Standard](https://mangrove.reviews/standard).
   version: 0.1.1
 
 servers:
@@ -17,7 +19,7 @@ paths:
       description: Submit a new review.
       parameters:
         - name: jwt_review
-          description: Mangrove Review in [JSON Web Token format](https://gitlab.com/plantingspace/mangrove/-/blob/master/Mangrove_Review_Standard.md). Please use https://example.com in subject `sub` field for testing.
+          description: Mangrove Review in JSON Web Token format as described in the [Open Reviews Standard](https://mangrove.reviews/standard). Please use https://example.com or `geo:0,0?q=<any_name>&u=30` in subject `sub` field for test reviews which should be removed later.
           in: path
           required: true
           schema:
