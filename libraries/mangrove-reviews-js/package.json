@@ -1,6 +1,6 @@
 {
   "name": "mangrove-reviews",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "JS library for submission and retrieval of Mangrove reviews.",
   "keywords": ["reviews", "client", "API", "open data", "crypto"],
   "main": "index.js",
