@@ -55,4 +55,17 @@ signAndSubmitReview(keypair, {
     nickname: "docs reader"
   }
 })
+
+import {
+  publicToPem,
+  getReviews
+} from 'mangrove-reviews'
+
+// Get public key in PEM format (can be used for display or as `kid` - key id).
+const PEM = await publicToPem(keypair.publicKey)
+
+// Get all reviews of that user.
+const newUserReviews = await getReviews({
+  kid: PEM
+})
 ```
