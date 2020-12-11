@@ -60,7 +60,7 @@ function cleanPayload(payload) {
   if (!payload.opinion) delete payload.opinion
   if (!payload.images || !payload.images.length) delete payload.images
   const meta = { client_id: window.location.href, ...payload.metadata }
-  Object.entries(meta).forEach(([k, v]) => (v === null || v == false) && delete meta[k])
+  Object.entries(meta).forEach(([k, v]) => (v === null || v === false) && delete meta[k])
   payload.metadata = meta
   return payload
 }
