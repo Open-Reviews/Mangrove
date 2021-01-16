@@ -4,7 +4,10 @@ using Turing
 using ..MangroveBase: ReviewsSummary, Reviews, kids, subs, normalize
 import ..MangroveBase.subs, ..MangroveBase.kids
 
-"Construct a `Beta` distribution with given `mean` and spikiness given by `certainty`."
+"""
+Construct a `Beta` distribution with given `mean` and spikiness given by `certainty`.
+`certainty` is uninformative at 2.
+"""
 MeanBeta(mean::Real, certainty::Real = 3) = Beta(certainty * mean, certainty * (1 - mean))
 
 # Generative Bayesian model representing the Mangrove Reviews data.
@@ -13,7 +16,7 @@ MeanBeta(mean::Real, certainty::Real = 3) = Beta(certainty * mean, certainty * (
     # Extreme qualities are not as likely as moderate ones.
     qualities = Dict()
     for sub in subs(data)
-        qualities[sub] ~ MeanBeta(typical_rating)
+        qualities[sub] ~ MeanBeta(typical_rating, 2.2)
     end
     # Assume that each reviewer is either neutral (0) or biased (1).
     biases = Dict()
@@ -25,9 +28,13 @@ MeanBeta(mean::Real, certainty::Real = 3) = Beta(certainty * mean, certainty * (
       if biases[info.kid] == 0
             # Neutral reviewer leaves a review which reflects the quality.
             data[info][1] ~ MeanBeta(qualities[info.sub])
+            # Neutral reviewer is fairly likely to leave some text opinion.
+            data[info][2] ~ Bernoulli(0.8)
         else
             # Biased reviewers are mostly negative and pay not attention to actual quality.
             data[info][1] ~ Beta(0.04, 0.08)
+            # Biased reviewers are less likely to leave a text opinion.
+            data[info][2] ~ Bernoulli(0.1)
         end
     end
 end

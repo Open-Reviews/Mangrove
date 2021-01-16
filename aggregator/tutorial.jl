@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.12.4
+# v0.12.15
 
 using Markdown
 using InteractiveUtils
@@ -23,6 +23,9 @@ begin
 	using Turing, MCMCChains, StatsPlots
 end
 
+# ╔═╡ 9a68f5a6-33b8-11eb-3ca1-6f6ae024c66a
+using Aggregator.Model: neutralities
+
 # ╔═╡ 5e865152-19f3-11eb-0434-7b4fe9bde74c
 md"""
 # Looking around
@@ -33,6 +36,9 @@ See [documentation](https://docs.mangrove.reviews), to try it out directly.
 
 # ╔═╡ e6055cee-19ea-11eb-0a18-dd5847a9b78b
 all_data = Api.all_data();
+
+# ╔═╡ 6e1573f8-1e00-11eb-2c32-37d99db3a81d
+all_data
 
 # ╔═╡ 52f702b4-19f3-11eb-12db-bbf15e67ac47
 md"## Define useful filters"
@@ -50,7 +56,7 @@ end;
 md"## View individual data points to understand the data"
 
 # ╔═╡ 09950bc8-19f0-11eb-25cd-cbdad6720d00
-md"We have **$(length(reviews))** reviews available, select one payload with the slider:"
+md"We have **$(length(reviews))** reviews available, to browse through their payloads you can use the slider:"
 
 # ╔═╡ 3a5fa0c4-19eb-11eb-0d57-8b3ae66cc2cb
 @bind i Slider(1:length(payloads); show_value=true)
@@ -160,10 +166,50 @@ worst_reviewer = collect(keys(reviewers))[argmin(collect(values(reviewers)))]
 # ╔═╡ 0609d5fa-19f1-11eb-13d9-25c772bc2a10
 histogram(collect(values(reviewers)); label="Neutralities histogram", legend=:left)
 
+# ╔═╡ c3f32ac6-1e06-11eb-0263-05927fbc8215
+reviewers
+
+# ╔═╡ d2ec9cf6-1e06-11eb-105a-edc6d5fbf2cc
+subjects
+
+# ╔═╡ d50c4ca0-1e08-11eb-29ba-cd06e4559d16
+rand(Beta(0.04, 0.08), 10000) |> histogram
+
+# ╔═╡ 8bf807d4-1e0a-11eb-2050-27bf41d7aa3e
+rand(Beta(20, 1), 10000) |> histogram
+
+# ╔═╡ 0adba460-1e0a-11eb-213d-09d963634bcd
+rand(MeanBeta(0.8, 10), 10000) |> histogram
+
+# ╔═╡ 81f061f4-33b9-11eb-179d-e78d8cb7e41e
+plot(x -> pdf(MeanBeta(0.5, 2.), x), 0, 1)
+
+# ╔═╡ 76768ae4-33ba-11eb-065f-2561fb2ea0fb
+[rand(MeanBeta(0.73, 3))*rand(MeanBeta(0.5 / 101, 3)) for _ in 1:10000] |> mean
+
+# ╔═╡ 98160576-33ba-11eb-3434-937ff3a831b6
+issuers[Symbol("-----BEGIN PUBLIC KEY-----MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEQs7EX2DHYSpif48XQBp3vjH4Df39kbqef7P5RkBRmDSQUffTW80BSuPM8rHjzSgehCy2VJHUPfG719PDKpUmMA==-----END PUBLIC KEY-----")]
+
+# ╔═╡ cbbe7ec6-33d3-11eb-1e56-ed7b81097851
+subjects["geo:47.557018,8.5930537?q=Burgstelle Hebelstein&u=30"]
+
+# ╔═╡ e12fb6d8-33d3-11eb-1b74-6f0a7f437699
+[p[:payload][:rating] for p in reviews if p[:kid] == "-----BEGIN PUBLIC KEY-----MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEQs7EX2DHYSpif48XQBp3vjH4Df39kbqef7P5RkBRmDSQUffTW80BSuPM8rHjzSgehCy2VJHUPfG719PDKpUmMA==-----END PUBLIC KEY-----"]
+
+# ╔═╡ 23a6f398-33d4-11eb-2659-7f2673bb9ab4
+MeanBeta(0+0.5 / 101)
+
+# ╔═╡ 8c958bc2-33d8-11eb-304c-71995153657b
+reviews[1]
+
+# ╔═╡ dcaee4ea-33d9-11eb-2bdb-056764479e43
+Uniform() |> rand
+
 # ╔═╡ Cell order:
 # ╠═2fcbf600-19e9-11eb-3f4e-812a4a557c20
 # ╟─5e865152-19f3-11eb-0434-7b4fe9bde74c
 # ╠═e6055cee-19ea-11eb-0a18-dd5847a9b78b
+# ╠═6e1573f8-1e00-11eb-2c32-37d99db3a81d
 # ╟─52f702b4-19f3-11eb-12db-bbf15e67ac47
 # ╠═4f4d918e-19ec-11eb-3b85-53cdeccf6c6c
 # ╟─4aff9e48-19ff-11eb-2e55-5f742ab32834
@@ -181,7 +227,7 @@ histogram(collect(values(reviewers)); label="Neutralities histogram", legend=:le
 # ╠═eab20564-19fc-11eb-039f-dde6b6ef710a
 # ╠═7bd88b90-19fc-11eb-284c-3bbaac7bfbd4
 # ╟─4d525f4c-1a01-11eb-1bf5-93d9f75f60c1
-# ╠═13784e4c-1a00-11eb-2cde-75e886262ca1
+# ╟─13784e4c-1a00-11eb-2cde-75e886262ca1
 # ╠═ceb59220-19fc-11eb-0f3c-13401192e6e5
 # ╠═bde4519e-19fd-11eb-24e2-af7f11145287
 # ╠═0560381c-19fe-11eb-2687-03de0bd3f1f7
@@ -199,4 +245,18 @@ histogram(collect(values(reviewers)); label="Neutralities histogram", legend=:le
 # ╠═a12cb3c4-1a10-11eb-1494-199c763f04c1
 # ╠═6ce62da8-1a11-11eb-22f6-573137e77293
 # ╠═8b3ad6c8-1a11-11eb-1f6a-077185c89857
+# ╠═9a68f5a6-33b8-11eb-3ca1-6f6ae024c66a
 # ╠═0609d5fa-19f1-11eb-13d9-25c772bc2a10
+# ╠═c3f32ac6-1e06-11eb-0263-05927fbc8215
+# ╠═d2ec9cf6-1e06-11eb-105a-edc6d5fbf2cc
+# ╠═d50c4ca0-1e08-11eb-29ba-cd06e4559d16
+# ╠═8bf807d4-1e0a-11eb-2050-27bf41d7aa3e
+# ╠═0adba460-1e0a-11eb-213d-09d963634bcd
+# ╠═81f061f4-33b9-11eb-179d-e78d8cb7e41e
+# ╠═76768ae4-33ba-11eb-065f-2561fb2ea0fb
+# ╠═98160576-33ba-11eb-3434-937ff3a831b6
+# ╠═cbbe7ec6-33d3-11eb-1e56-ed7b81097851
+# ╠═e12fb6d8-33d3-11eb-1b74-6f0a7f437699
+# ╠═23a6f398-33d4-11eb-2659-7f2673bb9ab4
+# ╠═8c958bc2-33d8-11eb-304c-71995153657b
+# ╠═dcaee4ea-33d9-11eb-2bdb-056764479e43
