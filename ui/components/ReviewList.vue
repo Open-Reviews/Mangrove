@@ -121,7 +121,14 @@ export default {
       return this.$store.getters.reviewsAndCounts(this.query).reviews
     },
     opinionated() {
-      return this.reviews.filter((r) => r.payload.opinion && r.payload.scheme !== MARESI && r.payload.sub !== 'https://example.com').map(this.reviewToArg)
+      return this.reviews
+        .filter(
+          (r) =>
+            r.payload.opinion &&
+            r.scheme !== MARESI &&
+            r.payload.sub !== 'https://example.com'
+        )
+        .map(this.reviewToArg)
     },
     reliable() {
       return this.opinionated
