@@ -204,10 +204,11 @@ export function olDocToSubject(doc) {
 export async function subToSubject(axios, sub) {
   const scheme = subToScheme(sub)
   let subject
+  let geo = {}
   if (scheme === LEI) {
     subject = await leiToSubject(axios, subPath(LEI, sub))
   } else if (scheme === GEO) {
-    const geo = geoSubject(sub)
+    geo = geoSubject(sub)
     // Convert from meters to degrees.
     const box = getBoundsOfDistance(geo.coordinates, geo.uncertainty)
     const viewbox = [
@@ -226,12 +227,14 @@ export async function subToSubject(axios, sub) {
     subject = await isbnToSubject(axios, subPath(ISBN, sub))
   }
   if (!subject) {
+    console.log(sub)
     subject = {
       sub,
       scheme,
-      title: sub,
+      title: scheme === GEO ? sub.match(/q=(.+)&/)[1] : sub,
       subtitle: '',
-      description: ''
+      description: '',
+      ...geo
     }
   }
   return subject
