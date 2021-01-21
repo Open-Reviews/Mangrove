@@ -33,7 +33,7 @@
       <span v-line-clamp="dense ? 2 : 20">
         <span v-html="formattedOpinion" />
       </span>
-      <v-row v-if="payload.images" class="mx-auto py-1">
+      <v-row v-if="payload.images" class="mx-auto py-3">
         <v-img
           v-for="img in payload.images.slice(dense ? 2 : 0)"
           :key="img.src"
@@ -50,7 +50,7 @@
           v-text="kv"
           :key="kv[0]"
           outlined
-          class="mr-1 py-1"
+          class="mr-1 mt-3"
           small
         >
         </v-chip>
