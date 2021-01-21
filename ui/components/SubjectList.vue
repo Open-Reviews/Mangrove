@@ -17,7 +17,7 @@
           </div>
           <v-list-item-content>
             <v-list-item-title>{{ subject.title }}</v-list-item-title>
-            <v-row align="center" class="ml-auto">
+            <v-row align="center" class="ml-auto pt-2">
               <v-rating
                 :value="subject.stars"
                 :background-color="

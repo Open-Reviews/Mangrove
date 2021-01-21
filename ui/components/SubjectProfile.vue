@@ -32,7 +32,7 @@
       </v-card-title>
       <v-card-subtitle
         >{{ subject.subtitle }}
-        <v-row align="center" class="ml-auto">
+        <v-row align="center" class="ml-auto pt-2">
           <v-rating
             :value="stars"
             :background-color="subject.quality ? 'primary' : 'grey lighten-2'"

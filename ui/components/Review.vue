@@ -15,7 +15,7 @@
       :count="issuer && issuer.count"
     />
     <v-card-text>
-      <v-row v-if="payload.rating !== null" align="center" class="pl-2">
+      <v-row v-if="payload.rating !== null" align="center" class="pl-2 pb-3">
         <span v-if="payload.rating === 0" class="pl-1"
           ><b>Flagged as inappropriate. &nbsp;</b>
         </span>
