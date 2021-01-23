@@ -13,7 +13,7 @@ export const LINKS = {
   },
   Gitlab: {
     icon: 'mdi-gitlab',
-    link: 'https://gitlab.com/plantingspace/mangrove'
+    link: 'https://gitlab.com/open-reviews/mangrove'
   },
   OpenCollective: {
     link: 'https://opencollective.com/mangrove'

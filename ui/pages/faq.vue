@@ -52,7 +52,7 @@ export default {
               <li>Additional information if entered by the user, such as display name, given name, family name, age, gender, context of the experience.</li>
             </ul>
             You can check what data has been stored in the database by clicking “More” -> “Show raw Mangrove review” next to each review, or by downloading the dataset.
-In addition to that, you can inspect the code and the Mangrove Review Standard that defines the data structure and more in our <a href="https://gitlab.com/plantingspace/mangrove" target="_blank">GitLab repository</a>.
+In addition to that, you can inspect the code and the Mangrove Review Standard that defines the data structure and more in our <a href="https://gitlab.com/open-reviews/mangrove" target="_blank">GitLab repository</a>.
           `
         },
         {
@@ -65,7 +65,7 @@ OpenStreetMap is built by a community of mappers that contribute and maintain da
               <li><b>Companies: <a href="https://www.gleif.org/en" target="_blank">GLEIF’s Legal Entity Identifier</a>.</b> GLEIF is a supra-national not-for-profit organization established by the Financial Stability Board to support the implementation and use of the Legal Entity Identifier (LEI). It connects to key reference information that enables clear and unique identification of legal entities participating in financial transactions. Each LEI contains information about an entity’s ownership structure and answers the questions of ‘who is who’ and ‘who owns whom’.</li>
               <li><b>Books: Internet Archive’s <a href="https://openlibrary.org" target="_blank">Open Library</a>.</b> Open Library is an open, editable library catalog, building towards a web page for every book ever published.</li>
             </ul>
-            Read more about the databases and tools used by Mangrove, as well as the principles guiding the design choices, in the Mangrove Review Standard in our <a href="https://gitlab.com/plantingspace/mangrove" target="_blank">GitLab repository</a>.
+            Read more about the databases and tools used by Mangrove, as well as the principles guiding the design choices, in the Mangrove Review Standard in our <a href="https://gitlab.com/open-reviews/mangrove" target="_blank">GitLab repository</a>.
           `
         },
         {
@@ -123,7 +123,7 @@ Everyone with an interest in open reviews is invited to join the Open Reviews As
             <ul>
               <li>For general inquiries and feedback, please email us at hello@open-reviews.net</li>
               <li>To discuss with the team and community, you can join our chat on <a href="https://app.element.io/#/room/#mangrove:matrix.org">Element</a>.</li>
-              <li>To suggest a new feature or an edit, you can make a pull request to our <a href="https://gitlab.com/plantingspace/mangrove" target="_blank">GitLab repository</a>.</li>
+              <li>To suggest a new feature or an edit, you can make a pull request to our <a href="https://gitlab.com/open-reviews/mangrove" target="_blank">GitLab repository</a>.</li>
             </ul>
           `
         }

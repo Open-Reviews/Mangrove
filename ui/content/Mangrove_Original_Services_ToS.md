@@ -319,7 +319,7 @@ We appreciate your taking the time to read these Terms of Service, and we are ve
 
 **These Terms of Service are effective as of August 1st, 2020.**
 
-**[Previous versions of the terms.](https://gitlab.com/plantingspace/mangrove/-/blame/master/ui/content/Mangrove_Original_Services_ToS.md)** 
+**[Previous versions of the terms.](https://gitlab.com/open-reviews/mangrove/-/blame/master/ui/content/Mangrove_Original_Services_ToS.md)** 
 
 In the event of any differences in meaning between the original English version and a translation, the original English version takes precedence.
 

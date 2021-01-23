@@ -30,7 +30,7 @@
             <v-list-item-title>Standard</v-list-item-title>
           </v-list-item>
           <v-list-item
-            href="https://gitlab.com/plantingspace/mangrove"
+            href="https://gitlab.com/open-reviews/mangrove"
             target="_blank"
           >
             <v-list-item-title>Contribute</v-list-item-title>
@@ -68,7 +68,7 @@
             <v-list-item-title>Standard</v-list-item-title>
           </v-list-item>
           <v-list-item
-            href="https://gitlab.com/plantingspace/mangrove"
+            href="https://gitlab.com/open-reviews/mangrove"
             target="_blank"
           >
             <v-list-item-title>Contribute</v-list-item-title>

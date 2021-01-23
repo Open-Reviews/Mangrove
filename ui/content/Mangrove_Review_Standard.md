@@ -269,4 +269,4 @@ For the overall claim framework [Decentralized Identifiers (DIDs)](https://w3c-c
 
 ## Change or ask
 
-Please suggest changes or engage in discussion on issues in [the Mangrove repo](https://gitlab.com/plantingspace/mangrove).
+Please suggest changes or engage in discussion on issues in [the Mangrove repo](https://gitlab.com/open-reviews/mangrove).

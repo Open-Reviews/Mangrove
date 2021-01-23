@@ -196,7 +196,7 @@ export const actions = {
   },
   // Storage in IndexedDB is done as jwk instead CryptoKey due to two issues:
   // https://bugzilla.mozilla.org/show_bug.cgi?id=1048931
-  // https://gitlab.com/plantingspace/mangrove/issues/7
+  // https://gitlab.com/open-reviews/mangrove/issues/6
   async generateKeypair({ commit, dispatch }) {
     let keypair
     await get(PRIVATE_KEY)
