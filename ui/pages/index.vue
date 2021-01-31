@@ -191,7 +191,7 @@ export default {
     if (this.$store.state.fetchedDisplay) return
     this.$store.commit(FETCHED_DISPLAY)
     return this.$store.dispatch('saveReviewsWithSubjects', {
-      limit: 10,
+      limit: 20,
       opinionated: true
     })
   },
