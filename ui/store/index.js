@@ -146,7 +146,7 @@ export const getters = {
     const allReviews = Object.values(state.reviews)
     // Prelimit to circumvent JS eager eval.
     const reviews = (query.limit
-      ? allReviews.slice(0, query.limit * 2)
+      ? allReviews.slice(0, query.limit * 3)
       : allReviews
     )
       .filter(({ payload, kid, scheme, geo }) => {
