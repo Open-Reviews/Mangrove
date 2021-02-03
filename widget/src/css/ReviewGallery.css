@@ -1,0 +1,168 @@
+.or-review-gallery-wrapper {
+  background-color: rgba(0, 0, 0, 0.64);
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 32000;
+  overflow: hidden;
+}
+
+.or-review-gallery-content {
+  background-color: white;
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  position: absolute;
+  top: 2em;
+  right: 2em;
+  bottom: 2em;
+  left: 2em;
+}
+
+.or-review-gallery-image-wrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.or-review-gallery-image-wrapper img {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}
+
+.or-review-gallery-nav {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.or-review-gallery-nav-prev,
+.or-review-gallery-nav-next {
+  cursor: pointer;
+
+  display: block;
+  width: 50%;
+
+  position: absolute;
+  top: 0;
+  right: 50%;
+  bottom: 0;
+  left: 0;
+
+  background-color: transparent;
+  border: none;
+
+  text-align: left;
+}
+
+.or-review-gallery-nav-next {
+  right: 0;
+  left: 50%;
+
+  text-align: right;
+}
+
+.or-review-gallery-nav-prev:disabled,
+.or-review-gallery-nav-next:disabled {
+  cursor: default;
+}
+
+.or-review-gallery-nav-prev:focus,
+.or-review-gallery-nav-prev:active,
+.or-review-gallery-nav-next:focus,
+.or-review-gallery-nav-next:active {
+  outline: none;
+}
+
+.or-review-gallery-nav-prev-content,
+.or-review-gallery-nav-next-content {
+  display: block;
+  position: absolute;
+  left: 2em;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+
+  cursor: pointer;
+  opacity: 0.4;
+
+  /* https://fonts.gstatic.com/s/i/materialicons/arrow_forward_ios/v6/24px.svg */
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0Ij48cGF0aCBkPSJNMCAwaDI0djI0SDB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTUuODggNC4xMkwxMy43NiAxMmwtNy44OCA3Ljg4TDggMjJsMTAtMTBMOCAyeiIvPjwvc3ZnPg==');
+}
+
+.or-review-gallery-nav-prev-content {
+  /* https://fonts.gstatic.com/s/i/materialicons/arrow_back_ios/v6/24px.svg */
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0Ij48cGF0aCBkPSJNMCAwaDI0djI0SDB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTExLjY3IDMuODdMOS45IDIuMSAwIDEybDkuOSA5LjkgMS43Ny0xLjc3TDMuNTQgMTJ6Ii8+PC9zdmc+');
+}
+
+.or-review-gallery-nav-prev-content:hover,
+.or-review-gallery-nav-next-content:hover {
+  opacity: 1;
+}
+
+.or-review-gallery-nav-next-content {
+  left: auto;
+  right: 2em;
+}
+
+.or-review-gallery-nav-next:disabled .or-review-gallery-nav-next-content,
+.or-review-gallery-nav-next:disabled .or-review-gallery-nav-next-content:hover,
+.or-review-gallery-nav-prev:disabled .or-review-gallery-nav-prev-content,
+.or-review-gallery-nav-prev:disabled .or-review-gallery-nav-prev-content:hover {
+  opacity: 0.2;
+  cursor: not-allowed;
+}
+
+.or-review-gallery-close {
+  background-color: transparent;
+  border: none;
+
+  position: absolute;
+  top: 2em;
+  right: 2em;
+}
+
+.or-review-gallery-close:focus,
+.or-review-gallery-close:active {
+  outline: none;
+}
+
+.or-review-gallery-close-content {
+  display: block;
+  width: 32px;
+  height: 32px;
+  border: none;
+
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+
+  cursor: pointer;
+  opacity: 0.4;
+
+  /* https://fonts.gstatic.com/s/i/materialicons/close/v8/24px.svg */
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0Ij48cGF0aCBkPSJNMCAwaDI0djI0SDB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTE5IDYuNDFMMTcuNTkgNSAxMiAxMC41OSA2LjQxIDUgNSA2LjQxIDEwLjU5IDEyIDUgMTcuNTkgNi40MSAxOSAxMiAxMy40MSAxNy41OSAxOSAxOSAxNy41OSAxMy40MSAxMnoiLz48L3N2Zz4=');
+}
+
+.or-review-gallery-close-content:hover {
+  opacity: 1;
+}

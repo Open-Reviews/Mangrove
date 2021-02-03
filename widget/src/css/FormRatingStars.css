@@ -1,0 +1,22 @@
+.or-review-form-rating-stars-wrapper {
+  width: 135px;
+  position: relative;
+  margin: auto;
+  margin-bottom: 1em;
+}
+
+.or-review-form-rating-stars-buttons {
+  position: absolute;
+  left: calc(135px / 5 * -1);
+  top: 0;
+  opacity: 0;
+  white-space: nowrap;
+}
+
+.or-review-form-rating-stars-buttons button {
+  width: calc(135px / 5);
+  height: calc(135px / 5);
+  border: none;
+  padding: 0;
+  margin: 0;
+}

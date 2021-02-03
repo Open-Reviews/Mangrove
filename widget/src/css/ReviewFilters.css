@@ -1,0 +1,51 @@
+.or-review-filters-toggle-button {
+  width: 26px;
+  height: 17px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjYiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNiAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cGF0aAogICAgZD0iTTEwLjE2NjcgMTcuNUgxNS44MzMzVjE0LjY2NjdIMTAuMTY2N1YxNy41Wk0wLjI1IDAuNVYzLjMzMzMzSDI1Ljc1VjAuNUgwLjI1Wk00LjUgMTAuNDE2N0gyMS41VjcuNTgzMzNINC41VjEwLjQxNjdaIgogICAgZmlsbD0iIzU5NTk1OSIgLz4KPC9zdmc+');
+
+  transition: transform 300ms;
+}
+
+.or-review-filters-toggle-button-active {
+  transform: rotateZ(180deg);
+}
+
+.or-review-filters-toggle-button:focus {
+  outline: none;
+}
+
+.or-review-filters-wrapper {
+  margin: 2em 0;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  padding-left: calc(89px + 3em);
+}
+
+.or-review-filter-content {
+  flex-basis: 50%;
+}
+
+.or-review-filter-button {
+  border-radius: 5px;
+  border: none;
+  margin-right: 0.75em;
+  padding: 5px;
+  cursor: pointer;
+  background-color: #f5f5f5;
+}
+
+.or-review-filter-button:focus {
+  outline: none;
+}
+
+.or-review-filter-button-active {
+  background-color: #d5d5d5;
+}

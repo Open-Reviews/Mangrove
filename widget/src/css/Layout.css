@@ -1,0 +1,117 @@
+.or-review {
+  box-sizing: border-box;
+}
+
+.or-review *,
+.or-review *:before,
+.or-review *:after {
+  box-sizing: inherit;
+}
+
+.or-review {
+  background-color: #ffffff;
+}
+
+.or-base-button {
+  background-color: #000c55;
+  color: #ffffff;
+  background-color: #e5e5e5;
+  color: #000000;
+  border-radius: 1rem;
+  padding: 0.5em 1em;
+  border-style: none;
+  font-weight: bold;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+.or-base-button:focus,
+.or-base-button:active {
+  outline: none;
+}
+
+.or-base-button:hover {
+  opacity: 0.88;
+}
+
+.or-base-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.or-locale-switch-wrapper {
+  text-align: right;
+}
+
+.or-button-locale-switch {
+  border: none;
+  opacity: 0.8;
+  font-size: 0.8em;
+  margin: 0 0.25em;
+  color: #000c55;
+  background-color: transparent;
+  padding: 0;
+}
+
+.or-button-locale-switch:focus {
+  outline: none;
+}
+
+.or-button-locale-switch-active {
+  text-decoration: underline;
+}
+
+.or-main-wrapper {
+  background-color: transparent;
+  color: #595959;
+}
+
+.or-subject-navbar {
+  display: flex;
+  margin: 2em 0;
+  justify-content: center;
+}
+
+.or-subject-paginate-wrapper {
+  text-align: center;
+  margin-left: 1em;
+}
+
+.or-reviews-page-wrapper {
+  margin: 2em 0;
+}
+.or-subject-paginate-button {
+  margin: 0 0.5em;
+  border: none;
+  min-width: 2em;
+  border-radius: 5px;
+}
+
+.or-subject-paginate-button--active {
+  background-color: #dedede;
+}
+
+.or-subject-paginate-button:focus {
+  outline: none;
+}
+
+.or-review-global-error-wrapper {
+  background-color: rgba(0, 0, 0, 0.64);
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 32100;
+  overflow: hidden;
+  cursor: pointer;
+}
+.or-review-global-error {
+  position: relative;
+  margin: auto;
+  margin-top: 15%;
+  padding: 1em;
+  background-color: #e6492d;
+  color: #ffffff;
+  font-weight: bold;
+}
