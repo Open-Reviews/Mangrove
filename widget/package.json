@@ -1,0 +1,40 @@
+{
+  "name": "open-reviews-widget",
+  "version": "0.6.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "webpack-dev-server --mode development",
+    "build": "webpack --mode production",
+    "test": "jest",
+    "lint": "eslint --cache --format codeframe --ext mjs,jsx,js src test"
+  },
+  "dependencies": {
+    "@constgen/neutrino-sourcemap": "^1.9.2",
+    "@hot-loader/react-dom": "^16.14.0",
+    "@tippyjs/react": "^4.2.0",
+    "base64url": "^3.0.1",
+    "blueimp-load-image": "^5.14.0",
+    "html-react-parser": "^1.2.4",
+    "jdenticon": "^3.1.0",
+    "mangrove-reviews": "^0.1.4",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "react-hot-loader": "^4",
+    "rosetta": "^1.1.0"
+  },
+  "devDependencies": {
+    "@neutrinojs/airbnb": "^9.4.0",
+    "@neutrinojs/jest": "^9.4.0",
+    "@neutrinojs/library": "^9.5.0",
+    "@neutrinojs/react": "^9.4.0",
+    "dotenv-webpack": "^6.0.0",
+    "eslint": "^7",
+    "eslint-plugin-prettier": "^3.3.1",
+    "jest": "^26",
+    "neutrino": "^9.4.0",
+    "webpack": "^4",
+    "webpack-cli": "^3",
+    "webpack-dev-server": "^3"
+  }
+}

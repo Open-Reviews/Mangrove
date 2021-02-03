@@ -1,0 +1,204 @@
+.or-review-form-wrapper {
+  background-color: rgba(0, 0, 0, 0.64);
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 32000;
+  overflow: auto;
+}
+
+.or-review-form-content {
+  position: relative;
+  background-color: #ffffff;
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  margin: 2em auto;
+  padding: 2em;
+  max-width: 800px;
+}
+
+.or-review-form-mask {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.or-review-form-mask .or-loader {
+  margin-top: 15%;
+}
+
+.or-review-form-title {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.or-review-form-title > .or-review-issuer-name {
+  display: inline-block;
+}
+
+.or-review-form-label {
+  font-weight: bold;
+  display: block;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  text-align: left;
+}
+
+.or-review-form-label-checkbox {
+  display: block;
+  margin-bottom: 0.5em;
+}
+
+#or-review-form-opinion {
+  width: 100%;
+}
+
+.or-review-form-metadata-title {
+  margin-bottom: 1em;
+}
+
+.or-review-form-rating-wrapper,
+.or-review-form-metadata-wrapper,
+.or-review-form-terms-wrapper,
+.or-review-form-footer-wrapper {
+  margin: 1em 0;
+  padding-top: 1em;
+}
+
+.or-review-form-footer-wrapper {
+  text-align: center;
+}
+.or-review-form-footer-wrapper button {
+  margin-left: 1em;
+}
+
+.or-review-form-metada {
+  position: relative;
+  vertical-align: top;
+  width: 100%;
+}
+.or-review-form-metada input,
+.or-review-form-metada textarea,
+.or-review-form-metada select {
+  width: 100%;
+  font-size: 1em;
+}
+
+.or-form-text-field input,
+.or-form-text-field textarea {
+  width: 100%;
+  border: none;
+  background-color: transparent;
+  padding: 4px 0;
+}
+
+.or-form-text-field input:focus,
+.or-form-text-field textarea:focus {
+  outline: none;
+}
+
+.or-form-text-field textarea {
+  background-color: #e5e5e5;
+  height: 7em;
+}
+
+.or-form-input-wrapper {
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.or-form-input-wrapper::before {
+  bottom: -1px;
+  content: '';
+  left: 0;
+  position: absolute;
+  width: 100%;
+  border: thin solid #eaeaea;
+}
+
+.or-form-text-field-footer {
+  display: flex;
+  flex: 1 0 auto;
+  max-width: 100%;
+  min-height: 14px;
+  overflow: hidden;
+}
+
+.or-form-notes-wrapper {
+  flex: 1 1 auto;
+  font-size: 12px;
+  min-height: 14px;
+  min-width: 1px;
+  position: relative;
+}
+
+.or-form-notes {
+  font-size: 12px;
+}
+
+.or-form-counter {
+  white-space: nowrap;
+  margin-left: 8px;
+  flex: 0 1 auto;
+  font-size: 12px;
+  min-height: 12px;
+  line-height: 12px;
+}
+
+.or-review-form-close {
+  position: absolute;
+  right: 1em;
+  top: 1em;
+}
+
+.or-review-form-close-button {
+  border: none;
+  padding: 0;
+  background-color: transparent;
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZm9jdXNhYmxlPSJmYWxzZSIKICB3aWR0aD0iMWVtIiBoZWlnaHQ9IjFlbSIKICBzdHlsZT0iLW1zLXRyYW5zZm9ybTogcm90YXRlKDM2MGRlZyk7IC13ZWJraXQtdHJhbnNmb3JtOiByb3RhdGUoMzYwZGVnKTsgdHJhbnNmb3JtOiByb3RhdGUoMzYwZGVnKTsiCiAgcHJlc2VydmVBc3BlY3RSYXRpbz0ieE1pZFlNaWQgbWVldCIgdmlld0JveD0iMCAwIDI0IDI0Ij4KICA8cGF0aAogICAgZD0iTTE5IDYuNDFMMTcuNTkgNUwxMiAxMC41OUw2LjQxIDVMNSA2LjQxTDEwLjU5IDEyTDUgMTcuNTlMNi40MSAxOUwxMiAxMy40MUwxNy41OSAxOUwxOSAxNy41OUwxMy40MSAxMkwxOSA2LjQxeiIKICAgIGZpbGw9IiM2MjYyNjIiIC8+PC9zdmc+');
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 2em;
+  height: 2em;
+  cursor: pointer;
+}
+
+@media (min-width: 641px) {
+  .or-review-form-metada {
+    display: inline-block;
+    width: 50%;
+  }
+  .or-review-form-metada:nth-child(2n) {
+    padding-right: 0.5em;
+  }
+  .or-review-form-metada:nth-child(2n-1) {
+    padding-left: 0.5em;
+  }
+}
+
+@media (min-width: 961px) {
+  .or-review-form-metada {
+    display: inline-block;
+    width: 33.3333%;
+  }
+  .or-review-form-metada:nth-child(2n) {
+    padding: 0em;
+  }
+  .or-review-form-metada:nth-child(2n-1) {
+    padding: 0em;
+  }
+  .or-review-form-metada:nth-child(3n-1) {
+    padding-right: 0.5em;
+  }
+  .or-review-form-metada:nth-child(3n) {
+    padding: 0 0.5em;
+  }
+  .or-review-form-metada:nth-child(3n + 1) {
+    padding-left: 0.5em;
+  }
+}

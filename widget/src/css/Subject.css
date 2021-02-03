@@ -1,0 +1,20 @@
+.or-review-subject-wrapper {
+  margin: 1em auto;
+}
+
+.or-review-subject-rating {
+  text-align: center;
+  margin: 1em auto;
+  color: #000c55;
+}
+
+.or-review-subject-rating span {
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 1.25em;
+  margin-left: 0.25em;
+}
+
+.or-review-subject-rate-button {
+  text-align: center;
+}
