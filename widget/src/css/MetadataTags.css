@@ -1,0 +1,8 @@
+.or-review-tags {
+  font-size: 1.125em;
+  white-space: nowrap;
+}
+
+.or-review-tag {
+  display: block;
+}

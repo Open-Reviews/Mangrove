@@ -1,0 +1,48 @@
+.or-signin-wrapper {
+}
+
+.or-signin-title {
+  font-weight: bold;
+}
+
+.or-signin-sign {
+  display: flex;
+}
+
+.or-signin-sign > div {
+  width: 50%;
+  padding-right: 1em;
+}
+
+.or-signin-sign > div:last-child {
+  padding-right: 0;
+}
+
+.or-signin-account-keys,
+.or-signin-account-info {
+  margin: 2em;
+}
+
+.or-signin-account-info {
+  display: flex;
+}
+
+.or-signin-account-aside {
+  margin-right: 2em;
+}
+
+.or-signin-account-main p {
+  margin-top: 0;
+}
+
+.or-signin-button {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.or-signin-account-keys input {
+  width: 100%;
+}
