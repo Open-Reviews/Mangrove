@@ -125,8 +125,8 @@ export default {
         .filter(
           (r) =>
             r.payload.opinion &&
-            r.scheme !== MARESI &&
-            r.payload.sub !== 'https://example.com'
+            (!this.query.opinionated ||
+              (r.scheme !== MARESI && r.payload.sub !== 'https://example.com'))
         )
         .map(this.reviewToArg)
     },
