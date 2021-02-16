@@ -24,6 +24,7 @@ const GlobalStateProvider = ({ config = {}, children }) => {
     subjects: {},
     current: 0,
     time: new Date().getTime(),
+    showPopUp: false,
 
     errorMessage: '',
     issuer: {
@@ -65,8 +66,22 @@ const GlobalStateProvider = ({ config = {}, children }) => {
     onReviewsRefresh: () => {
       setState((prevState) => ({ ...prevState, time: new Date().getTime() }));
     },
+    // incrementing the user count
+    setIssuerCount: () => {
+      setState((prevState) => ({
+        ...prevState,
+        issuer: {
+          ...prevState.issuer,
+          info: { ...prevState.issuer.info, count: prevState.issuer.info.count + 1 },
+        },
+      }));
+    },
     setJWK: (JWK) => {
       setState((prevState) => ({ ...prevState, issuer: { ...prevState.issuer, JWK } }));
+    },
+    //toggle showPopUp
+    setShowPopUp: () => {
+      setState((prevState) => ({ ...prevState, showPopUp: !prevState.showPopUp }));
     },
     setPEM: (PEM) => {
       setState((prevState) => ({ ...prevState, issuer: { ...prevState.issuer, PEM } }));
@@ -135,9 +150,13 @@ const GlobalStateProvider = ({ config = {}, children }) => {
         const nextReviews = reviews.filter(({ payload: { rating, metadata } }) => {
           let checkVal = true;
           Object.keys(nextActive).forEach((facet) => {
-            if (facet === 'age') return; // temp ignore this filter
-
-            if (facet === 'rating') {
+            if (facet === 'age') {
+              const facetKeys = Object.keys(nextActive[facet]);
+              if (!facetKeys.length) return;
+              const ageSpanStr = facetKeys[0];
+              const [minAge, maxAge] = ageSpanStr.split('-');
+              checkVal = metadata.age <= maxAge && metadata.age >= minAge;
+            } else if (facet === 'rating') {
               checkVal = Object.keys(nextActive[facet]).some(
                 (facetVal) => parseInt(facetVal) === Math.ceil(rating / 20)
               );
@@ -152,6 +171,7 @@ const GlobalStateProvider = ({ config = {}, children }) => {
 
         return {
           ...prevState,
+          current: 0,
           reviewsFiltered: nextReviews,
           filters: { ...prevState.filters, active: nextActive },
         };
@@ -177,13 +197,16 @@ const GlobalStateProvider = ({ config = {}, children }) => {
     },
     onGetIssuer: async (PEM) => {
       let metadata = {};
-      const issuerInfo = await getIssuer(PEM);
+      const issuerInfo = await getIssuer(PEM, process.env.WIDGET_APP_API_URL);
 
       if (issuerInfo.count > 0) {
-        const issuerReviews = await getReviews({
-          kid: PEM,
-          limit: 1,
-        });
+        const issuerReviews = await getReviews(
+          {
+            kid: PEM,
+            limit: 1,
+          },
+          process.env.WIDGET_APP_API_URL
+        );
         ({ reviews: [{ payload: { metadata = {} } = {} }] = [] } = issuerReviews);
       }
 
@@ -276,13 +299,15 @@ const GlobalStateProvider = ({ config = {}, children }) => {
 
         if ('rating' in values) data.rating = parseInt(values.rating, 10) * 20;
         if ('opinion' in values) data.opinion = values.opinion;
-        if (data.rating === 0 && !('inappropriate' in values)) delete data.rating;
+        if (data.rating === 0 && reviewType !== REVIEW_TYPE.INAPPROPRIATE) delete data.rating;
 
         await signAndSubmitReview(keypair, data);
 
+        actions.setShowPopUp();
         actions.setReviewFormSub('');
         actions.setFlagFormSub('');
         actions.onReviewsRefresh();
+        actions.setIssuerCount();
       } catch (error) {
         let message = '';
 
@@ -365,7 +390,7 @@ const GlobalStateProvider = ({ config = {}, children }) => {
 
       try {
         JWK = window.localStorage.getItem(STORAGE_KEY.JWK);
-        console.info('JWK from localStorage: ', JWK);
+        //console.info('JWK from localStorage: ', JWK);
 
         if (JWK) {
           privateKeyJSON = JSON.parse(JWK);

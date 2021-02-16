@@ -7,8 +7,8 @@
   "returningReviewer": "Returning reviewer? Update JWK here:",
   "currentJwk": "Current JWK:",
   "currentPem": "Current PEM:",
-  "updateJwk": "✓ Update JWK",
-  "close": "✗ Close",
+  "logIn": "Log in",
+  "close": "✗",
   "errorInfo": "Error occured:",
   "commentOn": "Comment on",
   "sbReview": "`s review",
@@ -56,9 +56,10 @@
   "facetRating": "Number of stars",
   "showFilters": "Show filters",
   "hideFilters": "Hide filters",
-  "signInNew": "New here? Post your first review to create an account with the posted information",
-  "signInReturning": "Returning reviewer?",
-  "signInLogIn": "Returning reviewer? Log in",
+  "signInNew": "New here? Post your first review to create an account with the posted information.",
+  "signInReturning": "If you already have an Open Reviews account, or if you would like to switch to another Open Reviews account, you can",
+  "signInLogIn": " log in here.",
+  "signInPlaceholder": "Paste Your key here",
   "reviewOpts": {
     "useful": "This is useful",
     "confirm": "Confirm this experience",
@@ -77,6 +78,10 @@
     "reason03": "The review violates someone else's intellectual property, privacy/confidentiality, or personality rights",
     "reason04": "The review is marketing or spam",
     "reason05": "The review is on the wrong subject profile",
-    "reason06": "The content doesn't mention a buying or service experience and is solely ethical, political or value-laden opinion"
+    "reason06": "The content doesn't mention a buying or service experience and is solely ethical, political or value-laden opinion",
+    "popupHeader":"Thank you for leaving an Open Review and helping others have better experiences!",
+    "popupContent":" You can save your password (secret key) to use the same account on different platforms that work with <a href=\"https://open-reviews.net\" rel=\"open reviews\" target=\"_blank\"> Open Reviews </a> . Just paste this password when you leave your next review in log in section.",
+    "popupButton":"Copy password to clipboard"
+
   }
 }

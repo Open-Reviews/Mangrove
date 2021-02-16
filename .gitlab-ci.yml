@@ -223,3 +223,36 @@ aggregator:
     - julia --project run.jl
   only:
     - schedules
+
+build widget:
+  stage: build
+  variables:
+    WIDGET_APP_API_URL: "https://api.mangrove.reviews"
+    WIDGET_APP_UPLOAD_URL: "https://upload.mangrove.reviews"
+  script:
+    - cd widget
+    - yarn install
+    - yarn run build
+  artifacts:
+    paths:
+      - dist
+  only:
+    changes:
+      - widget/**/*
+  except:
+    - schedules
+
+test widget:
+  stage: test
+  variables:
+    WIDGET_APP_API_URL: "https://api.mangrove.reviews"
+    WIDGET_APP_UPLOAD_URL: "https://upload.mangrove.reviews"
+  script:
+    - cd widget
+    - yarn install
+    - yarn run test
+  only:
+    changes:
+      - widget/**/*
+  except:
+    - schedules

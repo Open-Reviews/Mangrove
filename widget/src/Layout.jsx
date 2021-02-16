@@ -9,6 +9,7 @@ import { REVIEW_TYPE } from './utils/constants';
 import './css/Layout.css';
 import './css/Review.css';
 import './css/ReviewSignIn.css';
+import './css/SubmitReviewPopUp.css';
 import './css/RatingStars.css';
 import './css/MetadataTags.css';
 import 'tippy.js/dist/tippy.css';
@@ -23,6 +24,7 @@ import ErrorMessage from './ErrorMessage';
 import ReviewFilters from './ReviewFilters';
 import LocaleSwitch from './LocaleSwitch';
 import FlagForm from './FlagForm';
+import SubmitReviewPopUp from './SubmitReviewPopUp';
 
 const Layout = () => {
   const {
@@ -68,6 +70,7 @@ const Layout = () => {
   return (
     <>
       <ErrorMessage />
+      <SubmitReviewPopUp />
       <div className="or-main-wrapper">
         {loading && <Loader>Loading {sub}</Loader>}
 

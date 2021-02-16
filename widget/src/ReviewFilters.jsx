@@ -42,9 +42,12 @@ const ReviewFilters = ({ active, setFilters }) => {
     const getAgeGroup = (age) => {
       let groupKey = '65+';
       const groupMax = { 25: '15-24', 35: '25-34', 45: '35-44', 65: '45-64' };
-      Object.keys(groupMax).forEach((maxAge) => {
-        if (age < maxAge) groupKey = groupMax[maxAge];
-      });
+      for (const maxAge of Object.keys(groupMax)) {
+        if (age <= maxAge) {
+          groupKey = groupMax[maxAge];
+          break;
+        }
+      }
       return groupKey;
     };
     const getRatingStars = (rating) => Math.ceil(rating / 20);
@@ -63,6 +66,15 @@ const ReviewFilters = ({ active, setFilters }) => {
       if (rating > 0) facetAdd('rating', getRatingStars(rating));
     });
 
+    //sort facets
+    for (const k of Object.keys(nextFacetCount)) {
+      const facetsForKey = nextFacetCount[k];
+      if (facetsForKey) {
+        const facetsForKeySorted = sortObject(facetsForKey);
+        nextFacetCount[k] = facetsForKeySorted;
+      }
+    }
+    
     setFacetCount(() => nextFacetCount);
   }, [time, reviewsActive.length]);
 
@@ -98,5 +110,12 @@ const ReviewFilters = ({ active, setFilters }) => {
     </div>
   );
 };
+
+function sortObject(obj) {
+  return Object.keys(obj).sort().reduce(function (result, key) {
+      result[key] = obj[key];
+      return result;
+  }, {});
+}
 
 export default ReviewFilters;

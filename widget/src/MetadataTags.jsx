@@ -28,7 +28,7 @@ const MetadataTags = ({ signature, metadata }) => {
   const tags = {
     age: (value) => t('metaAge', { age: value }),
     gender: (value) => (value === 'other' ? '' : t(`metaGender.${value}`)),
-    experience_context: (value) => t(`metaContext${value}`),
+    experience_context: (value) => t(`metaContext.${value}`),
     is_affiliated: { true: t('metaIsAffiliated') },
     is_personal_experience: { true: t('metaIsPersonal') },
     is_generated: { true: t('metaGenerated') },
