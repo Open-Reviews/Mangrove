@@ -1,7 +1,7 @@
-import React from 'react';
+import React from 'react'
 
 const FormInput = ({ id, label, value, onChange, type = 'text', rules = {} }) => {
-  const { maxlength, required = false } = rules;
+  const { maxlength, required = false } = rules
 
   return (
     <>
@@ -15,6 +15,13 @@ const FormInput = ({ id, label, value, onChange, type = 'text', rules = {} }) =>
 
           {type === 'text' && (
             <input id={id} type="text" value={value} onChange={onChange} maxLength={maxlength} />
+          )}
+          {type === 'number' && (
+            <input id={id} type="number" value={value} onChange={onChange} maxLength={maxlength} onInput={(e) => {
+              if (e.target.value.length > 3) {
+                e.target.value = e.target.value.slice(0, 3)
+              }
+            }} />
           )}
           {type === 'textarea' && (
             <textarea id={id} type="text" value={value} onChange={onChange} maxLength={maxlength} />
@@ -33,7 +40,7 @@ const FormInput = ({ id, label, value, onChange, type = 'text', rules = {} }) =>
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default FormInput;
+export default FormInput

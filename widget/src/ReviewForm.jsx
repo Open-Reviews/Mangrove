@@ -1,27 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 
-import { useGlobalState } from './GlobalState';
+import { useGlobalState } from './GlobalState'
 
-import IssuerName from './IssuerName';
-import { useI18n } from './i18n';
+import IssuerName from './IssuerName'
+import { useI18n } from './i18n'
 
-import { isTrueStr } from './utils';
-import { MAX_OPINION_LENGTH, REVIEW_TYPE } from './utils/constants';
+import { isTrueStr } from './utils'
+import { MAX_OPINION_LENGTH, REVIEW_TYPE } from './utils/constants'
 
-import './css/Loader.css';
-import './css/ReviewForm.css';
+import './css/Loader.css'
+import './css/ReviewForm.css'
 
-import ReviewFormImage from './ReviewFormImages';
-import FormInput from './FormInput';
-import FormRatingStars from './FormRatingStars';
-import ReviewSignIn from './ReviewSignIn';
-import SubmitReviewPopUp from './SubmitReviewPopUp';
+import ReviewFormImage from './ReviewFormImages'
+import FormInput from './FormInput'
+import FormRatingStars from './FormRatingStars'
+import ReviewSignIn from './ReviewSignIn'
 
 const ReviewForm = () => {
   const {
     state: {
       config: { title: configTitle = '' },
-      issuer: { metadata: issuerMetadata, PEM: publicKey },
+      issuer: { metadata: issuerMetadata },
       reviewForm: {
         sub: reviewFormSub,
         type: reviewType = REVIEW_TYPE.REVIEW,
@@ -31,14 +30,14 @@ const ReviewForm = () => {
       reviewImages,
     },
     actions: { onSubmitReview, setReviewFormSub, setReviewFormImages },
-  } = useGlobalState();
+  } = useGlobalState()
 
-  const { t } = useI18n();
-  const [values, setValues] = useState({});
+  const { t } = useI18n()
+  const [values, setValues] = useState({})
   // const [errors, setErrors] = useState({});
 
   const submitEnabled = ({ agree_terms, agree_license, rating, opinion }) =>
-    agree_terms && agree_license && (rating > 0 || opinion.length > 0);
+    agree_terms && agree_license && (rating > 0 || opinion.length > 0)
 
   useEffect(() => {
     const defaultValues = Object.assign(
@@ -49,7 +48,7 @@ const ReviewForm = () => {
         given_name: '',
         family_name: '',
         age: '',
-        gender: '',
+        gender: 'other',
         experience_context: '',
         is_affiliated: false,
         is_personal_experience: false,
@@ -58,42 +57,41 @@ const ReviewForm = () => {
         submit: false,
       },
       issuerMetadata
-    );
+    )
 
     defaultValues.submit = submitEnabled(defaultValues);
     ['is_affiliated', 'agree_terms', 'agree_license'].forEach((key) => {
-      if (key in defaultValues) defaultValues[key] = isTrueStr(defaultValues[key]);
-    });
+      if (key in defaultValues) defaultValues[key] = isTrueStr(defaultValues[key])
+    })
 
-    //console.log('defaultValues', defaultValues);
-    setValues(() => defaultValues);
-  }, [JSON.stringify(Object.values(issuerMetadata))]);
+    setValues(() => defaultValues)
+  }, [JSON.stringify(Object.values(issuerMetadata))])
 
   useEffect(() => {
     setValues((prevValues) => ({
       ...prevValues,
       submit: submitEnabled(values),
-    }));
-  }, [values.agree_license, values.agree_terms, values.rating, values.opinion]);
+    }))
+  }, [values.agree_license, values.agree_terms, values.rating, values.opinion])
 
   const setValue = (ev, key) => {
-    ev.persist();
-    let value = '';
+    ev.persist()
+    let value = ''
 
     switch (ev.target.type) {
       case 'checkbox':
-        value = ev.target.checked;
-        break;
+        value = ev.target.checked
+        break
 
       default:
-        value = ev.target.value;
-        break;
+        value = ev.target.value
+        break
     }
 
-    setValues((prevValues) => ({ ...prevValues, [key]: value }));
-  };
+    setValues((prevValues) => ({ ...prevValues, [key]: value }))
+  }
 
-  let title = '';
+  let title = ''
   switch (reviewType) {
     case REVIEW_TYPE.COMMENT:
       title = (
@@ -101,15 +99,15 @@ const ReviewForm = () => {
           {t('commentOn')} <IssuerName metadata={reviewMetadata} />
           {t('sbReview')}
         </>
-      );
-      break;
+      )
+      break
 
     default:
-      title = configTitle ? `${t('reviewOf')} ${configTitle}` : t('reviewOf');
-      break;
+      title = configTitle ? `${t('reviewOf')} ${configTitle}` : t('reviewOf')
+      break
   }
 
-  if (Object.keys(values).length === 0) return null;
+  if (Object.keys(values).length === 0) return null
 
   return (
     <div className="or-review-form-wrapper">
@@ -166,6 +164,7 @@ const ReviewForm = () => {
               id="or-review-form-metadata-given_name"
               label={t('frmGivenName')}
               value={values.given_name}
+              placeholder='Anonymous'
               onChange={(ev) => setValue(ev, 'given_name')}
               rules={{ maxlength: 20 }}
             />
@@ -185,6 +184,9 @@ const ReviewForm = () => {
             <FormInput
               id="or-review-form-metadata-age"
               label={t('frmAge')}
+              type='number'
+              max='999'
+
               value={values.age}
               onChange={(ev) => setValue(ev, 'age')}
               rules={{ maxlength: 3 }}
@@ -197,9 +199,8 @@ const ReviewForm = () => {
             </label>
             <select
               id="or-review-form-metadata-gender"
-              value={values.gender}
-              onChange={(ev) => setValue(ev, 'gender')}>
-              <option value=""></option>
+              value={!values.gender.length ? 'other' : values.gender}
+              onChange={(ev) => setValue(ev, 'gender')} >
               <option value="female">{t('frmGenderFemale')}</option>
               <option value="male">{t('frmGenderMale')}</option>
               <option value="other">{t('frmGenderOther')}</option>
@@ -226,11 +227,11 @@ const ReviewForm = () => {
                   <option value="solo">{t('metaContext.solo')}</option>
                 </>
               ) : (
-                <>
-                  <option value="user">{t('frmExpUser')}</option>
-                  <option value="owner">{t('frmExpOwner')}</option>
-                </>
-              )}
+                  <>
+                    <option value="user">{t('frmExpUser')}</option>
+                    <option value="owner">{t('frmExpOwner')}</option>
+                  </>
+                )}
             </select>
           </div>
         </div>
@@ -288,7 +289,7 @@ const ReviewForm = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default ReviewForm;
+export default ReviewForm

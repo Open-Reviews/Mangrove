@@ -1,16 +1,16 @@
 /* eslint-disable object-curly-newline */
-import React, { useEffect, useState } from 'react';
-import Tippy from '@tippyjs/react';
+import React, { useEffect, useState } from 'react'
+import Tippy from '@tippyjs/react'
 
-import { isEmptyObject } from './utils';
-import { REVIEW_TYPE } from './utils/constants';
-import { useI18n } from './i18n';
+import { isEmptyObject } from './utils'
+import { REVIEW_TYPE } from './utils/constants'
+import { useI18n } from './i18n'
 
-import RatingStars from './RatingStars';
-import Loader from './Loader';
-import IssuerName from './IssuerName';
-import IssuerIcon from './IssuerIcon';
-import MetadataTags from './MetadataTags';
+import RatingStars from './RatingStars'
+import Loader from './Loader'
+import IssuerName from './IssuerName'
+import IssuerIcon from './IssuerIcon'
+import MetadataTags from './MetadataTags'
 
 const Review = ({
   item = {},
@@ -28,21 +28,21 @@ const Review = ({
     comments: [],
     issuers: {},
     subjects: {},
-  });
+  })
 
-  const { t } = useI18n();
+  const { t } = useI18n()
 
-  const { signature, payload = {}, kid } = item;
-  const { opinion, iat, rating, metadata, images = [] } = payload;
+  const { signature, payload = {}, kid } = item
+  const { opinion, iat, rating, metadata, images = [] } = payload
 
-  const subKey = `urn:maresi:${signature}`;
+  const subKey = `urn:maresi:${signature}`
   const {
     [subKey]: {
       opinion_count: opinionCount = 0,
       positive_count: positiveCount = 0,
       confirmed_count: confirmedCount = 0,
     } = {},
-  } = subjects;
+  } = subjects
 
   useEffect(() => {
     async function fetchData() {
@@ -50,12 +50,12 @@ const Review = ({
         sub: subKey,
         issuers: true,
         maresi_subjects: true,
-      });
+      })
 
       const data = await (
         await fetch(`${process.env.WIDGET_APP_API_URL}/reviews?${params}`)
-      ).json();
-      const { reviews = [], issuers = {}, maresi_subjects: subjects = {} } = data;
+      ).json()
+      const { reviews = [], issuers = {}, maresi_subjects: subjects = {} } = data
 
       setState((prevState) => ({
         ...prevState,
@@ -63,32 +63,32 @@ const Review = ({
         comments: reviews,
         issuers,
         subjects,
-      }));
+      }))
     }
 
-    if (!state.visible) return;
-    if (state.comments.length > 0) return;
+    if (!state.visible) return
+    if (state.comments.length > 0) return
 
     setState((prevState) => ({
       ...prevState,
       loading: true,
       comments: {},
-    }));
+    }))
 
-    fetchData();
-  }, [state.visible]);
+    fetchData()
+  }, [state.visible])
 
   const toggleComments = () => {
     setState((prevState) => ({
       ...prevState,
       visible: !prevState.visible,
-    }));
-  };
+    }))
+  }
 
-  if (isEmptyObject(item)) return null;
-  if (!opinion) return null;
+  if (isEmptyObject(item)) return null
+  if (!opinion) return null
 
-  const { [kid]: { count: reviewCount = 0 } = {} } = issuers || {};
+  const { [kid]: { count: reviewCount = 0 } = {} } = issuers || {}
 
   return (
     <div className="or-review-wrapper" data-testid="or-review">
@@ -107,10 +107,13 @@ const Review = ({
         <div className="or-review-main">
           <IssuerName metadata={metadata} />
           <div className="or-review-datetime">Reviewed {new Date(iat * 1000).toDateString()}</div>
-          {rating !== undefined && rating > 0 && (
-            <div className="or-review-rating">
-              <RatingStars value={rating} />
-            </div>
+
+          <div className="or-review-rating">
+            <RatingStars value={rating} />
+          </div>
+
+          {rating !== undefined && rating === 0 && (
+            <div className="or-review-flagged">{t('reviewFlagged')}</div>
           )}
           {rating !== undefined && rating === 0 && (
             <div className="or-review-flagged">{t('reviewFlagged')}</div>
@@ -126,7 +129,7 @@ const Review = ({
                   alt=""
                   style={{ maxWidth: '96px', marginRight: '1rem', display: 'inline-block' }}
                   onClick={() => {
-                    setGallery(images, index);
+                    setGallery(images, index)
                   }}
                 />
               ))}
@@ -145,7 +148,7 @@ const Review = ({
                       rating: 5,
                     },
                     REVIEW_TYPE.POSITIVE
-                  );
+                  )
                 }}>
                 <span /> {positiveCount}
               </button>
@@ -163,7 +166,7 @@ const Review = ({
                       is_personal_experience: true,
                     },
                     REVIEW_TYPE.CONFIRM
-                  );
+                  )
                 }}>
                 <span /> {confirmedCount}
               </button>
@@ -216,7 +219,7 @@ const Review = ({
           />
         ))}
     </div>
-  );
-};
+  )
+}
 
-export default Review;
+export default Review

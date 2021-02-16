@@ -50,7 +50,6 @@ const FlagForm = () => {
         else if (checked) {
           nextReasons[reasonKey] = v;
         }
-        console.log('nextReasons', nextReasons);
         return { ...prevValues, reasons: nextReasons };
       });
       return;

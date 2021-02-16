@@ -23,7 +23,7 @@ test('Renders without crashing, key provided, profile loaded', async () => {
         expect(x.length).toBeGreaterThan(0);
         userEvent.click(screen.getByText('+ Rate and Review'));
         await screen.findAllByText(/Describe your experience:/i, {}, { timeout: 3000 });
-        await screen.findByDisplayValue(/kolec/i, {}, { timeout: 5000 });                
+        await screen.findAllByText(/kolec/i, {}, { timeout: 5000 });                
 }); 
 
 test('check filters', async()=>{
