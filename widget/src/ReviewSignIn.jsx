@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { useGlobalState } from './GlobalState';
-import { useI18n } from './i18n';
-import IssuerName from './IssuerName';
-import IssuerIcon from './IssuerIcon';
+import React, { useEffect, useState } from 'react'
+import { useGlobalState } from './GlobalState'
+import { useI18n } from './i18n'
+import IssuerName from './IssuerName'
+import IssuerIcon from './IssuerIcon'
 
 const ReviewSignIn = ({ metadata }) => {
   const {
@@ -12,34 +12,53 @@ const ReviewSignIn = ({ metadata }) => {
         PEM: publicKey = '',
         info: { count },
       },
+      statusMessage: { type },
     },
     actions: { onLogIn },
-  } = useGlobalState();
+  } = useGlobalState()
 
-  const { t } = useI18n();
+  const { t } = useI18n()
 
-  const [passwd, setPasswd] = useState('');
-  const [signInVisible, setSignInVisible] = useState(false);
+  const [passwd, setPasswd] = useState('')
+  const [checkMark, setCheckMark] = useState('')
+  const [signInVisible, setSignInVisible] = useState(false)
 
   const onJWKChange = (event) => {
-    setPasswd(event.target.value);
-  };
+    setPasswd(event.target.value)
+  }
   const onJWKUpdate = async () => {
-    await onLogIn(passwd);
-  };
-
+    await onLogIn(passwd)
+  }
+  useEffect(() => {
+    if (type === 'success') {
+      setSignInVisible(false)
+      setPasswd('')
+    }
+  }, [type])
   const ifEnter = (func) => (e) => {
-    if (e.which === 13) func(e);
-  };
+    if (e.which === 13) func(e)
+  }
 
-  if (!privateKey) return null;
+  if (!privateKey) return null
+
+  const saveToClipboard = () => {
+    navigator.clipboard.writeText(JSON.stringify(privateKey))
+    setCheckMark('✓')
+    setTimeout(() => {
+      setCheckMark('')
+    }, 2000)
+  }
 
   return (
     <div className="or-signin-wrapper">
       <div className="or-signin-account-info">
         <div className="or-signin-account-aside">
           <IssuerIcon kid={publicKey} metadata={metadata} />
+          <button onClick={saveToClipboard}>Copy key
+          <span className="or-submit-review-popup-checkmark">{checkMark}</span>
+          </button>
           <IssuerName metadata={metadata} />
+
         </div>
         <div className="or-signin-account-main">
           {count === 0 ? (
@@ -53,18 +72,24 @@ const ReviewSignIn = ({ metadata }) => {
               </p>
             </>
           ) : (
-            <p>
-              {t('signInReturning')}{' '}
-              <button onClick={() => setSignInVisible(true)} className="or-signin-button">
-                {t('signInLogIn')}
-              </button>
-            </p>
-          )}
+              <p>
+                {t('signInReturning')}{' '}
+                <button onClick={() => setSignInVisible(true)} className="or-signin-button">
+                  {t('signInLogIn')}
+                </button>
+              </p>
+            )}
         </div>
       </div>
       {signInVisible && (
-        <div className="or-signin-account-keys" onClick={() => setSignInVisible(false)}>
-          <div className="or-signin-account-content" onClick={(e) => e.stopPropagation()}>
+        <div className="or-signin-account-keys">
+          <div className="or-signin-account-content">
+            <button
+              className="or-review-form-close-button or-signin-account-close-button"
+              onClick={() => setSignInVisible(false)}>
+              <span />
+            </button>
+
             <p className="or-signin-account-input-container">
               <input
                 type="password"
@@ -78,9 +103,8 @@ const ReviewSignIn = ({ metadata }) => {
               <button
                 className="or-base-button"
                 onClick={async (event) => {
-                  event.preventDefault();
-                  await onJWKUpdate();
-                  setSignInVisible(false);
+                  event.preventDefault()
+                  await onJWKUpdate()
                 }}>
                 {t('logIn')}
               </button>
@@ -109,7 +133,7 @@ const ReviewSignIn = ({ metadata }) => {
       </div>
        */}
     </div>
-  );
-};
+  )
+}
 
-export default ReviewSignIn;
+export default ReviewSignIn

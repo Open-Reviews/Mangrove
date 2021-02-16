@@ -20,7 +20,7 @@ import Loader from './Loader';
 import ReviewForm from './ReviewForm';
 
 import ReviewGallery from './ReviewGallery';
-import ErrorMessage from './ErrorMessage';
+import StatusMessage from './StatusMessage';
 import ReviewFilters from './ReviewFilters';
 import LocaleSwitch from './LocaleSwitch';
 import FlagForm from './FlagForm';
@@ -69,7 +69,7 @@ const Layout = () => {
   const flagFormVisible = flagFormSub.length > 0;
   return (
     <>
-      <ErrorMessage />
+      <StatusMessage />
       <SubmitReviewPopUp />
       <div className="or-main-wrapper">
         {loading && <Loader>Loading {sub}</Loader>}

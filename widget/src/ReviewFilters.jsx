@@ -1,18 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { isEmptyObject } from './utils';
+import React, { useState, useEffect } from 'react'
 
-import { useGlobalState } from './GlobalState';
-import { useI18n } from './i18n';
+import { useGlobalState } from './GlobalState'
+import { useI18n } from './i18n'
 
-import './css/ReviewFilters.css';
+import './css/ReviewFilters.css'
 
 const ReviewFilters = ({ active, setFilters }) => {
   const {
     state: { reviews, reviewsFiltered, time },
-  } = useGlobalState();
-  const [facetCount, setFacetCount] = useState({});
+  } = useGlobalState()
+  const [facetCount, setFacetCount] = useState({})
 
-  if (!Array.isArray(reviews) || reviews.length === 0) return null;
+  if (!Array.isArray(reviews) || reviews.length === 0) return null
   /*
   In general people should be able to filter by
   - number of stars
@@ -20,37 +19,36 @@ const ReviewFilters = ({ active, setFilters }) => {
   - context about the reviewer (gender, age group (e.g., 15-24, 25-34, 35-44, 45-64, 65+)
   */
 
-  const { t } = useI18n();
+  const { t } = useI18n()
 
   const facetLabels = {
     gender: t('facetGender'),
     experience_context: t('facetContenxt'),
     age: t('facetAge'),
     rating: t('facetRating'),
-  };
+  }
 
-  const reviewsActive = Object.keys(active).length > 0 ? reviewsFiltered : reviews;
-
+  const reviewsActive = Object.keys(active).length > 0 ? reviewsFiltered : reviews
   useEffect(() => {
-    const nextFacetCount = {};
+    const nextFacetCount = {}
 
     const facetAdd = (k, v) => {
-      if (!(k in nextFacetCount)) nextFacetCount[k] = {};
-      if (!(v in nextFacetCount[k])) nextFacetCount[k][v] = 1;
-      else nextFacetCount[k][v] += 1;
-    };
+      if (!(k in nextFacetCount)) nextFacetCount[k] = {}
+      if (!(v in nextFacetCount[k])) nextFacetCount[k][v] = 1
+      else nextFacetCount[k][v] += 1
+    }
     const getAgeGroup = (age) => {
-      let groupKey = '65+';
-      const groupMax = { 25: '15-24', 35: '25-34', 45: '35-44', 65: '45-64' };
+      let groupKey
+      const groupMax = { 25: '15-24', 35: '25-34', 45: '35-44', 65: '45-64', 90: '65-100' }
       for (const maxAge of Object.keys(groupMax)) {
-        if (age <= maxAge) {
-          groupKey = groupMax[maxAge];
-          break;
+        if (age < maxAge) {
+          groupKey = groupMax[maxAge]
+          break
         }
       }
-      return groupKey;
-    };
-    const getRatingStars = (rating) => Math.ceil(rating / 20);
+      return groupKey
+    }
+    const getRatingStars = (rating) => Math.ceil(rating / 20)
 
     reviewsActive.forEach((review) => {
       const {
@@ -58,31 +56,31 @@ const ReviewFilters = ({ active, setFilters }) => {
           rating,
           metadata: { gender, experience_context, age },
         },
-      } = review;
+      } = review
 
-      if (gender !== undefined) facetAdd('gender', gender);
-      if (experience_context !== undefined) facetAdd('experience_context', experience_context);
-      if (age !== undefined) facetAdd('age', getAgeGroup(age));
-      if (rating > 0) facetAdd('rating', getRatingStars(rating));
-    });
+      if (gender !== undefined) facetAdd('gender', gender)
+      if (experience_context !== undefined) facetAdd('experience_context', experience_context)
+      if (age !== undefined) facetAdd('age', getAgeGroup(age))
+      if (rating > 0) facetAdd('rating', getRatingStars(rating))
+    })
 
     //sort facets
     for (const k of Object.keys(nextFacetCount)) {
-      const facetsForKey = nextFacetCount[k];
+      const facetsForKey = nextFacetCount[k]
       if (facetsForKey) {
-        const facetsForKeySorted = sortObject(facetsForKey);
-        nextFacetCount[k] = facetsForKeySorted;
+        const facetsForKeySorted = sortObject(facetsForKey)
+        nextFacetCount[k] = facetsForKeySorted
       }
     }
-    
-    setFacetCount(() => nextFacetCount);
-  }, [time, reviewsActive.length]);
+
+    setFacetCount(() => nextFacetCount)
+  }, [time, reviewsActive.length])
 
   return (
     <div className="or-review-filters-wrapper">
       {Object.keys(facetCount).map((facet) => {
-        const key = `review-facet-${facet}`;
-        const facetValues = facetCount[facet];
+        const key = `review-facet-${facet}`
+        const facetValues = facetCount[facet]
         return (
           <div key={key} className="or-review-filter-content">
             <h3 className="or-review-filter-title">{facetLabels[facet]}</h3>
@@ -91,31 +89,37 @@ const ReviewFilters = ({ active, setFilters }) => {
                 const classNameActive =
                   facet in active && facetValue in active[facet]
                     ? ' or-review-filter-button-active'
-                    : '';
+                    : ''
                 return (
                   <button
                     key={`${key}.${facetValue}`}
                     className={`or-review-filter-button${classNameActive}`}
                     onClick={() => {
-                      setFilters(facet, facetValue);
+                      setFilters(facet, facetValue)
                     }}>
-                    {facetValue}
+                    {(() => {
+                      switch (facetValue) {
+                        case undefined: return ""
+                        case "65-100": return "65+"
+                        default: return facetValue
+                      }
+                    })()}
                   </button>
-                );
+                )
               })}
             </div>
           </div>
-        );
+        )
       })}
     </div>
-  );
-};
+  )
+}
 
 function sortObject(obj) {
   return Object.keys(obj).sort().reduce(function (result, key) {
-      result[key] = obj[key];
-      return result;
-  }, {});
+    result[key] = obj[key]
+    return result
+  }, {})
 }
 
-export default ReviewFilters;
+export default ReviewFilters

@@ -1,8 +1,8 @@
 {
   "name": "open-reviews-widget",
-  "version": "0.6.6",
+  "version": "0.6.8",
   "main": "index.js",
-  "license": "MIT",
+  "license": "Apache 2.0",
   "scripts": {
     "start": "webpack-dev-server --mode development",
     "build": "webpack --mode production",
@@ -16,6 +16,7 @@
     "base64url": "^3.0.1",
     "blueimp-load-image": "^5.14.0",
     "html-react-parser": "^1.2.4",
+    "idb-keyval": "^5.0.2",
     "jdenticon": "^3.1.0",
     "mangrove-reviews": "^0.1.4",
     "react": "^16.14.0",
@@ -35,6 +36,7 @@
     "dotenv-webpack": "^6.0.0",
     "eslint": "^7",
     "eslint-plugin-prettier": "^3.3.1",
+    "fake-indexeddb": "^3.1.2",
     "jest": "^26",
     "jsonwebtoken": "^8.5.1",
     "jwk-to-pem": "^2.0.3",

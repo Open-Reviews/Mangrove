@@ -36,10 +36,9 @@
   background-color: #ffffff;
   box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
     0 1px 5px 0 rgba(0, 0, 0, 0.12);
-  
   padding: 1em;
-  width: 500px;
-  max-height: 300px;
+  width: 480px;
+  height: 100px;
   border-radius: 5px;
 }
 
@@ -80,4 +79,10 @@
 
 .or-signin-account-keys input {
   width: 100%;
+}
+
+.or-signin-account-close-button{
+  position: absolute;
+  right: 2px;
+  top: 0;
 }
