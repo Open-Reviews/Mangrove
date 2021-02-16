@@ -26,7 +26,10 @@ module.exports = {
         },
       },
     }),
-    jest(),
+    jest({
+      setupFiles : ['./src/jest.setup.env.js'],
+      setupFilesAfterEnv: ['./src/jest.setup.js'],
+    }),
     sourcemap({
       prod: false,
       dev: true,

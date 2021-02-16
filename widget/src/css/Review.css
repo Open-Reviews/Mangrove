@@ -20,6 +20,7 @@
 }
 
 .or-review-main {
+  flex-grow: 1;
 }
 
 .or-review-main > .or-review-issuer-name {
@@ -29,6 +30,10 @@
 
 .or-review-rating {
   margin-top: 0.5em;
+}
+
+.or-review-flagged {
+  font-weight: bold;
 }
 
 .or-review-opinion {
@@ -60,6 +65,9 @@
 
   color: #ffffff;
   font-size: 2em;
+
+  border-style: solid;
+  border-width: 4px;
 }
 .or-review-avatar svg {
   border-radius: 50%;

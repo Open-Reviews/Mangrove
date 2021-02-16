@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
 import { useGlobalState } from './GlobalState';
 import { useI18n } from './i18n';
 import IssuerName from './IssuerName';
@@ -11,17 +10,15 @@ const ReviewSignIn = ({ metadata }) => {
       issuer: {
         JWK: privateKey = '',
         PEM: publicKey = '',
-        info: issuerInfo,
-        metadata: issuerMetadata,
+        info: { count },
       },
-      reviewForm: { sub: reviewFormSub },
     },
     actions: { onLogIn },
   } = useGlobalState();
 
   const { t } = useI18n();
 
-  const [passwd, setPasswd] = useState(privateKey);
+  const [passwd, setPasswd] = useState('');
   const [signInVisible, setSignInVisible] = useState(false);
 
   const onJWKChange = (event) => {
@@ -39,53 +36,62 @@ const ReviewSignIn = ({ metadata }) => {
 
   return (
     <div className="or-signin-wrapper">
-      {!signInVisible && (
-        <div className="or-signin-account-info">
-          <div className="or-signin-account-aside">
-            <IssuerIcon kid={publicKey} metadata={metadata} />
-            <IssuerName metadata={metadata} />
-          </div>
-          <div className="or-signin-account-main">
-            <p>{t('signInNew')}</p>
+      <div className="or-signin-account-info">
+        <div className="or-signin-account-aside">
+          <IssuerIcon kid={publicKey} metadata={metadata} />
+          <IssuerName metadata={metadata} />
+        </div>
+        <div className="or-signin-account-main">
+          {count === 0 ? (
+            <>
+              <p>{t('signInNew')} </p>
+              <p>
+                {t('signInReturning')}{' '}
+                <button onClick={() => setSignInVisible(true)} className="or-signin-button">
+                  {t('signInLogIn')}
+                </button>
+              </p>
+            </>
+          ) : (
             <p>
               {t('signInReturning')}{' '}
               <button onClick={() => setSignInVisible(true)} className="or-signin-button">
                 {t('signInLogIn')}
               </button>
             </p>
-          </div>
+          )}
         </div>
-      )}
-
+      </div>
       {signInVisible && (
-        <div className="or-signin-account-keys">
-          <p>{t('returningReviewer')}</p>
-          <p>
-            {t('currentJwk')}{' '}
-            <input
-              type="password"
-              value={privateKey}
-              onChange={onJWKChange}
-              onKeyDown={ifEnter(onJWKUpdate)}
-            />
-          </p>
-          <p>
+        <div className="or-signin-account-keys" onClick={() => setSignInVisible(false)}>
+          <div className="or-signin-account-content" onClick={(e) => e.stopPropagation()}>
+            <p className="or-signin-account-input-container">
+              <input
+                type="password"
+                value={passwd}
+                className="or-signin-account-input"
+                onChange={onJWKChange}
+                onKeyDown={ifEnter(onJWKUpdate)}
+                placeholder={t('signInPlaceholder')}
+                required
+              />
+              <button
+                className="or-base-button"
+                onClick={async (event) => {
+                  event.preventDefault();
+                  await onJWKUpdate();
+                  setSignInVisible(false);
+                }}>
+                {t('logIn')}
+              </button>
+            </p>
+            {
+              //does not necessarry needs to be visible
+            }
+            {/* <p>
             {t('currentPem')} <input type="text" value={publicKey} readOnly />
-          </p>
-          <p>
-            <button
-              className="or-base-button"
-              onClick={async (event) => {
-                event.preventDefault();
-                await onJWKUpdate();
-                setSignInVisible(false);
-              }}>
-              {t('updateJwk')}
-            </button>{' '}
-            <button className="or-base-button" onClick={() => setSignInVisible(false)}>
-              {t('close')}
-            </button>
-          </p>
+          </p> */}
+          </div>
         </div>
       )}
 

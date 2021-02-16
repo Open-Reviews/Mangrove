@@ -91,7 +91,7 @@ const Review = ({
   const { [kid]: { count: reviewCount = 0 } = {} } = issuers || {};
 
   return (
-    <div className="or-review-wrapper">
+    <div className="or-review-wrapper" data-testid="or-review">
       <div className="or-review-content">
         <div className="or-review-aside">
           <IssuerIcon kid={kid} metadata={metadata} />
@@ -111,6 +111,9 @@ const Review = ({
             <div className="or-review-rating">
               <RatingStars value={rating} />
             </div>
+          )}
+          {rating !== undefined && rating === 0 && (
+            <div className="or-review-flagged">{t('reviewFlagged')}</div>
           )}
           <p className="or-review-opinion">{opinion}</p>
 

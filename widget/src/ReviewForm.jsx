@@ -15,6 +15,7 @@ import ReviewFormImage from './ReviewFormImages';
 import FormInput from './FormInput';
 import FormRatingStars from './FormRatingStars';
 import ReviewSignIn from './ReviewSignIn';
+import SubmitReviewPopUp from './SubmitReviewPopUp';
 
 const ReviewForm = () => {
   const {
@@ -64,7 +65,7 @@ const ReviewForm = () => {
       if (key in defaultValues) defaultValues[key] = isTrueStr(defaultValues[key]);
     });
 
-    console.log('defaultValues', defaultValues);
+    //console.log('defaultValues', defaultValues);
     setValues(() => defaultValues);
   }, [JSON.stringify(Object.values(issuerMetadata))]);
 
@@ -104,7 +105,7 @@ const ReviewForm = () => {
       break;
 
     default:
-      title = configTitle ? configTitle : t('reviewOf');
+      title = configTitle ? `${t('reviewOf')} ${configTitle}` : t('reviewOf');
       break;
   }
 
