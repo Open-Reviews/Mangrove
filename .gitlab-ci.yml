@@ -120,6 +120,12 @@ pages:
     - cd ..
     - mkdir public
     - cp -r ui/dist/* public
+    - cd ../widget
+    - yarn install
+    - yarn build
+    - cd ..
+    - mkdir public/widget
+    - cp -r widget/dist/* public/widget
   artifacts:
     paths:
       - public
@@ -129,6 +135,7 @@ pages:
   only:
     changes:
       - ui/**/*
+      - widget/**/*
 
 deploy api docs:
   stage: deploy
@@ -252,6 +259,28 @@ test widget:
     - yarn install
     - yarn run test
   only:
+    changes:
+      - widget/**/*
+  except:
+    - schedules
+
+deploy widget production:
+  stage: deploy
+  variables:
+    WIDGET_APP_API_URL: "https://api.mangrove.reviews"
+    WIDGET_APP_UPLOAD_URL: "https://upload.mangrove.reviews"
+    WIDGET_BUCKET: "widget.mangrove.reviews"
+    WIDGET_DIST: "E2MJJIV6P7ASG5"
+  script:
+    - cd widget
+    - yarn install
+    - yarn build
+    - aws s3 rm s3://$WIDGET_BUCKET --recursive
+    - aws s3 cp --recursive ./dist s3://$WIDGET_BUCKET
+    - aws cloudfront create-invalidation --distribution-id $WIDGET_DIST --paths "/*"
+  only:
+    refs:
+      - master
     changes:
       - widget/**/*
   except:
