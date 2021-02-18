@@ -11,6 +11,7 @@ const App = ({ config = {} }) => {
   const { getPrefferedLang } = i18nConfig;
   const [locale, lngDict] = getPrefferedLang();
 
+  // commit to trigger widget deploy
   return (
     <I18n lngDict={lngDict} locale={locale}>
       <GlobalState config={config}>
