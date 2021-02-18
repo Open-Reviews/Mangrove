@@ -179,14 +179,15 @@ const GlobalStateProvider = ({ config = {}, children }) => {
               checkVal =
                 checkVal &&
                 Object.keys(nextActive[facet]).some((facetVal) => {
-
                   return facetVal === metadata[facet]
 
                 })
 
+            } else {
+              // if the filter key is not present in the metadata then the review should not be included
+              checkVal = false
             }
           })
-
           return checkVal
         })
         return {
