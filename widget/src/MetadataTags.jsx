@@ -18,11 +18,14 @@ const MetadataTags = ({ signature, metadata }) => {
     else if (isPlainObject(label) && value in label) labelValue = label[value];
     else labelValue = value;
 
-    tagPills.push(
-      <span key={`${signature}.${key}`} className="or-review-tag">
-        {labelValue}
-      </span>
-    );
+    if (labelValue) {
+      // avoid empty tags
+      tagPills.push(
+        <span key={`${signature}.${key}`} className="or-review-tag">
+          {labelValue}
+        </span>
+      );
+    }
   };
 
   const tags = {

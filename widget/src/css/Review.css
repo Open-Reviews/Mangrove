@@ -1,12 +1,12 @@
 .or-review-wrapper {
-  margin-bottom: 2em;
   background-color: transparent;
-}
-
-.or-review-wrapper .or-review-wrapper {
-  margin-left: 1em;
-  padding-left: 1em;
-  border-left: 2px solid black;
+  margin-bottom: 16px;
+  padding: 8px;
+  border-radius: 10px;
+  box-shadow: 0 -2.8px 2.2px rgb(0 0 0 / 3%),
+              0 6.7px 5.3px rgb(1 0 0 / 5%),
+              0 12.5px 10px rgb(0 0 0 / 6%),
+              0 22.3px 17.9px rgb(0 0 0 / 7%);
 }
 
 .or-review-content {
@@ -23,13 +23,15 @@
   flex-grow: 1;
 }
 
-.or-review-main > .or-review-issuer-name {
+.or-review-name-wrapper > .or-review-issuer-name {
   font-size: 1.25em;
   font-weight: bold;
 }
 
 .or-review-rating {
   margin-top: 0.5em;
+  display: flex;
+  align-items: flex-end;
 }
 
 .or-review-flagged {
@@ -37,13 +39,14 @@
 }
 
 .or-review-opinion {
-  font-size: 1.125em;
+  font-size: 16px;
   text-align: justify;
 }
 
 .or-review-gallery img {
   cursor: pointer;
-  max-width: 57px;
+  height: 100px;
+  width: 100px;
   object-fit: contain;
 }
 
@@ -52,8 +55,8 @@
 }
 
 .or-review-avatar {
-  width: 89px;
-  height: 89px;
+  width: 69px;
+  height: 69px;
 
   border-radius: 50px;
 
@@ -61,10 +64,8 @@
   align-items: center;
   justify-content: center;
 
-  margin-bottom: 1rem;
-
   color: #ffffff;
-  font-size: 2em;
+  font-size: 1.2em;
 
   border-style: solid;
   border-width: 4px;
@@ -90,6 +91,14 @@
   cursor: pointer;
   font-size: 1.125em;
   opacity: 0.5;
+}
+
+
+.or-review-btn-confirm,
+.or-review-btn-addcomment,
+.or-review-btn-inappropriate,
+.or-review-toggle-comments {
+  margin-left: 24px;
 }
 
 .or-review-btn-inappropriate {

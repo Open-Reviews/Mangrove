@@ -36,7 +36,7 @@ const Layout = () => {
       issuers = {},
       subjects = {},
       current,
-      config: { sub, reviewsPerPage = 5 },
+      config: { sub, reviewsPerPage = 20 },
       reviewForm: { sub: reviewFormSub, type: reviewType },
       issuer: { metadata: issuerMetadata },
       gallery: { images: galleryImages = [], index: galleryIndex = 0 },
@@ -89,30 +89,12 @@ const Layout = () => {
 
             <div className="or-subject-navbar">
               <button
-                className={`or-review-filters-toggle-button${
-                  filtersVisible ? ' or-review-filters-toggle-button-active' : ''
-                }`}
+                className={`or-review-filters-toggle-button${filtersVisible ? ' or-review-filters-toggle-button-active' : ''
+                  }`}
                 title={!filtersVisible ? t('showFilters') : t('hideFilters')}
                 onClick={() => setFiltersVisible(!filtersVisible)}>
                 <span />
               </button>
-
-              {pages > 1 && (
-                <div className="or-subject-paginate-wrapper">
-                  {[...Array(pages).keys()].map((page) => (
-                    <button
-                      className={`or-subject-paginate-button${
-                        page === current ? ' or-subject-paginate-button--active' : ''
-                      }`}
-                      key={`page-${sub}-${page}`}
-                      onClick={() => {
-                        onPageClick(page);
-                      }}>
-                      {page + 1}
-                    </button>
-                  ))}
-                </div>
-              )}
             </div>
 
             {reviewsPage.length > 0 && (
@@ -129,6 +111,23 @@ const Layout = () => {
                     setGallery={setGallery}
                     onSubmitReview={onSubmitReview}
                   />
+                ))}
+              </div>
+            )}
+
+
+            {pages > 1 && (
+              <div className="or-subject-paginate-wrapper">
+                {[...Array(pages).keys()].map((page) => (
+                  <button
+                    className={`or-subject-paginate-button${page === current ? ' or-subject-paginate-button--active' : ''
+                      }`}
+                    key={`page-${sub}-${page}`}
+                    onClick={() => {
+                      onPageClick(page);
+                    }}>
+                    {page + 1}
+                  </button>
                 ))}
               </div>
             )}
