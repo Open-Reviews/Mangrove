@@ -12,17 +12,30 @@
   background-color: #ffffff;
 }
 
+.or-review-id {
+  display: flex;
+}
+.or-review-name-wrapper {
+  padding: 8px;
+  margin-left: 8px;
+}
+
+.or-review-datetime{
+  margin-left: 8px;
+  font-size: 14px;
+  margin-bottom: -4px;
+}
+
 .or-base-button {
   background-color: #000c55;
   color: #ffffff;
-  background-color: #e5e5e5;
-  color: #000000;
   border-radius: 1rem;
-  padding: 0.5em 1em;
+  padding: 12px;
   border-style: none;
   font-weight: bold;
-  font-size: 1em;
+  font-size: 16px;
   cursor: pointer;
+  margin: 16px 0px;
 }
 
 .or-base-button:focus,
@@ -81,13 +94,16 @@
   margin: 2em 0;
 }
 .or-subject-paginate-button {
-  margin: 0 0.5em;
+  margin: 0 8px;
   border: none;
+  font-size: 16px;
   min-width: 2em;
   border-radius: 5px;
+  padding: 6px 8px;
+  font-weight: 300;
 }
 
-.or-subject-paginate-button--active {
+.or-subject-paginate-button--active, .or-subject-paginate-button:hover {
   background-color: #dedede;
 }
 

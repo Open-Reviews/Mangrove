@@ -93,28 +93,30 @@ const Review = ({
   return (
     <div className="or-review-wrapper" data-testid="or-review">
       <div className="or-review-content">
-        <div className="or-review-aside">
-          <IssuerIcon kid={kid} metadata={metadata} />
-          {reviewCount > 0 && (
-            <div className="or-review-count">
-              {reviewCount} {t(reviewCount === 1 ? 'review_one' : 'review_other')}
-            </div>
-          )}
-          <div className="or-review-tags">
-            <MetadataTags signature={signature} metadata={metadata} />
-          </div>
-        </div>
+        {/* <div className="or-review-aside">
+          
+
+          
+        </div> */}
         <div className="or-review-main">
-          <IssuerName metadata={metadata} />
-          <div className="or-review-datetime">Reviewed {new Date(iat * 1000).toDateString()}</div>
+          <div className="or-review-id" >
+            <div className="or-review-icon">
+              <IssuerIcon kid={kid} metadata={metadata} />
+            </div>
+            <div className="or-review-name-wrapper">
+              <IssuerName metadata={metadata} />
+              {reviewCount > 0 && (
+                <div className="or-review-count">
+                  {reviewCount} {t(reviewCount === 1 ? 'review_one' : 'review_other')}
+                </div>
+              )}
+            </div>
+          </div>
 
           <div className="or-review-rating">
-            <RatingStars value={rating} />
+            <RatingStars value={rating} /> <div className="or-review-datetime">Reviewed {new Date(iat * 1000).toDateString()}</div>
           </div>
 
-          {rating !== undefined && rating === 0 && (
-            <div className="or-review-flagged">{t('reviewFlagged')}</div>
-          )}
           {rating !== undefined && rating === 0 && (
             <div className="or-review-flagged">{t('reviewFlagged')}</div>
           )}
@@ -135,6 +137,10 @@ const Review = ({
               ))}
             </div>
           )}
+
+          <div className="or-review-tags">
+            <MetadataTags signature={signature} metadata={metadata} />
+          </div>
 
           <div className="or-review-footer">
             <Tippy content={t('reviewOpts.useful')}>
