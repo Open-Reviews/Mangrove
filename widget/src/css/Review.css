@@ -55,8 +55,8 @@
 }
 
 .or-review-avatar {
-  width: 69px;
-  height: 69px;
+  width: 50px;
+  height: 50px;
 
   border-radius: 50px;
 
@@ -65,7 +65,7 @@
   justify-content: center;
 
   color: #ffffff;
-  font-size: 1.2em;
+  font-size: 1em;
 
   border-style: solid;
   border-width: 4px;
@@ -78,7 +78,7 @@
 
 .or-review-count {
   white-space: nowrap;
-  font-size: 1.125em;
+  font-size: 14px;
 }
 
 .or-review-btn-thumbup,

@@ -9,7 +9,7 @@ const IssuerName = ({ metadata = {} }) => {
     if (name.length > 0) name.push(`(${nickname})`)
     else name.push(nickname)
   }
-  if (name.length === 0) return null
+  if (name.length === 0 || name.join('') === '') return <div className="or-review-issuer-name">Anonymous</div>
 
   return <div className="or-review-issuer-name">{name.join(' ')}</div>
 }
