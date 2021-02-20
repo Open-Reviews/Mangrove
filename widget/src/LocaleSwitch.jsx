@@ -18,9 +18,9 @@ const LocaleSwitch = () => {
       {Object.keys(languages).map((key) => (
         <button
           key={`locale-switch-${key}`}
-          className={`or-button-locale-switch${
-            key === activeLocale ? ' or-button-locale-switch-active' : ''
-          }`}
+          title={key} // used for testing
+          className={`or-button-locale-switch${key === activeLocale ? ' or-button-locale-switch-active' : ''
+            }`}
           onClick={() => {
             onLocale(key);
           }}>

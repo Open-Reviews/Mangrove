@@ -15,23 +15,39 @@ const config = {
     sub: 'https://example.com',
     title: 'example.com domain subject title',
 };
+const configWithBlacklist = {
+    ...config,
+    blacklist: "bqbKFAg-N_JPmIOrY4hlLznScxqx5sNAxLnPnXn04lzP1GnaMvtDNVd7_K2J3WXs-y2gaFZ2aZ4skhJ-09mybg,n45QPce7FXyamC_EsQOSRShsXLlmTUF7B0Z1u4P2TzYylEeblYADLiyY54rmtXTfAHQpe5s-vlciVBiI5OSKKQ"
+};
+const configWithLanguage = {
+    ...config,
+    language: "pl"
+};
+const configWithLanguageSelector = {
+    ...config,
+    language: "selector"
+};
 
 test('Renders without crashing, key provided, profile loaded', async () => {
-        localStorage.setItem('JWK', testPayloads.privateKey);
-        render(<ErrorBoundary><App config={config} /></ErrorBoundary>);
-        const x = await screen.findAllByText(/Piotr Piotrowski/i, {}, { timeout: 3000 });
-        expect(x.length).toBeGreaterThan(0);
-        userEvent.click(screen.getByText('+ Rate and Review'));
-        await screen.findAllByText(/Describe your experience:/i, {}, { timeout: 3000 });
-        await screen.findAllByText(/kolec/i, {}, { timeout: 5000 });                
-}); 
+    localStorage.setItem('JWK', testPayloads.privateKey);
+    render(<ErrorBoundary><App config={config} /></ErrorBoundary>);
+    const x = await screen.findAllByText(/Piotr Piotrowski/i, {}, { timeout: 3000 });
+    expect(x.length).toBeGreaterThan(0);
+    userEvent.click(screen.getByText('+ Rate and Review'));
+    await screen.findAllByText(/Describe your experience:/i, {}, { timeout: 3000 });
+    await screen.findAllByText(/kolec/i, {}, { timeout: 5000 });
+});
 
-test('check filters', async()=>{
+test('check filters', async () => {
     render(<ErrorBoundary><App config={config} /></ErrorBoundary>);
     const x = await screen.findAllByTitle(/Show filters/i, {}, { timeout: 3000 });
     expect(x.length).toBeGreaterThan(0);
+    // by default language picker should not be shown.
+    const languageFilter = await screen.queryByTitle('pl')
+    expect(languageFilter).toBe(null)
+
     const reviews1 = await screen.findAllByTestId('or-review');
-    expect(reviews1.length).toBe(5);
+    expect(reviews1.length).toBe(9);
     userEvent.click(screen.getByTitle("Show filters", {}, { timeout: 3000 }));
     await screen.findAllByText(/Age group/i, {}, { timeout: 3000 });
     await screen.findAllByText(/15-24/i, {}, { timeout: 3000 });
@@ -39,4 +55,27 @@ test('check filters', async()=>{
     userEvent.click(screen.getByText(/15-24/i, {}, { timeout: 3000 }));
     const reviews2 = await screen.findAllByTestId('or-review');
     expect(reviews2.length).toBe(2);
+})
+
+test('check blacklist', async () => {
+    render(<ErrorBoundary><App config={configWithBlacklist} /></ErrorBoundary>);
+    const reviews = await screen.findAllByTestId('or-review');
+    expect(reviews.length).toBe(7); // 9 - 2 blacklisted reviews
+})
+
+test('check language', async () => {
+    render(<ErrorBoundary><App config={configWithLanguage} /></ErrorBoundary>);
+    // language picker should not be shown.
+    const languageFilter = await screen.queryByTitle('pl')
+    expect(languageFilter).toBe(null)
+    // pl text should be shown
+    const plText = await screen.findAllByText('Oceń i zrecenzuj');
+    expect(plText.length).toBeGreaterThan(0);
+})
+
+test('check language selector', async () => {
+    render(<ErrorBoundary><App config={configWithLanguageSelector} /></ErrorBoundary>);
+    // language picker should be shown.
+    const languageFilters = await screen.findAllByTitle('pl')
+    expect(languageFilters.length).toBe(1);
 })

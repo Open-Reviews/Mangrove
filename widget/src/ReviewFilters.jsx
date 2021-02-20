@@ -7,7 +7,7 @@ import './css/ReviewFilters.css'
 
 const ReviewFilters = ({ active, setFilters }) => {
   const {
-    state: { reviews, reviewsFiltered, time },
+    state: { reviews, reviewsFiltered, time, config: { blacklist = null } },
   } = useGlobalState()
   const [facetCount, setFacetCount] = useState({})
 
@@ -28,7 +28,11 @@ const ReviewFilters = ({ active, setFilters }) => {
     rating: t('facetRating'),
   }
 
-  const reviewsActive = Object.keys(active).length > 0 ? reviewsFiltered : reviews
+  const blacklistedSignatures = blacklist && blacklist.split(',');
+
+  const whiteListedReviews = blacklistedSignatures ? reviews.filter(review => blacklistedSignatures.indexOf(review.signature) < 0) : reviews;
+
+  const reviewsActive = Object.keys(active).length > 0 ? reviewsFiltered : whiteListedReviews
   useEffect(() => {
     const nextFacetCount = {}
 
