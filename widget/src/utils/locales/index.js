@@ -14,13 +14,16 @@ const i18nConfig = {
     pl: 'pl',
     pt: 'pt',
   },
-  getPrefferedLang: () => {
-    const prefLang =
+  getPrefferedLang: (lngOverride) => {
+    let prefLang =
       navigator.languages && navigator.languages.length
         ? navigator.languages[0]
         : navigator.language;
 
-    let availLang = Object.keys(i18nConfig.languages).find((key) => prefLang.indexOf(key) === 0);
+    lngOverride = lngOverride && Object.keys(i18nConfig.languages).find((key) => lngOverride.indexOf(key) === 0);
+
+    let availLang = lngOverride || Object.keys(i18nConfig.languages).find((key) => prefLang.indexOf(key) === 0);
+
     if (!availLang) availLang = i18nConfig.fallbackLanguage;
 
     return [availLang, i18nConfig.languages[availLang]];
