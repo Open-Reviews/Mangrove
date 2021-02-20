@@ -379,11 +379,15 @@ const GlobalStateProvider = ({ config = {}, children }) => {
       ).json()
       const { reviews = [], issuers = {}, maresi_subjects: subjects = {} } = data
 
+      //remove blacklisted reviews
+      const blacklistedSignatures = state.config.blacklist && state.config.blacklist.split(',');
+      const whiteListedReviews = blacklistedSignatures ? reviews.filter(review => blacklistedSignatures.indexOf(review.signature) < 0) : reviews;
+
       setState((prevState) => ({
         ...prevState,
         loading: false,
         data,
-        reviews,
+        reviews: whiteListedReviews,
         issuers,
         subject,
         subjects,
