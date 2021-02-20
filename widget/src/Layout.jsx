@@ -36,7 +36,7 @@ const Layout = () => {
       issuers = {},
       subjects = {},
       current,
-      config: { sub, reviewsPerPage = 20 },
+      config: { sub, reviewsPerPage = 20, language = null },
       reviewForm: { sub: reviewFormSub, type: reviewType },
       issuer: { metadata: issuerMetadata },
       gallery: { images: galleryImages = [], index: galleryIndex = 0 },
@@ -76,7 +76,7 @@ const Layout = () => {
 
         {!isEmptyObject(subject) && (
           <>
-            <LocaleSwitch />
+            {language === "selector" && <LocaleSwitch />}
             <Subject />
 
             {reviewFormVisible && <ReviewForm />}

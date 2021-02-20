@@ -9,7 +9,7 @@ import i18nConfig from './utils/locales';
 
 const App = ({ config = {} }) => {
   const { getPrefferedLang } = i18nConfig;
-  const [locale, lngDict] = getPrefferedLang();
+  const [locale, lngDict] = getPrefferedLang(config.language);
 
   // commit to trigger widget deploy
   return (
