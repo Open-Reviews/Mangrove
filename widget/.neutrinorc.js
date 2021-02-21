@@ -3,6 +3,7 @@ const react = require('@neutrinojs/react');
 const jest = require('@neutrinojs/jest');
 const sourcemap = require('@constgen/neutrino-sourcemap');
 const manifest = require('./package.json');
+const Dotenv = require('dotenv-webpack');
 
 const version = manifest.version;
 
@@ -27,7 +28,7 @@ module.exports = {
       },
     }),
     jest({
-      setupFiles : ['./src/jest.setup.env.js'],
+      setupFiles: ['./src/jest.setup.env.js'],
       setupFilesAfterEnv: ['./src/jest.setup.js'],
     }),
     sourcemap({
@@ -49,7 +50,7 @@ module.exports = {
         .plugin('provide')
         .use(require.resolve('webpack/lib/ProvidePlugin'), [{ Buffer: ['buffer', 'Buffer'] }]);
 
-      neutrino.config.plugin('dotenv').use(require.resolve('dotenv-webpack'), []);
+      neutrino.config.plugin('dotenv').use(new Dotenv({ systemvars: true }), []);
 
       neutrino.config.optimization.runtimeChunk(false).splitChunks({
         cacheGroups: {
