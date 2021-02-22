@@ -11,7 +11,8 @@ const Subject = () => {
   const {
     state: {
       subject,
-      config: { sub },
+      config: { sub, ratingAlgorithm },
+      reviews,
     },
     actions: { setReviewFormSub },
   } = useGlobalState();
@@ -19,7 +20,12 @@ const Subject = () => {
 
   if (isEmptyObject(subject)) return null;
 
-  const { quality = 0, opinion_count: opinionCount = 0 } = subject;
+  let { quality = 0, opinion_count: opinionCount = 0 } = subject;
+  if (ratingAlgorithm === 'local') {
+    const reviewsWithRatings = reviews.filter(r => r.payload.rating)
+    opinionCount = reviewsWithRatings.length;
+    quality = reviewsWithRatings.map((r) => r.payload.rating).reduce((prev, next) => prev + next) / opinionCount;
+  }
   const STARS_MAX = 5;
   const qualityStars = ((quality * STARS_MAX) / 100).toFixed(1);
 
@@ -28,7 +34,7 @@ const Subject = () => {
       {opinionCount > 0 && (
         <div className="or-review-subject-rating">
           <RatingStars value={quality} />{' '}
-          <span className="or-review-subject-rating-quality">{qualityStars}</span>{' '}
+          <span className="or-review-subject-rating-quality" title="Rating" >{qualityStars}</span>{' '}
           <span className="or-review-subject-rating-count">({opinionCount})</span>
         </div>
       )}
