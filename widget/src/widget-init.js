@@ -18,14 +18,25 @@
     const orReview = document.querySelectorAll('.or-review')
     if (!isIterable(orReview)) return
     orReview.forEach((el) => {
-      const { _, dataset: { sub, title = '', language = null, blacklist = null } = {} } = el
+      const { _, dataset: {
+        sub,
+        title = '',
+        language = null,
+        blacklist = null,
+        hidePhotos = false,
+        filterOpinion = false,
+        filterAnonymous = false
+      } = {} } = el
       if (el && sub) {
         OpenReviewsWidget.init({
           selector: el,
           sub,
           title,
           language,
-          blacklist
+          blacklist,
+          hidePhotos,
+          filterOpinion,
+          filterAnonymous
         })
       }
     })

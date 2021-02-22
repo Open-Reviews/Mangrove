@@ -379,15 +379,24 @@ const GlobalStateProvider = ({ config = {}, children }) => {
       ).json()
       const { reviews = [], issuers = {}, maresi_subjects: subjects = {} } = data
 
-      //remove blacklisted reviews
-      const blacklistedSignatures = state.config.blacklist && state.config.blacklist.split(',');
-      const whiteListedReviews = blacklistedSignatures ? reviews.filter(review => blacklistedSignatures.indexOf(review.signature) < 0) : reviews;
+      // apply automated filters
+      const isReviewAllowed = (review) => {
+        // blacklist
+        const blacklistedSignatures = state.config.blacklist ? state.config.blacklist.split(',') : [];
+        if (blacklistedSignatures.indexOf(review.signature) >= 0) return false
+        // filter-opinion
+        if (state.config.filterOpinion && !review.payload.opinion) return false
+        // filter-anonymous
+        const { given_name: giveName, family_name: familyName, nickname } = review.payload.metadata
+        if (state.config.filterAnonymous && !giveName && !familyName && !nickname) return false
+        return true
+      }
 
       setState((prevState) => ({
         ...prevState,
         loading: false,
         data,
-        reviews: whiteListedReviews,
+        reviews: reviews.filter(r => isReviewAllowed(r)),
         issuers,
         subject,
         subjects,
