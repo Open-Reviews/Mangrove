@@ -39,6 +39,10 @@ const configHidePhotos = {
     ...config,
     hidePhotos: true
 };
+const configRatingAlgo = {
+    ...config,
+    ratingAlgorithm: 'local'
+};
 
 test('Renders without crashing, key provided, profile loaded', async () => {
     localStorage.setItem('JWK', testPayloads.privateKey);
@@ -103,4 +107,20 @@ test('check hide photos', async () => {
     await screen.findAllByTestId('or-review');
     const galleries = screen.queryAllByTitle('Review Gallery');
     expect(galleries.length).toBe(0);
+})
+
+test('check default rating algorithm', async () => {
+    // algo = 'mangrove'
+    render(<ErrorBoundary><App config={config} /></ErrorBoundary>);
+    await screen.findAllByTestId('or-review');
+    const rating = await screen.getByTitle('Rating');
+    expect(rating).toHaveTextContent("3.1");
+})
+
+test('check local rating algorithm', async () => {
+    // algo = 'local'
+    render(<ErrorBoundary><App config={configRatingAlgo} /></ErrorBoundary>);
+    await screen.findAllByTestId('or-review');
+    const rating = await screen.getByTitle('Rating');
+    expect(rating).toHaveTextContent("4.8");
 })

@@ -25,7 +25,8 @@
         blacklist = null,
         hidePhotos = false,
         filterOpinion = false,
-        filterAnonymous = false
+        filterAnonymous = false,
+        ratingAlgorithm = 'mangrove'
       } = {} } = el
       if (el && sub) {
         OpenReviewsWidget.init({
@@ -36,7 +37,8 @@
           blacklist,
           hidePhotos,
           filterOpinion,
-          filterAnonymous
+          filterAnonymous,
+          ratingAlgorithm
         })
       }
     })
