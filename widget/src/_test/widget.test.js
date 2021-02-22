@@ -27,6 +27,18 @@ const configWithLanguageSelector = {
     ...config,
     language: "selector"
 };
+const configWithFilterOpinion = {
+    ...config,
+    filterOpinion: true
+};
+const configWithFilterAnonymous = {
+    ...config,
+    filterAnonymous: true
+};
+const configHidePhotos = {
+    ...config,
+    hidePhotos: true
+};
 
 test('Renders without crashing, key provided, profile loaded', async () => {
     localStorage.setItem('JWK', testPayloads.privateKey);
@@ -78,4 +90,17 @@ test('check language selector', async () => {
     // language picker should be shown.
     const languageFilters = await screen.findAllByTitle('pl')
     expect(languageFilters.length).toBe(1);
+})
+
+test('check filter anonymous', async () => {
+    render(<ErrorBoundary><App config={configWithFilterAnonymous} /></ErrorBoundary>);
+    const reviews = await screen.findAllByTestId('or-review');
+    expect(reviews.length).toBe(7); // 9 - 2 anonymous
+})
+
+test('check hide photos', async () => {
+    render(<ErrorBoundary><App config={configHidePhotos} /></ErrorBoundary>);
+    await screen.findAllByTestId('or-review');
+    const galleries = screen.queryAllByTitle('Review Gallery');
+    expect(galleries.length).toBe(0);
 })

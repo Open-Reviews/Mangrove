@@ -1,6 +1,7 @@
 /* eslint-disable object-curly-newline */
 import React, { useEffect, useState } from 'react'
 import Tippy from '@tippyjs/react'
+import { useGlobalState } from './GlobalState';
 
 import { isEmptyObject } from './utils'
 import { REVIEW_TYPE } from './utils/constants'
@@ -29,6 +30,8 @@ const Review = ({
     issuers: {},
     subjects: {},
   })
+
+  const { state: { config: { hidePhotos = false } } } = useGlobalState();
 
   const { t } = useI18n()
 
@@ -122,8 +125,8 @@ const Review = ({
           )}
           <p className="or-review-opinion">{opinion}</p>
 
-          {images.length > 0 && (
-            <div className="or-review-gallery">
+          {images.length > 0 && !hidePhotos && (
+            <div className="or-review-gallery" title="Review Gallery">
               {images.map((image, index) => (
                 <img
                   key={`review-img-${signature}-${index}`}
