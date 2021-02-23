@@ -236,6 +236,7 @@ build widget:
   variables:
     WIDGET_APP_API_URL: "https://api.mangrove.reviews"
     WIDGET_APP_UPLOAD_URL: "https://upload.mangrove.reviews"
+    WIDGET_APP_FILES_URL: "https://files.mangrove.reviews"
   script:
     - cd widget
     - yarn install
@@ -254,6 +255,7 @@ test widget:
   variables:
     WIDGET_APP_API_URL: "https://api.mangrove.reviews"
     WIDGET_APP_UPLOAD_URL: "https://upload.mangrove.reviews"
+    WIDGET_APP_FILES_URL: "https://files.mangrove.reviews"
   script:
     - cd widget
     - yarn install
@@ -270,6 +272,7 @@ deploy widget production:
     NODE_ENV: 'deploy'
     WIDGET_APP_API_URL: "https://api.mangrove.reviews"
     WIDGET_APP_UPLOAD_URL: "https://upload.mangrove.reviews"
+    WIDGET_APP_FILES_URL: "https://files.mangrove.reviews"
     WIDGET_BUCKET: "widget.mangrove.reviews"
     WIDGET_DIST: "E2MJJIV6P7ASG5"
   script:

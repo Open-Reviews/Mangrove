@@ -238,34 +238,40 @@ const ReviewForm = () => {
 
         <div className="or-review-form-terms-wrapper">
           <label className="or-review-form-label-checkbox" htmlFor="or-review-form-is_affiliated">
-            <input
-              id="or-review-form-is_affiliated"
-              type="checkbox"
-              checked={values.is_affiliated}
-              value="1"
-              onChange={(ev) => setValue(ev, 'is_affiliated')}
-            />{' '}
-            {t('frmAffiliated')}
+            <div className="or-review-form-label-checkbox-inner">
+              <input
+                id="or-review-form-is_affiliated"
+                type="checkbox"
+                checked={values.is_affiliated}
+                value="1"
+                onChange={(ev) => setValue(ev, 'is_affiliated')}
+              />{' '}
+              {t('frmAffiliated')}
+            </div>
           </label>
           <label className="or-review-form-label-checkbox" htmlFor="or-review-form-agree_terms">
-            <input
-              id="or-review-form-agree_terms"
-              type="checkbox"
-              checked={values.agree_terms}
-              value="1"
-              onChange={(ev) => setValue(ev, 'agree_terms')}
-            />{' '}
-            {t('frmAgreeTerms')}
+            <div className="or-review-form-label-checkbox-inner">
+              <input
+                id="or-review-form-agree_terms"
+                type="checkbox"
+                checked={values.agree_terms}
+                value="1"
+                onChange={(ev) => setValue(ev, 'agree_terms')}
+              />{' '}
+              {t('frmAgreeTerms')}
+            </div>
           </label>
           <label className="or-review-form-label-checkbox" htmlFor="or-review-form-agree_license">
-            <input
-              id="or-review-form-agree_license"
-              type="checkbox"
-              checked={values.agree_license}
-              value="1"
-              onChange={(ev) => setValue(ev, 'agree_license')}
-            />{' '}
-            {t('frmAgreeLicense')}
+            <div className="or-review-form-label-checkbox-inner">
+              <input
+                id="or-review-form-agree_license"
+                type="checkbox"
+                checked={values.agree_license}
+                value="1"
+                onChange={(ev) => setValue(ev, 'agree_license')}
+              />{' '}
+              <div>{t('frmAgreeLicense')}</div>
+            </div>
           </label>
         </div>
 

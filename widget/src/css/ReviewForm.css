@@ -54,6 +54,14 @@
   margin-bottom: 0.5em;
 }
 
+.or-review-form-label-checkbox-inner {
+  display: flex;
+}
+
+.or-review-form-label-checkbox-inner input {
+  margin-right: 4px;
+}
+
 #or-review-form-opinion {
   width: 100%;
 }
@@ -103,7 +111,8 @@
 }
 
 .or-form-text-field textarea {
-  background-color: #e5e5e5;
+  box-shadow: none!important;
+  background-color: transparent;
   height: 7em;
 }
 
