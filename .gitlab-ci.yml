@@ -267,6 +267,7 @@ test widget:
 deploy widget production:
   stage: deploy
   variables:
+    NODE_ENV: 'production'
     WIDGET_APP_API_URL: "https://api.mangrove.reviews"
     WIDGET_APP_UPLOAD_URL: "https://upload.mangrove.reviews"
     WIDGET_BUCKET: "widget.mangrove.reviews"
