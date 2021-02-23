@@ -83,15 +83,17 @@ const FlagForm = () => {
     const id = `or-review-form-${key}`;
     return (
       <label className="or-review-form-label-checkbox" htmlFor={id}>
-        <input
-          id={id}
-          type="checkbox"
-          checked={key in values.reasons}
-          disabled={isDisabled(key)}
-          value={key}
-          onChange={(ev) => setValue(ev, 'reasons', t(`frmFlag.${key}`))}
-        />{' '}
-        {t(`frmFlag.${key}`)}
+        <div className="or-review-form-label-checkbox-inner">
+          <input
+            id={id}
+            type="checkbox"
+            checked={key in values.reasons}
+            disabled={isDisabled(key)}
+            value={key}
+            onChange={(ev) => setValue(ev, 'reasons', t(`frmFlag.${key}`))}
+          />{' '}
+          {t(`frmFlag.${key}`)}
+        </div>
       </label>
     );
   };
