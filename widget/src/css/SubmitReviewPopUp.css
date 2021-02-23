@@ -24,6 +24,10 @@
     
 }
 
+.or-submit-review-popup-container h3 {
+    text-align: center;
+}
+
 .or-submit-review-popup-button{
     position: absolute;
     top: 0;
@@ -33,6 +37,9 @@
     padding: .3em .5em;
     border-radius: 5px;
     text-align: center;
+    background: transparent;
+    font-size: 20px;
+    border: none;
 }
 .or-submit-review-popup-checkmark{
     color: green;

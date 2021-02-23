@@ -41,22 +41,11 @@ const ReviewSignIn = ({ metadata }) => {
 
   if (!privateKey) return null
 
-  const saveToClipboard = () => {
-    navigator.clipboard.writeText(JSON.stringify(privateKey))
-    setCheckMark('✓')
-    setTimeout(() => {
-      setCheckMark('')
-    }, 2000)
-  }
-
   return (
     <div className="or-signin-wrapper">
       <div className="or-signin-account-info">
         <div className="or-signin-account-aside">
           <IssuerIcon kid={publicKey} metadata={metadata} />
-          <button onClick={saveToClipboard}>Copy key
-          <span className="or-submit-review-popup-checkmark">{checkMark}</span>
-          </button>
           <IssuerName metadata={metadata} />
 
         </div>
