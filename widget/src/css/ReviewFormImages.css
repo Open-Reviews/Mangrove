@@ -27,4 +27,5 @@ label[for='or-review-form-files'] {
 .or-review-form-files-image {
   height: 86px;
   margin: 8px;
+  width: auto!important;
 }

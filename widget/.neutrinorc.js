@@ -6,6 +6,7 @@ const manifest = require('./package.json');
 const Dotenv = require('dotenv-webpack');
 
 const version = manifest.version;
+const env = process.env.NODE_ENV;
 
 module.exports = {
   options: {
@@ -22,7 +23,7 @@ module.exports = {
       style: {
         extract: {
           plugin: {
-            filename: process.env.NODE_ENV === 'deploy' ? 'or-widget.css' : 'or-widget-' + version + '.css',
+            filename: env === 'deploy' ? 'or-widget.css' : 'or-widget-' + version + '.css',
           },
         },
       },
@@ -40,7 +41,7 @@ module.exports = {
       neutrino.config.output
         .library('OpenReviewsWidget')
         .path(neutrino.options.output)
-        .filename(process.env.NODE_ENV === 'deploy' ? 'or-widget.js' : 'or-widget-' + version + '.js')
+        .filename(env === 'deploy' ? 'or-widget.js' : 'or-widget-' + version + '.js')
         .libraryTarget('umd')
         .umdNamedDefine(true);
 
