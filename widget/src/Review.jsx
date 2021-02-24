@@ -92,6 +92,7 @@ const Review = ({
   if (!opinion) return null
 
   const { [kid]: { count: reviewCount = 0 } = {} } = issuers || {}
+  const [_, monthName, day, year] = new Date(iat * 1000).toDateString().split(' ')
 
   return (
     <div className="or-review-wrapper" data-testid="or-review">
@@ -117,7 +118,7 @@ const Review = ({
           </div>
 
           <div className="or-review-rating">
-            <RatingStars value={rating} /> <div className="or-review-datetime">Reviewed {new Date(iat * 1000).toDateString()}</div>
+            <RatingStars value={rating} /> <div className="or-review-datetime">{t('reviewed')} {`${monthName} ${day}, ${year}`}</div>
           </div>
 
           {rating !== undefined && rating === 0 && (
