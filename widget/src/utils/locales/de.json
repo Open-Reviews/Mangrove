@@ -82,7 +82,7 @@
     "reason06": "Der Inhalt erwähnt kein Kauf- oder Serviceerlebnis und ist ausschließlich ethische, politische oder wertebezogene Meinung.",
     "popupHeader":"Danke, dass du eine Open Review hinterlassen hast und anderen hilfst, bessere Erfahrungen zu machen!",
     "popupContent":" Du kannst dieses Kennwort (Secret Key) nutzen, um dich mit dem gleichen Account auf verschiedenen Plattformen anzumelden, die mit <a href=\"https://open-reviews.net\" rel=\"open reviews\" target=\"_blank\"> Open Reviews </a> arbeiten. Wenn du deine nächste Rezension abgibst, füge dieses Kennwort einfach im Log-in Bereich ein.",
-    "popupButton":"Kennwort in die Zwischenablage kopieren"
-
+    "popupButton":"Kennwort in die Zwischenablage kopieren",
+    "reviewed": "Bewertet"
   }
 }

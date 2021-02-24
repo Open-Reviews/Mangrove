@@ -83,6 +83,6 @@
   },
   "popupHeader":"Thank you for leaving an Open Review and helping others have better experiences!",
   "popupContent":" You can save your password (secret key) to use the same account on different platforms that work with <a href=\"https://open-reviews.net\" rel=\"open reviews\" target=\"_blank\"> Open Reviews </a> . Just paste this password when you leave your next review in log in section.",
-  "popupButton":"Copy password to clipboard"
-
+  "popupButton":"Copy password to clipboard",
+  "reviewed": "Reviewed"
 }
