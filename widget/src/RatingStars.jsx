@@ -4,9 +4,9 @@ const RatingStars = ({ value }) => {
   const valueNorm = Math.max(0, Math.min(100, value));
 
   return (
-    <div className="or-rating-stars">
+    value ? <div className="or-rating-stars" title="Review Rating">
       <span className="or-rating-stars-value" style={{ width: `${valueNorm}%` }} />
-    </div>
+    </div> : ""
   );
 };
 
