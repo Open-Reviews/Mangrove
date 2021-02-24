@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, act, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import ErrorBoundary from '../ErrorBoundary';
 import App from '../App'
@@ -71,6 +71,16 @@ test('check filters', async () => {
     userEvent.click(screen.getByText(/15-24/i, {}, { timeout: 3000 }));
     const reviews2 = await screen.findAllByTestId('or-review');
     expect(reviews2.length).toBe(2);
+})
+
+test('check ratings only shown if present', async () => {
+    render(<ErrorBoundary><App config={config} /></ErrorBoundary>);
+
+    const reviews = await screen.findAllByTestId('or-review');
+    expect(reviews.length).toBe(9);
+
+    const ratings = screen.queryAllByTitle('Review Rating');
+    expect(ratings.length).toBe(7);
 })
 
 test('check blacklist', async () => {
