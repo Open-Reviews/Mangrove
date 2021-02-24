@@ -34,7 +34,12 @@ const ReviewFilters = ({ active, setFilters }) => {
 
   const reviewsActive = Object.keys(active).length > 0 ? reviewsFiltered : whiteListedReviews
   useEffect(() => {
-    const nextFacetCount = {}
+    const nextFacetCount = {
+      gender: { female: 0, male: 0, other: 0 },
+      experience_context: { business: 0, couple: 0, family: 0, friends: 0, solo: 0 },
+      age: { '15-24': 0, '25-34': 0, '35-44': 0, '45-64': 0, '65-100': 0 },
+      rating: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
+    }
 
     const facetAdd = (k, v) => {
       if (!(k in nextFacetCount)) nextFacetCount[k] = {}
@@ -97,6 +102,7 @@ const ReviewFilters = ({ active, setFilters }) => {
                 return (
                   <button
                     key={`${key}.${facetValue}`}
+                    disabled={facetValues[facetValue] === 0}
                     className={`or-review-filter-button${classNameActive}`}
                     onClick={() => {
                       setFilters(facet, facetValue)
