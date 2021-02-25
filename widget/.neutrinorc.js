@@ -16,6 +16,7 @@ module.exports = {
   use: [
     airbnb(),
     react({
+      publicPath: env === 'stg-deploy' ? '/widget/' : '/',
       html: {
         title: 'Open Reviews Widget Example',
         template: './template-widget-example.ejs',
