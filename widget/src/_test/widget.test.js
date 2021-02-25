@@ -134,4 +134,3 @@ test('check local rating algorithm', async () => {
     const rating = await screen.getByTitle('Rating');
     expect(rating).toHaveTextContent("4.8");
 })
-//dummy commit to trigger CI

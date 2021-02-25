@@ -111,16 +111,19 @@ test js lib:
 pages:
   stage: deploy
   variables:
+    NODE_ENV: 'stg-deploy'
     BASE_URL: "https://staging.mangrove.reviews"
-  stage: deploy
+    WIDGET_APP_API_URL: "https://api.mangrove.reviews"
+    WIDGET_APP_UPLOAD_URL: "https://upload.mangrove.reviews"
+    WIDGET_APP_FILES_URL: "https://files.mangrove.reviews"
   script:
     - cd ui
-    - yarn install
+    - yarn install --ignore-engines
     - yarn generate
     - cd ..
     - mkdir public
     - cp -r ui/dist/* public
-    - cd ../widget
+    - cd widget
     - yarn install
     - yarn build
     - cd ..
