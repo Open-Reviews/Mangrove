@@ -26,7 +26,6 @@
   display: flex;
   flex-wrap: wrap;
   width: 100%;
-  padding-left: calc(89px + 3em);
 }
 
 .or-review-filter-content {
