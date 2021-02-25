@@ -51,7 +51,7 @@
   "review_one": "review",
   "review_other": "reviews",
   "facetGender": "Gender",
-  "facetContenxt": "Context of reviews",
+  "facetContenxt": "Context of visit",
   "facetAge": "Age group",
   "facetRating": "Number of stars",
   "showFilters": "Show filters",
@@ -79,10 +79,9 @@
     "reason04": "The review is marketing or spam",
     "reason05": "The review is on the wrong subject profile",
     "reason06": "The content doesn't mention a buying or service experience and is solely ethical, political or value-laden opinion"
-
   },
-  "popupHeader":"Thank you for leaving an Open Review and helping others have better experiences!",
-  "popupContent":" You can save your password (secret key) to use the same account on different platforms that work with{' '} <a href=\"https://open-reviews.net\" rel=\"open reviews\" target=\"_blank\"> Open Reviews </a> . Just paste this password when you leave your next review in log in section.",
-  "popupButton":"Copy password to clipboard",
+  "popupHeader": "Thank you for leaving an Open Review and helping others have better experiences!",
+  "popupContent": " You can save your password (secret key) to use the same account on different platforms that work with{' '} <a href=\"https://open-reviews.net\" rel=\"open reviews\" target=\"_blank\"> Open Reviews </a> . Just paste this password when you leave your next review in log in section.",
+  "popupButton": "Copy password to clipboard",
   "reviewed": "Reviewed"
 }
