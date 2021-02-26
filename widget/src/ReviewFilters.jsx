@@ -5,7 +5,7 @@ import { useI18n } from './i18n'
 
 import './css/ReviewFilters.css'
 
-const ReviewFilters = ({ active, setFilters }) => {
+const ReviewFilters = ({ active, setFilters, clearFilters }) => {
   const {
     state: { reviews, reviewsFiltered, time, config: { blacklist = null } },
   } = useGlobalState()
@@ -28,18 +28,31 @@ const ReviewFilters = ({ active, setFilters }) => {
     rating: t('facetRating'),
   }
 
+  const filterDefaults = {
+    gender: { female: 0, male: 0, other: 0 },
+    experience_context: { business: 0, couple: 0, family: 0, friends: 0, solo: 0 },
+    age: { '15-24': 0, '25-34': 0, '35-44': 0, '45-64': 0, '65-100': 0 },
+    rating: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
+  }
+
   const blacklistedSignatures = blacklist && blacklist.split(',');
 
   const whiteListedReviews = blacklistedSignatures ? reviews.filter(review => blacklistedSignatures.indexOf(review.signature) < 0) : reviews;
 
   const reviewsActive = Object.keys(active).length > 0 ? reviewsFiltered : whiteListedReviews
-  useEffect(() => {
-    const nextFacetCount = {
-      gender: { female: 0, male: 0, other: 0 },
-      experience_context: { business: 0, couple: 0, family: 0, friends: 0, solo: 0 },
-      age: { '15-24': 0, '25-34': 0, '35-44': 0, '45-64': 0, '65-100': 0 },
-      rating: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
+
+  const translatedFacetValue = (facet, value) => {
+    if (facet === 'gender') {
+      return value === 'other' ? 'other' : t(`metaGender.${value}`);
     }
+    if (facet === 'experience_context') {
+      return t(`metaContext.${value}`);
+    }
+    return value;
+  }
+
+  useEffect(() => {
+    const nextFacetCount = filterDefaults
 
     const facetAdd = (k, v) => {
       if (!(k in nextFacetCount)) nextFacetCount[k] = {}
@@ -86,41 +99,43 @@ const ReviewFilters = ({ active, setFilters }) => {
   }, [time, reviewsActive.length])
 
   return (
-    <div className="or-review-filters-wrapper">
-      {Object.keys(facetCount).map((facet) => {
-        const key = `review-facet-${facet}`
-        const facetValues = facetCount[facet]
-        return (
-          <div key={key} className="or-review-filter-content">
-            <h3 className="or-review-filter-title">{facetLabels[facet]}</h3>
-            <div className="or-review-filter-values">
-              {Object.keys(facetValues).map((facetValue) => {
-                const classNameActive =
-                  facet in active && facetValue in active[facet]
-                    ? ' or-review-filter-button-active'
-                    : ''
-                return (
-                  <button
-                    key={`${key}.${facetValue}`}
-                    disabled={facetValues[facetValue] === 0}
-                    className={`or-review-filter-button${classNameActive}`}
-                    onClick={() => {
-                      setFilters(facet, facetValue)
-                    }}>
-                    {(() => {
-                      switch (facetValue) {
-                        case undefined: return ""
-                        case "65-100": return "65+"
-                        default: return facetValue
-                      }
-                    })()}
-                  </button>
-                )
-              })}
+    <div>
+      <button className="or-review-filter-button" onClick={clearFilters}>{t('resetFilters')}</button>
+      <div className="or-review-filters-wrapper">
+        {Object.keys(facetCount).map((facet) => {
+          const key = `review-facet-${facet}`
+          const facetValues = facetCount[facet]
+          return (
+            <div key={key} className="or-review-filter-content">
+              <h3 className="or-review-filter-title">{facetLabels[facet]}</h3>
+              <div className="or-review-filter-values">
+                {Object.keys(facetValues).map((facetValue) => {
+                  const classNameActive =
+                    facet in active && facetValue in active[facet]
+                      ? ' or-review-filter-button-active'
+                      : ''
+                  return (
+                    <button
+                      key={`${key}.${facetValue}`}
+                      className={`or-review-filter-button${classNameActive}`}
+                      onClick={() => {
+                        setFilters(facet, facetValue)
+                      }}>
+                      {(() => {
+                        switch (facetValue) {
+                          case undefined: return ""
+                          case "65-100": return "65+"
+                          default: return translatedFacetValue(facet, facetValue)
+                        }
+                      })()}
+                    </button>
+                  )
+                })}
+              </div>
             </div>
-          </div>
-        )
-      })}
+          )
+        })}
+      </div>
     </div>
   )
 }
