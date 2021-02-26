@@ -64,6 +64,12 @@ const ReviewForm = () => {
       if (key in defaultValues) defaultValues[key] = isTrueStr(defaultValues[key])
     })
 
+    // experience_context should not be copied over from issuerMetaData
+    defaultValues.experience_context = '';
+    // convert age into a string to be consistent. If age is taken from existing issuer data, then
+    // it is an int, which cause it to be skipped in later in onSubmitReview
+    if (defaultValues.age) defaultValues.age += '';
+
     setValues(() => defaultValues)
   }, [JSON.stringify(Object.values(issuerMetadata))])
 
