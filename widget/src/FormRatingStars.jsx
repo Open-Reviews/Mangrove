@@ -16,7 +16,7 @@ const FormRatingStars = ({ label, value, onChange }) => {
       )}
 
       <div className="or-review-form-rating-stars-wrapper">
-        <RatingStars value={rating} />
+        <RatingStars value={rating} showAtZero={true} />
 
         <div className="or-review-form-rating-stars-buttons">
           {[...Array(6).keys()].map((ratingValue) => {
