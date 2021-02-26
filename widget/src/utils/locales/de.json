@@ -84,5 +84,6 @@
     "popupContent":" Du kannst dieses Kennwort (Secret Key) nutzen, um dich mit dem gleichen Account auf verschiedenen Plattformen anzumelden, die mit <a href=\"https://open-reviews.net\" rel=\"open reviews\" target=\"_blank\"> Open Reviews </a> arbeiten. Wenn du deine nächste Rezension abgibst, füge dieses Kennwort einfach im Log-in Bereich ein.",
     "popupButton":"Kennwort in die Zwischenablage kopieren"
   },
-  "reviewed": "Bewertet am"
+  "reviewed": "Bewertet am",
+  "resetFilters": "Filter zurücksetzen"
 }

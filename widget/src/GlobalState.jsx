@@ -142,6 +142,14 @@ const GlobalStateProvider = ({ config = {}, children }) => {
     setFiltersVisible: (visible) => {
       setState((prevState) => ({ ...prevState, filters: { ...prevState.filters, visible } }))
     },
+    clearFilters: () => {
+      setState((prevState) => {
+        return {
+          ...prevState,
+          filters: { active: {}, visible: true }
+        }
+      })
+    },
     setFilters: (filterKey, filterVal) => {
       setState((prevState) => {
         const {
@@ -166,9 +174,11 @@ const GlobalStateProvider = ({ config = {}, children }) => {
             if (facet === 'age') {
               const facetKeys = Object.keys(nextActive[facet])
               if (!facetKeys.length) return
-              const ageSpanStr = facetKeys[0]
-              const [minAge, maxAge] = ageSpanStr.split('-')
-              checkVal = checkVal && metadata.age <= maxAge && metadata.age >= minAge
+
+              checkVal = checkVal && facetKeys.some(ageSpanStr => {
+                const [minAge, maxAge] = ageSpanStr.split('-')
+                return metadata.age <= maxAge && metadata.age >= minAge
+              })
             } else if (facet === 'rating') {
               checkVal =
                 checkVal &&

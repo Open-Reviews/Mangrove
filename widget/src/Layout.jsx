@@ -51,6 +51,7 @@ const Layout = () => {
       setGallery,
       setFiltersVisible,
       setFilters,
+      clearFilters
     },
   } = useGlobalState();
 
@@ -85,7 +86,7 @@ const Layout = () => {
               <ReviewGallery images={galleryImages} index={galleryIndex} setGallery={setGallery} />
             )}
 
-            {filtersVisible && <ReviewFilters active={filtersActive} setFilters={setFilters} />}
+            {filtersVisible && <ReviewFilters active={filtersActive} setFilters={setFilters} clearFilters={clearFilters} />}
 
             <div className="or-subject-navbar">
               <button
