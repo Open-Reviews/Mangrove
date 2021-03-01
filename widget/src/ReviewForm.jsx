@@ -69,6 +69,8 @@ const ReviewForm = () => {
     // convert age into a string to be consistent. If age is taken from existing issuer data, then
     // it is an int, which cause it to be skipped in later in onSubmitReview
     if (defaultValues.age) defaultValues.age += '';
+    // preserve the opinion if fileld
+    if (values.opinion) defaultValues.opinion = values.opinion
 
     setValues(() => defaultValues)
   }, [JSON.stringify(Object.values(issuerMetadata))])
