@@ -1,11 +1,8 @@
 {
   "rateAndReview": "+ Bewerten",
-  "signIn": "✓ Sign In",
   "post": "Rezension veröffentlichen",
   "cancel": "Abbrechen",
   "reviewOf": "Rezension von",
-  "returningReviewer": "Returning reviewer? Update JWK here:",
-  "currentJwk": "Current JWK:",
   "currentPem": "Current PEM:",
   "logIn": "Login",
   "close": "✗",
@@ -14,7 +11,6 @@
   "sbReview": "`s Rezension",
   "reviewFlagged": "Als unangemessen markiert",
   "addOptionalInfo": "Füge weitere nützliche Informationen zur Veröffentlichung hinzu",
-  "frmRating": "Rating",
   "frmOpinion": "Beschreibe deine Erfahrung",
   "frmNickname": "Spitzname",
   "frmGivenName": "Vorname",
@@ -33,7 +29,6 @@
   "frmAgreeLicense": "Ich stimme zu, dass meine Rezension, einschließlich aller von mir optional eingegebenen personenbezogenen Daten, unter einer offenen und unentgeltlichen Nutzungslizenz veröffentlicht wird (<a href=\"https://creativecommons.org/licenses/by/4.0/\">CC-BY-4.0</a>), und ich stimme der <a href=\"https://mangrove.reviews/terms#2-privacy-policy\">Datenschutzerklärung</a> zu *",
   "frmInfoMaxFiles": "Maximal 5 Bilder möglich",
   "frmLblUploadImages": "Fotos hochladen (max. {{MAX_FILES}})",
-  "addComment": "Add comment",
   "metaAge": "{{age}} Jahre alt",
   "metaGender": {
     "female": "Weiblich",
@@ -79,11 +74,11 @@
     "reason03": "Die Rezension verletzt das geistige Eigentum, die Privatsphäre/Datenschutz oder die Persönlichkeitsrechte einer anderen Person.",
     "reason04": "Die Rezension ist Marketing oder Spam.",
     "reason05": "Die Rezension bezieht sich auf ein anderes Thema",
-    "reason06": "Der Inhalt erwähnt kein Kauf- oder Serviceerlebnis und ist ausschließlich ethische, politische oder wertebezogene Meinung.",
-    "popupHeader":"Danke, dass du eine Open Review hinterlassen hast und anderen hilfst, bessere Erfahrungen zu machen!",
-    "popupContent":" Du kannst dieses Kennwort (Secret Key) nutzen, um dich mit dem gleichen Account auf verschiedenen Plattformen anzumelden, die mit <a href=\"https://open-reviews.net\" rel=\"open reviews\" target=\"_blank\"> Open Reviews </a> arbeiten. Wenn du deine nächste Rezension abgibst, füge dieses Kennwort einfach im Log-in Bereich ein.",
-    "popupButton":"Kennwort in die Zwischenablage kopieren"
+    "reason06": "Der Inhalt erwähnt kein Kauf- oder Serviceerlebnis und ist ausschließlich ethische, politische oder wertebezogene Meinung."
   },
+  "popupHeader": "Danke, dass du eine Open Review hinterlassen hast und anderen hilfst, bessere Erfahrungen zu machen!",
+  "popupContent": " Du kannst dieses Kennwort (Secret Key) nutzen, um dich mit dem gleichen Account auf verschiedenen Plattformen anzumelden, die mit <a href=\"https://open-reviews.net\" rel=\"open reviews\" target=\"_blank\"> Open Reviews </a> arbeiten. Wenn du deine nächste Rezension abgibst, füge dieses Kennwort einfach im Log-in Bereich ein.",
+  "popupButton": "Kennwort in die Zwischenablage kopieren",
   "reviewed": "Bewertet am",
   "resetFilters": "Filter zurücksetzen"
 }
