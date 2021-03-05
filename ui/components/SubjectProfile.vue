@@ -28,7 +28,35 @@
         </v-card>
       </v-dialog>
       <v-card-title>
-        {{ subject.title }}
+        {{ subject.title }} 
+        <v-menu
+            bottom
+            left
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                icon
+                v-bind="attrs"
+                v-on="on"
+                class="card-title-menu-btn"
+              >
+                <v-icon>mdi-dots-vertical</v-icon>
+              </v-btn>
+            </template>
+
+            <v-list>
+              <v-list-item>
+                <v-list-item-title>
+                  <v-btn
+                    @click="copySubToClipboard"
+                    text
+                  >
+                    Copy subject identifier
+                  </v-btn>
+                </v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
       </v-card-title>
       <v-card-subtitle
         >{{ subject.subtitle }}
@@ -158,6 +186,16 @@ export default {
       }
       return [...images]
     }
+  },
+  methods: {
+    async copySubToClipboard() {
+      try {
+        await this.$copyText(this.$route.query.sub);
+        alert("Subject ID copied to clipboard!")
+      } catch (e) {
+        console.error(e);
+      }
+    }
   }
 }
 </script>
@@ -165,5 +203,9 @@ export default {
 <style scoped>
 a {
   color: black !important;
+}
+.card-title-menu-btn {
+  position: absolute;
+  right: 0;
 }
 </style>

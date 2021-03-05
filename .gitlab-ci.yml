@@ -38,7 +38,7 @@ build ui:
   stage: build
   script:
     - cd ui
-    - yarn install
+    - yarn install --ignore-engines
     - yarn generate
   only:
     changes:
@@ -51,7 +51,7 @@ test ui:
   stage: test
   script:
     - cd ui
-    - yarn install
+    - yarn install --ignore-engines
     - yarn run test
   only:
     changes:
