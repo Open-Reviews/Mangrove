@@ -191,7 +191,7 @@ deploy ui:
     VUE_APP_UPLOAD_URL: "https://upload.mangrove.reviews"
   script:
     - cd ui
-    - yarn install
+    - yarn install --ignore-engines
     - yarn generate
     - aws s3 rm s3://$UI_BUCKET --recursive
     - aws s3 cp --recursive ./dist s3://$UI_BUCKET
