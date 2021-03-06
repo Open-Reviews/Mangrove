@@ -24,13 +24,13 @@
           :value="(payload.rating + 25) / 25"
           readonly
           dense
-          class="mr-2"
+          class="mr-2 mb-3"
           color="blue"
           background-color="blue"
         />
         Reviewed {{ new Date(payload.iat * 1000).toDateString() }}
       </v-row>
-      <span v-line-clamp="dense ? 2 : 20">
+      <span v-line-clamp="dense ? 2 : 20" class="mb-2" style="word-break: break-word!important">
         <span v-html="formattedOpinion" />
       </span>
       <v-row v-if="payload.images" class="mx-auto py-3">
@@ -56,7 +56,7 @@
         </v-chip>
       </div>
     </v-card-text>
-    <v-card-actions v-if="!dense" class="my-n7 mx-auto">
+    <v-card-actions v-if="!dense" class="my-n4 ml-4 mx-auto">
       <template v-if="!preview">
         <v-tooltip v-for="action in actions" :key="action.icon" top>
           <template v-slot:activator="{ on }">
@@ -65,9 +65,9 @@
               @click="action.action(review.signature)"
               :disabled="action.disabled"
               icon
-              class="mr-5"
+              class="mr-7"
             >
-              <v-icon class="mr-1" small>{{ action.icon }}</v-icon>
+              <v-icon class="mr-2" small>{{ action.icon }}</v-icon>
               {{ action.number }}
             </v-btn>
           </template>

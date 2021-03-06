@@ -1,10 +1,10 @@
 <template>
-  <v-row>
+  <v-row style="margin-top: 0px">
     <v-col
       :cols="isBig ? 5 : ''"
       v-if="isBig || !viewProfile"
       class="scrollable noscroll mr-n3"
-      style="background: white"
+      style="background: white; padding-top: 24px"
     >
       <v-row class="px-10">
         <SearchBox />
@@ -28,7 +28,7 @@
       class="scrollable noscroll"
     >
       <v-row justify="center">
-        <v-btn @click.stop="viewProfile = false" v-if="!isBig">
+        <v-btn @click.stop="viewProfile = false" class="mt-2" v-if="!isBig">
           <v-icon>mdi-arrow-left-bold</v-icon>
           Back to list
         </v-btn>
