@@ -15,14 +15,14 @@
           v-text="front.tagline"
           :class="isSmall ? 'headline' : 'display-1'"
         />
-        <v-row>
+        <v-row class="mt-2">
           <v-col v-if="!isSmall" />
           <v-col :cols="isSmall ? 12 : 6">
-            <SearchBox @focus="focus = $event" />
+            <SearchBox @focus="focus = $event" class="mb-3" />
             <v-row class="justify-space-around mt-n8">
               <span
-                v-text="front.subsearch.join(' ᐧ ')"
-                class="title white--text"
+                v-text="front.subsearch.join('  ᐧ  ')"
+                class="title white--text show-spaces"
               />
             </v-row>
           </v-col>
@@ -206,5 +206,8 @@ export default {
 <style scoped>
 .v-card {
   display: block;
+}
+.show-spaces {
+  white-space: pre;
 }
 </style>
