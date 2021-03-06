@@ -1,15 +1,15 @@
 <template>
   <v-container>
-    <h1 v-text="title" class="display-1" />
-    <v-divider class="mt-2" />
+    <h1 v-text="title" class="display-1 ml-3" />
+    <v-divider class="mt-2 mb-2 ml-3" />
     <v-row>
       <v-col :cols="$vuetify.breakpoint.mdAndDown && 12" class="mt-n5">
         <v-container style="max-width: 700px">
-          <SchemeFilter :counts="counts" comments />
+          <SchemeFilter :counts="counts" comments class="mb-4"/>
           <ReviewList :query="$route.query" />
         </v-container>
       </v-col>
-      <v-col v-if="mapPoints.length">
+      <v-col v-if="mapPoints.length" class="mt-2">
         <SelectionMap :points="mapPoints" display />
       </v-col>
     </v-row>
