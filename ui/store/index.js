@@ -27,6 +27,7 @@ export const state = () => ({
   // Have the latest reviews for display been fetched.
   fetchedDisplay: false,
   isSearching: false,
+  searchResultsRead: true,
   // Current query - gets out of line with URL only when changed.
   query: { q: null, geo: null },
   // A list of URIs which are retrieved for the current search term.
@@ -62,6 +63,7 @@ export const mutations = {
   },
   [t.STOP_SEARCH](state) {
     state.isSearching = false
+    state.searchResultsRead = false
   },
   [t.ADD_RESULTS](state, newresults) {
     // Ensure results are unique and avoid Set reactivity issues.
@@ -97,6 +99,9 @@ export const mutations = {
   },
   [t.SUBMIT_ERROR](state, error) {
     state.errors.submit = error
+  },
+  [t.SET_SEARCH_RESULTS_AS_READ](state) {
+    state.searchResultsRead = true
   }
 }
 
@@ -280,7 +285,7 @@ export const actions = {
       kid: state.publicKey
     })
     if (rs && metadata) {
-      const newestReview = rs.reviews.reduce(function(prev, current) {
+      const newestReview = rs.reviews.reduce(function (prev, current) {
         const isNewer = current.payload.iat > prev.payload.iat
         const hasData = Object.keys(current.payload.metadata).some((k) =>
           RECURRING.includes(k)
