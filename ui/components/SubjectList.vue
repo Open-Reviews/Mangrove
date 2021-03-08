@@ -100,6 +100,7 @@
 
 <script>
 import { NAMES, ICONS } from '~/store/scheme-types'
+import { SET_SEARCH_RESULTS_AS_READ } from '../store/mutation-types'
 export default {
   data() {
     return {
@@ -153,7 +154,7 @@ export default {
           action:
             'mailto:mangrove@planting.space?subject=Missing Review Subject on Mangrove'
         }
-      ]
+      ] 
     }
   },
   computed: {
@@ -178,11 +179,15 @@ export default {
         // Once searching is done.
         !this.$store.state.isSearching &&
         // Select if no sub in route or if the sub in route is different.
-        (!routeSub || routeSub !== this.$store.state.query.sub)
+        (!routeSub || routeSub !== this.$store.state.query.sub) &&
+        // Prevent this from being triggered without a search completetion
+        !this.$store.state.searchResultsRead
       ) {
+
         const selected = routeSub || (sorted[0] && sorted[0].sub)
         if (selected) {
           this.$store.dispatch('selectSubject', [this.$route.query, selected])
+          this.$store.commit(SET_SEARCH_RESULTS_AS_READ)
         }
       }
       return sorted
