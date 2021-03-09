@@ -6,7 +6,7 @@
       <v-col :cols="$vuetify.breakpoint.mdAndDown && 12" class="mt-n5">
         <v-container style="max-width: 700px">
           <SchemeFilter :counts="counts" comments class="mb-4"/>
-          <ReviewList :query="$route.query" />
+          <ReviewList :query="isProfilePage ? { kid: $route.query.kid } : $route.query" />
         </v-container>
       </v-col>
       <v-col v-if="mapPoints.length" class="mt-2">
@@ -36,8 +36,11 @@ export default {
     }
   },
   computed: {
+    isProfilePage() {
+      return !!this.$route.query.kid
+    },
     title() {
-      return this.$route.query.kid ? 'User profile' : 'Review list'
+      return this.isProfilePage ? 'User profile' : 'Review list'
     },
     mapPoints() {
       return this.$store.getters.mapPoints(this.$route.query)
