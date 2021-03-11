@@ -23,17 +23,17 @@ cache:
 #   except:
 #     - schedules
 
-build files server:
-  stage: build
-  image: plantingspace/lambda-rust
-  script:
-    - cd servers/file_hoster
-    - cargo build
-  only:
-    changes:
-      - servers/file_hoster/**/*
-  except:
-    - schedules
+# build files server:
+#   stage: build
+#   image: plantingspace/lambda-rust
+#   script:
+#     - cd servers/file_hoster
+#     - cargo build
+#   only:
+#     changes:
+#       - servers/file_hoster/**/*
+#   except:
+#     - schedules
 
 build ui:
   stage: build
