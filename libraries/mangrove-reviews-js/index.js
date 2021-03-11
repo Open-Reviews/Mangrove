@@ -119,6 +119,8 @@ async function signAndSubmitReview(keypair, payload, api = ORIGINAL_API) {
  * @param {number} [query.rating] Reviews with the given rating.
  * @param {string} [query.opinion] Reviews with the given opinion.
  * @param {number} [query.limit] Maximum number of reviews to be returned.
+ * @param {boolean} [query.opinionated] Get only reviews with opinion text.
+ * @param {boolean} [query.examples] Include reviews of example subjects.
  * @param {boolean} [query.issuers] Include aggregate information about review issuers.
  * @param {boolean} [query.maresi_subjects] Include aggregate information about reviews of returned reviews.
  * @param {string} [api=ORIGINAL_API] - API endpoint used to fetch the data.

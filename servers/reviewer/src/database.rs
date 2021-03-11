@@ -2,6 +2,7 @@ use super::error::Error;
 use super::review::{Review, validate_sub};
 use super::schema;
 use diesel_geography::sql_types::Geography;
+use diesel_geography::types::GeogPoint;
 use diesel::prelude::*;
 use diesel::sql_types::{Nullable, Bool, Integer};
 
@@ -34,6 +35,8 @@ pub struct Query {
     pub limit: Option<i64>,
     /// Get only reviews with opinion present or not present.
     pub opinionated: Option<bool>,
+    /// Include reviews left for example subjects: 'https://example.com' and 'geo:0,0?q=*u=*'
+    pub examples: Option<bool>,
     /// Include aggregate information about review issuers.
     pub issuers: Option<bool>,
     /// Include aggregate information about reviews of returned reviews.
@@ -44,6 +47,9 @@ sql_function! {
     #[sql_name = "ST_DWithin"]
     fn within(c1: Nullable<Geography>, c2: Nullable<Geography>, u: Nullable<Integer>) -> Bool;
 }
+
+const EXAMPLE_HTTPS: &str = "https://example.com";
+const EXAMPLE_GEO: GeogPoint = GeogPoint { lon: 0., lat: 0., srid: Some(4326) };
 
 impl DbConn {
     pub fn insert(&self, review: Review) -> Result<(), Error> {
@@ -86,6 +92,11 @@ impl DbConn {
                 f = Box::new(f.and(is_close))
             } else {
                 f = Box::new(f.and(sub.eq(s)))
+            }
+        } else {
+            // Exclude examples only if not explicitly requested.
+            if !query.examples.unwrap_or(false) {
+                f = Box::new(f.and(sub.ne(EXAMPLE_HTTPS)).and(scheme.ne("geo").or(coordinates.ne(EXAMPLE_GEO))))
             }
         }
         if let Some(s) = &query.rating {
