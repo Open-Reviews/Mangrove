@@ -48,7 +48,7 @@ export default {
   },
   mounted() {
     this.counts = this.$store.getters.reviewsAndCounts({
-      kid: this.$store.state.publicKey
+      kid: this.isProfilePage ? this.$route.query.kid : this.$store.state.publicKey
     }).counts
   },
   middleware: 'review-list'
