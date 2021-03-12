@@ -44,7 +44,7 @@
           contain
         />
       </v-row>
-      <div v-if="metadata && metadata.length">
+      <div v-if="!hideMetaTags && metadata && metadata.length">
         <v-chip
           v-for="kv in metadata"
           v-text="kv"
@@ -169,6 +169,7 @@ export default {
       }
     },
     preview: Boolean,
+    hideMetaTags: Boolean,
     dense: Boolean,
     subjectTitle: {
       type: String,
