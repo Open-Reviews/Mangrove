@@ -2,7 +2,8 @@
   <v-container v-if="subject">
     <v-card class="my-3">
       <slot />
-      <v-dialog v-if="images.length" max-width="700">
+      <!-- Extra space in width="auto " is needed because of a known bug in v-dialog -->
+      <v-dialog v-if="images.length" max-width="90vw" width="auto ">
         <template v-slot:activator="{ on }">
           <v-row align="center" class="mx-4 pt-4">
             <v-img
@@ -17,11 +18,11 @@
             <v-btn v-on="on" v-if="images.length > 5" text>More</v-btn>
           </v-row>
         </template>
-        <v-card>
+        <v-card width="auto">
           <v-carousel height="auto">
             <v-carousel-item v-for="(image, i) in images" :key="i">
               <v-row>
-                <v-img :src="image" max-height="90vh" contain />
+                <img :src="image" style="object-fit: contain; max-height: 90vh"/>
               </v-row>
             </v-carousel-item>
           </v-carousel>
