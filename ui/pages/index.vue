@@ -37,6 +37,7 @@
           <ReviewList
             :query="{ opinionated: true, limit: 4 }"
             :cols="isSmall ? 12 : 3"
+            hideMetaTags
           />
         </v-col>
       </v-img>

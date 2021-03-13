@@ -26,6 +26,7 @@
       :listArgs="reliable"
       :cols="cols"
       :dense="query.opinionated"
+      :hideMetaTags="hideMetaTags"
       v-else
     />
     <v-container v-if="query.kid && opinionless">
@@ -107,7 +108,8 @@ export default {
     cols: {
       type: Number,
       default: () => 12
-    }
+    },
+    hideMetaTags: Boolean
   },
   data() {
     return {
