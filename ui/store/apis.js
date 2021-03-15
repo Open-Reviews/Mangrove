@@ -214,8 +214,11 @@ export async function subToSubject(axios, sub) {
       box[1].longitude,
       box[1].latitude
     ]
-    const subjects = await searchGeo(axios, geo.query, viewbox.join(','))
-    if (subjects[0]) {
+    const subjects = await searchGeo(axios, geo.query, viewbox.join(',')).catch((err) => {
+      console.log("Nominatim error: ", err)
+      return []
+    })
+    if (subjects && subjects[0]) {
       subject = subjects[0]
       subject.sub = sub
       subject.coordinates = geo.coordinates
@@ -228,7 +231,7 @@ export async function subToSubject(axios, sub) {
     subject = {
       sub,
       scheme,
-      title: scheme === GEO ? sub.match(/q=(.+)&/)[1] : sub,
+      title: scheme === GEO ? sub.match(/q=([^&]*)/)[1] : sub,
       subtitle: '',
       description: '',
       ...geo
