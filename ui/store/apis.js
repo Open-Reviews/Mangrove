@@ -197,8 +197,12 @@ export function olDocToSubject(doc) {
   }
 }
 
+// caching results of subToSubject method
+const subToSubjectCache = {}
+
 // Makes appropriate queries to learn more about the subject.
 export async function subToSubject(axios, sub) {
+  if (sub in subToSubjectCache) return subToSubjectCache[sub]
   const scheme = subToScheme(sub)
   let subject
   let geo = {}
@@ -237,5 +241,6 @@ export async function subToSubject(axios, sub) {
       ...geo
     }
   }
+  subToSubjectCache[sub] = subject
   return subject
 }
