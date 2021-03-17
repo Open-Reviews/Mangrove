@@ -1,19 +1,30 @@
 <template>
   <v-list class="mt-n6">
-    <v-list-item>
-      <v-list-item-content>
-        <v-text-field
-          v-model.trim="privateInput"
-          label="Paste your password here"
-        />
-      </v-list-item-content>
-      <v-list-item-action>
-        <v-btn :disabled="!privateInput" @click="loadPrivate">Log in</v-btn>
-      </v-list-item-action>
-    </v-list-item>
-    <v-alert v-if="error" type="warning" border="left" elevation="8">
-      Private key not valid: {{ error }}
+    <v-alert
+      v-if="isMobileFirefox"
+      type="warning"
+      elevation="8"
+      class="mt-6"
+      border="left"
+    >
+      Login is not possible due to lack of support for cryptographic primitives in Firefox for Android, please try another browser.
     </v-alert>
+    <template v-else>
+      <v-list-item>
+        <v-list-item-content>
+          <v-text-field
+            v-model.trim="privateInput"
+            label="Paste your password here"
+          />
+        </v-list-item-content>
+        <v-list-item-action>
+          <v-btn :disabled="!privateInput" @click="loadPrivate">Log in</v-btn>
+        </v-list-item-action>
+      </v-list-item>
+      <v-alert v-if="error" type="warning" border="left" elevation="8">
+        Private key not valid: {{ error }}
+      </v-alert>
+    </template>
   </v-list>
 </template>
 
@@ -21,13 +32,15 @@
 import { set } from 'idb-keyval'
 import { jwkToKeypair } from 'mangrove-reviews'
 import { HAS_SAVED_KEY } from '~/store/indexeddb-types'
+import { isMobileFirefox } from '~/utils'
 
 export default {
   data() {
     return {
       privateInput: null,
       loader: false,
-      error: null
+      error: null,
+      isMobileFirefox: isMobileFirefox()
     }
   },
   methods: {
