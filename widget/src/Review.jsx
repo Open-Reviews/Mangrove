@@ -118,7 +118,7 @@ const Review = ({
           </div>
 
           <div className="or-review-rating">
-            <RatingStars value={rating} /> <div className="or-review-datetime">{t('reviewed')} {`${monthName} ${day}, ${year}`}</div>
+            <RatingStars value={rating} /> <div style={{ marginLeft: rating ? 8 : 0 }} className="or-review-datetime">{t('reviewed')} {`${monthName} ${day}, ${year}`}</div>
           </div>
 
           {rating !== undefined && rating === 0 && (

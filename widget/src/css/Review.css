@@ -11,8 +11,8 @@
 
 .or-review-content {
   padding: 1em;
-  margin-bottom: 1em;
   display: flex;
+  padding-bottom: 0.5em;
 }
 
 .or-review-aside {
@@ -45,7 +45,7 @@
 
 .or-review-gallery img {
   cursor: pointer;
-  height: 100px;
+  max-height: 100px;
   width: 100px;
   object-fit: contain;
 }
