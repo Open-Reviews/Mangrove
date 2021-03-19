@@ -22,7 +22,8 @@
             <v-row class="justify-space-around mt-n8">
               <span
                 v-text="front.subsearch.join('  ᐧ  ')"
-                class="title white--text show-spaces"
+                class="title white--text"
+                :class="{'show-spaces' : !isSmall}"
               />
             </v-row>
           </v-col>
