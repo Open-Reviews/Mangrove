@@ -26,7 +26,8 @@
         hidePhotos = false,
         filterOpinion = false,
         filterAnonymous = false,
-        ratingAlgorithm = 'mangrove'
+        ratingAlgorithm = 'mangrove',
+        reviewsPerPage = 20
       } = {} } = el
       if (el && sub) {
         OpenReviewsWidget.init({
@@ -38,7 +39,8 @@
           hidePhotos,
           filterOpinion,
           filterAnonymous,
-          ratingAlgorithm
+          ratingAlgorithm,
+          reviewsPerPage: parseInt(reviewsPerPage)
         })
       }
     })
