@@ -24,6 +24,7 @@ import StatusMessage from './StatusMessage';
 import ReviewFilters from './ReviewFilters';
 import LocaleSwitch from './LocaleSwitch';
 import FlagForm from './FlagForm';
+import RawReviewData from './RawReviewData';
 import SubmitReviewPopUp from './SubmitReviewPopUp';
 
 const Layout = () => {
@@ -42,11 +43,13 @@ const Layout = () => {
       gallery: { images: galleryImages = [], index: galleryIndex = 0 },
       filters: { visible: filtersVisible, active: filtersActive },
       flagForm: { sub: flagFormSub },
+      rawReviewData: { signature: rawReviewDataSignature }
     },
     actions: {
       onPageClick,
       setReviewForm,
       setFlagFormSub,
+      setRawReviewDataSignature,
       onSubmitReview,
       setGallery,
       setFiltersVisible,
@@ -68,6 +71,7 @@ const Layout = () => {
     (reviewType === REVIEW_TYPE.REVIEW || reviewType === REVIEW_TYPE.COMMENT);
 
   const flagFormVisible = flagFormSub.length > 0;
+  const rawReviewDataVisible = rawReviewDataSignature.length > 0;
   return (
     <>
       <StatusMessage />
@@ -82,6 +86,7 @@ const Layout = () => {
 
             {reviewFormVisible && <ReviewForm />}
             {flagFormVisible && <FlagForm />}
+            {rawReviewDataVisible && <RawReviewData />}
             {galleryImages.length > 0 && (
               <ReviewGallery images={galleryImages} index={galleryIndex} setGallery={setGallery} />
             )}
@@ -109,6 +114,7 @@ const Layout = () => {
                     issuerMetadata={issuerMetadata}
                     setReviewForm={setReviewForm}
                     setFlagFormSub={setFlagFormSub}
+                    setRawReviewDataSignature={setRawReviewDataSignature}
                     setGallery={setGallery}
                     onSubmitReview={onSubmitReview}
                   />

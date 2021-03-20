@@ -12,6 +12,7 @@
   "dependencies": {
     "@constgen/neutrino-sourcemap": "^1.9.2",
     "@hot-loader/react-dom": "^16.14.0",
+    "@szhsin/react-menu": "^1.8.0",
     "@tippyjs/react": "^4.2.0",
     "base64url": "^3.0.1",
     "blueimp-load-image": "^5.14.0",

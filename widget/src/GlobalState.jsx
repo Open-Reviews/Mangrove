@@ -49,6 +49,10 @@ const GlobalStateProvider = ({ config = {}, children }) => {
       sub: false,
     },
 
+    rawReviewData: {
+      signature: false,
+    },
+
     gallery: {
       images: [],
       index: 0,
@@ -106,6 +110,9 @@ const GlobalStateProvider = ({ config = {}, children }) => {
     },
     setFlagFormSub: (sub) => {
       setState((prevState) => ({ ...prevState, flagForm: { ...prevState.flagForm, sub } }))
+    },
+    setRawReviewDataSignature: (signature) => {
+      setState((prevState) => ({ ...prevState, rawReviewData: { ...prevState.rawReviewData, signature } }))
     },
     setReviewFormSub: (sub) => {
       setState((prevState) => ({
