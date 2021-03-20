@@ -60,7 +60,9 @@
     "useful": "Das ist hilfreich",
     "confirm": "Diese Erfahrung bestätigen",
     "comment": "Kommentieren",
-    "flag": "Als unangemessen markieren"
+    "flag": "Als unangemessen markieren",
+    "copySignature": "Signatur der Rezension kopieren",
+    "showRawReviewData": "Zeige rohe Open Review Daten"
   },
   "frmFlag": {
     "title": "Rezension als unangemessen melden",
