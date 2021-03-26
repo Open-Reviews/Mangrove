@@ -5,11 +5,11 @@ export const LINKS = {
   },
   Twitter: {
     icon: 'mdi-twitter',
-    link: 'https://twitter.com/mangroveReviews'
+    link: 'https://twitter.com/openreviews_net'
   },
   Element: {
     img: require('~/static/icon-riot.svg'),
-    link: 'https://app.element.io/#/room/#mangrove:matrix.org'
+    link: 'https://app.element.io/#/room/#openreviews:matrix.org'
   },
   Gitlab: {
     icon: 'mdi-gitlab',
