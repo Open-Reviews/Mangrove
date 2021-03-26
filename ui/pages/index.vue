@@ -22,7 +22,8 @@
             <v-row class="justify-space-around mt-n8">
               <span
                 v-text="front.subsearch.join('  ᐧ  ')"
-                class="title white--text show-spaces"
+                class="title white--text"
+                :class="{'show-spaces' : !isSmall}"
               />
             </v-row>
           </v-col>
@@ -37,6 +38,7 @@
           <ReviewList
             :query="{ opinionated: true, limit: 4 }"
             :cols="isSmall ? 12 : 3"
+            hideMetaTags
           />
         </v-col>
       </v-img>

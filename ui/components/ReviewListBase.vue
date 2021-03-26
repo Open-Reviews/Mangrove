@@ -7,6 +7,7 @@
         :maresiSubject="arg.maresiSubject"
         :subjectTitle="arg.subjectTitle"
         :dense="dense"
+        :hideMetaTags="hideMetaTags"
         class="mb-7"
       />
       <ReviewList v-if="!dense" :query="{ sub: arg.rootSub }" class="ml-4" />
@@ -33,7 +34,8 @@ export default {
       type: Number,
       default: () => 12
     },
-    dense: Boolean
+    dense: Boolean,
+    hideMetaTags: Boolean
   },
   // Avoid issues with circular dependencies.
   beforeCreate() {

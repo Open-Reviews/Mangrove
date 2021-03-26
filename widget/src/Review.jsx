@@ -12,6 +12,12 @@ import Loader from './Loader'
 import IssuerName from './IssuerName'
 import IssuerIcon from './IssuerIcon'
 import MetadataTags from './MetadataTags'
+import {
+  Menu,
+  MenuItem,
+  MenuButton
+} from '@szhsin/react-menu';
+import '@szhsin/react-menu/dist/index.css';
 
 const Review = ({
   item = {},
@@ -20,6 +26,7 @@ const Review = ({
   issuerMetadata = {},
   setReviewForm,
   setFlagFormSub,
+  setRawReviewDataSignature,
   setGallery,
   onSubmitReview,
 }) => {
@@ -88,6 +95,11 @@ const Review = ({
     }))
   }
 
+  const copySignatureToClipboard = () => {
+    navigator.clipboard.writeText(signature);
+    alert("Signature copied to clipboard!");
+  }
+
   if (isEmptyObject(item)) return null
   if (!opinion) return null
 
@@ -118,7 +130,7 @@ const Review = ({
           </div>
 
           <div className="or-review-rating">
-            <RatingStars value={rating} /> <div className="or-review-datetime">{t('reviewed')} {`${monthName} ${day}, ${year}`}</div>
+            <RatingStars value={rating} /> <div style={{ marginLeft: rating ? 8 : 0 }} className="or-review-datetime">{t('reviewed')} {`${monthName} ${day}, ${year}`}</div>
           </div>
 
           {rating !== undefined && rating === 0 && (
@@ -196,13 +208,33 @@ const Review = ({
               </button>
             )}
 
-            <Tippy content={t('reviewOpts.flag')}>
+            {/* <Tippy content={t('reviewOpts.flag')}>
               <button
                 className="or-review-btn-inappropriate"
                 onClick={() => setFlagFormSub(subKey)}>
                 <span />
               </button>
-            </Tippy>
+            </Tippy> */}
+
+            <Menu menuButton={<MenuButton className="or-review-btn-more">
+              <span />
+            </MenuButton>}>
+              <MenuItem
+                onClick={() => setFlagFormSub(subKey)}
+              >
+                {t('reviewOpts.flag')}
+              </MenuItem>
+              <MenuItem
+                onClick={copySignatureToClipboard}
+              >
+                {t('reviewOpts.copySignature')}
+              </MenuItem>
+              <MenuItem
+                onClick={() => setRawReviewDataSignature(signature)}
+              >
+                {t('reviewOpts.showRawReviewData')}
+              </MenuItem>
+            </Menu>
           </div>
         </div>
       </div>
@@ -224,6 +256,7 @@ const Review = ({
             issuerMetadata={issuerMetadata}
             setReviewForm={setReviewForm}
             setFlagFormSub={setFlagFormSub}
+            setRawReviewDataSignature={setRawReviewDataSignature}
             onSubmitReview={onSubmitReview}
             setGallery={setGallery}
           />

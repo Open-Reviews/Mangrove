@@ -51,6 +51,10 @@ const configRatingAlgo = {
   ...config,
   ratingAlgorithm: 'local'
 };
+const configWithReviewsPerPage = {
+  ...config,
+  reviewsPerPage: 5
+};
 
 test('Renders without crashing, key provided, profile loaded', async () => {
   localStorage.setItem('JWK', testPayloads.privateKey);
@@ -95,6 +99,12 @@ test('check blacklist', async () => {
   render(<ErrorBoundary><App config={configWithBlacklist} /></ErrorBoundary>);
   const reviews = await screen.findAllByTestId('or-review');
   expect(reviews.length).toBe(7); // 9 - 2 blacklisted reviews
+})
+
+test('check reviewPerPage', async () => {
+  render(<ErrorBoundary><App config={configWithReviewsPerPage} /></ErrorBoundary>);
+  const reviews = await screen.findAllByTestId('or-review');
+  expect(reviews.length).toBe(5); // 9 - 2 blacklisted reviews
 })
 
 test('check language', async () => {

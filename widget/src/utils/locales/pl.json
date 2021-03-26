@@ -60,7 +60,9 @@
     "useful": "To było pomocne",
     "confirm": "Potwierdź tę opinię",
     "comment": "Skomentuj",
-    "flag": "Oznacz jako nieodpowiednie"
+    "flag": "Oznacz jako nieodpowiednie",
+    "copySignature": "Copy review signature",
+    "showRawReviewData": "Show raw Open Review"
   },
   "frmFlag": {
     "title": "Flagging a review",

@@ -60,7 +60,9 @@
     "useful": "This is useful",
     "confirm": "Confirm this experience",
     "comment": "Write a comment",
-    "flag": "Flag as inappropriate"
+    "flag": "Flag as inappropriate",
+    "copySignature": "Copy review signature",
+    "showRawReviewData": "Show raw Open Review"
   },
   "frmFlag": {
     "title": "Flagging a review",

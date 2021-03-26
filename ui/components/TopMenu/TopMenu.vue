@@ -2,7 +2,7 @@
   <v-app-bar app dense scroll-off-screen color="background">
     <router-link to="/" style="text-decoration: none">
       <v-row align="center">
-        <v-avatar class="mx-2" size=40 tile>
+        <v-avatar class="mx-2" size=48 tile>
           <v-img :src="require('~/assets/tree.png')" />
         </v-avatar>
         <span class="black--text headline">

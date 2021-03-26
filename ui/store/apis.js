@@ -19,13 +19,11 @@ export function leiToSubject(axios, lei) {
         sub: `${LEI}:${lei}`,
         scheme: LEI,
         title: entity.legalName.name,
-        description: `${address.addressLines.join(', ')}, ${address.city} ${
-          address.postalCode
-        } · ${address.country}`,
+        description: `${address.addressLines.join(', ')}, ${address.city} ${address.postalCode
+          } · ${address.country}`,
         // Do the check only if there is valid id.
-        subtitle: `${form.other || (await entityForm(axios, form.id))} · ${
-          entity.status
-        }`,
+        subtitle: `${form.other || (await entityForm(axios, form.id))} · ${entity.status
+          }`,
         lei
       }
     })
@@ -169,7 +167,7 @@ function isbnToSubject(axios, isbn) {
         isbn,
         website: `https://openlibrary.org${info.key}`,
         image: info.cover && info.cover.medium,
-        subjects: info.subjects.map(({ name }) => name)
+        subjects: info.subjects ? info.subjects.map(({ name }) => name) : []
       }
     })
 }
@@ -183,9 +181,8 @@ export function olDocToSubject(doc) {
       scheme: ISBN,
       // Display colon only if title ends with letter or number
       title: doc.subtitle
-        ? `${doc.title}${doc.title.match(/[A-Za-z0-9]$/) ? ':' : ''} ${
-            doc.subtitle
-          }`
+        ? `${doc.title}${doc.title.match(/[A-Za-z0-9]$/) ? ':' : ''} ${doc.subtitle
+        }`
         : doc.title,
       subtitle: `by ${doc.author_name && doc.author_name.join(', ')}`,
       description: `Published ${doc.first_publish_year} · ${doc.isbn.length} editions`,
@@ -200,8 +197,12 @@ export function olDocToSubject(doc) {
   }
 }
 
+// caching results of subToSubject method
+const subToSubjectCache = {}
+
 // Makes appropriate queries to learn more about the subject.
 export async function subToSubject(axios, sub) {
+  if (sub in subToSubjectCache) return subToSubjectCache[sub]
   const scheme = subToScheme(sub)
   let subject
   let geo = {}
@@ -217,8 +218,11 @@ export async function subToSubject(axios, sub) {
       box[1].longitude,
       box[1].latitude
     ]
-    const subjects = await searchGeo(axios, geo.query, viewbox.join(','))
-    if (subjects[0]) {
+    const subjects = await searchGeo(axios, geo.query, viewbox.join(',')).catch((err) => {
+      console.log("Nominatim error: ", err)
+      return []
+    })
+    if (subjects && subjects[0]) {
       subject = subjects[0]
       subject.sub = sub
       subject.coordinates = geo.coordinates
@@ -231,11 +235,12 @@ export async function subToSubject(axios, sub) {
     subject = {
       sub,
       scheme,
-      title: scheme === GEO ? sub.match(/q=(.+)&/)[1] : sub,
+      title: scheme === GEO ? sub.match(/q=([^&]*)/)[1] : sub,
       subtitle: '',
       description: '',
       ...geo
     }
   }
+  subToSubjectCache[sub] = subject
   return subject
 }

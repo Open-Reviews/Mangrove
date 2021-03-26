@@ -10,73 +10,75 @@
           elevation="8"
           border="left"
         >
-          Image upload may not work on Firefox Mobile.
+          It is not possible to submit a review due to lack of support for cryptographic primitives in Firefox for Android, please try another browser.
         </v-alert>
-        <v-rating v-model="rating" hover class="my-1 text-center" large />
-        <v-card-text>
-          <v-textarea
-            v-model="opinion"
-            :counter="MAX_OPINION_LENGTH"
-            :maxlength="MAX_OPINION_LENGTH"
-            :label="opinionLabel"
-            auto-grow
-            filled
-            rows="3"
-          />
-          <ImageForm v-model="images" />
+        <template v-else >
+          <v-rating v-model="rating" hover class="my-1 text-center" large />
+          <v-card-text>
+            <v-textarea
+              v-model="opinion"
+              :counter="MAX_OPINION_LENGTH"
+              :maxlength="MAX_OPINION_LENGTH"
+              :label="opinionLabel"
+              auto-grow
+              filled
+              rows="3"
+            />
+            <ImageForm v-model="images" />
 
-          <v-row align="center">
-            <v-col>
-              <UserHeader
-                :pk="$store.state.publicKey"
-                :metadata="$store.state.metadata"
-                :count="hasReviewed"
-                placeholder="[Add a name below]"
-              />
-            </v-col>
-            <v-col v-if="!hasReviewed" class="mr-6">
-              <div class="mb-1">
-                <b>New here?</b> Post your first review to create an account
-                with the posted information
-              </div>
-              <b>Returning reviewer?</b> <LogInDialog text />
-            </v-col>
-          </v-row>
-
-          <v-divider />
-
-          <MetaForm :scheme="subject.scheme" />
-
-          <v-divider />
-
-          <v-list class="mb-n3">
-            <v-list-item v-for="tick in ticks" :key="tick.text">
-              <v-list-item-action>
-                <v-checkbox v-model="checkBoxes[tick.ticked]"></v-checkbox>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-title v-html="tick.text" class="text-wrap" />
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-          <v-dialog v-model="preview" :width="width - 100">
-            <v-card>
-              <v-card-title class="mb-5">Preview</v-card-title>
-              <v-card-text>
-                <Review
-                  :review="review"
-                  :maresiSubject="subject"
-                  :issuer="issuer"
-                  preview
+            <v-row align="center">
+              <v-col>
+                <UserHeader
+                  :pk="$store.state.publicKey"
+                  :metadata="$store.state.metadata"
+                  :count="hasReviewed"
+                  placeholder="[Add a name below]"
                 />
-              </v-card-text>
-              <v-card-actions>
-                <v-spacer />
-                <v-btn @click="preview = false" text>Close</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-card-text>
+              </v-col>
+              <v-col v-if="!hasReviewed" class="mr-6">
+                <div class="mb-1">
+                  <b>New here?</b> Post your first review to create an account
+                  with the posted information
+                </div>
+                <b>Returning reviewer?</b> <LogInDialog text />
+              </v-col>
+            </v-row>
+
+            <v-divider />
+
+            <MetaForm :scheme="subject.scheme" />
+
+            <v-divider />
+
+            <v-list class="mb-n3">
+              <v-list-item v-for="tick in ticks" :key="tick.text">
+                <v-list-item-action>
+                  <v-checkbox v-model="checkBoxes[tick.ticked]"></v-checkbox>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title v-html="tick.text" class="text-wrap" />
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+            <v-dialog v-model="preview" :width="width - 100">
+              <v-card>
+                <v-card-title class="mb-5">Preview</v-card-title>
+                <v-card-text>
+                  <Review
+                    :review="review"
+                    :maresiSubject="subject"
+                    :issuer="issuer"
+                    preview
+                  />
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer />
+                  <v-btn @click="preview = false" text>Close</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </v-card-text>
+        </template>
 
         <v-divider />
 
