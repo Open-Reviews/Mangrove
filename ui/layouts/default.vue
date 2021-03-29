@@ -61,21 +61,6 @@
         >
       </v-col>
     </v-footer>
-    <script type="text/javascript">
-      var fby = fby || []
-      fby.push([
-        'showTab',
-        { id: '{{ feedbackId }}', position: 'right', color: '#FF1F3A' }
-      ])
-      ;(function() {
-        const f = document.createElement('script')
-        f.type = 'text/javascript'
-        f.async = true
-        f.src = '//cdn.feedbackify.com/f.js'
-        const s = document.getElementsByTagName('script')[0]
-        s.parentNode.insertBefore(f, s)
-      })()
-    </script>
   </v-app>
 </template>
 

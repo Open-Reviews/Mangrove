@@ -9,7 +9,7 @@
       ref="map"
       :load-tiles-while-animating="true"
       :load-tiles-while-interacting="true"
-      style="height: 400px"
+      :style="`height: ${isSmall ? 300 : 400}px`"
       data-projection="EPSG:4326"
       class="mx-3"
     >
@@ -61,6 +61,11 @@ export default {
     points: {
       type: Array,
       default: () => null
+    }
+  },
+  computed: {
+    isSmall() {
+      return this.$vuetify.breakpoint.smAndDown
     }
   },
   methods: {

@@ -28,7 +28,7 @@
       class="scrollable noscroll"
     >
       <v-row justify="center">
-        <v-btn @click.stop="viewProfile = false" class="mt-2" v-if="!isBig">
+        <v-btn @click.stop="viewProfile = false" class="mt-2 mb-2" v-if="!isBig">
           <v-icon>mdi-arrow-left-bold</v-icon>
           Back to list
         </v-btn>
