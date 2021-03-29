@@ -8,9 +8,11 @@
         :subjectTitle="arg.subjectTitle"
         :dense="dense"
         :hideMetaTags="hideMetaTags"
+        :commentsVisible="commentsVisible[i]"
+        @toggleComments="toggleComments(i)"
         class="mb-7"
       />
-      <ReviewList v-if="!dense" :query="{ sub: arg.rootSub }" class="ml-4" />
+      <ReviewList v-if="!dense && commentsVisible[i]" :query="{ sub: arg.rootSub }" class="ml-4" />
     </v-col>
   </v-row>
 </template>
@@ -22,6 +24,11 @@ export default {
   name: 'ReviewListBase',
   components: {
     Review
+  },
+  data: function() {
+    return {
+      commentsVisible: this.listArgs.map(_ => false)
+    }
   },
   props: {
     // Array of objects with fields:
@@ -40,6 +47,11 @@ export default {
   // Avoid issues with circular dependencies.
   beforeCreate() {
     this.$options.components.ReviewList = require('./ReviewList').default
+  },
+  methods: {
+    toggleComments(i){
+      this.commentsVisible[i] = !this.commentsVisible[i]
+    }
   }
 }
 </script>

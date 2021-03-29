@@ -28,7 +28,7 @@
           color="blue"
           background-color="blue"
         />
-        Reviewed {{ new Date(payload.iat * 1000).toDateString() }}
+        Reviewed on {{ dateString }}
       </v-row>
       <span v-line-clamp="dense ? 2 : 20" class="mb-2" style="word-break: break-word!important">
         <span v-html="formattedOpinion" />
@@ -76,10 +76,10 @@
         <v-card-text class="ml-n6">
           <div
             v-if="maresiSubject.opinion_count"
-            @click="requestResponses"
+            @click="toggleComments"
             style="cursor: pointer"
           >
-            Read comments
+            {{ commentsVisible ? "Close" : "Read" }} comments
           </div>
         </v-card-text>
       </template>
@@ -162,6 +162,7 @@ export default {
       }
     },
     issuer: Object,
+    commentsVisible: Boolean,
     maresiSubject: {
       type: Object,
       default: () => {
@@ -283,6 +284,10 @@ export default {
           // Make new lines appear.
           .replace(/\n/g, '<br />')
       )
+    },
+    dateString() {
+      const [day, month, date, year] = new Date(this.review.payload.iat * 1000).toDateString().split(' ');
+      return `${day}, ${month} ${date}, ${year}`;
     }
   },
   methods: {
@@ -295,7 +300,8 @@ export default {
     respond(signature) {
       this.responseDialog = true
     },
-    requestResponses() {
+    toggleComments() {
+      this.$emit('toggleComments')
       this.$store.dispatch(
         'saveReviews',
         this.payloadSub(this.review.signature)

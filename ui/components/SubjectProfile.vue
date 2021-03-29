@@ -8,21 +8,21 @@
           <v-row align="center" class="mx-4 pt-4">
             <v-img
               v-on="on"
-              v-for="image in images.slice(0, 4)"
+              v-for="image in images.slice(0, isSmall ? 3 : 4)"
               :key="image"
               :src="image"
               max-height="400"
-              max-width="7vw"
+              :max-width="isSmall ? '16vw' : '7vw'"
               class="elevation-3 mr-2"
             />
-            <v-btn v-on="on" v-if="images.length > 5" text>More</v-btn>
+            <v-btn v-on="on" v-if="(isSmall && images.length > 4) || (!isSmall && images.length > 5)" text>More</v-btn>
           </v-row>
         </template>
         <v-card width="auto">
           <v-carousel height="auto">
             <v-carousel-item v-for="(image, i) in images" :key="i">
               <v-row>
-                <img :src="image" style="object-fit: contain; max-height: 90vh"/>
+                <img :src="image" style="object-fit: contain; max-height: 90vh; max-width: 100vw"/>
               </v-row>
             </v-carousel-item>
           </v-carousel>
@@ -119,6 +119,9 @@ export default {
   computed: {
     subject() {
       return this.$store.getters.subject(this.$route.query.sub)
+    },
+    isSmall() {
+      return this.$vuetify.breakpoint.smAndDown
     },
     stars() {
       return this.subject.quality && (this.subject.quality + 25) / 25
