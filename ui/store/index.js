@@ -131,9 +131,8 @@ export const getters = {
         .filter((subject) => subject.scheme === GEO)
     } else {
       // Otherwise get points for all review matching query.
-      query.scheme = GEO
       const allSubjects = getters
-        .reviewsAndCounts(query)
+        .reviewsAndCounts({ ...query, scheme: GEO })
         .reviews.map((review) => getters.subject(review.payload.sub))
       subjects = [...new Set(allSubjects)]
     }
@@ -163,7 +162,7 @@ export const getters = {
           Object.entries(query)
             .map(([k, v]) => {
               if (
-                ['kid', 'scheme', 'opinionated', 'limit'].includes(k) ||
+                ['kid', 'scheme', 'opinionated', 'limit', 'signature'].includes(k) ||
                 payload[k] === v
               ) {
                 return true

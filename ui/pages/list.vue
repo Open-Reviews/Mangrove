@@ -9,7 +9,7 @@
           <ReviewList :query="isProfilePage ? { kid: $route.query.kid } : $route.query" />
         </v-container>
       </v-col>
-      <v-col v-if="mapPoints.length" class="mt-2">
+      <v-col v-if="mapPoints && mapPoints.length" class="mt-2">
         <SelectionMap :points="mapPoints" display />
       </v-col>
     </v-row>
@@ -39,6 +39,9 @@ export default {
     isProfilePage() {
       return !!this.$route.query.kid
     },
+    isDetailPage() {
+      return !!this.$route.query.signature
+    },
     title() {
       return this.isProfilePage ? 'User profile' : 'Review list'
     },
@@ -47,9 +50,17 @@ export default {
     }
   },
   mounted() {
-    this.counts = this.$store.getters.reviewsAndCounts({
-      kid: this.isProfilePage ? this.$route.query.kid : this.$store.state.publicKey
-    }).counts
+    if(this.isDetailPage) {
+      // If page is being used as a detail page for a single review
+      this.counts = this.$store.getters.reviewsAndCounts({
+        signature: this.$route.query.signature
+      }).counts
+    } else {
+      // if page is being used to display the list of reviews for a user
+      this.counts = this.$store.getters.reviewsAndCounts({
+        kid: this.isProfilePage ? this.$route.query.kid : this.$store.state.publicKey
+      }).counts
+    }
   },
   middleware: 'review-list'
 }
