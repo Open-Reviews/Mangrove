@@ -16,12 +16,12 @@
         sm="6"
         v-for="image in pageImages"
         :key="image.src"
-        style="display:flex; align-items:center"
+        style="display:flex; align-items:center; justify-content:center"
       >
         <a :href="parentLink(image.parent)" target="_blank">
           <img 
-            :src="image.src" width="100%" 
-            max-height="400"
+            :src="image.src"
+            style="max-width: 100%; max-height: 300px"
           />
         </a>
       </v-col>
