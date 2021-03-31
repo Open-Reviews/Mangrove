@@ -37,7 +37,6 @@ export default {
     this.$store.dispatch('getReviews', { }).then(({reviews}) => {
       const images = []
       reviews.filter(r => r.payload.images).forEach((r) => {
-        console.log("pushing", r.payload.images.map(img => { return { src: img.src, parent: r.sub } }))
         images.push(...r.payload.images.map(img => { return { src: img.src, parent: r.signature } }))
       })
       this.images = images
@@ -54,7 +53,6 @@ export default {
       return this.images.slice((this.page - 1)*IMAGES_PER_PAGE, this.page*IMAGES_PER_PAGE)
     },
     numberOfPages(){
-      console.log("n pages", Math.ceil(this.images.length / IMAGES_PER_PAGE))
       return Math.ceil(this.images.length / IMAGES_PER_PAGE);
     }
   },
