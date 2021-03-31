@@ -51,7 +51,7 @@ export default {
   },
   mounted() {
     if(this.isDetailPage) {
-      // If page is being used as a detail page for a single review
+      // If page is being used as a detail page for a single review 
       this.counts = this.$store.getters.reviewsAndCounts({
         signature: this.$route.query.signature
       }).counts
