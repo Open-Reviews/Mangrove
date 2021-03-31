@@ -58,7 +58,7 @@ export default {
   },
   methods: {
     parentLink(signature){
-      return `list?signature=${signature}`
+      return `/list?signature=${signature}`
     }
   }
 }
