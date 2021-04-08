@@ -6,10 +6,12 @@
       <v-col :cols="$vuetify.breakpoint.mdAndDown && 12" class="mt-n5">
         <v-container style="max-width: 700px">
           <SchemeFilter :counts="counts" comments class="mb-4"/>
-          <ReviewList :query="isProfilePage ? { kid: $route.query.kid } : $route.query" />
+          <ReviewList :query="isProfilePage ? { kid: $route.query.kid } : $route.query"  />
+          <h2 class="display-1 ml-3 mb-3" >Comments</h2>
+          <ReviewList :query="isProfilePage ? { kid: $route.query.kid } : $route.query" comments />
         </v-container>
       </v-col>
-      <v-col v-if="mapPoints.length" class="mt-2">
+      <v-col v-if="mapPoints && mapPoints.length" class="mt-2">
         <SelectionMap :points="mapPoints" display />
       </v-col>
     </v-row>

@@ -2,8 +2,8 @@
   <v-card light>
     <v-subheader
       v-if="subjectTitle"
-      @click="isMaresi || selectSubject()"
-      :style="isMaresi ? '' : 'cursor: pointer'"
+      @click="selectSubject()"
+      style="cursor: pointer"
       v-line-clamp="1"
       :class="dense ? '' : 'pt-3'"
     >
@@ -132,7 +132,7 @@ import {
 import ReviewForm from './ReviewForm'
 import FlagForm from './FlagForm'
 import UserHeader from './UserHeader'
-import { MARESI } from '~/store/scheme-types'
+import { MARESI, maresiUri } from '~/store/scheme-types'
 import { imageUrl, displayName } from '~/utils'
 
 const META_DISPLAY = {
@@ -188,6 +188,11 @@ export default {
         {
           title: 'Show raw Mangrove Review',
           action: this.showRaw,
+          preview: true
+        },
+        {
+          title: 'Direct link',
+          action: this.goToDirectLink,
           preview: true
         }
       ],
@@ -347,8 +352,11 @@ export default {
         2
       )
     },
-    selectSubject() {
-      this.$store.dispatch('selectSubject', ['', this.payload.sub])
+    async goToDirectLink(review) {
+      await this.$store.dispatch('selectComment', ['', maresiUri(review.signature)])
+    },
+    async selectSubject() {
+      await this.$store.dispatch(this.isMaresi ? 'selectComment' : 'selectSubject', ['', this.payload.sub])
     }
   }
 }
