@@ -13,7 +13,7 @@ import {
   batchAggregate,
   getReviews
 } from 'mangrove-reviews'
-import { MARESI, GEO, subToScheme, geoSubject } from './scheme-types'
+import { MARESI, GEO, subToScheme, geoSubject, subPath } from './scheme-types'
 import { subToSubject } from './apis'
 import { PRIVATE_KEY } from './indexeddb-types'
 import * as t from './mutation-types'
@@ -131,13 +131,13 @@ export const getters = {
         .filter((subject) => subject.scheme === GEO)
     } else {
       // Otherwise get points for all review matching query.
-      query.scheme = GEO
+
       const allSubjects = getters
-        .reviewsAndCounts(query)
+        .reviewsAndCounts({ ...query, scheme: GEO })
         .reviews.map((review) => getters.subject(review.payload.sub))
       subjects = [...new Set(allSubjects)]
     }
-    return subjects.map((subject) => {
+    return subjects.filter(subject => subject && subject.coordinates).map((subject) => {
       return {
         id: subject.sub,
         coordinates: subject.coordinates
@@ -163,7 +163,7 @@ export const getters = {
           Object.entries(query)
             .map(([k, v]) => {
               if (
-                ['kid', 'scheme', 'opinionated', 'limit'].includes(k) ||
+                ['kid', 'scheme', 'opinionated', 'limit', 'signature'].includes(k) ||
                 payload[k] === v
               ) {
                 return true
@@ -400,9 +400,20 @@ export const actions = {
     const query = { sub, q: oldQuery.q, [GEO]: oldQuery.geo }
     commit(t.SET_QUERY, query)
     this.app.router.push({
-      path: 'search',
+      path: '/search',
       query
     })
+    dispatch('saveReviews', { sub })
+  },
+  async selectComment({ commit, dispatch }, [oldQuery, sub]) {
+    console.log('Selecting comment: ', sub)
+    const query = { signature: subPath(MARESI, sub) }
+
+    commit(t.SET_QUERY, query)
+    this.app.router.push({
+      path: '/list',
+      query
+    }, () => location.reload())
     dispatch('saveReviews', { sub })
   },
   getIssuer({ getters, commit }, pubkey) {

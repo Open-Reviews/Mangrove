@@ -9,7 +9,7 @@ export const NAMES = {
   [GEO]: 'Place',
   [LEI]: 'Company',
   [ISBN]: 'Book',
-  [MARESI]: 'Reaction'
+  [MARESI]: 'Comment'
 }
 
 export function pluralName(scheme) {
@@ -47,6 +47,10 @@ export function subPath(scheme, sub) {
 
 export function geoUri(lat, lon, name) {
   return `${GEO}:${lat},${lon}?q=${name}&u=30`
+}
+
+export function maresiUri(signature) {
+  return `${MARESI}:${signature}`
 }
 
 export function geoSubject(sub) {

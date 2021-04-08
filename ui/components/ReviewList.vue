@@ -109,7 +109,8 @@ export default {
       type: Number,
       default: () => 12
     },
-    hideMetaTags: Boolean
+    hideMetaTags: Boolean,
+    comments: Boolean,
   },
   data() {
     return {
@@ -120,7 +121,12 @@ export default {
   },
   computed: {
     reviews() {
-      return this.$store.getters.reviewsAndCounts(this.query).reviews
+      const _reviews = this.$store.getters.reviewsAndCounts(this.query).reviews
+      if(this.comments) {
+        return _reviews.filter(r => r.scheme === MARESI);
+      } else {
+        return _reviews.filter(r => r.scheme !== MARESI);
+      }
     },
     opinionated() {
       return this.reviews
@@ -215,22 +221,12 @@ export default {
       if (this.query.sub) {
         return
       }
-      if (sub.startsWith(MARESI)) {
-        const originalReview = this.$store.state.reviews[subPath(MARESI, sub)]
-        if (originalReview && originalReview.payload.metadata) {
-          const start = this.isMine ? 'Your comment' : 'Comment'
-          return `${start} on ${displayName(
-            originalReview.payload.metadata
-          )}'s review`
-        }
-      } else {
-        const subject = this.$store.getters.subject(sub)
-        const start = this.isMine ? 'Your review' : 'Review'
-        const name = subject
-          ? [subject.title, subject.subtitle].filter(Boolean).join(', ')
-          : `subject with indentifier ${sub}, more information is currently not available.`
-        return `${start} of ${name}`
-      }
+      const subject = this.$store.getters.subject(sub)
+      const start = this.isMine ? 'Your review' : 'Review'
+      const name = subject
+        ? [subject.title, subject.subtitle].filter(Boolean).join(', ')
+        : `subject with indentifier ${sub}, more information is currently not available.`
+      return sub.startsWith(MARESI) && subject ? subject.title : `${start} of ${name}`
     }
   }
 }

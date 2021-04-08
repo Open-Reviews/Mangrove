@@ -31,7 +31,7 @@ export default {
   },
   methods: {
     select() {
-      this.$router.push({ path: 'list', query: { kid: this.pk } })
+      this.$router.push({ path: 'list', query: { kid: this.pk } });
     }
   }
 }

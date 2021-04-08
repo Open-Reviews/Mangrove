@@ -6,8 +6,11 @@ import {
   subToScheme,
   subPath,
   geoUri,
-  geoSubject
+  geoSubject,
+  MARESI
 } from './scheme-types'
+import { displayName } from '../utils'
+import { getReviews } from 'mangrove-reviews'
 
 export function leiToSubject(axios, lei) {
   return entityLookup(axios, lei)
@@ -172,6 +175,20 @@ function isbnToSubject(axios, isbn) {
     })
 }
 
+function maresiToSubject(sub) {
+  return getReviews({ signature: sub, examples: true }).then(({ reviews }) => {
+    const parentMetadata = reviews[0].payload.metadata;
+    const parentScheme = reviews[0].scheme;
+    const parentReviewerName = displayName(parentMetadata)
+    return {
+      sub: `${MARESI}:${sub}`,
+      title: `Comment on ${parentReviewerName}'s ${parentScheme === MARESI ? 'comment' : 'review'}`
+    }
+  }).catch(error => {
+    console.log(error);
+  })
+}
+
 export function olDocToSubject(doc) {
   if (doc.isbn && doc.isbn[0]) {
     // Pick the first ISBN (usually new edition) and remove white space.
@@ -229,6 +246,8 @@ export async function subToSubject(axios, sub) {
     }
   } else if (scheme === ISBN) {
     subject = await isbnToSubject(axios, subPath(ISBN, sub))
+  } else if (scheme === MARESI) {
+    subject = await maresiToSubject(subPath(MARESI, sub))
   }
   if (!subject) {
     console.log(sub)
