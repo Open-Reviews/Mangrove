@@ -12,7 +12,7 @@
         @toggleComments="toggleComments(i)"
         class="mb-7"
       />
-      <ReviewList v-if="!dense && commentsVisible[i]" :query="{ sub: arg.rootSub }" class="ml-4" />
+      <ReviewList v-if="!dense && commentsVisible[i]" :query="{ sub: arg.rootSub }" class="ml-4" comments />
     </v-col>
   </v-row>
 </template>
