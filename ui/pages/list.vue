@@ -7,8 +7,10 @@
         <v-container style="max-width: 700px">
           <SchemeFilter :counts="counts" comments class="mb-4"/>
           <ReviewList :query="isProfilePage ? { kid: $route.query.kid } : $route.query"  />
+          <template v-if="counts['urn:maresi']">
           <h2 class="display-1 ml-3 mb-3" >Comments</h2>
           <ReviewList :query="isProfilePage ? { kid: $route.query.kid } : $route.query" comments />
+          </template>
         </v-container>
       </v-col>
       <v-col v-if="mapPoints && mapPoints.length" class="mt-2">
@@ -38,6 +40,9 @@ export default {
     }
   },
   computed: {
+    isDetailPage() {
+      return !!this.$route.query.signature
+    },
     isProfilePage() {
       return !!this.$route.query.kid
     },
@@ -49,7 +54,7 @@ export default {
     }
   },
   mounted() {
-    this.counts = this.$store.getters.reviewsAndCounts({
+    this.counts = this.$store.getters.reviewsAndCounts(this.isDetailPage ? this.$route.query : {
       kid: this.isProfilePage ? this.$route.query.kid : this.$store.state.publicKey
     }).counts
   },

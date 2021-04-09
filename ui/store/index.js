@@ -154,7 +154,7 @@ export const getters = {
       ? allReviews.slice(0, query.limit * 5)
       : allReviews
     )
-      .filter(({ payload, kid, scheme, geo }) => {
+      .filter(({ payload, kid, scheme, geo, signature }) => {
         // Pick only ones selected according to query.
         const isSelected =
           (!query.kid || query.kid === kid) &&
@@ -163,7 +163,7 @@ export const getters = {
           Object.entries(query)
             .map(([k, v]) => {
               if (
-                ['kid', 'scheme', 'opinionated', 'limit', 'signature'].includes(k) ||
+                ['kid', 'scheme', 'opinionated', 'limit'].includes(k) ||
                 payload[k] === v
               ) {
                 return true
@@ -176,6 +176,8 @@ export const getters = {
                   geo.coordinates,
                   geo.uncertainty + geoQuery.uncertainty
                 )
+              } else if (k === 'signature' && signature === v) {
+                return true
               } else {
                 return false
               }
