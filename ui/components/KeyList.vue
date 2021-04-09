@@ -100,7 +100,7 @@ export default {
       )
     },
     downloadKeyLink() {
-      return downloadLink(this.private)
+      return this.private && downloadLink(JSON.parse(this.private))
     }
   },
   mounted() {
