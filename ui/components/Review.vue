@@ -3,9 +3,9 @@
     <v-subheader
       v-if="subjectTitle"
       @click="selectSubject()"
-      style="cursor: pointer"
+      style="cursor: pointer; height: auto!important; line-height: 1.5!important"
       v-line-clamp="1"
-      :class="dense ? '' : 'pt-3'"
+      class="pt-3"
     >
       {{ subjectTitle }}
     </v-subheader>
@@ -15,7 +15,7 @@
       :count="issuer && issuer.count"
     />
     <v-card-text>
-      <v-row v-if="payload.rating !== null" align="center" class="pl-2 pb-3">
+      <v-row v-if="payload.rating !== null" align="center" class="pl-2 pb-1 mb-1">
         <span v-if="payload.rating === 0" class="pl-1"
           ><b>Flagged as inappropriate. &nbsp;</b>
         </span>
@@ -24,11 +24,11 @@
           :value="(payload.rating + 25) / 25"
           readonly
           dense
-          class="mr-2 mb-3"
+          class="mr-2"
           color="blue"
           background-color="blue"
         />
-        Reviewed on {{ dateString }}
+        <span class="ml-1">{{ dateString }}</span>
       </v-row>
       <span v-line-clamp="dense ? 2 : 20" class="mb-2" style="word-break: break-word!important">
         <span v-html="formattedOpinion" />
@@ -292,7 +292,8 @@ export default {
     },
     dateString() {
       const [day, month, date, year] = new Date(this.review.payload.iat * 1000).toDateString().split(' ');
-      return `${day}, ${month} ${date}, ${year}`;
+      const start = this.review.scheme === MARESI ? 'Commented' : 'Reviewed';
+      return `${start} on ${day}, ${month} ${date}, ${year}`;
     }
   },
   methods: {
