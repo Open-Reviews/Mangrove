@@ -25,7 +25,7 @@
           <vl-style-icon
             :scale="p.coordinates === selected ? 1.2 : 0.7"
             :anchor="[0.5, 1]"
-            src="map-marker.png"
+            src="/map-marker.png"
           />
         </vl-style-box>
       </vl-feature>
