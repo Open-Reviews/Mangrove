@@ -33,16 +33,13 @@
       <span v-line-clamp="dense ? 2 : 20" class="mb-2" style="word-break: break-word!important">
         <span v-html="formattedOpinion" />
       </span>
-      <v-row v-if="payload.images" class="mx-auto py-3">
-        <v-img
-          v-for="img in payload.images.slice(dense ? 2 : 0)"
-          :key="img.src"
-          :src="img.src"
-          max-height="80"
-          max-width="80"
-          class="mr-1"
-          contain
-        />
+      <v-row v-if="payload.images" class="py-3">
+        <Gallery 
+          :images="payload.images" 
+          :dense="dense" 
+          :maxIcons="dense ? 3 : 0" 
+          maxIconHeight="80" 
+          maxIconWidth="80" />
       </v-row>
       <div v-if="!hideMetaTags && metadata && metadata.length">
         <v-chip
@@ -132,6 +129,7 @@ import {
 import ReviewForm from './ReviewForm'
 import FlagForm from './FlagForm'
 import UserHeader from './UserHeader'
+import Gallery from './Gallery'
 import { MARESI, maresiUri } from '~/store/scheme-types'
 import { imageUrl, displayName } from '~/utils'
 
@@ -147,7 +145,8 @@ export default {
   components: {
     ReviewForm,
     FlagForm,
-    UserHeader
+    UserHeader,
+    Gallery
   },
   props: {
     review: {

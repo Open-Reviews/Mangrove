@@ -2,32 +2,12 @@
   <v-container v-if="subject">
     <v-card class="my-3">
       <slot />
-      <!-- Extra space in width="auto " is needed because of a known bug in v-dialog -->
-      <v-dialog v-if="images.length" max-width="90vw" width="auto ">
-        <template v-slot:activator="{ on }">
-          <v-row align="center" class="mx-4 pt-4">
-            <v-img
-              v-on="on"
-              v-for="image in images.slice(0, isSmall ? 3 : 4)"
-              :key="image"
-              :src="image"
-              max-height="400"
-              :max-width="isSmall ? '16vw' : '7vw'"
-              class="elevation-3 mr-2"
-            />
-            <v-btn v-on="on" v-if="(isSmall && images.length > 4) || (!isSmall && images.length > 5)" text>More</v-btn>
-          </v-row>
-        </template>
-        <v-card width="auto">
-          <v-carousel height="auto">
-            <v-carousel-item v-for="(image, i) in images" :key="i">
-              <v-row>
-                <img :src="image" style="object-fit: contain; max-height: 90vh; max-width: 100vw"/>
-              </v-row>
-            </v-carousel-item>
-          </v-carousel>
-        </v-card>
-      </v-dialog>
+      <Gallery 
+        :images="images.map(src => {return {src: src}})" 
+        :maxIcons="isSmall ? 3 : 4" 
+        :maxIconWidth="isSmall ? '16vw' : '7vw'" 
+        maxIconHeight="400" 
+        showMoreButton />
       <v-card-title>
         {{ subject.title }} 
         <v-menu
@@ -105,11 +85,13 @@ import { isMobile } from '../utils'
 import { GEO, LEI, ISBN } from '../store/scheme-types'
 import ReviewForm from './ReviewForm'
 import ReviewList from './ReviewList'
+import Gallery from './Gallery'
 
 export default {
   components: {
     ReviewForm,
-    ReviewList
+    ReviewList,
+    Gallery
   },
   data() {
     return {
