@@ -16,7 +16,7 @@
     />
     <v-card-text>
       <v-row v-if="payload.rating !== null" align="center" class="pl-2 pb-1 mb-1">
-        <span v-if="payload.rating === 0" class="pl-1"
+        <span v-if="isMaresi && payload.rating === 0" class="pl-1"
           ><b>Flagged as inappropriate. &nbsp;</b>
         </span>
         <v-rating
