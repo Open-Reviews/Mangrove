@@ -1,5 +1,5 @@
 <template>
-  <v-avatar tile>
+  <v-avatar tile size=48>
     <div
       v-html="identicon"
       style="width: 100%; height: 100%; display: flex; align-items: center"
