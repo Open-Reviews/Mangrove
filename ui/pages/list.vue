@@ -8,8 +8,6 @@
           <SchemeFilter :counts="counts" comments class="mb-4"/>
           <ReviewList :query="isProfilePage ? { kid: $route.query.kid } : $route.query"  />
           <template v-if="counts['urn:maresi']">
-          <h2 class="display-1 ml-3 mb-3" >Comments</h2>
-          <ReviewList :query="isProfilePage ? { kid: $route.query.kid } : $route.query" comments />
           </template>
         </v-container>
       </v-col>

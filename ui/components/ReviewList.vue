@@ -109,8 +109,7 @@ export default {
       type: Number,
       default: () => 12
     },
-    hideMetaTags: Boolean,
-    comments: Boolean,
+    hideMetaTags: Boolean
   },
   data() {
     return {
@@ -121,12 +120,7 @@ export default {
   },
   computed: {
     reviews() {
-      const _reviews = this.$store.getters.reviewsAndCounts(this.query).reviews
-      if(this.comments) {
-        return _reviews.filter(r => r.scheme === MARESI);
-      } else {
-        return _reviews.filter(r => r.scheme !== MARESI);
-      }
+      return this.$store.getters.reviewsAndCounts(this.query).reviews
     },
     opinionated() {
       return this.reviews
