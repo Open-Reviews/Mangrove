@@ -29,14 +29,7 @@
       :hideMetaTags="hideMetaTags"
       v-else
     />
-    <v-container v-if="query.kid && opinionless">
-      <span
-        v-if="query.kid && v !== 0"
-        v-for="[k, v] in Object.entries(opinionless.other)"
-      >
-        {{ k }}: {{ v }}
-      </span>
-    </v-container>
+    
     <v-row
       v-if="
         opinionless.ratings.length && !showOpinionless && !query.opinionated
@@ -62,6 +55,18 @@
       >
     </v-row>
     <ReviewListBase v-if="showUnreliable" :listArgs="unreliable" :cols="cols" />
+
+    <v-row v-if="showReactions">
+      <h2 class="display-1 ml-3">Reactions</h2>
+      <v-container v-if="query.kid && opinionless">
+      <span
+        v-if="query.kid && v !== 0"
+        v-for="[k, v] in Object.entries(opinionless.other)"
+      >
+        {{ k }}: {{ v }}
+      </span>
+    </v-container>
+    </v-row>
 
     <v-row
       v-if="reviews.length && notMaresi && !query.opinionated"
@@ -109,7 +114,8 @@ export default {
       type: Number,
       default: () => 12
     },
-    hideMetaTags: Boolean
+    hideMetaTags: Boolean,
+    showReactions: Boolean
   },
   data() {
     return {
@@ -119,8 +125,11 @@ export default {
     }
   },
   computed: {
-    reviews() {
+    reviews() {      
       return this.$store.getters.reviewsAndCounts(this.query).reviews
+    },
+    showReactions() {
+      return [0, MARESI].indexOf(this.$store.state.filter) >= 0
     },
     opinionated() {
       return this.reviews

@@ -55,6 +55,7 @@ export default {
     this.counts = this.$store.getters.reviewsAndCounts(this.isDetailPage ? this.$route.query : {
       kid: this.isProfilePage ? this.$route.query.kid : this.$store.state.publicKey
     }).counts
+    console.log("filter:", this.$store.state.filter)
   },
   middleware: 'review-list'
 }
