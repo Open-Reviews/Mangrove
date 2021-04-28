@@ -66,7 +66,7 @@ export default {
     },
     filter: {
       get() {
-        return this.$store.state.filter
+        return this.$store.state.filter || 0
       },
       set(value) {
         if (value === GEO) {

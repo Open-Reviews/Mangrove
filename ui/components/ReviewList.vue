@@ -56,14 +56,30 @@
     </v-row>
     <ReviewListBase v-if="showUnreliable" :listArgs="unreliable" :cols="cols" />
 
-    <v-row v-if="showReactions">
-      <h2 class="display-1 ml-3">Reactions</h2>
+    <v-row v-if="showReactions && reactions.length > 0">
+      <v-row align="end">
+        <v-col>
+          <h2 class="display-1 ml-3">Reactions</h2>
+        </v-col>
+        <v-col>
+          <v-btn class="float-right">Show Reactions</v-btn>
+        </v-col>
+      </v-row>
       <v-container v-if="query.kid && opinionless">
       <span
-        v-if="query.kid && v !== 0"
-        v-for="[k, v] in Object.entries(opinionless.other)"
+        v-if="query.kid && flags"
       >
-        {{ k }}: {{ v }}
+        flags: {{ flags.length }}
+      </span>
+      <span
+        v-if="query.kid && confirmations"
+      >
+        confirmations: {{ confirmations.length }}
+      </span>
+      <span
+        v-if="query.kid && likes"
+      >
+        likes: {{ likes.length }}
       </span>
     </v-container>
     </v-row>
@@ -129,7 +145,7 @@ export default {
       return this.$store.getters.reviewsAndCounts(this.query).reviews
     },
     showReactions() {
-      return [0, MARESI].indexOf(this.$store.state.filter) >= 0
+      return [0, MARESI].indexOf(this.$store.state.filter || 0) >= 0
     },
     opinionated() {
       return this.reviews
@@ -162,14 +178,14 @@ export default {
       let Likes = 0
       let Confirmations = 0
       const ratings = this.reviews
-        .filter(({ payload }) => {
+        .filter(({ payload, scheme }) => {
           if (payload.rating === 0) {
             Flags++
           }
           if (payload.rating === 100) {
             payload.metadata[IS_PERSONAL_EXPERIENCE] ? Confirmations++ : Likes++
           }
-          return !payload.opinion && this.notMaresi
+          return !payload.opinion && this.notMaresi && scheme !== MARESI
         })
         .map(this.reviewToArg)
       return { ratings, other: { Flags, Likes, Confirmations } }
@@ -179,6 +195,18 @@ export default {
         !this.$store.state.isSearching &&
         (!this.query.sub || !this.query.sub.startsWith(MARESI))
       )
+    },
+    reactions() {
+      return this.reviews.filter((review) => review.scheme === MARESI && !review.payload.opinion)
+    },
+    likes() {
+      return this.reactions.filter((review) => review.payload.rating === 100 && !review.payload.metadata[IS_PERSONAL_EXPERIENCE]);
+    },
+    confirmations() {
+      return this.reactions.filter((review) => review.payload.rating === 100 && review.payload.metadata[IS_PERSONAL_EXPERIENCE]);
+    },
+    flags() {
+      return this.reactions.filter((review) => review.payload.rating === 0);
     },
     download() {
       return this.notMaresi && downloadLink(this.reviews)

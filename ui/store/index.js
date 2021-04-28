@@ -13,7 +13,7 @@ import {
   batchAggregate,
   getReviews
 } from 'mangrove-reviews'
-import { MARESI, GEO, subToScheme, geoSubject, subPath } from './scheme-types'
+import { MARESI, GEO, subToScheme, geoSubject, subPath, HTTPS, LEI, ISBN } from './scheme-types'
 import { subToSubject } from './apis'
 import { PRIVATE_KEY } from './indexeddb-types'
 import * as t from './mutation-types'
@@ -184,12 +184,17 @@ export const getters = {
             })
             .every(Boolean)
         if (isSelected) {
-          counts[scheme] = counts[scheme] ? counts[scheme] + 1 : 1
+          if (scheme == MARESI && !payload.opinion) {
+            // Don't include counts for reactions
+          } else {
+            counts[scheme] = counts[scheme] ? counts[scheme] + 1 : 1
+          }
         }
         return isSelected
       })
       .sort((r1, r2) => r2.payload.iat - r1.payload.iat)
-    counts.null = reviews.length
+    console.log("counts", counts);
+    counts.null = Object.values(counts).reduce((a, b) => a + b);;
     return { counts, reviews }
   }
 }
