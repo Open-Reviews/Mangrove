@@ -56,32 +56,33 @@
     </v-row>
     <ReviewListBase v-if="showUnreliable" :listArgs="unreliable" :cols="cols" />
 
-    <v-row v-if="showReactions && reactions.length > 0">
+    <v-row v-if="showReactionSection && reactions.length > 0">
       <v-row align="end">
         <v-col>
           <h2 class="display-1 ml-3">Reactions</h2>
         </v-col>
         <v-col>
-          <v-btn class="float-right">Show Reactions</v-btn>
+          <v-btn class="float-right" @click="showReactions = !showReactions">{{ showReactions ? 'Hide' : 'Show' }} Reactions</v-btn>
         </v-col>
       </v-row>
       <v-container v-if="query.kid && opinionless">
-      <span
-        v-if="query.kid && flags"
-      >
-        flags: {{ flags.length }}
-      </span>
-      <span
-        v-if="query.kid && confirmations"
-      >
-        confirmations: {{ confirmations.length }}
-      </span>
-      <span
-        v-if="query.kid && likes"
-      >
-        likes: {{ likes.length }}
-      </span>
-    </v-container>
+        <span
+          v-if="query.kid && flags"
+        >
+          flags: {{ flags.length }}
+        </span>
+        <span
+          v-if="query.kid && confirmations"
+        >
+          confirmations: {{ confirmations.length }}
+        </span>
+        <span
+          v-if="query.kid && likes"
+        >
+          likes: {{ likes.length }}
+        </span>
+      </v-container>
+      <ReviewListBase v-if="showReactions" :listArgs="reactions" :cols="cols" />
     </v-row>
 
     <v-row
@@ -105,8 +106,8 @@
 </template>
 
 <script>
-import { downloadLink, pemDisplay, displayName } from '../utils'
-import { MARESI, subPath } from '../store/scheme-types'
+import { downloadLink, pemDisplay } from '../utils'
+import { MARESI } from '../store/scheme-types'
 import { IS_PERSONAL_EXPERIENCE } from '../store/metadata-types'
 import ReviewListBase from './ReviewListBase'
 import Review from './Review'
@@ -131,21 +132,21 @@ export default {
       default: () => 12
     },
     hideMetaTags: Boolean,
-    showReactions: Boolean
   },
   data() {
     return {
       neutralityThreshold: 0.2,
       showOpinionless: false,
-      showUnreliable: false
+      showUnreliable: false,
+      showReactions: false
     }
   },
   computed: {
     reviews() {      
       return this.$store.getters.reviewsAndCounts(this.query).reviews
     },
-    showReactions() {
-      return [0, MARESI].indexOf(this.$store.state.filter || 0) >= 0
+    showReactionSection() {
+      return [0, 'reaction'].indexOf(this.$store.state.filter || 0) >= 0
     },
     opinionated() {
       return this.reviews
@@ -197,16 +198,16 @@ export default {
       )
     },
     reactions() {
-      return this.reviews.filter((review) => review.scheme === MARESI && !review.payload.opinion)
+      return this.reviews.filter((review) => review.scheme === MARESI && !review.payload.opinion).map(this.reviewToArg);
     },
     likes() {
-      return this.reactions.filter((review) => review.payload.rating === 100 && !review.payload.metadata[IS_PERSONAL_EXPERIENCE]);
+      return this.reactions.filter((review) => review.review.payload.rating === 100 && !review.review.payload.metadata[IS_PERSONAL_EXPERIENCE]);
     },
     confirmations() {
-      return this.reactions.filter((review) => review.payload.rating === 100 && review.payload.metadata[IS_PERSONAL_EXPERIENCE]);
+      return this.reactions.filter((review) => review.review.payload.rating === 100 && review.review.payload.metadata[IS_PERSONAL_EXPERIENCE]);
     },
     flags() {
-      return this.reactions.filter((review) => review.payload.rating === 0);
+      return this.reactions.filter((review) => review.review.payload.rating === 0);
     },
     download() {
       return this.notMaresi && downloadLink(this.reviews)
@@ -248,16 +249,22 @@ export default {
         rootSub: `${MARESI}:${review.signature}`
       }
     },
-    subjectTitle({ sub, metadata }) {
+    subjectTitle({ sub, opinion }) {
       if (this.query.sub) {
         return
       }
       const subject = this.$store.getters.subject(sub)
+      let title = null
+      let subtitle = subject ? subject.subtitle : null
+      if (subject && subject.title){
+        title = opinion ? subject.title : subject.title.replace("Comment", "Reaction");
+      }
+
       const start = this.isMine ? 'Your review' : 'Review'
       const name = subject
-        ? [subject.title, subject.subtitle].filter(Boolean).join(', ')
+        ? [title, subtitle].filter(Boolean).join(', ')
         : `subject with indentifier ${sub}, more information is currently not available.`
-      return sub.startsWith(MARESI) && subject ? subject.title : `${start} of ${name}`
+      return sub.startsWith(MARESI) && subject ? title : `${start} of ${name}`
     }
   }
 }

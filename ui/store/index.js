@@ -148,6 +148,7 @@ export const getters = {
   reviewsAndCounts: (state) => (query) => {
     if (state.filter) query = { ...query, scheme: state.filter }
     const counts = {}
+    let reaction_count = 0;
     const allReviews = Object.values(state.reviews)
     // Prelimit to circumvent JS eager eval.
     const reviews = (query.limit
@@ -156,9 +157,10 @@ export const getters = {
     )
       .filter(({ payload, kid, scheme, geo, signature }) => {
         // Pick only ones selected according to query.
+        const isReaction = scheme == MARESI && !payload.opinion;
         const isSelected =
           (!query.kid || query.kid === kid) &&
-          (!query.scheme || query.scheme === scheme) &&
+          (!query.scheme || query.scheme === scheme || (query.scheme === 'reaction' && isReaction)) &&
           (!query.opinionated || payload.opinion) &&
           Object.entries(query)
             .map(([k, v]) => {
@@ -177,6 +179,9 @@ export const getters = {
                   geo.uncertainty + geoQuery.uncertainty
                 )
               } else if (k === 'signature' && signature === v) {
+
+                return true
+              } else if (k === 'scheme' && v === 'reaction' && isReaction) {
                 return true
               } else {
                 return false
@@ -185,7 +190,7 @@ export const getters = {
             .every(Boolean)
         if (isSelected) {
           if (scheme == MARESI && !payload.opinion) {
-            // Don't include counts for reactions
+            reaction_count++;
           } else {
             counts[scheme] = counts[scheme] ? counts[scheme] + 1 : 1
           }
@@ -193,8 +198,8 @@ export const getters = {
         return isSelected
       })
       .sort((r1, r2) => r2.payload.iat - r1.payload.iat)
-    console.log("counts", counts);
-    counts.null = Object.values(counts).reduce((a, b) => a + b);;
+    counts.null = Object.values(counts).reduce((a, b) => a + b, 0);
+    counts.reactions = reaction_count;
     return { counts, reviews }
   }
 }

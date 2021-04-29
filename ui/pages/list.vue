@@ -5,7 +5,7 @@
     <v-row>
       <v-col :cols="$vuetify.breakpoint.mdAndDown && 12" class="mt-n5">
         <v-container style="max-width: 700px">
-          <SchemeFilter :counts="counts" comments class="mb-4"/>
+          <SchemeFilter :counts="counts" reactions class="mb-4"/>
           <ReviewList :query="isProfilePage ? { kid: $route.query.kid } : $route.query"  />
           <template v-if="counts['urn:maresi']">
           </template>
@@ -55,7 +55,6 @@ export default {
     this.counts = this.$store.getters.reviewsAndCounts(this.isDetailPage ? this.$route.query : {
       kid: this.isProfilePage ? this.$route.query.kid : this.$store.state.publicKey
     }).counts
-    console.log("filter:", this.$store.state.filter)
   },
   middleware: 'review-list'
 }

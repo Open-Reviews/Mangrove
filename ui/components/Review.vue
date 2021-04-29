@@ -10,6 +10,7 @@
       {{ subjectTitle }}
     </v-subheader>
     <UserHeader
+      v-if="!isReaction"
       :pk="review.kid"
       :metadata="payload.metadata"
       :count="issuer && issuer.count"
@@ -41,7 +42,7 @@
           maxIconHeight="80" 
           maxIconWidth="80" />
       </v-row>
-      <div v-if="!hideMetaTags && metadata && metadata.length">
+      <div v-if="!hideMetaTags && !isReaction && metadata && metadata.length">
         <v-chip
           v-for="kv in metadata"
           v-text="kv"
@@ -53,7 +54,7 @@
         </v-chip>
       </div>
     </v-card-text>
-    <v-card-actions v-if="!dense" class="my-n4 ml-4 mx-auto">
+    <v-card-actions v-if="!dense && !isReaction" class="my-n4 ml-4 mx-auto">
       <template v-if="!preview">
         <v-tooltip v-for="action in actions" :key="action.icon" top>
           <template v-slot:activator="{ on }">
@@ -269,6 +270,9 @@ export default {
     isMaresi() {
       return this.payload.sub.startsWith(MARESI)
     },
+    isReaction() {
+      return !this.review.payload.opinion && this.review.scheme === MARESI
+    },
     formattedOpinion() {
       if (!this.payload.opinion) return ''
       return (
@@ -289,9 +293,17 @@ export default {
           .replace(/\n/g, '<br />')
       )
     },
+    reactionString(){
+      if(this.payload.rating === 0){
+        return 'Flagged';
+      }
+      if(this.payload.rating === 100){
+        return this.payload.metadata[IS_PERSONAL_EXPERIENCE] ? 'Confirmed' : 'Liked';
+      }
+    },
     dateString() {
       const [day, month, date, year] = new Date(this.review.payload.iat * 1000).toDateString().split(' ');
-      const start = this.review.scheme === MARESI ? 'Commented' : 'Reviewed';
+      const start = this.review.scheme === MARESI ? (  this.isReaction ? this.reactionString : 'Commented') : 'Reviewed';
       return `${start} on ${day}, ${month} ${date}, ${year}`;
     }
   },

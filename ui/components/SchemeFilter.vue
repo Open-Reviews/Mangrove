@@ -13,7 +13,7 @@
               :value="box.scheme"
               :class="{ 'body-2': $vuetify.breakpoint.smAndDown }"
               :outlined="filter !== box.scheme"
-              :disabled="error === box.scheme || (comments && !box.count)"
+              :disabled="error === box.scheme || (comments && !box.count) || (reactions && !box.count)"
             >
               <v-avatar v-if="box.icon"
                 ><v-icon v-text="box.icon" small
@@ -41,6 +41,7 @@ import {
 export default {
   props: {
     comments: Boolean,
+    reactions: Boolean,
     counts: {
       type: Object,
       default: () => {
@@ -62,6 +63,7 @@ export default {
             count: this.counts[scheme]
           })
       }
+      if(this.reactions) obj.push({scheme: 'reaction', label: 'Reactions', icon: null, count: this.counts.reactions })
       return obj
     },
     filter: {
