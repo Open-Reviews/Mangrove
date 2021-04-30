@@ -16,7 +16,7 @@ MeanBeta(mean::Real, certainty::Real = 3) = Beta(certainty * mean, certainty * (
     # Extreme qualities are not as likely as moderate ones.
     qualities = Dict()
     for sub in subs(data)
-        qualities[sub] ~ MeanBeta(typical_rating, 2.2)
+        qualities[sub] ~ MeanBeta(typical_rating)
     end
     # Assume that each reviewer is either neutral (0) or biased (1).
     biases = Dict()
