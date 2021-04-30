@@ -226,15 +226,6 @@ deploy blog:
   except:
     - schedules
 
-aggregator:
-  stage: task
-  image: julia:latest
-  script:
-    - cd aggregator
-    - julia --project run.jl
-  only:
-    - schedules
-
 build widget:
   stage: build
   variables:
@@ -293,3 +284,28 @@ deploy widget production:
       - widget/**/*
   except:
     - schedules
+
+aggregator:
+  stage: task
+  image: julia:latest
+  script:
+    - cd aggregator
+    - julia --project run.jl
+  only:
+    refs:
+      - schedules
+    variables:
+      - $SCHEDULE == "aggregator"
+
+backup:
+  stage: task
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  variables:
+    BACKUP_BUCKET: "backup-mangrove"
+  script:
+    curl -X GET https://api.mangrove.reviews/reviews\?issuers\=true\&maresi_subjects\=true | aws s3 cp - s3://$BACKUP_BUCKET
+  only:
+    refs:
+      - schedules
+    variables:
+      - $SCHEDULE == "backup"
