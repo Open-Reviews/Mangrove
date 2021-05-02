@@ -10,7 +10,7 @@
         <template v-slot:activator="{ on }">
           <div v-on="on">
             <v-chip
-              :value="box.scheme"
+              :value="box.scheme || box.section"
               :class="{ 'body-2': $vuetify.breakpoint.smAndDown }"
               :outlined="filter !== box.scheme"
               :disabled="error === box.scheme || (comments && !box.count) || (reactions && !box.count)"
@@ -63,7 +63,7 @@ export default {
             count: this.counts[scheme]
           })
       }
-      if(this.reactions) obj.push({scheme: 'reaction', label: 'Reactions', icon: null, count: this.counts.reactions })
+      if(this.reactions) obj.push({var: null, label: 'Reactions', icon: null, count: this.counts.reactions, section: 'reaction' })
       return obj
     },
     filter: {
