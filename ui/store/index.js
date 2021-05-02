@@ -146,7 +146,7 @@ export const getters = {
   },
   // Return the filtered list of reviews and total counts for different schemes.
   reviewsAndCounts: (state) => (query) => {
-    if (state.filter) query = { ...query, scheme: state.filter }
+    if (state.filter) query = state.filter === 'reaction' ? { ...query, section: 'reaction' } : { ...query, scheme: state.filter }
     const counts = {}
     let reaction_count = 0;
     const allReviews = Object.values(state.reviews)
@@ -160,7 +160,7 @@ export const getters = {
         const isReaction = scheme == MARESI && !payload.opinion;
         const isSelected =
           (!query.kid || query.kid === kid) &&
-          (!query.scheme || query.scheme === scheme || (query.scheme === 'reaction' && isReaction)) &&
+          (!query.scheme || query.scheme === scheme) &&
           (!query.opinionated || payload.opinion) &&
           Object.entries(query)
             .map(([k, v]) => {
@@ -181,7 +181,7 @@ export const getters = {
               } else if (k === 'signature' && signature === v) {
 
                 return true
-              } else if (k === 'scheme' && v === 'reaction' && isReaction) {
+              } else if (k === 'section' && v === 'reaction' && isReaction) {
                 return true
               } else {
                 return false
