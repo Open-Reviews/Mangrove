@@ -13,7 +13,7 @@ import {
   batchAggregate,
   getReviews
 } from 'mangrove-reviews'
-import { MARESI, GEO, subToScheme, geoSubject, subPath } from './scheme-types'
+import { MARESI, GEO, subToScheme, geoSubject, subPath, HTTPS, LEI, ISBN } from './scheme-types'
 import { subToSubject } from './apis'
 import { PRIVATE_KEY } from './indexeddb-types'
 import * as t from './mutation-types'
@@ -146,8 +146,9 @@ export const getters = {
   },
   // Return the filtered list of reviews and total counts for different schemes.
   reviewsAndCounts: (state) => (query) => {
-    if (state.filter) query = { ...query, scheme: state.filter }
+    if (state.filter) query = state.filter === 'reaction' ? { ...query, section: 'reaction' } : { ...query, scheme: state.filter }
     const counts = {}
+    let reaction_count = 0;
     const allReviews = Object.values(state.reviews)
     // Prelimit to circumvent JS eager eval.
     const reviews = (query.limit
@@ -156,6 +157,7 @@ export const getters = {
     )
       .filter(({ payload, kid, scheme, geo, signature }) => {
         // Pick only ones selected according to query.
+        const isReaction = scheme == MARESI && !payload.opinion;
         const isSelected =
           (!query.kid || query.kid === kid) &&
           (!query.scheme || query.scheme === scheme) &&
@@ -177,6 +179,9 @@ export const getters = {
                   geo.uncertainty + geoQuery.uncertainty
                 )
               } else if (k === 'signature' && signature === v) {
+
+                return true
+              } else if (k === 'section' && v === 'reaction' && isReaction) {
                 return true
               } else {
                 return false
@@ -184,12 +189,17 @@ export const getters = {
             })
             .every(Boolean)
         if (isSelected) {
-          counts[scheme] = counts[scheme] ? counts[scheme] + 1 : 1
+          if (scheme == MARESI && !payload.opinion) {
+            reaction_count++;
+          } else {
+            counts[scheme] = counts[scheme] ? counts[scheme] + 1 : 1
+          }
         }
         return isSelected
       })
       .sort((r1, r2) => r2.payload.iat - r1.payload.iat)
-    counts.null = reviews.length
+    counts.null = Object.values(counts).reduce((a, b) => a + b, 0);
+    counts.reactions = reaction_count;
     return { counts, reviews }
   }
 }
