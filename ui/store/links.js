@@ -9,7 +9,7 @@ export const LINKS = {
   },
   Element: {
     img: require('~/static/icon-riot.svg'),
-    link: 'https://app.element.io/#/room/#openreviews:matrix.org'
+    link: 'https://matrix.to/#/#openreviews:matrix.org'
   },
   Gitlab: {
     icon: 'mdi-gitlab',
