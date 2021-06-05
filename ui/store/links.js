@@ -8,7 +8,7 @@ export const LINKS = {
     link: 'https://twitter.com/openreviews_net'
   },
   Element: {
-    img: require('~/static/icon-riot.svg'),
+    icon: 'mdi-chat',
     link: 'https://matrix.to/#/#openreviews:matrix.org'
   },
   Gitlab: {
