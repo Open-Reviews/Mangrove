@@ -269,7 +269,7 @@ deploy widget production:
     WIDGET_APP_UPLOAD_URL: "https://upload.mangrove.reviews"
     WIDGET_APP_FILES_URL: "https://files.mangrove.reviews"
     WIDGET_BUCKET: "widget.mangrove.reviews"
-    WIDGET_DIST: "E2MJJIV6P7ASG5"
+    WIDGET_DIST: "E3MZOT3BBSTIHE"
   script:
     - cd widget
     - yarn install
