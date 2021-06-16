@@ -26,7 +26,7 @@
   "frmExpOwner": "właściciel",
   "frmAffiliated": "Jestem powiązany (np. właściciel; przyjaciele / rodzina właściciela; tam pracuję)",
   "frmAgreeTerms": "Zgadzam się z <a href=\"https://mangrove.reviews/terms\" rel=\"noopener nofollow\" target=\"_blank\">Warunkami Świadczenia Usług</a> *",
-  "frmAgreeLicense": "Zgadzam sie na opublikowanie mojej opinii, włączając w to dane osobiste które podałem opcjonalnie, zgodnie z otwartą licencją (<a href=\"https://creativecommons.org/licenses/by/4.0/\">CC-BY-4.0</a>), oraz zgadzam się z <a href=\"https://mangrove.reviews/terms#2-privacy-policy\">Polityką Prywatności</a> *",
+  "frmAgreeLicense": "Zgadzam sie na opublikowanie mojej opinii, włączając w to dane osobiste które podałem opcjonalnie, zgodnie z otwartą licencją (<a href=\"https://creativecommons.org/licenses/by/4.0/\" rel=\"noopener nofollow\" target=\"_blank\">CC-BY-4.0</a>), oraz zgadzam się z <a href=\"https://mangrove.reviews/terms#2-privacy-policy\" rel=\"noopener nofollow\" target=\"_blank\">Polityką Prywatności</a> *",
   "frmInfoMaxFiles": "Maksymalna dozwolona ilość obrazów",
   "frmLblUploadImages": "Dodaj zdjęcia/obrazki (maks. {{MAX_FILES}})",
   "metaAge": "Wiek: {{age}}",
