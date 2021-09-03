@@ -4,7 +4,7 @@ stages:
   - deploy
   - task
 
-image: wilson208/circleci-awscli:node
+image: sleavely/node-awscli:14.x
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:

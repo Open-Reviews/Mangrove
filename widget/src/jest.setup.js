@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom/extend-expect';
 import indexedDB from 'fake-indexeddb';
+import auto from 'fake-indexeddb/auto';
 
 import { server } from '../src/mocks/server';
 // Establish API mocking before all tests.
