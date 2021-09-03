@@ -15,6 +15,10 @@ This repository contains:
 - [Mangrove Client JS Library](libraries/mangrove-reviews-js) for interacting with Mangrove Servers
 - [Mangrove Aggregator](aggregator) a probabilistic model to help with making sense of reviews
 
+## Architecture
+
+![infrastructure](img/infrastructure.svg)
+
 ## Local testing
 
 Both servers need to be up for the UI to work.
@@ -43,7 +47,7 @@ cd servers/reviewer
 diesel setup
 ```
 
-You may also need to install `libssl-dev` (i.e. `sudo apt install libssl-dev`).  
+You may also need to install `libssl-dev` (i.e. `sudo apt install libssl-dev`).
 
 Build and run the server.
 ```
