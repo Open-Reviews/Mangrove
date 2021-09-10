@@ -1,3 +1,10 @@
+---
+workflow:
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "master" && $CI_PROJECT_NAMESPACE != "open-reviews"'
+      when: never
+    - when: always
+
 stages:
   - build
   - test
