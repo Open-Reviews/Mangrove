@@ -181,8 +181,8 @@ impl Image {
             }
         }
         println!("Checking the file: {}", self.src);
-        let exists = reqwest::blocking::get(&self.src)?.status().is_success();
-        if exists {
+        let status = reqwest::blocking::get(&self.src)?.status();
+        if status.is_success() || status.is_redirection() {
             Ok(())
         } else {
             Err(Error::Incorrect(format!(
@@ -292,7 +292,7 @@ fn check_place(geo: &Url) -> Result<UncertainPoint, Error> {
             .collect::<Result<Vec<Option<i32>>, Error>>()?;
         if let Some(uncertainty) = a.into_iter().find(Option::is_some) {
             Ok(UncertainPoint {
-                coordinates: Some(GeogPoint { lon, lat, srid: Some(4326) }),
+                coordinates: Some(GeogPoint { x: lon, y: lat, srid: Some(4326) }),
                 uncertainty
             })
         } else {

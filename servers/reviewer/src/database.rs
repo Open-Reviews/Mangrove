@@ -49,7 +49,7 @@ sql_function! {
 }
 
 const EXAMPLE_HTTPS: &str = "https://example.com";
-const EXAMPLE_GEO: GeogPoint = GeogPoint { lon: 0., lat: 0., srid: Some(4326) };
+const EXAMPLE_GEO: GeogPoint = GeogPoint { x: 0., y: 0., srid: Some(4326) };
 
 impl DbConn {
     pub fn insert(&self, review: Review) -> Result<(), Error> {
