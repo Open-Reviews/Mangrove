@@ -88,7 +88,7 @@ Run the `script` in `.gitlab-ci.yml` making sure to use your own S3 bucket.
 ### `libpq` Lambda Layer
 
 Deploying the Reviewer Lambda to AWS requires a Lambda Layer containing `libpq`.
-We host a [base docker image with this layer included on Docker Hub](https://hub.docker.com/r/plantingspace/lambda-rust).
+We host a [base docker image with this layer included on Docker Hub](https://quay.io/repository/open-reviews/lambda-rust).
 
 To deploy your own layer, follow these instructions based on: https://github.com/DrLuke/postgres-libpq-aws-lambda-layer
 

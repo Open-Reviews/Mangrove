@@ -4,7 +4,7 @@
   "description": "JS library for submission and retrieval of Mangrove reviews.",
   "keywords": ["reviews", "client", "API", "open data", "crypto"],
   "main": "index.js",
-  "repository": "https://gitlab.com/plantingspace/mangrove",
+  "repository": "https://gitlab.com/open-reviews/mangrove",
   "homepage": "https://mangrove.reviews",
   "license": "ISC",
   "dependencies": {

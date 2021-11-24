@@ -40,7 +40,7 @@ Recommendation services are already being marketed by Amazon, Google, Foursquare
 
 To be able to use technology in a way that actually helps us and releases creative and innovative energy, I believe that we need to rethink some of the fundamental architectures that internet services are built on today. Most importantly, we need people to create alternatives.
 
-We have founded [PlantingSpace](https://planting.space) to work on new approaches and technologies that we ourselves would like to see in the world. Open reviews are one of them.
+We have founded [Open Reviews Association](https://open-reviews.net/) to work on new approaches and technologies that we ourselves would like to see in the world. Open reviews are one of them.
 
 We are proposing an architecture that allows to disentangle the data layer from the layer of value adding services and products. To create the data layer for an ecosystem of open reviews, we launched the [Mangrove](https://mangrove.reviews) initiative. It aims at providing the infrastructure that enables everyone in the world with an internet access to contribute and help create an open dataset for reviews that can be used by individuals, organisations, businesses, researchers, or entrepreneurs.
 
@@ -52,7 +52,7 @@ Mangrove’s roadmap consists of three main steps:
 * Build an open source infrastructure (server, aggregation algorithms, APIs) that can enable an ecosystem of applications to interact with the open dataset (e.g., navigation and mapping services, e-commerce services, local businesses, reputation management services, listing services for companies, books, charging stations, and others)  
 * Make it accessible and attractive to a large variety of users (UI, documentation, promotion).  
 
-You can check out and give input to step (1) in our [repository on GitLab](https://gitlab.com/plantingspace/mangrove). Currently, we are working on steps (2) and (3), and hope to release a first demo soon, consisting of a web-based UI and an API.  
+You can check out and give input to step (1) in our [repository on GitLab](https://gitlab.com/open-reviews/mangrove). Currently, we are working on steps (2) and (3), and hope to release a first demo soon, consisting of a web-based UI and an API.  
 
 With step (3) in mind, we make use of a number of highly valuable open datasets, such as [OpenStreetMap](https://www.openstreetmap.org/about), GLEIF‘s [Legal Entity Identifier](https://www.gleif.org/en/about/our-vision), and Internet Archive‘s [Open Library](https://openlibrary.org/), so that people can review places on the map such as restaurants or hotels, companies, books, or websites. Finally, Mangrove has high privacy standards, and uses public key cryptography in order to avoid storing personal data. It will not require a registration process.  
 
@@ -60,7 +60,4 @@ Mangrove is a non-profit initiative and a community project, funded by donations
 
 ## Get in touch
 
-Twitter: @mangroveReviews  
-Mastodon: @mangroveReviews@mas.to  
-Email: mangrove@planting.space  
-Website: [mangrove.reviews](https://mangrove.reviews)
+Website: [open-reviews.net](https://open-reviews.net)

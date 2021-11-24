@@ -76,7 +76,7 @@ Harvard Professor Shoshana Zuboff, the author of the best-selling book 'The Age 
 
 Our approach is different. **In Mangrove, there is just one type of information shared by users: the one entered consciously and voluntarily in the review form.** Once submitted, it goes directly into the open dataset, with no intermediary collecting anything in the background.
 
-The dataset is open for everyone to inspect, and the whole code base of Mangrove, comprising [the standard, the server, the user interface](https://gitlab.com/plantingspace/mangrove), as well as the [APIs](https://docs.mangrove.reviews) and the [JS client library](https://js.mangrove.reviews), are open source and allow for scrutiny by the community to ensure that it does what it promises.
+The dataset is open for everyone to inspect, and the whole code base of Mangrove, comprising [the standard, the server, the user interface](https://gitlab.com/open-reviews/mangrove), as well as the [APIs](https://docs.mangrove.reviews) and the [JS client library](https://js.mangrove.reviews), are open source and allow for scrutiny by the community to ensure that it does what it promises.
 
 ## Account, redefined
 
@@ -110,9 +110,4 @@ And finally, financial sponsorships and donations help us to get more reach and 
 
 ## Get in touch
 
-Twitter: [@mangroveReviews](https://twitter.com/mangroveReviews)      
-Mastodon: [@mangroveReviews@mas.to](https://mas.to/web/accounts/88962)    
-LinkedIn: [PlantingSpace](https://www.linkedin.com/company/plantingspace)      
-Join our chat: [Riot](https://riot.im/app/#/room/#mangrove:matrix.org)   
-Email: mangrove@planting.space    
-Website: [mangrove.reviews](https://mangrove.reviews)     
+Website: [open-reviews.net](https://open-reviews.net)     
