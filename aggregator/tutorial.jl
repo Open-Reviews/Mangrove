@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.12.15
+# v0.12.20
 
 using Markdown
 using InteractiveUtils
@@ -25,6 +25,9 @@ end
 
 # ╔═╡ 9a68f5a6-33b8-11eb-3ca1-6f6ae024c66a
 using Aggregator.Model: neutralities
+
+# ╔═╡ 02ba1bfa-824f-11eb-26d4-4153ef9e7ec7
+using Dates
 
 # ╔═╡ 5e865152-19f3-11eb-0434-7b4fe9bde74c
 md"""
@@ -205,6 +208,24 @@ reviews[1]
 # ╔═╡ dcaee4ea-33d9-11eb-2bdb-056764479e43
 Uniform() |> rand
 
+# ╔═╡ 308f3126-824e-11eb-3ddc-4d4f19c31563
+md"# Other analysis"
+
+# ╔═╡ 4014f606-824e-11eb-0b60-f5f4cd5ab3b9
+recent_reviews = sort(reviews; by=r->r.payload.iat)[end-20:end]
+
+# ╔═╡ 064f208a-824f-11eb-2e59-89462a53247a
+unix2datetime
+
+# ╔═╡ 1901deac-824f-11eb-198f-d9395e51bd3f
+[unix2datetime(r.payload.iat) for r in recent_reviews]
+
+# ╔═╡ 677a3b14-8250-11eb-35db-cf6569b2f766
+recent_reviews[1].kid
+
+# ╔═╡ 73bd8d2c-8250-11eb-19f9-1f450441ba5b
+issuers[recent_reviews[1].kid]
+
 # ╔═╡ Cell order:
 # ╠═2fcbf600-19e9-11eb-3f4e-812a4a557c20
 # ╟─5e865152-19f3-11eb-0434-7b4fe9bde74c
@@ -260,3 +281,10 @@ Uniform() |> rand
 # ╠═23a6f398-33d4-11eb-2659-7f2673bb9ab4
 # ╠═8c958bc2-33d8-11eb-304c-71995153657b
 # ╠═dcaee4ea-33d9-11eb-2bdb-056764479e43
+# ╟─308f3126-824e-11eb-3ddc-4d4f19c31563
+# ╠═4014f606-824e-11eb-0b60-f5f4cd5ab3b9
+# ╠═02ba1bfa-824f-11eb-26d4-4153ef9e7ec7
+# ╠═064f208a-824f-11eb-2e59-89462a53247a
+# ╠═1901deac-824f-11eb-198f-d9395e51bd3f
+# ╠═677a3b14-8250-11eb-35db-cf6569b2f766
+# ╠═73bd8d2c-8250-11eb-19f9-1f450441ba5b

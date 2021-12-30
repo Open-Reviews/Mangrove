@@ -121,6 +121,12 @@ checksum = "b41b7ea54a0c9d92199de89e20e58d49f02f8e699814ef3fdf266f6f748d15c7"
 
 [[package]]
 name = "base64"
+version = "0.12.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3441f0f7b02788e948e47f457ca01f1d7e6d92c693bc132c22b087d3141c03ff"
+
+[[package]]
+name = "base64"
 version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "904dfeac50f3cdaba28fc6f57fdcddb75f49ed61346676a78c4ffe55877802fd"
@@ -1135,10 +1141,10 @@ dependencies = [
 
 [[package]]
 name = "jsonwebtoken"
-version = "7.0.1"
-source = "git+https://github.com/plantingspace/jsonwebtoken.git#e259f4d1b8613f90f4ef5f16cb3462d3b58ec55e"
+version = "7.2.0"
+source = "git+https://github.com/open-reviews/jsonwebtoken.git#1415382c32d6902d2657c11e2187d7e5e4aa987a"
 dependencies = [
- "base64 0.11.0",
+ "base64 0.12.3",
  "pem",
  "ring",
  "serde",
@@ -1701,12 +1707,12 @@ dependencies = [
 
 [[package]]
 name = "pem"
-version = "0.7.0"
+version = "0.8.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a1581760c757a756a41f0ee3ff01256227bdf64cb752839779b95ffb01c59793"
+checksum = "fd56cbd21fea48d0c440b41cd69c589faacade08c992d9a54e471b79d0fd13eb"
 dependencies = [
- "base64 0.11.0",
- "lazy_static",
+ "base64 0.13.0",
+ "once_cell",
  "regex 1.5.4",
 ]
 
