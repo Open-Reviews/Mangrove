@@ -294,7 +294,7 @@ deploy widget production:
 
 aggregator:
   stage: task
-  image: julia:latest
+  image: julia:1.6
   script:
     - cd aggregator
     - julia --project run.jl
