@@ -152,7 +152,7 @@ export default {
         {
           label: 'Write us',
           action:
-            'mailto:mangrove@planting.space?subject=Missing Review Subject on Mangrove'
+            'mailto:hello@open-reviews.net?subject=Missing Review Subject on Mangrove'
         }
       ] 
     }
