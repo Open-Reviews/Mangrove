@@ -1,3 +1,4 @@
+import rateLimit from 'axios-rate-limit'
 import { getBoundsOfDistance } from 'geolib'
 import {
   GEO,
@@ -68,7 +69,9 @@ export function searchGeo(axios, q, viewbox) {
     params.viewbox = viewbox
     params.bounded = 1
   }
-  return axios
+  const rateLimitedAxios = rateLimit(axios, { maxRequests: 1, perMilliseconds: 1000 })
+
+  return rateLimitedAxios
     .get('https://nominatim.openstreetmap.org/search', {
       params,
       headers: { Accept: 'application/json' }
