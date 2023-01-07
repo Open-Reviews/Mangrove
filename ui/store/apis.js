@@ -74,7 +74,10 @@ export function searchGeo(axios, q, viewbox) {
   return rateLimitedAxios
     .get('https://nominatim.openstreetmap.org/search', {
       params,
-      headers: { Accept: 'application/json' }
+      headers: {
+        Accept: 'application/json',
+        'Accept-Language': '*'
+      }
     })
     .then((response) => {
       return response.data
