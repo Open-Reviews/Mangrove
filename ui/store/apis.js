@@ -230,22 +230,13 @@ export async function subToSubject(axios, sub) {
     subject = await leiToSubject(axios, subPath(LEI, sub))
   } else if (scheme === GEO) {
     geo = geoSubject(sub)
-    // Convert from meters to degrees.
-    const box = getBoundsOfDistance(geo.coordinates, geo.uncertainty)
-    const viewbox = [
-      box[0].longitude,
-      box[0].latitude,
-      box[1].longitude,
-      box[1].latitude
-    ]
-    const subjects = await searchGeo(axios, geo.query, viewbox.join(',')).catch((err) => {
-      console.log("Nominatim error: ", err)
-      return []
-    })
-    if (subjects && subjects[0]) {
-      subject = subjects[0]
-      subject.sub = sub
-      subject.coordinates = geo.coordinates
+    const lon = geo.coordinates[0]
+    const lat = geo.coordinates[1]
+    subject = {
+      sub,
+      scheme: GEO,
+      title: geo.query,
+      coordinates: [lon, lat].map(parseFloat)
     }
   } else if (scheme === ISBN) {
     subject = await isbnToSubject(axios, subPath(ISBN, sub))
