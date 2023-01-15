@@ -1,5 +1,14 @@
 <template>
   <div>
+    <a
+      class="github-fork-ribbon"
+      href="https://gitlab.com/open-reviews/mangrove"
+      target="_blank"
+      style="z-index: 1"
+      data-ribbon="Contribute on GitLab"
+      title="Contribute on GitLab"
+      >Fork me on GitHub</a
+    >
     <v-row class="mb-1 text-center white--text">
       <v-img
         :src="front.image"

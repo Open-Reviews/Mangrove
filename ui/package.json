@@ -23,6 +23,7 @@
     "blueimp-load-image": "^2.28.0",
     "frontmatter-markdown-loader": "^3.1.0",
     "geolib": "^3.2.1",
+    "github-fork-ribbon-css": "^0.2.3",
     "idb-keyval": "^3.2.0",
     "jdenticon": "^2.2.0",
     "mangrove-reviews": "file:../libraries/mangrove-reviews-js",

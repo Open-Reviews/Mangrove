@@ -27,7 +27,10 @@ export default {
   /*
    ** Global CSS
    */
-  css: ['assets/global.css'],
+  css: [
+    'assets/global.css',
+    'node_modules/github-fork-ribbon-css/gh-fork-ribbon.css'
+  ],
   /*
    ** Plugins to load before mounting the App
    */
