@@ -1,5 +1,5 @@
 ---
-title: Welcome to Mangrove beta!
+title: Welcome to Mangrove Demo!
 ---
 
 Try out writing reviews in the public domain, using a cryptographically generated account that puts you in control of your privacy.   

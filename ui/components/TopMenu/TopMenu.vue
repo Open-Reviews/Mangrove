@@ -38,7 +38,7 @@
         </v-list>
       </v-menu>
       <v-btn text link href="https://open-reviews.net">
-        Join us
+        About
       </v-btn>
       <v-btn nuxt text link to="/account">
         Account
